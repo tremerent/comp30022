@@ -11,6 +11,10 @@ using Artefactor.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Mvc;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Artefactor
 {
@@ -39,6 +43,24 @@ namespace Artefactor
             services.AddAuthentication()
                 .AddIdentityServerJwt();
             services.AddMvc(options => options.EnableEndpointRouting = false);
+                //.AddJsonOptions(options =>
+                //{
+                //    options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+                //    options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                //});
+            //.AddJsonOptions(options =>
+            //{
+            //    options.SerializerSettings.Converters.Add(new StringEnumConverter
+            //    {
+            //        CamelCaseText = true
+            //    });
+            //    // do something with settings
+            //}); ;
+            //.AddJsonOptions(options =>
+            //{
+            //    options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+            //    options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+            //}); ;
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

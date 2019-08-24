@@ -21,6 +21,32 @@ namespace Artefactor.Controllers
             _context = context;
         }
 
+        // GET: api/Artefacts/Genres
+        [HttpGet("Genres")]
+        public async Task<ActionResult<IEnumerable<object>>> Genres()
+        {
+            var genreList = MapEnumToDictionary<Genre>()
+                .Select(entry => new { Value = entry.Key, Name = entry.Value })
+                .ToList();
+
+            return genreList;
+        }
+
+        // thanks to - https://stackoverflow.com/a/41499029
+        private Dictionary<int, string> MapEnumToDictionary<T>()
+        {
+            // Ensure T is an enumerator
+            if (!typeof(T).IsEnum)
+            {
+                throw new ArgumentException("T must be an enumerator type.");
+            }
+
+            // Return Enumertator as a Dictionary
+            return Enum.GetValues(typeof(T))
+                       .Cast<T>()
+                       .ToDictionary(i => (int)Convert.ChangeType(i, i.GetType()), t => t.ToString());
+        }
+
         // GET: api/Artefacts
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Artefact>>> GetArtefacts()
