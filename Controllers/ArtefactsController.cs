@@ -73,7 +73,7 @@ namespace Artefactor.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutArtefact(string id, Artefact artefact)
         {
-            if (id != artefact.ArtefactId)
+            if (id != artefact.Id)
             {
                 return BadRequest();
             }
@@ -110,7 +110,7 @@ namespace Artefactor.Controllers
             }
             catch (DbUpdateException)
             {
-                if (ArtefactExists(artefact.ArtefactId))
+                if (ArtefactExists(artefact.Id))
                 {
                     return Conflict();
                 }
@@ -120,7 +120,7 @@ namespace Artefactor.Controllers
                 }
             }
 
-            return CreatedAtAction("GetArtefact", new { id = artefact.ArtefactId }, artefact);
+            return CreatedAtAction("GetArtefact", new { id = artefact.Id }, artefact);
         }
 
         // DELETE: api/Artefacts/5
@@ -141,7 +141,7 @@ namespace Artefactor.Controllers
 
         private bool ArtefactExists(string id)
         {
-            return _context.Artefacts.Any(e => e.ArtefactId == id);
+            return _context.Artefacts.Any(e => e.Id == id);
         }
     }
 }

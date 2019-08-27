@@ -71,14 +71,14 @@ namespace Artefactor.Data.Migrations
 
             modelBuilder.Entity("Artefactor.Models.Artefact", b =>
                 {
-                    b.Property<string>("ArtefactId");
+                    b.Property<string>("Id");
 
                     b.Property<string>("Genre")
                         .IsRequired();
 
                     b.Property<string>("Name");
 
-                    b.HasKey("ArtefactId");
+                    b.HasKey("Id");
 
                     b.ToTable("Artefacts");
                 });

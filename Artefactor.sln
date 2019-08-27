@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artefactor", "Artefactor\Artefactor.csproj", "{FD978EC3-78A7-4C37-A5DA-CDA3DB22575E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Artefactor", "Artefactor.csproj", "{52BA7444-DACC-471D-A484-39F761E8F6AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FD978EC3-78A7-4C37-A5DA-CDA3DB22575E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FD978EC3-78A7-4C37-A5DA-CDA3DB22575E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FD978EC3-78A7-4C37-A5DA-CDA3DB22575E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FD978EC3-78A7-4C37-A5DA-CDA3DB22575E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52BA7444-DACC-471D-A484-39F761E8F6AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52BA7444-DACC-471D-A484-39F761E8F6AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52BA7444-DACC-471D-A484-39F761E8F6AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52BA7444-DACC-471D-A484-39F761E8F6AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {58AEDA30-1D72-47D0-8533-A8D44CE75C39}
+		SolutionGuid = {2CD21361-1F46-4C1C-91F8-F13C3C50C751}
 	EndGlobalSection
 EndGlobal

@@ -10,7 +10,7 @@ namespace Artefactor.Models
 {
     public class Artefact
     {
-        public string ArtefactId { get; set; }
+        public string Id { get; set; }
         public Genre Genre { get; set; }
         public string Name { get; set; }
     }

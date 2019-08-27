@@ -7,7 +7,10 @@ export class Artefact extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { artefacts: [], loading: true };
+        this.state = {
+            artefacts: [],
+            loading: true
+        };
     }
 
     componentDidMount() {
@@ -16,9 +19,10 @@ export class Artefact extends Component {
 
     static renderArtefactsTable(artefacts) {
         return (
-            <table className='table table-striped'>
+            <table className='table'>
                 <thead>
                     <tr>
+                        <th>Id</th>
                         <th>Name</th>
                         <th>Genre</th>
                     </tr>
@@ -26,6 +30,7 @@ export class Artefact extends Component {
                 <tbody>
                     {artefacts.map(artefact =>
                         <tr key={artefact.id}>
+                            <td>{artefact.id}</td> 
                             <td>{artefact.name}</td>
                             <td>{artefact.genre}</td>
                         </tr>
@@ -42,16 +47,22 @@ export class Artefact extends Component {
 
         return (
             <div>
-                <h2> Grandma's vase! </h2>
+                <h2> My artefacts </h2>
                 {contents}
                 <hr />
-                <CreateArtefact />
+                <CreateArtefact addArtefact={this.addArtefact}/>
             </div>
         );
     }
 
-    async createArtefact() {
+    addArtefact = (artefact) => {
+        let artefacts = [...this.state.artefacts]; 
+        artefacts.push(artefact);
 
+        this.setState({
+            ...this.state,
+            artefacts,
+        });
     }
 
     async populateArtefactData() {
