@@ -24,14 +24,21 @@ namespace Artefactor.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            //modelBuilder.Entity<FamilyUserJoin>()
-            //            .HasKey(fuj => new { fuj.UserId, fuj.FamilyId });
 
+            // Artefact - category many-many
 
-
-            modelBuilder.Entity<Artefact>()
-                        .Property(a => a.Genre)
-                        .HasConversion<string>();
+            modelBuilder.Entity<ArtefactCategory>()
+                        .HasKey(at => new { at.ArtefactId, at.CategoryId });
+            modelBuilder.Entity<ArtefactCategory>()
+                        .HasOne(ac => ac.Category)
+                        .WithMany(c => c.ArtefactJoin)
+                        .HasForeignKey(ac => ac.CategoryId);
+            modelBuilder.Entity<ArtefactCategory>()
+                        .HasOne(ac => ac.Artefact)
+                        .WithMany(c => c.CategoryJoin)
+                        .HasForeignKey(ac => ac.ArtefactId);
         }
+
+        public DbSet<Artefactor.Models.Category> Category { get; set; }
     }
 }

@@ -73,14 +73,35 @@ namespace Artefactor.Data.Migrations
                 {
                     b.Property<string>("Id");
 
-                    b.Property<string>("Genre")
-                        .IsRequired();
-
                     b.Property<string>("Name");
 
                     b.HasKey("Id");
 
                     b.ToTable("Artefacts");
+                });
+
+            modelBuilder.Entity("Artefactor.Models.ArtefactCategory", b =>
+                {
+                    b.Property<string>("ArtefactId");
+
+                    b.Property<string>("CategoryId");
+
+                    b.HasKey("ArtefactId", "CategoryId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("ArtefactCategory");
+                });
+
+            modelBuilder.Entity("Artefactor.Models.Category", b =>
+                {
+                    b.Property<string>("Id");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.DeviceFlowCodes", b =>
@@ -258,6 +279,21 @@ namespace Artefactor.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Artefactor.Models.ArtefactCategory", b =>
+                {
+                    b.HasOne("Artefactor.Models.Artefact", "Artefact")
+                        .WithMany("CategoryJoin")
+                        .HasForeignKey("ArtefactId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Artefactor.Models.Category", "Category")
+                        .WithMany("ArtefactJoin")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

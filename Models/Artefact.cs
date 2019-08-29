@@ -11,7 +11,7 @@ namespace Artefactor.Models
     public class Artefact
     {
         public string Id { get; set; }
-        public Genre Genre { get; set; }
+        public IEnumerable<ArtefactCategory> CategoryJoin { get; set; }
         public string Name { get; set; }
     }
 
