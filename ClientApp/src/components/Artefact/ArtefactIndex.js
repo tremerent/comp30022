@@ -2,8 +2,8 @@
 import { CreateArtefact } from './CreateArtefact';
 import authService from '../api-authorization/AuthorizeService';
 
-export class Artefact extends Component {
-    static displayName = Artefact.name;
+export class ArtefactIndex extends Component {
+    static displayName = ArtefactIndex.name;
 
     constructor(props) {
         super(props);
@@ -43,7 +43,7 @@ export class Artefact extends Component {
     render() {
         let contents = this.state.loading
             ? <p><em>Loading...</em></p>
-            : Artefact.renderArtefactsTable(this.state.artefacts);
+            : ArtefactIndex.renderArtefactsTable(this.state.artefacts);
 
         return (
             <div>
