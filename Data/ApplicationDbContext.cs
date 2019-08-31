@@ -25,6 +25,12 @@ namespace Artefactor.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // auto generated pks
+
+            modelBuilder.Entity<Category>()
+                .Property(c => c.Id)
+                .HasDefaultValue("NEWID()");
+
             // Artefact - category many-many
 
             modelBuilder.Entity<ArtefactCategory>()
@@ -40,5 +46,7 @@ namespace Artefactor.Data
         }
 
         public DbSet<Artefactor.Models.Category> Category { get; set; }
+
+        public DbSet<Artefactor.Models.ArtefactCategory> ArtefactCategory { get; set; }
     }
 }

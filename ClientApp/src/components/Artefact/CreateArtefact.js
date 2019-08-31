@@ -1,16 +1,16 @@
 ﻿import React, { Component } from 'react';
-import authService from '../api-authorization/AuthorizeService';
-import $ from 'jquery';
 import Joi from 'joi';
 
-export class CreateArtefact extends Component {
-    static displayName = CreateArtefact.name;
+import CategorySelect from '../Category/CategorySelect.js'
+import { postArtefact, postArtefactCategories } from '../../scripts/requests.js';
+import { formIsValid, artefactSchema } from '../../data/validation.js';
 
-    artefactSchema = Joi.object().keys({
-        id: Joi.string().required(),
-        name: Joi.string().required(),
-        genre: Joi.number().valid(0, 1).required(),
-    });
+export class CreateArtefact extends Component {
+    /*
+     * Component for artefact creation.
+     */ 
+
+    static displayName = CreateArtefact.name;
 
     constructor(props) {
         super(props);
@@ -19,19 +19,18 @@ export class CreateArtefact extends Component {
             artefact: {
                 name: "",
                 id: "",
-                genre: ""
+                categories: []
             },
             touched: {
                 name: false,
                 id: false,
-                genre: false,
+                category: false,
             },
             errors: {
                 name: false,
                 id: false,
-                genre: false,
+                category: false,
             },
-            genreSelectOpts: {},
         };
     }
 
@@ -48,6 +47,8 @@ export class CreateArtefact extends Component {
     }
 
     handleFormChange = (e) => {
+
+        console.log(e.target.value)
         this.setState({
             ...this.state,
             artefact: {
@@ -61,8 +62,22 @@ export class CreateArtefact extends Component {
         e.preventDefault();
 
         (async () => {
-            const createdArtefact = await this.createArtefact();
-            this.props.addArtefact(createdArtefact);
+            try {
+                const newArtefact = await this.createArtefact();
+
+                this.props.addArtefact(newArtefact);
+            }
+            catch (e) {
+
+            }
+
+            try {
+                const artefactCategories =
+                    await postArtefactCategories(this.state.artefact.categories);
+            }
+            catch (e) {
+                
+            }
         })();
 
         this.setState({
@@ -70,7 +85,7 @@ export class CreateArtefact extends Component {
             artefact: {
                 name: "",
                 id: "",
-                genre: ""
+                categories: []
             },
         });
     }
@@ -78,7 +93,8 @@ export class CreateArtefact extends Component {
     render() {
         const errs = Joi.validate(
             this.state.artefact,
-            this.artefactSchema,
+            artefactSchema,
+
             { abortEarly: false },
         );
 
@@ -112,23 +128,27 @@ export class CreateArtefact extends Component {
 
                             <div className="form-group">
                                 <label htmlFor="artefactId"> Artefact Id </label>
-                                <input type="text" id="id" value={this.state.artefact.id} onChange={this.handleFormChange} onBlur={this.handleBlur('id')} className={"form-control " + (this.state.errors.id ? "error" : "")} />
+                                <input type="text" id="id" value={this.state.artefact.id}
+                                       onChange={this.handleFormChange} onBlur={this.handleBlur('id')}
+                                       className={"form-control " + (this.state.errors.id ? "error" : "")}
+                                />
                             </div>
 
                             <div className="form-group">
                                 <label htmlFor="name"> Artefact </label>
-                                <input type="text" id="name" value={this.state.artefact.name} onChange={this.handleFormChange} onBlur={this.handleBlur('name')} className={"form-control " + (this.state.errors.name ? "error" : "")} />
+                                <input type="text" id="name" value={this.state.artefact.name}
+                                    onChange={this.handleFormChange} onBlur={this.handleBlur('name')}
+                                    className={"form-control " + (this.state.errors.name ? "error" : "")}
+                                />
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="genre"> Genre </label>
-                                <select id="genre" value={this.state.artefact.genre} onChange={this.handleFormChange} onBlur={this.handleBlur('genre')} defaultValue={-1} className={"form-control " + (this.state.errors.email ? "error" : "")}>
-                                    <option value={-1}> Select a genre..</option>
-                                </select>
+                                <CategorySelect categoryVals={this.state.artefact.categories} setCategories={this.handleFormChange}/>
                             </div>
 
-
-                            <button disabled={!this.formIsValid()} type="submit" className="btn btn-primary"> Submit </button>
+                            <button type="submit"
+                                
+                                className="btn btn-primary"> Submit </button>
                         </form>
                     </div>
                 </div>
@@ -137,64 +157,21 @@ export class CreateArtefact extends Component {
         );
     }
 
-    componentDidMount = () => {
-        $.get('api/Artefacts/Genres')
-            .done(function (data) {
-                $(genreSelectItems(data)).appendTo('#genre');
-            });
-
-        function genreSelectItems(genreData) {
-
-            let genreSelectItems = '';
-            let genre;
-            for (let i = 0; i < genreData.length; i++) {
-                genre = genreData[i];
-                genreSelectItems += '<option value=' + genre.value + '>' + genre.name + '</option>';
-            }
-
-            return genreSelectItems;
-        }
-    }
-
-    formIsValid = () => {
-        const res = Joi.validate(this.state.artefact, this.artefactSchema);
-        return !res.error;
-    }
-
     async createArtefact() {
-        const artefact = this.state.artefact;
-        const genreEnumVal = parseInt(artefact.genre);
+        if (formIsValid(this.state.artefact, artefactSchema)) {
 
-        if (!isNaN(genreEnumVal)) {
-            artefact.genre = genreEnumVal;
+            try {
+                const newArtefact = await postArtefact(this.state.artefact);
+
+                return newArtefact;
+            }
+            catch (e) {
+
+            }
         }
         else {
-            // something gone wrong - 
-            // this shouldn't happen since genre values were fetched from server
+            throw new Error('Invalid artefact creation form.');
         }
-
-        if (this.formIsValid()) {
-            const token = await authService.getAccessToken();
-            const headers = {
-                'Content-Type': 'application/json'
-            };
-            const response = await fetch('api/Artefacts', {
-                method: 'POST',
-                headers: !token ? { ...headers } : {
-                    ...headers,
-                    'Authorization': `Bearer ${token}`,
-                },
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(artefact),
-            });
-
-            const respData = await response.json();
-            return respData;
-        }
-
-
     }
 }
 

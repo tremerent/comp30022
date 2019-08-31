@@ -95,7 +95,9 @@ namespace Artefactor.Data.Migrations
 
             modelBuilder.Entity("Artefactor.Models.Category", b =>
                 {
-                    b.Property<string>("Id");
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("NEWID()");
 
                     b.Property<string>("Name");
 

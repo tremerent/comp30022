@@ -1,5 +1,5 @@
 ﻿import React, { Component } from 'react';
-import { CreateCategory } from './CreateCategory';
+import CreateCategory from './CreateCategory.js';
 import authService from '../api-authorization/AuthorizeService';
 
 export class CategoryIndex extends Component {
@@ -21,7 +21,7 @@ export class CategoryIndex extends Component {
         return (
             <div>
                 {categories.map(category => 
-                    <div class="category-bubble"> {category.name} </div>
+                    <div className="category-bubble"> {category.name} </div>
                 )}
             </div>
         );

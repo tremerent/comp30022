@@ -1,15 +1,14 @@
 ﻿import React, { Component } from 'react';
-import authService from '../api-authorization/AuthorizeService';
-import $ from 'jquery';
 import Joi from 'joi';
+import { postCategory } from '../../scripts/requests.js';
+import { formIsValid, categorySchema } from '../../data/validation.js';
 
-export class CreateCategory extends Component {
+/*
+ * 
+ */
+
+export default class CreateCategory extends Component {
     static displayName = CreateCategory.name;
-
-    categorySchema = Joi.object().keys({
-        id: Joi.string().required(),
-        name: Joi.string().required(),
-    });
 
     constructor(props) {
         super(props);
@@ -41,8 +40,8 @@ export class CreateCategory extends Component {
     render() {
         const errs = Joi.validate(
             this.state.category,
-            this.categorySchema,
-            { abortEarly: false },
+            categorySchema,
+            { abortEarly: false },  // find keys with errors
         );
 
         if (errs.length) {
@@ -83,7 +82,7 @@ export class CreateCategory extends Component {
                                 <input type="text" id="name" value={this.state.category.name} onChange={this.handleFormChange} onBlur={this.handleBlur('name')} className={"form-control " + (this.state.errors.name ? "error" : "")} />
                             </div>
 
-                            <button disabled={!this.formIsValid()} type="submit" className="btn btn-primary"> Submit </button>
+                            <button disabled={!formIsValid(this.state.category, categorySchema)} type="submit" className="btn btn-primary"> Submit </button>
                         </form>
                     </div>
                 </div>
@@ -93,27 +92,13 @@ export class CreateCategory extends Component {
     }
 
     async createCategory() {
-        const category = this.state.category;
-
-        if (this.formIsValid()) {
-            const token = await authService.getAccessToken();
-            const headers = {
-                'Content-Type': 'application/json'
-            };
-            const response = await fetch('api/Categories', {
-                method: 'POST',
-                headers: !token ? { ...headers } : {
-                    ...headers,
-                    'Authorization': `Bearer ${token}`,
-                },
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(category),
-            });
-
-            const respData = await response.json();
-            return respData;
+        if (formIsValid(this.state.category, categorySchema)) {
+            try {
+                await postCategory(this.state.category);
+            }
+            catch (e) {
+                // TODO
+            }
         }
     }
 
@@ -155,11 +140,6 @@ export class CreateCategory extends Component {
                 genre: ""
             },
         });
-    }
-
-    formIsValid = () => {
-        const res = Joi.validate(this.state.category, this.categorySchema);
-        return !res.error;
     }
 }
 
