@@ -29,6 +29,7 @@ export default class CategorySelect extends Component {
                     onChange={this.handleChange}
                     options={this.state.categoryOptions}
                     value={this.props.categoryVals}
+                    placeholder={this.props.placeholder}
                 />
             </div>
         );

@@ -5,6 +5,9 @@ import CategorySelect from '../Category/CategorySelect.js'
 import { postArtefact, postArtefactCategories } from '../../scripts/requests.js';
 import { formIsValid, artefactSchema } from '../../data/validation.js';
 
+import Stepper from 'bs-stepper'
+import '../../../../node_modules/bs-stepper/dist/css/bs-stepper.min.css';  // TODO: remove relative dirs - I had a little go at this and was grievous
+
 export class CreateArtefact extends Component {
     /*
      * Component for artefact creation.
@@ -17,78 +20,112 @@ export class CreateArtefact extends Component {
         this.state = {
             loading: true,
             artefact: {
-                name: "",
+                title: "",
+                description: "",
                 id: "",
                 categories: []
-            },
-            touched: {
-                name: false,
-                id: false,
-                category: false,
-            },
-            errors: {
-                name: false,
-                id: false,
-                category: false,
             },
         };
     }
 
-    // record touched when user navigates away from form -
-    // for validation purposes
-    handleBlur = (field) => (e) => {
-        this.setState({
-            ...this.state,
-            touched: {
-                ...this.touched,
-                field: true,
-            }
-        })
+    componentDidMount() {
+        new Stepper(document.querySelector('.bs-stepper'))
     }
 
-    handleFormChange = (e) => {
+    renderCreateArtefactStepper = () => {
+        return (
+            <div className="card">
+                <div class="bs-stepper">
+                    <div class="bs-stepper-header" role="tablist">
 
-        console.log(e.target.value)
-        this.setState({
-            ...this.state,
-            artefact: {
-                ...this.state.artefact,
-                [e.target.id]: e.target.value,
-            },
-        });
+                        <div class="step" data-target="#create-artefact-first-page">
+                            <button type="button" class="step-trigger" role="tab" id="logins-part-trigger">
+                                <span class="bs-stepper-circle">1</span>
+                                <span class="bs-stepper-label">Logins</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step" data-target="#create-artefact-second-page">
+                            <button type="button" class="step-trigger" role="tab" id="information-part-trigger">
+                                <span class="bs-stepper-circle">2</span>
+                                <span class="bs-stepper-label">Various information</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bs-stepper-content">
+                        <div id="create-artefact-first-page" class="content" role="tabpanel" aria-labelledby="logins-part-trigger">
+                            <div>
+                                {this.renderFirstFormPage()}
+                            </div>
+                        </div>
+                        <div id="create-artefact-second-page" class="content" role="tabpanel" aria-labelledby="logins-part-trigger">
+                            <div>
+                                {this.renderSecondFormPage()}
+                            </div>
+                        </div>
+                        <div id="create-artefact-third-page" class="content" role="tabpanel" aria-labelledby="logins-part-trigger">
+                            <div>
+                                {this.renderThirdFormPage()}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
-    handleSubmit = (e) => {
-        e.preventDefault();
+    renderFirstFormPage = () => {
+        return (
+            <div>
+                <div className="form-group">
+                    <label htmlFor="artefactId"> Artefact Id </label>
+                    <input type="text" id="id" value={this.state.artefact.id}
+                            onChange={this.handleFormChange}
+                            className="form-control"
+                    />
+                </div>
 
-        (async () => {
-            try {
-                const newArtefact = await this.createArtefact();
+                <div className="form-group">
+                    <label htmlFor="title"> Title </label>
+                    <input type="text" id="title" value={this.state.artefact.name}
+                        onChange={this.handleFormChange}
+                        className="form-control"
+                    />
+                </div>
 
-                this.props.addArtefact(newArtefact);
-            }
-            catch (e) {
+                <div className="form-group">
+                    <label htmlFor="description"> Description </label>
+                    <textarea id="description" value={this.state.artefact.description}
+                        onChange={this.handleFormChange}
+                        className="form-control"
+                    />
+                </div>
 
-            }
-
-            try {
-                const artefactCategories =
-                    await postArtefactCategories(this.state.artefact.categories);
-            }
-            catch (e) {
-                
-            }
-        })();
-
-        this.setState({
-            ...this.state,
-            artefact: {
-                name: "",
-                id: "",
-                categories: []
-            },
-        });
+                <div className="form-group">
+                    <CategorySelect categoryVals={this.state.artefact.categories} setCategories={this.handleFormChange} placeholder={"Pick categories or create a new one"}/>
+                </div>
+            </div>
+        );
     }
+
+    renderSecondFormPage = () => {
+        return (
+            <div>
+                page 2
+            </div>
+        );
+    }
+
+    renderThirdFormPage = () => {
+        return (
+            <div>
+                page 3
+            </div>
+        );
+    }
+
+                    
 
     render() {
         const errs = Joi.validate(
@@ -120,39 +157,7 @@ export class CreateArtefact extends Component {
 
         return (
             <div>
-                <div className="card">
-                    <div className="card-body">
-                        <h4 className="card-title"> Create an artefact </h4>
-                        <hr />
-                        <form onSubmit={this.handleSubmit}>
-
-                            <div className="form-group">
-                                <label htmlFor="artefactId"> Artefact Id </label>
-                                <input type="text" id="id" value={this.state.artefact.id}
-                                       onChange={this.handleFormChange} onBlur={this.handleBlur('id')}
-                                       className={"form-control " + (this.state.errors.id ? "error" : "")}
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="name"> Artefact </label>
-                                <input type="text" id="name" value={this.state.artefact.name}
-                                    onChange={this.handleFormChange} onBlur={this.handleBlur('name')}
-                                    className={"form-control " + (this.state.errors.name ? "error" : "")}
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <CategorySelect categoryVals={this.state.artefact.categories} setCategories={this.handleFormChange}/>
-                            </div>
-
-                            <button type="submit"
-                                
-                                className="btn btn-primary"> Submit </button>
-                        </form>
-                    </div>
-                </div>
-                
+                {this.renderCreateArtefactStepper()}
             </div>
         );
     }
@@ -175,3 +180,40 @@ export class CreateArtefact extends Component {
     }
 }
 
+
+//<div>
+//                            <div className="card">
+//                                <div className="card-body">
+//                                    <h4 className="card-title"> Create an artefact </h4>
+//                                    <hr />
+//                                    <form onSubmit={this.handleSubmit}>
+
+//                                        <div className="form-group">
+//                                            <label htmlFor="artefactId"> Artefact Id </label>
+//                                            <input type="text" id="id" value={this.state.artefact.id}
+//                                                   onChange={this.handleFormChange} onBlur={this.handleBlur('id')}
+//                                                   className={"form-control " + (this.state.errors.id ? "error" : "")}
+//                                            />
+//                                        </div>
+
+//                                        <div className="form-group">
+//                                            <label htmlFor="name"> Artefact </label>
+//                                            <input type="text" id="name" value={this.state.artefact.name}
+//                                                onChange={this.handleFormChange} onBlur={this.handleBlur('name')}
+//                                                className={"form-control " + (this.state.errors.name ? "error" : "")}
+//                                            />
+//                                        </div>
+
+//                                        <div className="form-group">
+//                                            <CategorySelect categoryVals={this.state.artefact.categories} setCategories={this.handleFormChange}/>
+//                                        </div>
+
+//                                        <button type="submit"
+                                
+//                                            className="btn btn-primary"> Submit </button>
+//                                    </form>
+//                                </div>
+//                            </div>
+                
+//                        </div>
+                    

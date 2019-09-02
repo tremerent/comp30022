@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
-import { CreateArtefact } from './CreateArtefact';
-import authService from '../api-authorization/AuthorizeService';
+import { CreateArtefact } from './CreateArtefact.js';
+import { MyArtefactsScroller } from './MyArtefactsScroller.js';
+import authService from '../api-authorization/AuthorizeService.js';
 
 export class ArtefactIndex extends Component {
     static displayName = ArtefactIndex.name;
@@ -46,11 +47,9 @@ export class ArtefactIndex extends Component {
             : ArtefactIndex.renderArtefactsTable(this.state.artefacts);
 
         return (
-            <div>
-                <h2> My artefacts </h2>
-                {contents}
-                <hr />
-                <CreateArtefact addArtefact={this.addArtefact}/>
+            <div className="row mt-5 justify-content-around">
+                <MyArtefactsScroller className="col-xs-6"/>
+                <CreateArtefact addArtefact={this.addArtefact} className="col-xs-6"/>
             </div>
         );
     }
