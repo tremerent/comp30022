@@ -10,8 +10,8 @@ export class ArtefactPreview extends Component {
     render() {
         let carouselId = `artefact-preview-carousel-${this.props.artefact.id}`;
        return (
-<div className="card" style={{width: '18rem'}}>
-    <div id={carouselId} class="carousel slide" data-ride="carousel" data-interval="false">
+<div class="artefact-preview" style={{width: '18rem'}}>
+    <div id={carouselId} class="carousel slide artefact-preview-carousel" data-ride="carousel" data-interval="false">
       <ol class="carousel-indicators">
         <li data-target={`#${carouselId}`} data-slide-to="0" class="active"></li>
         <li data-target={`#${carouselId}`} data-slide-to="1"></li>
@@ -21,22 +21,22 @@ export class ArtefactPreview extends Component {
         <div class="carousel-item active">
               <img
                     src='https://www.ricefurniture.com.au/content/images/thumbs/0002652_vintage-vase_550.jpeg'
-                    class="d-block w-100"
-                    style={/* TODO(tremerent): work out how to make it letterbox instead of squeezing to fit. */{ height: '12rem' }}
+                    class="d-block"
+                    style={{ height: '12rem', margin: '0 auto' }}
                     alt="THIS IS SOME ALT TEXT"/>
         </div>
         <div class="carousel-item">
               <img
                     src="https://images.crateandbarrel.com/is/image/Crate/GeoVaseSHS17/?$web_product_hero$&190411135054&wid=625&hei=625"
-                    class="d-block w-100"
-                    style={{ height: '12rem' }}
+                    class="d-block"
+                    style={{ height: '12rem', margin: '0 auto' }}
                     alt="THIS IS SOME ALT TEXT"/>
         </div>
         <div class="carousel-item">
               <img
                     src="https://images1.novica.net/pictures/4/p298885_2_400.jpg"
-                    class="d-block w-100"
-                    style={{ height: '12rem' }}
+                    class="d-block"
+                    style={{ height: '12rem', margin: '0 auto' }}
                     alt="THIS IS SOME ALT TEXT"/>
         </div>
       </div>
