@@ -31,13 +31,6 @@ export class ArtefactPreview extends Component {
                     style={{ width: '18rem' }}
                     alt="THIS IS SOME ALT TEXT"/>
         </div>
-        <div class="carousel-item">
-              <img
-                    src="https://images.crateandbarrel.com/is/image/Crate/GeoVaseSHS17/?$web_product_hero$&190411135054&wid=625&hei=625"
-                    class="d-block w-100"
-                    style={{ width: '18rem' }}
-                    alt="THIS IS SOME ALT TEXT"/>
-        </div>
       </div>
       <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>

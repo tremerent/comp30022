@@ -10,13 +10,7 @@ export class ArtefactScroller extends Component {
     render() {
        return (
             <div>
-                <ArtefactPreview artefact={{
-                    artefact: {
-                        id: 'someNiceId',
-                        title: "MY FUCKIN VASE",
-                        description: "AN ANCIENT VASE FROM THE RAVINE."
-                    }
-                }}/>
+                <ArtefactPreview artefact={/*TODO*/}/>
             </div>
        );
    }

@@ -48,8 +48,8 @@ export class ArtefactIndex extends Component {
         //    : ArtefactIndex.renderArtefactsTable(this.state.artefacts);
         let contents = <ArtefactPreview artefact={{
                             id: 'someId',
-                            title: "MY FUCKIN VASE",
-                            description: "AN ANCIENT VASE FROM THE RAVINE."
+                            title: "Ancient Blue-ish Vase",
+                            description: "It is from the ravine."
                         }}/>;
 
         return (
