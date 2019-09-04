@@ -71,9 +71,15 @@ namespace Artefactor.Data.Migrations
 
             modelBuilder.Entity("Artefactor.Models.Artefact", b =>
                 {
-                    b.Property<string>("Id");
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("NEWID()");
+
+                    b.Property<string>("Description");
 
                     b.Property<string>("Name");
+
+                    b.Property<int>("Visibility");
 
                     b.HasKey("Id");
 

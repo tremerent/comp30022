@@ -3,97 +3,105 @@ import Joi from 'joi';
 
 import CategorySelect from '../Category/CategorySelect.js';
 import { UploadArtefactDocs } from './UploadArtefactDocs.js';
-import { postArtefact, postArtefactCategories } from '../../scripts/requests.js';
+import {
+    postArtefact,
+    postArtefactCategories,
+    getVisibilityOpts,
+} from '../../scripts/requests.js';
 import { formIsValid, artefactSchema } from '../../data/validation.js';
+import authService from '../api-authorization/AuthorizeService.js';
 
 import Stepper from 'bs-stepper';
 import 'bs-stepper/dist/css/bs-stepper.min.css';
-import 'font-awesome/css/font-awesome.min.css'
+import 'font-awesome/css/font-awesome.min.css';
                     
 export class CreateArtefact extends Component {
     constructor(props) {
         super(props);
-
-        const visibilityOpts = [
-            "private",
-            "private-family",
-            "public",
-        ];
 
         this.state = {
             loading: true,
             artefact: {
                 title: "",
                 description: "",
-                id: "",
                 categories: [],
-                visibility: visibilityOpts[1],
+                visibility: null,
             },
-            visibilityOpts: [...visibilityOpts],
+            visibilityOpts: [],
         };
+
+        this.visbilityOptLabels = {
+            "Private": "Only me",
+            "PrivateFamily": "My family",
+            "Public": "Anyone",
+        };
+    }
+
+    componentWillMount() {
+        this.populateVisibilityOpts();
     }
 
     componentDidMount() {
         this.stepper = new Stepper(document.querySelector('#create-artefact-stepper'), {
             linear: false,
             animation: true,
-        })
+        });
     }
 
     render() {
         return (
-            <div>
-                <div id="create-artefact-stepper" class="bs-stepper">
-                    <div class="bs-stepper-header">
-                        <div class="step" data-target="#create-artefact-first-page">
-                            <button class="step-trigger">
-                                <span class="bs-stepper-circle">1</span>
-                                <span class="bs-stepper-label">Your Artefact</span>
+            <div className="card">
+                <div id="create-artefact-stepper" className="bs-stepper">
+                    <div className="bs-stepper-header px-2">
+                        <div className="step" data-target="#create-artefact-first-page">
+                            <button className="step-trigger">
+                                <span className="bs-stepper-circle">1</span>
+                                <span className="bs-stepper-label">Your Artefact</span>
                             </button>
                         </div>
-                        <div class="line"></div>
-                        <div class="step" data-target="#create-artefact-second-page">
-                            <button class="step-trigger">
-                                <span class="bs-stepper-circle">2</span>
-                                <span class="bs-stepper-label">Upload</span>
+                        <div className="line"></div>
+                        <div className="step" data-target="#create-artefact-second-page">
+                            <button className="step-trigger">
+                                <span className="bs-stepper-circle">2</span>
+                                <span className="bs-stepper-label">Upload</span>
                             </button>
                         </div>
-                        <div class="line"></div>
-                        <div class="step" data-target="#create-artefact-third-page">
-                            <button class="step-trigger">
-                                <span class="bs-stepper-circle">3</span>
-                                <span class="bs-stepper-label">Share</span>
+                        <div className="line"></div>
+                        <div className="step" data-target="#create-artefact-third-page">
+                            <button className="step-trigger">
+                                <span className="bs-stepper-circle">3</span>
+                                <span className="bs-stepper-label">Share</span>
                             </button>
                         </div>
                     </div>
-                    <div class="bs-stepper-content">
-                        <form onSubmit={this.handleSubmit}>
-                            <div id="create-artefact-first-page" class="content">
+                    <div className="bs-stepper-content">
+                        <form>
+                            <div id="create-artefact-first-page" className="content">
                                 {this.renderFirstFormPage()}
-                                <div class="row justify-content-start px-3">
-                                    <button class="btn btn-primary" onClick={() => { this.stepper.next() }}>
+                                <div className="row justify-content-end px-3">
+                                    <button className="btn btn-primary" onClick={(e) => { e.preventDefault(); this.stepper.next() }}>
                                         Next
                                     </button>
                                 </div>
                             </div>
-                            <div id="create-artefact-second-page" class="content">
+                            <div id="create-artefact-second-page" className="content">
                                 {this.renderSecondFormPage()}
-                                <div class="row justify-content-start px-3">
-                                    <button class="btn btn-primary mx-2" onClick={() => { this.stepper.previous() }}>
+                                <div className="row justify-content-between px-3">
+                                    <button className="btn btn-primary mx-2" onClick={(e) => { e.preventDefault(); this.stepper.previous() }}>
                                         Previous
                                     </button>
-                                    <button class="btn btn-primary mx-2" onClick={() => { this.stepper.next() }}>
+                                    <button className="btn btn-primary mx-2" onClick={(e) => { e.preventDefault(); this.stepper.next() }}>
                                         Next
                                     </button>
                                 </div>
                             </div>
-                            <div id="create-artefact-third-page" class="content">
+                            <div id="create-artefact-third-page" className="content">
                                 {this.renderThirdFormPage()}
-                                <div class="row justify-content-between">
-                                    <button class="btn btn-primary mx-2" onClick={() => { this.stepper.previous() }}>
+                                <div className="row justify-content-between">
+                                    <button className="btn btn-primary mx-2" onClick={(e) => { e.preventDefault(); this.stepper.previous() }}>
                                         Previous
                                     </button>
-                                    <button class="btn btn-primary mx-2" type="submit">
+                                    <button className="btn btn-primary mx-2" type="submit" onClick={this.handleSubmit}>
                                         Share
                                     </button>
                                 </div>
@@ -140,8 +148,27 @@ export class CreateArtefact extends Component {
     }
 
     renderThirdFormPage = () => {
+
+        const visibilityOptRadios = this.state.visibilityOpts.map(opt => {
+            return (
+                <div key={opt.value} className="form-check">
+                    <input
+                        className="form-check-input"
+                        type="radio"
+                        name="privacy"
+                        id="visibility"
+                        value={opt.value}
+                        onChange={this.handleFormChange}
+                    />
+                    <label className="form-check-label">
+                        {this.visbilityOptLabels[opt.name]}
+                    </label>
+                </div>
+            );
+        });
+
         return (
-            <div>
+            <div className="px-3">
                 <div className="form-group">
                     <div className="row justify-content-start mb-2">
                         <h5> Questions </h5> <i> </i>
@@ -154,24 +181,10 @@ export class CreateArtefact extends Component {
                         <h5> Who can see my artefact? </h5>
                     </div>
                     <div>
-                        <div className="form-check">
-                            <input className="form-check-input" type="radio" name="privacy" id="visibility" value={ this.state.visibilityOpts[0] } checked={ this.state.artefact.visibility == this.state.visibilityOpts[0] } onChange={this.handleFormChange}/>
-                            <label className="form-check-label">
-                                Only me
-                        </label>
-                        </div>
-                        <div className="form-check">
-                            <input className="form-check-input" type="radio" name="privacy" id="visibility" value={this.state.visibilityOpts[1]} checked={ this.state.artefact.visibility == this.state.visibilityOpts[1] } onChange={this.handleFormChange}/>
-                            <label className="form-check-label">
-                                Only family
-                            </label>
-                        </div>
-                        <div className="form-check">
-                            <input className="form-check-input" type="radio" name="privacy" id="visibility" value={this.state.visibilityOpts[2]} disabled checked={ this.state.artefact.visibility == this.state.visibilityOpts[2] } onChange={this.handleFormChange}/>
-                            <label className="form-check-label">
-                                Anyone
-                            </label>
-                        </div>
+                        { this.state.loading
+                            ? ""
+                            : visibilityOptRadios
+                        }
                     </div>
                 </div>
                 <hr />
@@ -183,22 +196,9 @@ export class CreateArtefact extends Component {
         e.preventDefault();
 
         (async () => {
-            try {
-                const newArtefact = await this.createArtefact();
+            const newArtefact = await this.postArtefactAndCategories();
 
-                this.props.addArtefact(newArtefact);
-            }
-            catch (e) {
-
-            }
-
-            try {
-                const artefactCategories =
-                    await postArtefactCategories(this.state.artefact.categories);
-            }
-            catch (e) {
-
-            }
+            this.props.addArtefact(newArtefact);
         })();
 
         this.setState({
@@ -211,19 +211,40 @@ export class CreateArtefact extends Component {
         });
     }
 
-    async createArtefact() {
+    /* Returns the newly created artefact with its attached categories */
+    async postArtefactAndCategories() {
         if (formIsValid(this.state.artefact, artefactSchema)) {
 
-            try {
-                const newArtefact = await postArtefact(this.state.artefact);
+            const artefactToPost = { ...this.state.artefact };
 
-                return newArtefact;
+            // create a copy and post to a seperate endpoint once we have 
+            // id of newly created artefact
+            const artefactCategories = [...artefactToPost.categories];
+            delete artefactToPost.categories;
+
+            artefactToPost.visibility =
+                Number(artefactToPost.visibility);
+
+            let postedArtefact;
+
+            // make reqs to POST /Artefact and POST /ArtefactCategories/Many
+            try {
+                postedArtefact = await postArtefact(artefactToPost);
+
+                if (artefactCategories.length) {
+                    await postArtefactCategories(postedArtefact.id, artefactCategories);
+                }
             }
             catch (e) {
-
             }
+
+            return {
+                ...postedArtefact,
+                categories: artefactCategories,
+            };
         }
         else {
+            // TODO - form validation
             throw new Error('Invalid artefact creation form.');
         }
     }
@@ -237,4 +258,18 @@ export class CreateArtefact extends Component {
             },
         });
     }
+
+    async populateVisibilityOpts() {
+        const visOpts = await getVisibilityOpts();
+
+        this.setState({
+            ...this.state,
+            artefact: {
+                ...this.state.artefact,
+                visibility: visOpts.find(visOpt => visOpt.name === "PrivateFamily").value,
+            },
+            visibilityOpts: visOpts,
+            loading: false
+        });
+    }   
 }

@@ -26,6 +26,7 @@ export default class CategorySelect extends Component {
                 <CreatableSelect
                     name="categories"
                     isMulti
+                    closeMenuOnSelect={false}
                     onChange={this.handleChange}
                     options={this.state.categoryOptions}
                     value={this.props.categoryVals}
@@ -89,7 +90,6 @@ export default class CategorySelect extends Component {
         }
 
         if (selectedVals != null) {
-            console.log(selectedVals)
             this.props.setCategories({
                 target: {
                     // add id for sending to server

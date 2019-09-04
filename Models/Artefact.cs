@@ -13,10 +13,12 @@ namespace Artefactor.Models
         public string Id { get; set; }
         public IEnumerable<ArtefactCategory> CategoryJoin { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
+        public Visibility Visibility { get; set; }
     }
 
     [Flags]
-    public enum Genre
+    public enum Visibility
     {
         // hacky fix for serializing json enum 
         // - I think this can be fixed by creating applying a custom model
@@ -24,7 +26,8 @@ namespace Artefactor.Models
         // doing:
         // https://stackoverflow.com/questions/28187150/json-net-stringenumconverter-not-always-working
         // - Jonah
-        Art = 0,
-        Literature = 1,
+        Private = 0,
+        PrivateFamily = 1,
+        Public = 2,
     }
 }
