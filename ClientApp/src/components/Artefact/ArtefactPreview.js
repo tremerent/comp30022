@@ -11,24 +11,32 @@ export class ArtefactPreview extends Component {
         let carouselId = `artefact-preview-carousel-${this.props.artefact.id}`;
        return (
 <div className="card" style={{width: '18rem'}}>
-    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="false">
       <ol class="carousel-indicators">
         <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
         <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
       </ol>
       <div class="carousel-inner">
         <div class="carousel-item active">
               <img
                     src='https://www.ricefurniture.com.au/content/images/thumbs/0002652_vintage-vase_550.jpeg'
                     class="d-block w-100"
-                    style={{ width: '18rem' }}
+                    style={/* TODO(tremerent): work out how to make it letterbox instead of squeezing to fit. */{ height: '12rem' }}
                     alt="THIS IS SOME ALT TEXT"/>
         </div>
         <div class="carousel-item">
               <img
                     src="https://images.crateandbarrel.com/is/image/Crate/GeoVaseSHS17/?$web_product_hero$&190411135054&wid=625&hei=625"
                     class="d-block w-100"
-                    style={{ width: '18rem' }}
+                    style={{ height: '12rem' }}
+                    alt="THIS IS SOME ALT TEXT"/>
+        </div>
+        <div class="carousel-item">
+              <img
+                    src="https://images1.novica.net/pictures/4/p298885_2_400.jpg"
+                    class="d-block w-100"
+                    style={{ height: '12rem' }}
                     alt="THIS IS SOME ALT TEXT"/>
         </div>
       </div>
