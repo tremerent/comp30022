@@ -18,7 +18,29 @@ code {
     font-weight: bold;
 }
 
+/* This is intended to make border-bottom underlines look nicer, however it
+   may well break other stuff...
+    -- Sam                                                                    */
+.card-title {
+    padding-bottom: 0.75rem;
+    margin-bottom: none;
+}
+
+
+/* These things should probably have their own file: */
+
 .artefact-preview-carousel {
     background-color: #000000;
 }
+
+.artefact-preview {
+    border: 0.13rem solid #f0f0f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.artefact-preview .card-title {
+    border-bottom: 1px solid #e8e8e8;
+}
+
 
