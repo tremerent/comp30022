@@ -8,7 +8,7 @@ import { formIsValid, artefactSchema } from '../../data/validation.js';
 export class CreateArtefact extends Component {
     /*
      * Component for artefact creation.
-     */ 
+     */
 
     static displayName = CreateArtefact.name;
 
@@ -76,7 +76,7 @@ export class CreateArtefact extends Component {
                     await postArtefactCategories(this.state.artefact.categories);
             }
             catch (e) {
-                
+
             }
         })();
 
@@ -147,12 +147,12 @@ export class CreateArtefact extends Component {
                             </div>
 
                             <button type="submit"
-                                
+
                                 className="btn btn-primary"> Submit </button>
                         </form>
                     </div>
                 </div>
-                
+
             </div>
         );
     }

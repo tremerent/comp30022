@@ -2,6 +2,8 @@
 import { CreateArtefact } from './CreateArtefact';
 import authService from '../api-authorization/AuthorizeService';
 
+import { ArtefactPreview } from './ArtefactPreview.js';
+
 export class ArtefactIndex extends Component {
     static displayName = ArtefactIndex.name;
 
@@ -14,7 +16,7 @@ export class ArtefactIndex extends Component {
     }
 
     componentDidMount() {
-        this.populateArtefactData();
+        //this.populateArtefactData();
     }
 
     static renderArtefactsTable(artefacts) {
@@ -30,7 +32,7 @@ export class ArtefactIndex extends Component {
                 <tbody>
                     {artefacts.map(artefact =>
                         <tr key={artefact.id}>
-                            <td>{artefact.id}</td> 
+                            <td>{artefact.id}</td>
                             <td>{artefact.name}</td>
                             <td>{artefact.genre}</td>
                         </tr>
@@ -41,22 +43,27 @@ export class ArtefactIndex extends Component {
     }
 
     render() {
-        let contents = this.state.loading
-            ? <p><em>Loading...</em></p>
-            : ArtefactIndex.renderArtefactsTable(this.state.artefacts);
+        //let contents = this.state.loading
+        //    ? <p><em>Loading...</em></p>
+        //    : ArtefactIndex.renderArtefactsTable(this.state.artefacts);
+        let contents = <ArtefactPreview artefact={{
+                            id: 'someId',
+                            title: "MY FUCKIN VASE",
+                            description: "AN ANCIENT VASE FROM THE RAVINE."
+                        }}/>;
 
         return (
             <div>
                 <h2> My artefacts </h2>
                 {contents}
                 <hr />
-                <CreateArtefact addArtefact={this.addArtefact}/>
             </div>
         );
+                //<CreateArtefact addArtefact={this.addArtefact}/>
     }
 
     addArtefact = (artefact) => {
-        let artefacts = [...this.state.artefacts]; 
+        let artefacts = [...this.state.artefacts];
         artefacts.push(artefact);
 
         this.setState({
