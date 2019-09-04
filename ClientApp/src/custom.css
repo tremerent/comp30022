@@ -43,4 +43,8 @@ code {
     border-bottom: 1px solid #e8e8e8;
 }
 
+.artefact-preview-view-more {
+    padding-top: 0.6rem;
+    border-top: 1px solid #e8e8e8;
+}
 

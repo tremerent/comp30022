@@ -52,6 +52,11 @@ export class ArtefactPreview extends Component {
     <div className="card-body">
         <h5 className="card-title">{this.props.artefact.title}</h5>
         <p className="card-text">{this.props.artefact.description}</p>
+        <div class='card-text artefact-preview-view-more'>
+            <a href={`/artefact/${this.props.artefact.id}`}>
+                View full page ▶ {/* <- U+25B6 */}
+            </a>
+        </div>
     </div>
 </div>
        );
