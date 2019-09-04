@@ -42,14 +42,10 @@ export class ArtefactIndex extends Component {
     }
 
     render() {
-        let contents = this.state.loading
-            ? <p><em>Loading...</em></p>
-            : ArtefactIndex.renderArtefactsTable(this.state.artefacts);
-
         return (
             <div className="row mt-5 justify-content-around">
                 <MyArtefactsScroller className="col-xs-6"/>
-                <CreateArtefact addArtefact={this.addArtefact} className="col-xs-6"/>
+                <CreateArtefact addArtefact={this.addArtefact} className="col-xs-6" />
             </div>
         );
     }

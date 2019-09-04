@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 
-export class ArtefactScroller extends Component {
+export class UploadArtefactDocs extends Component {
 
     constructor(props) {
         super(props);
@@ -11,7 +11,9 @@ export class ArtefactScroller extends Component {
 
     render() {
         return (
-            <div> </div>
+            <div>
+                <h5> {"{Upload arefact documentation component}"} </h5>
+            </div>
         );
     }
 }
