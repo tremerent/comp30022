@@ -12,7 +12,8 @@ import { formIsValid, artefactSchema } from '../../data/validation.js';
 
 import Stepper from 'bs-stepper';
 import 'bs-stepper/dist/css/bs-stepper.min.css';
-import 'font-awesome/css/font-awesome.min.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faImages, faShareAltSquare, faTrophy } from '@fortawesome/free-solid-svg-icons';
                     
 export class CreateArtefact extends Component {
     constructor(props) {
@@ -54,21 +55,21 @@ export class CreateArtefact extends Component {
                     <div className="bs-stepper-header px-2">
                         <div className="step" data-target="#create-artefact-first-page">
                             <button className="step-trigger">
-                                <span className="bs-stepper-circle">1</span>
+                                <span className="bs-stepper-circle"><FontAwesomeIcon icon={faTrophy} /></span>
                                 <span className="bs-stepper-label">Your Artefact</span>
                             </button>
                         </div>
                         <div className="line"></div>
                         <div className="step" data-target="#create-artefact-second-page">
                             <button className="step-trigger">
-                                <span className="bs-stepper-circle">2</span>
+                                <span className="bs-stepper-circle"><FontAwesomeIcon icon={faImages} /></span>
                                 <span className="bs-stepper-label">Upload</span>
                             </button>
                         </div>
                         <div className="line"></div>
                         <div className="step" data-target="#create-artefact-third-page">
                             <button className="step-trigger">
-                                <span className="bs-stepper-circle">3</span>
+                                <span className="bs-stepper-circle"><FontAwesomeIcon icon={faShareAltSquare} /></span>
                                 <span className="bs-stepper-label">Share</span>
                             </button>
                         </div>
@@ -210,7 +211,7 @@ export class CreateArtefact extends Component {
         });
     }
 
-    /* Returns the newly created artefact with its attached categories */
+    /* Returns the newly created artefact with its categories attached */
     async postArtefactAndCategories() {
         if (formIsValid(this.state.artefact, artefactSchema)) {
 
@@ -224,43 +225,26 @@ export class CreateArtefact extends Component {
             artefactToPost.visibility =
                 Number(artefactToPost.visibility);
 
-            return (
-                <div>
-                    <div className="card">
-                        <div className="card-body">
-                            <h4 className="card-title"> Create an artefact </h4>
-                            <hr />
-                            <form onSubmit={this.handleSubmit}>
+            let postedArtefact;
 
-                                <div className="form-group">
-                                    <label htmlFor="artefactId"> Artefact Id </label>
-                                    <input type="text" id="id" value={this.state.artefact.id}
-                                        onChange={this.handleFormChange} onBlur={this.handleBlur('id')}
-                                        className={"form-control " + (this.state.errors.id ? "error" : "")}
-                                    />
-                                </div>
+            try {
+                postedArtefact = await postArtefact(artefactToPost);
 
-                                <div className="form-group">
-                                    <label htmlFor="name"> Artefact </label>
-                                    <input type="text" id="name" value={this.state.artefact.name}
-                                        onChange={this.handleFormChange} onBlur={this.handleBlur('name')}
-                                        className={"form-control " + (this.state.errors.name ? "error" : "")}
-                                    />
-                                </div>
+                if (artefactCategories.length) {
+                    await postArtefactCategories(postedArtefact.id, artefactCategories);
+                }
+            }
+            catch (e) {
+            }
 
-                                <div className="form-group">
-                                    <CategorySelect categoryVals={this.state.artefact.categories} setCategories={this.handleFormChange} />
-                                </div>
-
-                                <button type="submit"
-
-                                    className="btn btn-primary"> Submit </button>
-                            </form>
-                        </div>
-                    </div>
-
-                </div>
-            );
+            return {
+                ...postedArtefact,
+                categories: artefactCategories,
+            };
+        }
+        else {
+            // TODO - form validation
+            throw new Error('Invalid artefact creation form.');
         }
     }
 

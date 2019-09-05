@@ -60,16 +60,28 @@ export default class CategorySelect extends Component {
     }
 
     handleChange = (selectedVals, actionMeta) => {
+        //console.log(selectedVals)
 
         if (actionMeta.action === `create-option`) {
             for (let v of selectedVals) {
-                // not new anymore - default behaviour
                 if (v.__isNew__ && !v.created) {
                     postCategory({
                         name: v.label,
                     })
                         .then(res => {
                             v.created = true;
+                            v.value = res.id;
+
+                            this.state.categoryOptions.push({
+                                label: res.name,
+                                value: res.id,
+                            });
+
+                            // add newly created category to the options list
+                            this.setState({
+                                ...this.state,
+                                categoryOptions: [...this.state.categoryOptions],
+                            });
                         })
                         .catch(e => {
                             // TODO
@@ -90,10 +102,13 @@ export default class CategorySelect extends Component {
         }
 
         if (selectedVals != null) {
+            const t = selectedVals.map(val => ({ id: val.value, ...val }))
+            //console.log(t)
+
             this.props.setCategories({
                 target: {
                     // add id for sending to server
-                    value: selectedVals.map(val => ({ id: val.value, ...val })),
+                    value: t,
                     id: actionMeta.name,
                 },
             });
