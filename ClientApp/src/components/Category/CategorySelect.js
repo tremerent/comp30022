@@ -4,11 +4,11 @@ import { postCategory } from '../../scripts/requests.js';
 
 export default class CategorySelect extends Component {
     /*
-     * Select component for categories. 
-     * 
-     * Uses react-select 'CreateableSelect' - categories can be added 
+     * Select component for categories.
+     *
+     * Uses react-select 'CreateableSelect' - categories can be added
      * dynamically, and the appropriate ajax call is made.
-     * 
+     *
      * TODO: handle validation of the server response
      */
 
@@ -63,7 +63,7 @@ export default class CategorySelect extends Component {
 
         if (actionMeta.action === `create-option`) {
             for (let v of selectedVals) {
-                // not new anymore - default behaviour 
+                // not new anymore - default behaviour
                 if (v.__isNew__ && !v.created) {
                     postCategory({
                         name: v.label,
@@ -83,7 +83,7 @@ export default class CategorySelect extends Component {
             this.props.setCategories({
                 target: {
                     value: [...this.props.categoryVals]
-                           .filter(v => v.id != actionMeta.removedValue.id),
+                           .filter(v => v.id !== actionMeta.removedValue.id),
                     id: actionMeta.name
                 }
             })

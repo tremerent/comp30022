@@ -16,8 +16,6 @@ async function postArtefact(artefact) {
         headers: !token ? { ...headers } : {
             ...headers,
             'Authorization': `Bearer ${token}`,
-        },
-        headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(artefact),

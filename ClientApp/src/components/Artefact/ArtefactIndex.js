@@ -3,8 +3,6 @@ import { CreateArtefact } from './CreateArtefact.js';
 import { MyArtefactsScroller } from './MyArtefactsScroller.js';
 import { getArtefacts } from '../../scripts/requests.js';
 
-import { ArtefactPreview } from './ArtefactPreview.js';
-
 export class ArtefactIndex extends Component {
     static displayName = ArtefactIndex.name;
 

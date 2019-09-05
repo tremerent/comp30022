@@ -3,10 +3,6 @@ import { ArtefactScroller } from './ArtefactScroller.js';
 
 export class MyArtefactsScroller extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <div className="card">
