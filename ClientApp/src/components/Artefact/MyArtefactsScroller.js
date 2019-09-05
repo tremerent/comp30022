@@ -5,21 +5,16 @@ export class MyArtefactsScroller extends Component {
 
     constructor(props) {
         super(props);
-
-        this.state = {
-            myArtefacts: [
-            ],
-        };
     }
 
     render() {
         return (
             <div className="card">
-                <div className="row">
+                <div className="row my-2">
                     ... search
                 </div>
                 <div className="row">
-                    <ArtefactScroller artefacts={this.state.myArtefacts} />
+                    <ArtefactScroller artefacts={this.props.artefacts} />
                 </div>
             </div>
         );

@@ -78,9 +78,20 @@ async function getVisibilityOpts() {
     return respData;
 }
 
+async function getArtefacts() {
+    const token = await authService.getAccessToken();
+    const response = await fetch('api/Artefacts', {
+        headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+    });
+    const respData = await response.json();
+
+    return respData;
+}
+
 export {
     postArtefact,
     postCategory,
     postArtefactCategories,
     getVisibilityOpts,
+    getArtefacts,
 }

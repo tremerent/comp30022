@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import $ from 'jquery';
 
 export class ArtefactPreview extends Component {
     constructor(props) {
@@ -50,9 +49,9 @@ export class ArtefactPreview extends Component {
       </a>
     </div>
     <div className="card-body">
-        <h5 className="card-title">{this.props.artefact.title}</h5>
+        <h5 className="card-title">{this.props.artefact.name}</h5>
         <p className="card-text">{this.props.artefact.description}</p>
-        <div class='card-text artefact-preview-view-more'>
+        <div className='card-text artefact-preview-view-more'>
             <a href={`/artefact/${this.props.artefact.id}`}>
                 View full page ▶ {/* <- U+25B6 */}
             </a>

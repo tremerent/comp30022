@@ -9,8 +9,12 @@ export class ArtefactScroller extends Component {
 
     render() {
        return (
-            <div>
-                <ArtefactPreview artefact={/*TODO*/}/>
+           <div>
+               {this.props.artefacts.map(a => {
+                   return (
+                       <ArtefactPreview artefact={a} className="my-1" />
+                   );
+               })}
             </div>
        );
    }

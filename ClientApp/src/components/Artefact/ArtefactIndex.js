@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { CreateArtefact } from './CreateArtefact.js';
 import { MyArtefactsScroller } from './MyArtefactsScroller.js';
-import authService from '../api-authorization/AuthorizeService.js';
+import { getArtefacts } from '../../scripts/requests.js';
 
 import { ArtefactPreview } from './ArtefactPreview.js';
 
@@ -17,7 +17,13 @@ export class ArtefactIndex extends Component {
     }
 
     componentDidMount() {
-        //this.populateArtefactData();
+        getArtefacts()
+            .then(artefacts => {
+
+                artefacts = artefacts.slice(artefacts.length - 3, artefacts.length)
+
+                this.setState({ artefacts, loading: false });
+            });
     }
 
     static renderArtefactsTable(artefacts) {
@@ -46,7 +52,7 @@ export class ArtefactIndex extends Component {
     render() {
         return (
             <div className="row mt-5 justify-content-around">
-                <MyArtefactsScroller className="col-xs-6"/>
+                <MyArtefactsScroller artefacts={this.state.artefacts} className="col-xs-6"/>
                 <CreateArtefact addArtefact={this.addArtefact} className="col-xs-6" />
             </div>
         );
@@ -60,15 +66,6 @@ export class ArtefactIndex extends Component {
             ...this.state,
             artefacts,
         });
-    }
-
-    async populateArtefactData() {
-        const token = await authService.getAccessToken();
-        const response = await fetch('api/Artefacts', {
-            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await response.json();
-        this.setState({ artefacts: data, loading: false });
     }
 }
 

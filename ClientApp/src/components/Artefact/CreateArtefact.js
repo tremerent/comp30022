@@ -9,22 +9,12 @@ import {
     getVisibilityOpts,
 } from '../../scripts/requests.js';
 import { formIsValid, artefactSchema } from '../../data/validation.js';
-import authService from '../api-authorization/AuthorizeService.js';
 
 import Stepper from 'bs-stepper';
 import 'bs-stepper/dist/css/bs-stepper.min.css';
 import 'font-awesome/css/font-awesome.min.css';
                     
 export class CreateArtefact extends Component {
-<<<<<<< HEAD
-    /*
-     * Component for artefact creation.
-     */
-
-    static displayName = CreateArtefact.name;
-
-=======
->>>>>>> jonah-WIP-register-artefact
     constructor(props) {
         super(props);
 
@@ -142,7 +132,7 @@ export class CreateArtefact extends Component {
                 </div>
 
                 <div className="form-group">
-                    <CategorySelect categoryVals={this.state.artefact.categories} setCategories={this.handleFormChange} placeholder={"Pick categories or create a new one"}/>
+                    <CategorySelect categoryVals={this.state.artefact.categories} setCategories={this.handleFormChange} placeholder={"Pick categories or create a new one"} />
                 </div>
             </div>
         );
@@ -190,7 +180,7 @@ export class CreateArtefact extends Component {
                         <h5> Who can see my artefact? </h5>
                     </div>
                     <div>
-                        { this.state.loading
+                        {this.state.loading
                             ? ""
                             : visibilityOptRadios
                         }
@@ -207,23 +197,7 @@ export class CreateArtefact extends Component {
         (async () => {
             const newArtefact = await this.postArtefactAndCategories();
 
-<<<<<<< HEAD
-                this.props.addArtefact(newArtefact);
-            }
-            catch (e) {
-
-            }
-
-            try {
-                const artefactCategories =
-                    await postArtefactCategories(this.state.artefact.categories);
-            }
-            catch (e) {
-
-            }
-=======
             this.props.addArtefact(newArtefact);
->>>>>>> jonah-WIP-register-artefact
         })();
 
         this.setState({
@@ -250,71 +224,43 @@ export class CreateArtefact extends Component {
             artefactToPost.visibility =
                 Number(artefactToPost.visibility);
 
-<<<<<<< HEAD
-        return (
-            <div>
-                <div className="card">
-                    <div className="card-body">
-                        <h4 className="card-title"> Create an artefact </h4>
-                        <hr />
-                        <form onSubmit={this.handleSubmit}>
+            return (
+                <div>
+                    <div className="card">
+                        <div className="card-body">
+                            <h4 className="card-title"> Create an artefact </h4>
+                            <hr />
+                            <form onSubmit={this.handleSubmit}>
 
-                            <div className="form-group">
-                                <label htmlFor="artefactId"> Artefact Id </label>
-                                <input type="text" id="id" value={this.state.artefact.id}
-                                       onChange={this.handleFormChange} onBlur={this.handleBlur('id')}
-                                       className={"form-control " + (this.state.errors.id ? "error" : "")}
-                                />
-                            </div>
+                                <div className="form-group">
+                                    <label htmlFor="artefactId"> Artefact Id </label>
+                                    <input type="text" id="id" value={this.state.artefact.id}
+                                        onChange={this.handleFormChange} onBlur={this.handleBlur('id')}
+                                        className={"form-control " + (this.state.errors.id ? "error" : "")}
+                                    />
+                                </div>
 
-                            <div className="form-group">
-                                <label htmlFor="name"> Artefact </label>
-                                <input type="text" id="name" value={this.state.artefact.name}
-                                    onChange={this.handleFormChange} onBlur={this.handleBlur('name')}
-                                    className={"form-control " + (this.state.errors.name ? "error" : "")}
-                                />
-                            </div>
+                                <div className="form-group">
+                                    <label htmlFor="name"> Artefact </label>
+                                    <input type="text" id="name" value={this.state.artefact.name}
+                                        onChange={this.handleFormChange} onBlur={this.handleBlur('name')}
+                                        className={"form-control " + (this.state.errors.name ? "error" : "")}
+                                    />
+                                </div>
 
-                            <div className="form-group">
-                                <CategorySelect categoryVals={this.state.artefact.categories} setCategories={this.handleFormChange}/>
-                            </div>
+                                <div className="form-group">
+                                    <CategorySelect categoryVals={this.state.artefact.categories} setCategories={this.handleFormChange} />
+                                </div>
 
-                            <button type="submit"
+                                <button type="submit"
 
-                                className="btn btn-primary"> Submit </button>
-                        </form>
+                                    className="btn btn-primary"> Submit </button>
+                            </form>
+                        </div>
                     </div>
+
                 </div>
-
-            </div>
-        );
-    }
-
-    async createArtefact() {
-        if (formIsValid(this.state.artefact, artefactSchema)) {
-=======
-            let postedArtefact;
->>>>>>> jonah-WIP-register-artefact
-
-            // make reqs to POST /Artefact and POST /ArtefactCategories/Many
-            try {
-                postedArtefact = await postArtefact(artefactToPost);
-
-                if (artefactCategories.length) {
-                    await postArtefactCategories(postedArtefact.id, artefactCategories);
-                }
-            }
-            catch (e) {
-            }
-
-            return {
-                ...postedArtefact,
-                categories: artefactCategories,
-            };
-        }
-        else {
-            // TODO - form validation
-            throw new Error('Invalid artefact creation form.');
+            );
         }
     }
 
@@ -328,7 +274,7 @@ export class CreateArtefact extends Component {
         });
     }
 
-    async populateVisibilityOpts() {
+    populateVisibilityOpts = async () => {
         const visOpts = await getVisibilityOpts();
 
         this.setState({
@@ -340,5 +286,5 @@ export class CreateArtefact extends Component {
             visibilityOpts: visOpts,
             loading: false
         });
-    }   
+    }
 }
