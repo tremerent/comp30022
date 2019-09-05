@@ -2,7 +2,7 @@
 
 function formIsValid(formData, schema) {
     const res = Joi.validate(formData, schema);
-
+    console.log(res.error)
     return !res.error;
 }
 
@@ -18,9 +18,10 @@ const categoryIdSchema = Joi.object().keys({
 }).pattern(/./, Joi.any());  // allow any other keys
 
 const artefactSchema = Joi.object().keys({
-    id: Joi.string().required(),
-    name: Joi.string().required(),
+    title: Joi.string().required(),
+    description: Joi.string().required(),
     categories: Joi.array().items(categoryIdSchema),
+    visibility: Joi.number().integer().required(),
 });
 
 export {

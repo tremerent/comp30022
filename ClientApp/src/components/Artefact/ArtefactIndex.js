@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
-import { CreateArtefact } from './CreateArtefact';
-import authService from '../api-authorization/AuthorizeService';
+import { CreateArtefact } from './CreateArtefact.js';
+import { MyArtefactsScroller } from './MyArtefactsScroller.js';
+import authService from '../api-authorization/AuthorizeService.js';
 
 import { ArtefactPreview } from './ArtefactPreview.js';
 
@@ -43,23 +44,12 @@ export class ArtefactIndex extends Component {
     }
 
     render() {
-        //let contents = this.state.loading
-        //    ? <p><em>Loading...</em></p>
-        //    : ArtefactIndex.renderArtefactsTable(this.state.artefacts);
-        let contents = <ArtefactPreview artefact={{
-                            id: 'someId',
-                            title: "Ancient Blue-ish Vase",
-                            description: "It is from the ravine."
-                        }}/>;
-
         return (
-            <div>
-                <h2> My artefacts </h2>
-                {contents}
-                <hr />
+            <div className="row mt-5 justify-content-around">
+                <MyArtefactsScroller className="col-xs-6"/>
+                <CreateArtefact addArtefact={this.addArtefact} className="col-xs-6" />
             </div>
         );
-                //<CreateArtefact addArtefact={this.addArtefact}/>
     }
 
     addArtefact = (artefact) => {

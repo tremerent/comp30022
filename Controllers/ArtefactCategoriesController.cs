@@ -97,7 +97,7 @@ namespace Artefactor.Controllers
         }
 
         // POST: api/ArtefactCategories/Many
-        [HttpPost("[controller]/Many")]
+        [HttpPost("Many")]
         public async Task<ActionResult<ArtefactCategory>> PostManyArtefactCategory(IEnumerable<ArtefactCategory> artefactCategories)
         {
             foreach (var ac in artefactCategories) {

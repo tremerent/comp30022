@@ -21,11 +21,11 @@ namespace Artefactor.Controllers
             _context = context;
         }
 
-        // GET: api/Artefacts/Genres
-        [HttpGet("Genres")]
-        public async Task<ActionResult<IEnumerable<object>>> Genres()
+        // GET: api/Artefacts/VisibilityOpts
+        [HttpGet("VisibilityOpts")]
+        public async Task<ActionResult<IEnumerable<object>>> VisibilityOpts()
         {
-            var genreList = MapEnumToDictionary<Genre>()
+            var genreList = MapEnumToDictionary<Visibility>()
                 .Select(entry => new { Value = entry.Key, Name = entry.Value })
                 .ToList();
 

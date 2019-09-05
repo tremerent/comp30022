@@ -31,6 +31,10 @@ namespace Artefactor.Data
                 .Property(c => c.Id)
                 .HasDefaultValue("NEWID()");
 
+            modelBuilder.Entity<Artefact>()
+                .Property(c => c.Id)
+                .HasDefaultValue("NEWID()");
+
             // Artefact - category many-many
 
             modelBuilder.Entity<ArtefactCategory>()

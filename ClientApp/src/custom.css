@@ -48,3 +48,10 @@ code {
     border-top: 1px solid #e8e8e8;
 }
 
+.vertical-centre {
+    min-height: 100%; /* Fallback for browsers do NOT support vh unit */
+    min-height: 100vh; /* These two lines are counted as one :-)       */
+
+    display: flex;
+    align-items: center;
+}

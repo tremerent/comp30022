@@ -68,8 +68,19 @@ async function postArtefactCategories(artefactId, categories) {
     return respData;
 }
 
+async function getVisibilityOpts() {
+    const token = await authService.getAccessToken();
+    const response = await fetch('api/Artefacts/VisibilityOpts', {
+        headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+    });
+    const respData = await response.json();
+
+    return respData;
+}
+
 export {
     postArtefact,
     postCategory,
     postArtefactCategories,
+    getVisibilityOpts,
 }

@@ -1,70 +1,213 @@
 ﻿import React, { Component } from 'react';
 import Joi from 'joi';
 
-import CategorySelect from '../Category/CategorySelect.js'
-import { postArtefact, postArtefactCategories } from '../../scripts/requests.js';
+import CategorySelect from '../Category/CategorySelect.js';
+import { UploadArtefactDocs } from './UploadArtefactDocs.js';
+import {
+    postArtefact,
+    postArtefactCategories,
+    getVisibilityOpts,
+} from '../../scripts/requests.js';
 import { formIsValid, artefactSchema } from '../../data/validation.js';
+import authService from '../api-authorization/AuthorizeService.js';
 
+import Stepper from 'bs-stepper';
+import 'bs-stepper/dist/css/bs-stepper.min.css';
+import 'font-awesome/css/font-awesome.min.css';
+                    
 export class CreateArtefact extends Component {
+<<<<<<< HEAD
     /*
      * Component for artefact creation.
      */
 
     static displayName = CreateArtefact.name;
 
+=======
+>>>>>>> jonah-WIP-register-artefact
     constructor(props) {
         super(props);
+
         this.state = {
             loading: true,
             artefact: {
-                name: "",
-                id: "",
-                categories: []
+                title: "",
+                description: "",
+                categories: [],
+                visibility: null,
             },
-            touched: {
-                name: false,
-                id: false,
-                category: false,
-            },
-            errors: {
-                name: false,
-                id: false,
-                category: false,
-            },
+            visibilityOpts: [],
+        };
+
+        this.visbilityOptLabels = {
+            "Private": "Only me",
+            "PrivateFamily": "My family",
+            "Public": "Anyone",
         };
     }
 
-    // record touched when user navigates away from form -
-    // for validation purposes
-    handleBlur = (field) => (e) => {
-        this.setState({
-            ...this.state,
-            touched: {
-                ...this.touched,
-                field: true,
-            }
-        })
+    componentWillMount() {
+        this.populateVisibilityOpts();
     }
 
-    handleFormChange = (e) => {
-
-        console.log(e.target.value)
-        this.setState({
-            ...this.state,
-            artefact: {
-                ...this.state.artefact,
-                [e.target.id]: e.target.value,
-            },
+    componentDidMount() {
+        this.stepper = new Stepper(document.querySelector('#create-artefact-stepper'), {
+            linear: false,
+            animation: true,
         });
+    }
+
+    render() {
+        return (
+            <div className="card">
+                <div id="create-artefact-stepper" className="bs-stepper">
+                    <div className="bs-stepper-header px-2">
+                        <div className="step" data-target="#create-artefact-first-page">
+                            <button className="step-trigger">
+                                <span className="bs-stepper-circle">1</span>
+                                <span className="bs-stepper-label">Your Artefact</span>
+                            </button>
+                        </div>
+                        <div className="line"></div>
+                        <div className="step" data-target="#create-artefact-second-page">
+                            <button className="step-trigger">
+                                <span className="bs-stepper-circle">2</span>
+                                <span className="bs-stepper-label">Upload</span>
+                            </button>
+                        </div>
+                        <div className="line"></div>
+                        <div className="step" data-target="#create-artefact-third-page">
+                            <button className="step-trigger">
+                                <span className="bs-stepper-circle">3</span>
+                                <span className="bs-stepper-label">Share</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div className="bs-stepper-content">
+                        <form>
+                            <div id="create-artefact-first-page" className="content">
+                                {this.renderFirstFormPage()}
+                                <div className="row justify-content-end px-3">
+                                    <button className="btn btn-primary" onClick={(e) => { e.preventDefault(); this.stepper.next() }}>
+                                        Next
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="create-artefact-second-page" className="content">
+                                {this.renderSecondFormPage()}
+                                <div className="row justify-content-between px-3">
+                                    <button className="btn btn-primary mx-2" onClick={(e) => { e.preventDefault(); this.stepper.previous() }}>
+                                        Previous
+                                    </button>
+                                    <button className="btn btn-primary mx-2" onClick={(e) => { e.preventDefault(); this.stepper.next() }}>
+                                        Next
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="create-artefact-third-page" className="content">
+                                {this.renderThirdFormPage()}
+                                <div className="row justify-content-between">
+                                    <button className="btn btn-primary mx-2" onClick={(e) => { e.preventDefault(); this.stepper.previous() }}>
+                                        Previous
+                                    </button>
+                                    <button className="btn btn-primary mx-2" type="submit" onClick={this.handleSubmit}>
+                                        Share
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    renderFirstFormPage = () => {
+        return (
+            <div>
+                <div className="form-group">
+                    <label htmlFor="title"> Title </label>
+                    <input type="text" id="title" value={this.state.artefact.name}
+                        onChange={this.handleFormChange}
+                        className="form-control"
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="description"> Description </label>
+                    <textarea id="description" value={this.state.artefact.description}
+                        onChange={this.handleFormChange}
+                        className="form-control"
+                    />
+                </div>
+
+                <div className="form-group">
+                    <CategorySelect categoryVals={this.state.artefact.categories} setCategories={this.handleFormChange} placeholder={"Pick categories or create a new one"}/>
+                </div>
+            </div>
+        );
+    }
+
+    renderSecondFormPage = () => {
+        return (
+            <div>
+                <UploadArtefactDocs />
+            </div>
+        );
+    }
+
+    renderThirdFormPage = () => {
+
+        const visibilityOptRadios = this.state.visibilityOpts.map(opt => {
+            return (
+                <div key={opt.value} className="form-check">
+                    <input
+                        className="form-check-input"
+                        type="radio"
+                        name="privacy"
+                        id="visibility"
+                        value={opt.value}
+                        onChange={this.handleFormChange}
+                    />
+                    <label className="form-check-label">
+                        {this.visbilityOptLabels[opt.name]}
+                    </label>
+                </div>
+            );
+        });
+
+        return (
+            <div className="px-3">
+                <div className="form-group">
+                    <div className="row justify-content-start mb-2">
+                        <h5> Questions </h5> <i> </i>
+                    </div>
+                    <p> questions component </p>
+                </div>
+                <hr />
+                <div>
+                    <div className="row justify-content-start mb-2">
+                        <h5> Who can see my artefact? </h5>
+                    </div>
+                    <div>
+                        { this.state.loading
+                            ? ""
+                            : visibilityOptRadios
+                        }
+                    </div>
+                </div>
+                <hr />
+            </div>
+        );
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
 
         (async () => {
-            try {
-                const newArtefact = await this.createArtefact();
+            const newArtefact = await this.postArtefactAndCategories();
 
+<<<<<<< HEAD
                 this.props.addArtefact(newArtefact);
             }
             catch (e) {
@@ -78,6 +221,9 @@ export class CreateArtefact extends Component {
             catch (e) {
 
             }
+=======
+            this.props.addArtefact(newArtefact);
+>>>>>>> jonah-WIP-register-artefact
         })();
 
         this.setState({
@@ -90,34 +236,21 @@ export class CreateArtefact extends Component {
         });
     }
 
-    render() {
-        const errs = Joi.validate(
-            this.state.artefact,
-            artefactSchema,
+    /* Returns the newly created artefact with its attached categories */
+    async postArtefactAndCategories() {
+        if (formIsValid(this.state.artefact, artefactSchema)) {
 
-            { abortEarly: false },
-        );
+            const artefactToPost = { ...this.state.artefact };
 
-        if (errs.length) {
+            // create a copy and post to a seperate endpoint once we have 
+            // id of newly created artefact
+            const artefactCategories = [...artefactToPost.categories];
+            delete artefactToPost.categories;
 
-            // grab invalid joi schema keys
-            const formFieldErrors =
-                errs.filter(e => e.name == 'ValidationError')
-                    .map(e => e.context.key);
+            artefactToPost.visibility =
+                Number(artefactToPost.visibility);
 
-            for (let field of formFieldErrors) {
-                if (this.touched[field]) {
-                    this.setState({
-                        ...this.state,
-                        errors: {
-                            ...this.state.errors,
-                            field: true,
-                        }
-                    })
-                }
-            }
-        }
-
+<<<<<<< HEAD
         return (
             <div>
                 <div className="card">
@@ -159,19 +292,53 @@ export class CreateArtefact extends Component {
 
     async createArtefact() {
         if (formIsValid(this.state.artefact, artefactSchema)) {
+=======
+            let postedArtefact;
+>>>>>>> jonah-WIP-register-artefact
 
+            // make reqs to POST /Artefact and POST /ArtefactCategories/Many
             try {
-                const newArtefact = await postArtefact(this.state.artefact);
+                postedArtefact = await postArtefact(artefactToPost);
 
-                return newArtefact;
+                if (artefactCategories.length) {
+                    await postArtefactCategories(postedArtefact.id, artefactCategories);
+                }
             }
             catch (e) {
-
             }
+
+            return {
+                ...postedArtefact,
+                categories: artefactCategories,
+            };
         }
         else {
+            // TODO - form validation
             throw new Error('Invalid artefact creation form.');
         }
     }
-}
 
+    handleFormChange = (e) => {
+        this.setState({
+            ...this.state,
+            artefact: {
+                ...this.state.artefact,
+                [e.target.id]: e.target.value,
+            },
+        });
+    }
+
+    async populateVisibilityOpts() {
+        const visOpts = await getVisibilityOpts();
+
+        this.setState({
+            ...this.state,
+            artefact: {
+                ...this.state.artefact,
+                visibility: visOpts.find(visOpt => visOpt.name === "PrivateFamily").value,
+            },
+            visibilityOpts: visOpts,
+            loading: false
+        });
+    }   
+}
