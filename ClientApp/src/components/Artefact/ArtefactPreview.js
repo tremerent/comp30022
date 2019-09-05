@@ -9,7 +9,9 @@ export class ArtefactPreview extends Component {
 
     render() {
         let carouselId = `artefact-preview-carousel-${this.props.artefact.id}`;
-       return (
+        // TODO(sam): make the carousel always have a 16:9 ratio and fill the
+        // width of its parent element.
+        return (
 <div class="artefact-preview" style={{width: '18rem'}}>
     <div id={carouselId} class="carousel slide artefact-preview-carousel" data-ride="carousel" data-interval="false">
       <ol class="carousel-indicators">
