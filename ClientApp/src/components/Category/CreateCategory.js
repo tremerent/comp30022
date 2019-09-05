@@ -4,7 +4,7 @@ import { postCategory } from '../../scripts/requests.js';
 import { formIsValid, categorySchema } from '../../data/validation.js';
 
 /*
- * 
+ *
  */
 
 export default class CreateCategory extends Component {
@@ -48,7 +48,7 @@ export default class CreateCategory extends Component {
 
             // grab invalid joi schema keys
             const formFieldErrors =
-                errs.filter(e => e.name == 'ValidationError')
+                errs.filter(e => e.name === 'ValidationError')
                     .map(e => e.context.key);
 
             for (let field of formFieldErrors) {

@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 
 export class ArtefactPreview extends Component {
-    constructor(props) {
-        super(props);
-        //this.state = { };
-    }
 
     render() {
         let carouselId = `artefact-preview-carousel-${this.props.artefact.id}`;
