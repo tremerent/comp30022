@@ -2,6 +2,7 @@
 import Joi from 'joi';
 
 import CategorySelect from '../Category/CategorySelect.js';
+import NewCategorySelect from '../Category/NewCategorySelect.js';
 import { UploadArtefactDocs } from './UploadArtefactDocs.js';
 import {
     postArtefact,
@@ -133,7 +134,8 @@ export class CreateArtefact extends Component {
                 </div>
 
                 <div className="form-group">
-                    <CategorySelect categoryVals={this.state.artefact.categories} setCategories={this.handleFormChange} placeholder={"Pick categories or create a new one"} />
+                    {/*<CategorySelect categoryVals={this.state.artefact.categories} setCategories={this.handleFormChange} placeholder={"Pick categories or create a new one"} />*/}
+                    <NewCategorySelect categoryVals={this.state.artefact.categories} setCategoryVals={this.handleSelectValsChange("categories")} />
                 </div>
             </div>
         );
@@ -256,6 +258,15 @@ export class CreateArtefact extends Component {
                 [e.target.id]: e.target.value,
             },
         });
+    }
+
+    handleSelectValsChange = (selectName) => (vals) => {
+        this.handleFormChange({
+            target: {
+                value: vals,
+                id: selectName,
+            },
+        })
     }
 
     populateVisibilityOpts = async () => {
