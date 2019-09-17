@@ -4,6 +4,7 @@ import Joi from 'joi';
 import CategorySelect from '../Category/CategorySelect.js';
 import { UploadArtefactDocs } from './UploadArtefactDocs.js';
 import {
+    getArtefact,
     postArtefact,
     postArtefactCategories,
     getVisibilityOpts,
@@ -227,13 +228,7 @@ export class CreateArtefact extends Component {
 
     /* Returns the newly created artefact with its categories attached */
     async postArtefactAndCategories() {
-
-
         const artefactToPost = { ...this.state.artefact };
-
-        // convert { label, value } categories to { id }
-        artefactToPost.categories = artefactToPost.categories
-            .map(selectOpt => ({ id: selectOpt.value }));
 
         try {
             formIsValid(artefactToPost, artefactSchema)
@@ -246,24 +241,30 @@ export class CreateArtefact extends Component {
         try {
             // create a copy of categories so we can post to a seperate endpoint
             // once we have the id of the new artefact
-            const artefactCategories = [...artefactToPost.categories];
+            const artefactCategories =
+                artefactToPost.categories.map(selectOpt => (
+                    // convert { label, value } categories select opts to 
+                    // category data models { id, name }
+                    { id: selectOpt.value, name: selectOpt.label })
+                );
             delete artefactToPost.categories;
 
             artefactToPost.visibility =
                 Number(artefactToPost.visibility);
 
-            let postedArtefact;
-
-            postedArtefact = await postArtefact(artefactToPost);
+            const postedArtefact = await postArtefact(artefactToPost);
 
             if (artefactCategories.length) {
                 await postArtefactCategories(postedArtefact.id, artefactCategories);
             }
 
-            return {
-                ...postedArtefact,
-                categories: artefactCategories,
-            };
+            // fetch artefact again now that it has category relationships 
+            // (this could also be stored prior to posting the artefact, and then
+            // appended to the 'postedArtefact', but fetching now ensures 
+            // client-server synchronisation
+            const newArtefact = await getArtefact(postedArtefact.id);
+
+            return newArtefact;
         }
         catch (e) {
             // TODO - posting exception     handling

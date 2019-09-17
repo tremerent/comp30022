@@ -8,7 +8,6 @@ export default class CategoriesPreview extends Component {
     }
 
     render() {
-
         function categoryBadge(category) {
             if (category.name && category.id) {
                 return (
