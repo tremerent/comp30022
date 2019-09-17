@@ -51,7 +51,10 @@ namespace Artefactor.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Artefact>>> GetArtefacts()
         {
-            var artefacts = await _context.Artefacts.ToListAsync();
+            var artefacts = await _context.Artefacts
+                                          .Include(a => a.CategoryJoin)
+                                          .ToListAsync();
+
             return artefacts;
         }
 

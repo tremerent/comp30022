@@ -12,7 +12,7 @@ namespace Artefactor.Models
     {
         public string Id { get; set; }
         public IEnumerable<ArtefactCategory> CategoryJoin { get; set; }
-        public string Name { get; set; }
+        public string Title { get; set; }
         public string Description { get; set; }
         public Visibility Visibility { get; set; }
         public ApplicationUser Owner { get; set; }

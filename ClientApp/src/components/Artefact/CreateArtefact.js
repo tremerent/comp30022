@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react';
 import Joi from 'joi';
 
-import NewCategorySelect from '../Category/CategorySelect.js';
+import CategorySelect from '../Category/CategorySelect.js';
 import { UploadArtefactDocs } from './UploadArtefactDocs.js';
 import {
     postArtefact,
@@ -147,7 +147,7 @@ export class CreateArtefact extends Component {
 
                 <div className="form-group">
                     {/*<CategorySelect categoryVals={this.state.artefact.categories} setCategories={this.handleFormChange} placeholder={"Pick categories or create a new one"} />*/}
-                    <NewCategorySelect categoryVals={this.state.artefact.categories} setCategoryVals={this.handleSelectValsChange("categories")} />
+                    <CategorySelect categoryVals={this.state.artefact.categories} setCategoryVals={this.handleSelectValsChange("categories")} />
                 </div>
             </div>
         );
@@ -227,12 +227,25 @@ export class CreateArtefact extends Component {
 
     /* Returns the newly created artefact with its categories attached */
     async postArtefactAndCategories() {
-        if (formIsValid(this.state.artefact, artefactSchema)) {
 
-            const artefactToPost = { ...this.state.artefact };
 
-            // create a copy and post to a seperate endpoint once we have 
-            // id of newly created artefact
+        const artefactToPost = { ...this.state.artefact };
+
+        // convert { label, value } categories to { id }
+        artefactToPost.categories = artefactToPost.categories
+            .map(selectOpt => ({ id: selectOpt.value }));
+
+        try {
+            formIsValid(artefactToPost, artefactSchema)
+        }
+        catch (e) {
+            // TODO - form validation exception handling
+            //throw new Error('Invalid artefact creation form.');
+        }
+
+        try {
+            // create a copy of categories so we can post to a seperate endpoint
+            // once we have the id of the new artefact
             const artefactCategories = [...artefactToPost.categories];
             delete artefactToPost.categories;
 
@@ -241,14 +254,10 @@ export class CreateArtefact extends Component {
 
             let postedArtefact;
 
-            try {
-                postedArtefact = await postArtefact(artefactToPost);
+            postedArtefact = await postArtefact(artefactToPost);
 
-                if (artefactCategories.length) {
-                    await postArtefactCategories(postedArtefact.id, artefactCategories);
-                }
-            }
-            catch (e) {
+            if (artefactCategories.length) {
+                await postArtefactCategories(postedArtefact.id, artefactCategories);
             }
 
             return {
@@ -256,8 +265,8 @@ export class CreateArtefact extends Component {
                 categories: artefactCategories,
             };
         }
-        else {
-            // TODO - form validation
+        catch (e) {
+            // TODO - posting exception     handling
             //throw new Error('Invalid artefact creation form.');
         }
     }
@@ -272,6 +281,8 @@ export class CreateArtefact extends Component {
         });
     }
 
+    // selectName refers to name of element, so that 'handleFormChange' has 
+    // the appropriate element name
     handleSelectValsChange = (selectName) => (vals) => {
         this.handleFormChange({
             target: {
