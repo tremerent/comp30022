@@ -44,6 +44,17 @@ async function postCategory(category) {
     return respData;
 }
 
+async function getCategories() {
+    const resp = await fetch('api/Categories', {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    const respData = await resp.json();
+
+    return respData;
+}
+
 async function postArtefactCategories(artefactId, categories) {
     const token = await authService.getAccessToken();
     const headers = {
@@ -88,8 +99,11 @@ async function getArtefacts() {
 
 export {
     postArtefact,
-    postCategory,
-    postArtefactCategories,
-    getVisibilityOpts,
     getArtefacts,
+    getVisibilityOpts,
+
+    postArtefactCategories,
+
+    postCategory,
+    getCategories,
 }

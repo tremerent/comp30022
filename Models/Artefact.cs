@@ -15,6 +15,7 @@ namespace Artefactor.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public Visibility Visibility { get; set; }
+        public ApplicationUser Owner { get; set; }
     }
 
     [Flags]
