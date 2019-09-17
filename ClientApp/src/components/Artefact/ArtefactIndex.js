@@ -58,7 +58,8 @@ export class ArtefactIndex extends Component {
 
     addArtefact = (artefact) => {
         let artefacts = [...this.state.artefacts];
-        artefacts.push(artefact);
+        // add 'artefact' to head of list
+        artefacts.unshift(artefact);
 
         this.setState({
             ...this.state,

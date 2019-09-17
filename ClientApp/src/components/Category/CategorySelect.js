@@ -70,7 +70,7 @@ export default class CategorySelect extends Component {
         try {
             const newCategories = await Promise.all(newCategoryPromises);
             const newCategoryOpts = newCategories.map(
-                (newCat) => ({ label: newCat.name, value: newCat.id })
+                (newCat) => ({ label: newCat.name, value: newCat.id, id: newCat.id })
             );
 
             this.setState({

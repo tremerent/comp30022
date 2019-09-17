@@ -4,6 +4,22 @@
  * All request functions assume parameters have already been validated.
  */
 
+async function getArtefact(artefactId) {
+    const token = await authService.getAccessToken();
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+    const response = await fetch(`api/Artefacts/${artefactId}`, {
+        headers: !token ? { ...headers } : {
+            ...headers,
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+    });
+
+    return response.json();
+}
+
 // assumes param. 'artefact' has been validated
 async function postArtefact(artefact) {
     // post the artefact
@@ -99,6 +115,7 @@ async function getArtefacts() {
 
 export {
     postArtefact,
+    getArtefact,
     getArtefacts,
     getVisibilityOpts,
 

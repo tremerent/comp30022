@@ -4,6 +4,7 @@ import Joi from 'joi';
 import NewCategorySelect from '../Category/CategorySelect.js';
 import { UploadArtefactDocs } from './UploadArtefactDocs.js';
 import {
+    getArtefact,
     postArtefact,
     postArtefactCategories,
     getVisibilityOpts,
@@ -147,7 +148,7 @@ export class CreateArtefact extends Component {
 
                 <div className="form-group">
                     {/*<CategorySelect categoryVals={this.state.artefact.categories} setCategories={this.handleFormChange} placeholder={"Pick categories or create a new one"} />*/}
-                    <NewCategorySelect categoryVals={this.state.artefact.categories} setCategoryVals={this.handleSelectValsChange("categories")} />
+                    <CategorySelect categoryVals={this.state.artefact.categories} setCategoryVals={this.handleSelectValsChange("categories")} />
                 </div>
             </div>
         );
@@ -227,37 +228,46 @@ export class CreateArtefact extends Component {
 
     /* Returns the newly created artefact with its categories attached */
     async postArtefactAndCategories() {
-        if (formIsValid(this.state.artefact, artefactSchema)) {
+        const artefactToPost = { ...this.state.artefact };
 
-            const artefactToPost = { ...this.state.artefact };
+        try {
+            formIsValid(artefactToPost, artefactSchema)
+        }
+        catch (e) {
+            // TODO - form validation exception handling
+            //throw new Error('Invalid artefact creation form.');
+        }
 
-            // create a copy and post to a seperate endpoint once we have 
-            // id of newly created artefact
-            const artefactCategories = [...artefactToPost.categories];
+        try {
+            // create a copy of categories so we can post to a seperate endpoint
+            // once we have the id of the new artefact
+            const artefactCategories =
+                artefactToPost.categories.map(selectOpt => (
+                    // convert { label, value } categories select opts to 
+                    // category data models { id, name }
+                    { id: selectOpt.value, name: selectOpt.label })
+                );
             delete artefactToPost.categories;
 
             artefactToPost.visibility =
                 Number(artefactToPost.visibility);
+          
+            const postedArtefact = await postArtefact(artefactToPost);
 
-            let postedArtefact;
-
-            try {
-                postedArtefact = await postArtefact(artefactToPost);
-
-                if (artefactCategories.length) {
-                    await postArtefactCategories(postedArtefact.id, artefactCategories);
-                }
-            }
-            catch (e) {
+            if (artefactCategories.length) {
+                await postArtefactCategories(postedArtefact.id, artefactCategories);
             }
 
-            return {
-                ...postedArtefact,
-                categories: artefactCategories,
-            };
+            // fetch artefact again now that it has category relationships 
+            // (this could also be stored prior to posting the artefact, and then
+            // appended to the 'postedArtefact', but fetching now ensures 
+            // client-server synchronisation
+            const newArtefact = await getArtefact(postedArtefact.id);
+
+            return newArtefact;
         }
-        else {
-            // TODO - form validation
+        catch (e) {
+            // TODO - posting exception     handling
             //throw new Error('Invalid artefact creation form.');
         }
     }
@@ -272,6 +282,8 @@ export class CreateArtefact extends Component {
         });
     }
 
+    // selectName refers to name of element, so that 'handleFormChange' has 
+    // the appropriate element name
     handleSelectValsChange = (selectName) => (vals) => {
         this.handleFormChange({
             target: {
