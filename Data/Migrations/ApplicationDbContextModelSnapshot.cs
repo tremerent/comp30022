@@ -81,6 +81,8 @@ namespace Artefactor.Data.Migrations
 
                     b.Property<string>("Title");
 
+                    b.Property<string>("OwnerId");
+
                     b.Property<int>("Visibility");
 
                     b.HasKey("Id");

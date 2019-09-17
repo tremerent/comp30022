@@ -62,9 +62,6 @@ export default class CategorySelect extends Component {
     handleCreateOption = async (newValues) => {
         const [createdVals, other] = bifurcateBy(newValues, (val) => val.__isNew__);
 
-        console.log(createdVals)
-        console.log(createdVals)
-
         const newCategoryPromises = createdVals.map(async (val) => {
             // post the new category to api
             return await postCategory({ name: val.label });
