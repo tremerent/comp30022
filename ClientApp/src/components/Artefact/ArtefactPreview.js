@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import CategoriesPreview from '../Category/CategoriesPreview.js';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 
@@ -7,6 +9,21 @@ export class ArtefactPreview extends Component {
 
     render() {
         let carouselId = `artefact-preview-carousel-${this.props.artefact.id}`;
+
+        function categoryJoinsToCategories(categoryJoins) {
+            return categoryJoins.map((cj) => {
+                if (cj.categoryId && cj.category) {
+                    return {
+                        id: cj.categoryId,
+                        name: cj.category.name,
+                    };
+                }
+                else {
+                    return null;
+                }
+            }).filter(cat => cat !== null);
+        }
+
         return (
             <div className="artefact-preview" style={{width: '18rem'}}>
                 <div id={carouselId} className="carousel slide artefact-preview-carousel" data-ride="carousel" data-interval="false">
@@ -48,20 +65,16 @@ export class ArtefactPreview extends Component {
                   </a>
                 </div>
                 <div className="card-body">
-                    <div className="justify-content-around">
-                        <h5 className="card-title">{this.props.artefact.title}</h5>
-                        <p> hi </p>
-                    </div>
+                    <div className="text-center">
+                    <h5 className="card-title">{this.props.artefact.title}
+                        </h5>
+                        </div>
                     <p className="card-text text-muted">{this.props.artefact.description}</p>
                     <hr />
-                    <div>
-                        {this.props.artefact.categories.map(c => {
-                            return (
-                                <div> c.name </div>
-                            );
-                        })}
-                    </div>
-                    
+                    <CategoriesPreview
+                        categories={categoryJoinsToCategories(this.props.artefact.categoryJoin)}
+                    > </CategoriesPreview>
+            
                     <div className="text-right">
                         <a className="card-link" href={`/artefact/${this.props.artefact.id}`}>
                             <FontAwesomeIcon

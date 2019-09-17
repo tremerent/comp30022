@@ -53,6 +53,7 @@ namespace Artefactor.Controllers
         {
             var artefacts = await _context.Artefacts
                                           .Include(a => a.CategoryJoin)
+                                            .ThenInclude(cj => cj.Category)
                                           .ToListAsync();
 
             return artefacts;

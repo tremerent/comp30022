@@ -29,6 +29,14 @@ code {
 
 /* These things should probably have their own file: */
 
+.badge {
+    background-color: #17a2b8;
+}
+
+.badge-decal-text {
+    color: #f8f9fa !important;
+}
+
 .artefact-preview-carousel {
     background-color: #000000;
 }
