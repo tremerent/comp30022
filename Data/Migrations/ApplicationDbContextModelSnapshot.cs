@@ -79,9 +79,13 @@ namespace Artefactor.Data.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<string>("OwnerId");
+
                     b.Property<int>("Visibility");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Artefacts");
                 });
@@ -287,6 +291,13 @@ namespace Artefactor.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Artefactor.Models.Artefact", b =>
+                {
+                    b.HasOne("Artefactor.Models.ApplicationUser", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId");
                 });
 
             modelBuilder.Entity("Artefactor.Models.ArtefactCategory", b =>
