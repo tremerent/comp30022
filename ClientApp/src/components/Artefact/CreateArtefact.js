@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react';
 import Joi from 'joi';
 
-import CategorySelect from '../Category/CategorySelect.js';
+import NewCategorySelect from '../Category/CategorySelect.js';
 import { UploadArtefactDocs } from './UploadArtefactDocs.js';
 import {
     getArtefact,
