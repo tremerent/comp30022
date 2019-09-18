@@ -11,9 +11,16 @@ export class ArtefactScroller extends Component {
        return (
            <div>
                {this.props.artefacts.map(a => {
-                   return (
-                       <ArtefactPreview key={a.id} artefact={a} className="my-1" />
-                   );
+                   if (a) {
+                       return (
+                           <div className="my-3">
+                               <ArtefactPreview key={a.id} artefact={a} />
+                           </div>
+                       );
+                   }
+                   else {
+                       return <div> </div>;
+                   }
                })}
             </div>
        );

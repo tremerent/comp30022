@@ -20,15 +20,19 @@ export class CreateArtefact extends Component {
     constructor(props) {
         super(props);
 
+        this.initialArtefactState = {
+            title: "",
+            description: "",
+            categories: [],
+            visibility: null,
+        };
+
         this.state = {
-            loading: true,
-            artefact: {
-                title: "",
-                description: "",
-                categories: [],
-                visibility: null,
-            },
+            artefact: { ...this.initialArtefactState },
             visibilityOpts: [],
+            loading: true,
+            artefactWasCreated: false,
+            createdArtefactId: null,
         };
 
         this.visbilityOptLabels = {
@@ -44,24 +48,62 @@ export class CreateArtefact extends Component {
 
     componentDidMount() {
         this.stepper = new Stepper(document.querySelector('#create-artefact-stepper'), {
-            linear: false,
+            linear: true,
             animation: true,
         });
+
+        this.createArtefactFirstPage =
+            document.querySelector('#create-artefact-first-page');
+        this.createArtefactSecondPage = 
+            document.querySelector('#create-artefact-second-page');
+        this.createArtefactThirdPage = 
+            document.querySelector('#create-artefact-third-page');
+        this.createArtefactTitle =
+            document.querySelector('#title');
+        this.createArtefactDescription =
+            document.querySelector('#description');
     }
-
-  //{if (this.state.loading) {
-
-  //              }
-  //              else {
-
-  //              }
 
     render() {
         return (
-            <div className="card">
-                {this.renderArtefactForm()}
+            <div>
+                <div className="text-center">
+                    <div class="spinner-border text-primary" role="status"
+                        style={{
+                            display: this.state.artefactWasCreated ? "none" : this.state.loading ? null : "none"
+                        }}>
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+                <div className="card"
+                    style={{ 
+                        display: this.state.artefactWasCreated
+                            ? "none"
+                            : this.state.loading ? "none" : null
+                    }}>
+                    {this.renderArtefactForm()}
+                </div>
+                <div style={{ display: this.state.artefactWasCreated ? null : "none" }}>
+                    {this.renderArtefactCreated()}
+                </div>
             </div>
         );
+    }
+
+    renderArtefactCreated = () => {
+        return (
+            <div class="alert alert-success" role="alert">
+                <h4 class="alert-heading">Thanks for registering an artefact!</h4>
+                <p> Important info about what you can now ... </p>
+                <hr/>
+                <div className="row justify-content-start">
+                    <a href={"/Artefacts/" + this.state.createdArtefactId} role="button" className="btn btn-secondary mx-2" style={{color: "#fff !important"}}>
+                        See your new artefact
+                    </a>
+                    <button className="btn btn-primary" onClick={this.resetArtefactCreation}> Create another artefact</button>
+                </div>
+            </div>
+        ); 
     }
 
     renderArtefactForm = () => {
@@ -90,13 +132,13 @@ export class CreateArtefact extends Component {
                     </div>
                 </div>
                 <div className="bs-stepper-content">
-                    <form>
+                    <form id="create-artefact-form">
                         <div id="create-artefact-first-page" className="content">
                             {this.renderFirstFormPage()}
                             <div className="row justify-content-end px-3">
-                                <button className="btn btn-primary" onClick={(e) => { e.preventDefault(); this.stepper.next() }}>
+                                <button className="btn btn-primary" onClick={this.firstFormPageOnNext}>
                                     Next
-                                    </button>
+                                </button>
                             </div>
                         </div>
                         <div id="create-artefact-second-page" className="content">
@@ -105,7 +147,7 @@ export class CreateArtefact extends Component {
                                 <button className="btn btn-primary mx-2" onClick={(e) => { e.preventDefault(); this.stepper.previous() }}>
                                     Previous
                                     </button>
-                                <button className="btn btn-primary mx-2" onClick={(e) => { e.preventDefault(); this.stepper.next() }}>
+                                <button className="btn btn-primary mx-2" onClick={this.secondFormPageOnNext}>
                                     Next
                                     </button>
                             </div>
@@ -116,9 +158,13 @@ export class CreateArtefact extends Component {
                                 <button className="btn btn-primary mx-2" onClick={(e) => { e.preventDefault(); this.stepper.previous() }}>
                                     Previous
                                     </button>
-                                <button className="btn btn-primary mx-2" type="submit" onClick={this.handleSubmit}>
+                                <button
+                                    className="btn btn-primary mx-2"
+                                    type="submit"
+                                    onClick={this.finalFormPageOnSubmitPress}
+                                >
                                     Share
-                                    </button>
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -132,10 +178,13 @@ export class CreateArtefact extends Component {
             <div>
                 <div className="form-group">
                     <label htmlFor="title"> Title </label>
-                    <input type="text" id="title" value={this.state.artefact.name}
+                    <input type="text" id="title" value={this.state.artefact.title}
                         onChange={this.handleFormChange}
                         className="form-control"
                     />
+                    <div className="invalid-feedback">
+                        Sorry! Please give your artefact a title.
+                    </div>
                 </div>
 
                 <div className="form-group">
@@ -143,7 +192,10 @@ export class CreateArtefact extends Component {
                     <textarea id="description" value={this.state.artefact.description}
                         onChange={this.handleFormChange}
                         className="form-control"
-                    />
+                    > </textarea>
+                    <div className="invalid-feedback">
+                        Sorry! Please give your artefact a description.
+                    </div>
                 </div>
 
                 <div className="form-group">
@@ -164,20 +216,36 @@ export class CreateArtefact extends Component {
 
     renderThirdFormPage = () => {
 
-        const visibilityOptRadios = this.state.visibilityOpts.map(opt => {
+        const visibilityOptRadios = this.state.visibilityOpts.map((opt, i) => {
+
+            let invalidFeedback;
+            if (i === 0) {
+                invalidFeedback = <div className="invalid-feedback">
+                    Please specify who can see your artefact
+                                  </div>;
+            }
+            else {
+                invalidFeedback = <div> </div>;
+            }
+
             return (
-                <div key={opt.value} className="form-check">
-                    <input
-                        className="form-check-input"
-                        type="radio"
-                        name="privacy"
-                        id="visibility"
-                        value={opt.value}
-                        onChange={this.handleFormChange}
-                    />
-                    <label className="form-check-label">
-                        {this.visbilityOptLabels[opt.name]}
-                    </label>
+                <div>
+                    <div key={opt.value} className="form-check">
+                        { invalidFeedback }
+                        <input
+                            className="form-check-input"
+                            type="radio"
+                            name="visibility"
+                            id="visibility"
+                            value={opt.value}
+                            onChange={this.handleFormChange}
+                            required
+                        />
+                        <label className="form-check-label">
+                            {this.visbilityOptLabels[opt.name]}
+                        </label>
+
+                    </div>
                 </div>
             );
         });
@@ -208,22 +276,62 @@ export class CreateArtefact extends Component {
     }
 
     handleSubmit = (e) => {
-        e.preventDefault();
-
-        (async () => {
-            const newArtefact = await this.postArtefactAndCategories();
-
-            this.props.addArtefact(newArtefact);
-        })();
+        if (e) {
+            e.preventDefault();
+        }
 
         this.setState({
             ...this.state,
-            artefact: {
-                name: "",
-                id: "",
-                categories: []
-            },
+            loading: true,
         });
+
+        let createdArtefact;
+        (async () => {
+            createdArtefact = await this.postArtefactAndCategories();
+
+            this.props.addArtefact(createdArtefact);
+
+            // add created artefacts id so we have a link to it for the success
+            // message
+            this.setState({
+                ...this.state,
+                loading: false,
+                artefactWasCreated: true,
+                createdArtefactId: createdArtefact.id,
+            });
+        })();
+    }
+
+    resetArtefactCreation = () => {
+        this.setState({
+            ...this.state,
+            artefactWasCreated: false,
+            loading: true,
+        })
+
+        this.resetFormValidation();
+
+        this.setState({
+            ...this.state,
+            loading: false,
+            artefactWasCreated: false,
+            createdArtefactId: null,
+            artefact: { ...this.initialArtefactState },
+        })
+    }
+
+    resetFormValidation = () => {
+        this.createArtefactTitle.classList.remove('is-valid');
+        this.createArtefactTitle.classList.remove('is-invalid');
+
+        this.createArtefactDescription.classList.remove('is-valid');
+        this.createArtefactDescription.classList.remove('is-invalid');
+
+        this.createArtefactFirstPage.classList.remove('was-validated');
+        this.createArtefactSecondPage.classList.remove('was-validated');
+        this.createArtefactThirdPage.classList.remove('was-validated');
+
+        this.stepper.reset();
     }
 
     /* Returns the newly created artefact with its categories attached */
@@ -252,17 +360,17 @@ export class CreateArtefact extends Component {
             artefactToPost.visibility =
                 Number(artefactToPost.visibility);
 
-            const postedArtefact = await postArtefact(artefactToPost);
+            const createdArtefact = await postArtefact(artefactToPost);
 
             if (artefactCategories.length) {
-                await postArtefactCategories(postedArtefact.id, artefactCategories);
+                await postArtefactCategories(createdArtefact.id, artefactCategories);
             }
 
             // fetch artefact again now that it has category relationships 
             // (this could also be stored prior to posting the artefact, and then
             // appended to the 'postedArtefact', but fetching now ensures 
             // client-server synchronisation
-            const newArtefact = await getArtefact(postedArtefact.id);
+            const newArtefact = await getArtefact(createdArtefact.id);
 
             return newArtefact;
         }
@@ -290,7 +398,7 @@ export class CreateArtefact extends Component {
                 value: vals,
                 id: selectName,
             },
-        })
+        });
     }
 
     populateVisibilityOpts = async () => {
@@ -298,12 +406,81 @@ export class CreateArtefact extends Component {
 
         this.setState({
             ...this.state,
-            artefact: {
-                ...this.state.artefact,
-                visibility: visOpts.find(visOpt => visOpt.name === "PrivateFamily").value,
-            },
             visibilityOpts: visOpts,
             loading: false
         });
+    }
+
+    firstFormPageOnNext = (e) => {
+        e.preventDefault();
+
+
+        const valid = this.firstFormPageValid();
+
+        // adding the classes the hacky way instead of simple 
+        // "this.createArtefactFirstPage.classList.add('was-validated');"
+        // because having 'required' on '#description' added a red border 
+        // that I was unable to find the css for (this was only for <textarea/>,
+        // it was fine with <input/>, but the text area is probably a nice thing
+        // to have) - Jonah
+        if (valid) {
+            this.createArtefactTitle.classList.remove('is-invalid');
+            this.createArtefactTitle.classList.add('is-valid');
+            
+            this.createArtefactDescription.classList.remove('is-invalid');
+            this.createArtefactDescription.classList.add('is-valid');
+
+            this.stepper.next();
+        }
+        else {
+            if (this.state.artefact.title.length === 0) {
+                this.createArtefactTitle.classList.add('is-invalid');
+            }
+            if (this.state.artefact.description.length === 0) {
+                this.createArtefactDescription.classList.add('is-invalid');
+            }
+        }
+
+        return valid;
+    }
+
+    secondFormPageOnNext = (e) => {
+        e.preventDefault();
+
+        const valid = this.firstFormPageValid();
+        if (valid) {
+            this.stepper.next();
+        }
+
+        return valid;
+    }
+
+    finalFormPageOnSubmitPress = (e) => {
+        e.preventDefault();
+
+        this.createArtefactThirdPage.classList.add('was-validated');
+
+        if (this.formIsValid()) {
+            this.handleSubmit();
+        }
+    }
+
+    formIsValid = () => {
+        return this.firstFormPageValid() && 
+            this.secondFormPageValid() && 
+            this.thirdFormPageValid()
+    }
+
+    firstFormPageValid = () => {
+        return (this.state.artefact.title.length !== 0) &&
+            (this.state.artefact.description.length !== 0)
+    }
+
+    secondFormPageValid = () => {
+        return true;
+    }
+
+    thirdFormPageValid = () => {
+        return this.state.artefact.visibility !== null;
     }
 }
