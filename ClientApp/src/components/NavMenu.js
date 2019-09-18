@@ -1,6 +1,5 @@
 
 import React from 'react';
-
 import {
     Collapse,
     Container,
@@ -9,8 +8,9 @@ import {
     NavbarToggler,
     NavLink,
 } from 'reactstrap';
-
 import { Link } from 'react-router-dom';
+import { LoginMenu } from './api-authorization/LoginMenu';
+import authService from './api-authorization/AuthorizeService';
 
 export class NavMenu extends React.Component {
 
@@ -19,11 +19,31 @@ export class NavMenu extends React.Component {
 
         this.state = {
             collapsed: true,
-            authorised: false,
+            authenticated: false,
         }
 
         this.toggleNav = this.toggleNav.bind(this);
     }
+
+    componentDidMount() {
+        this.authServiceSubscription = authService.subscribe(() =>
+                this.populateState());
+        this.populateState();
+    }
+
+    componentWillUnmount() {
+        authService.unsubscribe(this.authServiceSubscription);
+    }
+
+    async populateState() {
+        const [isAuthenticated, user] =
+            await Promise.all([authService.isAuthenticated(), authService.getUser()])
+        this.setState({
+            authenticated: isAuthenticated,
+            userName: user && user.name
+        });
+    }
+
 
     toggleNav() {
         this.setState({ collapsed: !this.state.collapsed });
@@ -43,19 +63,21 @@ export class NavMenu extends React.Component {
                 <ul className="navbar-nav">
                     <NavLink tag={Link} to="/browse">Browse</NavLink>
                     {
-                        this.state.authorised ? (
+                        this.state.authenticated ? (
                             <>
                             {/*<NavLink tag={Link} to="/family">My Family</NavLink>*/}
                             {/*<NavLink tag={Link} to="/profile">Profile</NavLink>*/}
-                            <NavLink tag={Link} to="/logout">Log Out</NavLink>
+                            <NavLink tag={Link} to="/my-artefacts">My Artefacts</NavLink>
+                            {/*<NavLink tag={Link} to="/logout">Log Out</NavLink>*/}
                             </>
                         ) : (
                             <>
-                            <NavLink tag={Link} to="/login">Log In</NavLink>
-                            <NavLink tag={Link} to="/signup">Sign Up</NavLink>
+                            {/*<NavLink tag={Link} to="/login">Log In</NavLink>*/}
+                            {/*<NavLink tag={Link} to="/signup">Sign Up</NavLink>*/}
                             </>
                         )
                     }
+                    <LoginMenu></LoginMenu>
                 </ul>
             </Collapse>
         </Container>

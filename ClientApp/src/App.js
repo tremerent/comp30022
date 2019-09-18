@@ -2,34 +2,44 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
 import { Layout } from './components/Layout';
+import { Container } from 'reactstrap';
 import AuthorizeRoute from './components/api-authorization/AuthorizeRoute';
 
-import LandingPage from './components/LandingPage';
-import ArtefactBrowser from './components/Artefact/ArtefactBrowser';
-import Login from './components/Auth/Login';
-import Signup from './components/Auth/Signup';
+import MyArtefacts from './components/Artefact/MyArtefacts.js';
+import LandingPage from './components/LandingPage.js';
+import ArtefactBrowser from './components/Artefact/ArtefactBrowser.js';
+//import Login from './components/Auth/Login';
+//import Signup from './components/Auth/Signup';
+
+import ApiAuthorizationRoutes from './components/api-authorization/ApiAuthorizationRoutes';
+import { ApplicationPaths } from './components/api-authorization/ApiAuthorizationConstants';
 
 import './App.css'
-
-function Secret() {
-    return <p>The secret is that I have no secrets.</p>;
-}
 
 export default class App extends Component {
     static displayName = App.name;
 
     render () {
         return (
-            <Layout>
-                <Route exact path='/' component={LandingPage} />
-                <Route path='/login' render={() => <Login action='login'></Login>} />
-                <Route path='/signup' component={Signup} />
-                <Route path='/browse' component={ArtefactBrowser} />
-                <AuthorizeRoute path='/secret' component={Secret} />
-                {/*<Route path='/my-artefacts' component={MyArtefacts} />*/}
-                {/*<Route path='/profile' component={UserProfile} />*/}
-                {/*<Route path='/family' component={FamilyView} />*/}
-            </Layout>
+<Layout>
+    {/*
+        LandingPage component needs to fill the entire width of the
+        page, so put it outside of the container. Everything else
+        goes inside though.
+        Help I don't know react.
+        -- Sam
+    */}
+    <Route exact path='/' component={LandingPage} />
+    <Container>
+        {/*<Route path='/login' render={() => <Login action='login'></Login>} />*/}
+        {/*<Route path='/signup' component={Signup} />*/}
+        <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
+        <Route path='/browse' component={ArtefactBrowser} />
+        <AuthorizeRoute path='/my-artefacts' component={MyArtefacts} />
+        {/*<Route path='/profile' component={UserProfile} />*/}
+        {/*<Route path='/family' component={FamilyView} />*/}
+    </Container>
+</Layout>
         );
     }
 }
