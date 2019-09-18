@@ -45,7 +45,7 @@ export class ArtefactPreview extends Component {
         </ol>
         <div class="carousel-inner">
             {Array.from(a.images.keys()).map(n => (
-                <div class={n === 0 ? 'carousel-item' : 'carousel-item active'}>
+                <div class={n === 0 ? 'carousel-item' : 'carousel-item active'} key={n}>
                     <img
                             src={a.images[n]}
                             class='d-block artefact-image'
