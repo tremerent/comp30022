@@ -3,7 +3,6 @@ import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import { Home } from './components/Home';
 import { FetchData } from './components/FetchData';
-import { Counter } from './components/Counter';
 import { ArtefactIndex } from './components/Artefact/ArtefactIndex';
 import { CategoryIndex } from './components/Category/CategoryIndex';
 import AuthorizeRoute from './components/api-authorization/AuthorizeRoute';
@@ -19,7 +18,6 @@ export default class App extends Component {
     return (
       <Layout>
         <Route exact path='/' component={Home} />
-        <Route path='/counter' component={Counter} />
         <AuthorizeRoute path='/fetch-data' component={FetchData} />
         <Route path='/artefacts' component={ArtefactIndex} />
         <Route path='/categories' component={CategoryIndex} />
@@ -28,3 +26,4 @@ export default class App extends Component {
     );
   }
 }
+
