@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react';
 import Joi from 'joi';
 
-import NewCategorySelect from '../Category/CategorySelect.js';
+import CategorySelect from '../Category/CategorySelect.js';
 import { UploadArtefactDocs } from './UploadArtefactDocs.js';
 import {
     getArtefact,
@@ -15,7 +15,7 @@ import Stepper from 'bs-stepper';
 import 'bs-stepper/dist/css/bs-stepper.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImages, faShareAltSquare, faTrophy } from '@fortawesome/free-solid-svg-icons';
-                    
+
 export class CreateArtefact extends Component {
     constructor(props) {
         super(props);
@@ -243,7 +243,7 @@ export class CreateArtefact extends Component {
             // once we have the id of the new artefact
             const artefactCategories =
                 artefactToPost.categories.map(selectOpt => (
-                    // convert { label, value } categories select opts to 
+                    // convert { label, value } categories select opts to
                     // category data models { id, name }
                     { id: selectOpt.value, name: selectOpt.label })
                 );
@@ -251,16 +251,16 @@ export class CreateArtefact extends Component {
 
             artefactToPost.visibility =
                 Number(artefactToPost.visibility);
-          
+
             const postedArtefact = await postArtefact(artefactToPost);
 
             if (artefactCategories.length) {
                 await postArtefactCategories(postedArtefact.id, artefactCategories);
             }
 
-            // fetch artefact again now that it has category relationships 
+            // fetch artefact again now that it has category relationships
             // (this could also be stored prior to posting the artefact, and then
-            // appended to the 'postedArtefact', but fetching now ensures 
+            // appended to the 'postedArtefact', but fetching now ensures
             // client-server synchronisation
             const newArtefact = await getArtefact(postedArtefact.id);
 
@@ -282,7 +282,7 @@ export class CreateArtefact extends Component {
         });
     }
 
-    // selectName refers to name of element, so that 'handleFormChange' has 
+    // selectName refers to name of element, so that 'handleFormChange' has
     // the appropriate element name
     handleSelectValsChange = (selectName) => (vals) => {
         this.handleFormChange({
