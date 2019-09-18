@@ -32,7 +32,20 @@ namespace Artefactor
                     //Configuration.GetConnectionString("DefaultConnection")));
                     Configuration.GetConnectionString("AzureDbConnection")));
 
-            services.AddDefaultIdentity<ApplicationUser>()
+            services.AddDefaultIdentity<ApplicationUser>(options => {
+                    // <https://stackoverflow.com/a/27831598>
+                    // Needlessly complex password validation rules do not
+                    // meaningfully increase entropy and usually cause
+                    // users to resort to password reuse in order to remember
+                    // logins, thus substantially *reducing* the effective
+                    // security.
+                    // - Sam
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequiredLength = 10;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddIdentityServer()
@@ -44,7 +57,7 @@ namespace Artefactor
             services.AddMvc(options => options.EnableEndpointRouting = false)
                     .AddNewtonsoftJson(options =>
                     {
-                        options.SerializerSettings.ReferenceLoopHandling = 
+                        options.SerializerSettings.ReferenceLoopHandling =
                             Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                     });
 
