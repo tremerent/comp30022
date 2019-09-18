@@ -1,9 +1,10 @@
 ﻿import React, { Component } from 'react';
 import Joi from 'joi';
 
-import CategorySelect from '../Category/CategorySelect.js';
+import NewCategorySelect from '../Category/CategorySelect.js';
 import { UploadArtefactDocs } from './UploadArtefactDocs.js';
 import {
+    getArtefact,
     postArtefact,
     postArtefactCategories,
     getVisibilityOpts,
@@ -12,7 +13,8 @@ import { formIsValid, artefactSchema } from '../../data/validation.js';
 
 import Stepper from 'bs-stepper';
 import 'bs-stepper/dist/css/bs-stepper.min.css';
-import 'font-awesome/css/font-awesome.min.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faImages, faShareAltSquare, faTrophy } from '@fortawesome/free-solid-svg-icons';
                     
 export class CreateArtefact extends Component {
     constructor(props) {
@@ -47,66 +49,79 @@ export class CreateArtefact extends Component {
         });
     }
 
+  //{if (this.state.loading) {
+
+  //              }
+  //              else {
+
+  //              }
+
     render() {
         return (
             <div className="card">
-                <div id="create-artefact-stepper" className="bs-stepper">
-                    <div className="bs-stepper-header px-2">
-                        <div className="step" data-target="#create-artefact-first-page">
-                            <button className="step-trigger">
-                                <span className="bs-stepper-circle">1</span>
-                                <span className="bs-stepper-label">Your Artefact</span>
-                            </button>
-                        </div>
-                        <div className="line"></div>
-                        <div className="step" data-target="#create-artefact-second-page">
-                            <button className="step-trigger">
-                                <span className="bs-stepper-circle">2</span>
-                                <span className="bs-stepper-label">Upload</span>
-                            </button>
-                        </div>
-                        <div className="line"></div>
-                        <div className="step" data-target="#create-artefact-third-page">
-                            <button className="step-trigger">
-                                <span className="bs-stepper-circle">3</span>
-                                <span className="bs-stepper-label">Share</span>
-                            </button>
-                        </div>
+                {this.renderArtefactForm()}
+            </div>
+        );
+    }
+
+    renderArtefactForm = () => {
+        return (
+            <div id="create-artefact-stepper" className="bs-stepper">
+                <div className="bs-stepper-header px-2">
+                    <div className="step" data-target="#create-artefact-first-page">
+                        <button className="step-trigger">
+                            <span className="bs-stepper-circle"><FontAwesomeIcon icon={faTrophy} /></span>
+                            <span className="bs-stepper-label">Your Artefact</span>
+                        </button>
                     </div>
-                    <div className="bs-stepper-content">
-                        <form>
-                            <div id="create-artefact-first-page" className="content">
-                                {this.renderFirstFormPage()}
-                                <div className="row justify-content-end px-3">
-                                    <button className="btn btn-primary" onClick={(e) => { e.preventDefault(); this.stepper.next() }}>
-                                        Next
-                                    </button>
-                                </div>
-                            </div>
-                            <div id="create-artefact-second-page" className="content">
-                                {this.renderSecondFormPage()}
-                                <div className="row justify-content-between px-3">
-                                    <button className="btn btn-primary mx-2" onClick={(e) => { e.preventDefault(); this.stepper.previous() }}>
-                                        Previous
-                                    </button>
-                                    <button className="btn btn-primary mx-2" onClick={(e) => { e.preventDefault(); this.stepper.next() }}>
-                                        Next
-                                    </button>
-                                </div>
-                            </div>
-                            <div id="create-artefact-third-page" className="content">
-                                {this.renderThirdFormPage()}
-                                <div className="row justify-content-between">
-                                    <button className="btn btn-primary mx-2" onClick={(e) => { e.preventDefault(); this.stepper.previous() }}>
-                                        Previous
-                                    </button>
-                                    <button className="btn btn-primary mx-2" type="submit" onClick={this.handleSubmit}>
-                                        Share
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                    <div className="line"></div>
+                    <div className="step" data-target="#create-artefact-second-page">
+                        <button className="step-trigger">
+                            <span className="bs-stepper-circle"><FontAwesomeIcon icon={faImages} /></span>
+                            <span className="bs-stepper-label">Upload</span>
+                        </button>
                     </div>
+                    <div className="line"></div>
+                    <div className="step" data-target="#create-artefact-third-page">
+                        <button className="step-trigger">
+                            <span className="bs-stepper-circle"><FontAwesomeIcon icon={faShareAltSquare} /></span>
+                            <span className="bs-stepper-label">Share</span>
+                        </button>
+                    </div>
+                </div>
+                <div className="bs-stepper-content">
+                    <form>
+                        <div id="create-artefact-first-page" className="content">
+                            {this.renderFirstFormPage()}
+                            <div className="row justify-content-end px-3">
+                                <button className="btn btn-primary" onClick={(e) => { e.preventDefault(); this.stepper.next() }}>
+                                    Next
+                                    </button>
+                            </div>
+                        </div>
+                        <div id="create-artefact-second-page" className="content">
+                            {this.renderSecondFormPage()}
+                            <div className="row justify-content-between px-3">
+                                <button className="btn btn-primary mx-2" onClick={(e) => { e.preventDefault(); this.stepper.previous() }}>
+                                    Previous
+                                    </button>
+                                <button className="btn btn-primary mx-2" onClick={(e) => { e.preventDefault(); this.stepper.next() }}>
+                                    Next
+                                    </button>
+                            </div>
+                        </div>
+                        <div id="create-artefact-third-page" className="content">
+                            {this.renderThirdFormPage()}
+                            <div className="row justify-content-between">
+                                <button className="btn btn-primary mx-2" onClick={(e) => { e.preventDefault(); this.stepper.previous() }}>
+                                    Previous
+                                    </button>
+                                <button className="btn btn-primary mx-2" type="submit" onClick={this.handleSubmit}>
+                                    Share
+                                    </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         );
@@ -132,7 +147,8 @@ export class CreateArtefact extends Component {
                 </div>
 
                 <div className="form-group">
-                    <CategorySelect categoryVals={this.state.artefact.categories} setCategories={this.handleFormChange} placeholder={"Pick categories or create a new one"} />
+                    {/*<CategorySelect categoryVals={this.state.artefact.categories} setCategories={this.handleFormChange} placeholder={"Pick categories or create a new one"} />*/}
+                    <CategorySelect categoryVals={this.state.artefact.categories} setCategoryVals={this.handleSelectValsChange("categories")} />
                 </div>
             </div>
         );
@@ -210,57 +226,49 @@ export class CreateArtefact extends Component {
         });
     }
 
-    /* Returns the newly created artefact with its attached categories */
+    /* Returns the newly created artefact with its categories attached */
     async postArtefactAndCategories() {
-        if (formIsValid(this.state.artefact, artefactSchema)) {
+        const artefactToPost = { ...this.state.artefact };
 
-            const artefactToPost = { ...this.state.artefact };
+        try {
+            formIsValid(artefactToPost, artefactSchema)
+        }
+        catch (e) {
+            // TODO - form validation exception handling
+            //throw new Error('Invalid artefact creation form.');
+        }
 
-            // create a copy and post to a seperate endpoint once we have 
-            // id of newly created artefact
-            const artefactCategories = [...artefactToPost.categories];
+        try {
+            // create a copy of categories so we can post to a seperate endpoint
+            // once we have the id of the new artefact
+            const artefactCategories =
+                artefactToPost.categories.map(selectOpt => (
+                    // convert { label, value } categories select opts to 
+                    // category data models { id, name }
+                    { id: selectOpt.value, name: selectOpt.label })
+                );
             delete artefactToPost.categories;
 
             artefactToPost.visibility =
                 Number(artefactToPost.visibility);
+          
+            const postedArtefact = await postArtefact(artefactToPost);
 
-            return (
-                <div>
-                    <div className="card">
-                        <div className="card-body">
-                            <h4 className="card-title"> Create an artefact </h4>
-                            <hr />
-                            <form onSubmit={this.handleSubmit}>
+            if (artefactCategories.length) {
+                await postArtefactCategories(postedArtefact.id, artefactCategories);
+            }
 
-                                <div className="form-group">
-                                    <label htmlFor="artefactId"> Artefact Id </label>
-                                    <input type="text" id="id" value={this.state.artefact.id}
-                                        onChange={this.handleFormChange} onBlur={this.handleBlur('id')}
-                                        className={"form-control " + (this.state.errors.id ? "error" : "")}
-                                    />
-                                </div>
+            // fetch artefact again now that it has category relationships 
+            // (this could also be stored prior to posting the artefact, and then
+            // appended to the 'postedArtefact', but fetching now ensures 
+            // client-server synchronisation
+            const newArtefact = await getArtefact(postedArtefact.id);
 
-                                <div className="form-group">
-                                    <label htmlFor="name"> Artefact </label>
-                                    <input type="text" id="name" value={this.state.artefact.name}
-                                        onChange={this.handleFormChange} onBlur={this.handleBlur('name')}
-                                        className={"form-control " + (this.state.errors.name ? "error" : "")}
-                                    />
-                                </div>
-
-                                <div className="form-group">
-                                    <CategorySelect categoryVals={this.state.artefact.categories} setCategories={this.handleFormChange} />
-                                </div>
-
-                                <button type="submit"
-
-                                    className="btn btn-primary"> Submit </button>
-                            </form>
-                        </div>
-                    </div>
-
-                </div>
-            );
+            return newArtefact;
+        }
+        catch (e) {
+            // TODO - posting exception     handling
+            //throw new Error('Invalid artefact creation form.');
         }
     }
 
@@ -272,6 +280,17 @@ export class CreateArtefact extends Component {
                 [e.target.id]: e.target.value,
             },
         });
+    }
+
+    // selectName refers to name of element, so that 'handleFormChange' has 
+    // the appropriate element name
+    handleSelectValsChange = (selectName) => (vals) => {
+        this.handleFormChange({
+            target: {
+                value: vals,
+                id: selectName,
+            },
+        })
     }
 
     populateVisibilityOpts = async () => {

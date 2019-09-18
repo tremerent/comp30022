@@ -8,16 +8,32 @@ export class ArtefactPreview extends Component {
 
        return (
 <div class="artefact-preview" style={{width: '18rem'}}>
-    <div id={carouselId} class="carousel slide artefact-preview-carousel" data-ride="carousel" data-interval="false">
+    <div
+            id={carouselId}
+            class="carousel slide artefact-preview-carousel"
+            data-ride="carousel"
+            data-interval="false"
+    >
         <ol class="carousel-indicators">
             {Array.from(a.images.keys()).map(n => (
-                <li data-target={`#${carouselId}`} key={n} data-slide-to={n} class={n ? undefined : 'active'}></li>
+                <li
+                        data-target={`#${carouselId}`}
+                        key={n}
+                        data-slide-to={n}
+                        class={n ? undefined : 'active'}
+                >
+                </li>
             ))}
         </ol>
         <div class="carousel-inner">
             {Array.from(a.images.keys()).map(n => (
-                <div class={n ? 'carousel-item' : 'carousel-item active'}>
-                    <img src={a.images[n]} class='d-block artefact-image' style={{ height: '12rem', margin: '0 auto' }} alt='TODO'/>
+                <div class={n === 0 ? 'carousel-item' : 'carousel-item active'}>
+                    <img
+                            src={a.images[n]}
+                            class='d-block artefact-image'
+                            style={{ height: '12rem', margin: '0 auto' }}
+                            alt='TODO'
+                    />
                 </div>
             ))}
         </div>
@@ -31,12 +47,19 @@ export class ArtefactPreview extends Component {
         </a>
     </div>
     <div className="card-body">
-        <h5 className="card-title">{a.title}</h5>
-        <p className="card-text">{a.description}</p>
-        <div className='card-text artefact-preview-view-more'>
-            <a href={`/artefact/${a.id}`}>
-                View full page ▶ {/* <- U+25B6 */}
-            </a>
+        <h5 className="text-center card-title">{a.title}</h5>
+        <p className="card-text text-muted">{a.description}</p>
+        <hr/>
+        <CategoriesPreview categories={categoryJoinsToCategories(a.categoryJoin)}>
+        </CategoriesPreview>
+        <div className="text-right">
+            <a className="card-link" href={`/artefact/${a.id}`}>
+                <FontAwesomeIcon
+                    icon={faExternalLinkSquareAlt}
+                    size="2x"
+                >
+                </FontAwesomeIcon>
+           </a>
         </div>
     </div>
 </div>

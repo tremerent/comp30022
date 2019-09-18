@@ -4,6 +4,22 @@
  * All request functions assume parameters have already been validated.
  */
 
+async function getArtefact(artefactId) {
+    const token = await authService.getAccessToken();
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+    const response = await fetch(`api/Artefacts/${artefactId}`, {
+        headers: !token ? { ...headers } : {
+            ...headers,
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+    });
+
+    return response.json();
+}
+
 // assumes param. 'artefact' has been validated
 async function postArtefact(artefact) {
     // post the artefact
@@ -40,6 +56,17 @@ async function postCategory(category) {
         body: JSON.stringify(category),
     });
     const respData = await response.json();
+
+    return respData;
+}
+
+async function getCategories() {
+    const resp = await fetch('api/Categories', {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    const respData = await resp.json();
 
     return respData;
 }
@@ -88,8 +115,12 @@ async function getArtefacts() {
 
 export {
     postArtefact,
-    postCategory,
-    postArtefactCategories,
-    getVisibilityOpts,
+    getArtefact,
     getArtefacts,
+    getVisibilityOpts,
+
+    postArtefactCategories,
+
+    postCategory,
+    getCategories,
 }

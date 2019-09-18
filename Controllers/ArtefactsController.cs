@@ -51,7 +51,11 @@ namespace Artefactor.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Artefact>>> GetArtefacts()
         {
-            var artefacts = await _context.Artefacts.ToListAsync();
+            var artefacts = await _context.Artefacts
+                                          .Include(a => a.CategoryJoin)
+                                            .ThenInclude(cj => cj.Category)
+                                          .ToListAsync();
+
             return artefacts;
         }
 
@@ -59,7 +63,12 @@ namespace Artefactor.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Artefact>> GetArtefact(string id)
         {
-            var artefact = await _context.Artefacts.FindAsync(id);
+            // possibly a more performant way of doing this -
+            // https://stackoverflow.com/questions/40360512/findasync-and-include-linq-statements
+            var artefact = await _context.Artefacts
+                                         .Include(a => a.CategoryJoin)
+                                            .ThenInclude(cj => cj.Category)
+                                         .SingleOrDefaultAsync(a => a.Id == id);
 
             if (artefact == null)
             {
