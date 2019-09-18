@@ -25,7 +25,7 @@ export class ArtefactPreview extends Component {
         }
 
         return (
-            <div className="artefact-preview" style={{width: '18rem'}}>
+            <div className="artefact-preview border-light" style={{width: '18rem'}}>
                 <div id={carouselId} className="carousel slide artefact-preview-carousel" data-ride="carousel" data-interval="false">
                   <ol className="carousel-indicators">
                     <li data-target={`#${carouselId}`} data-slide-to="0" className="active"></li>
