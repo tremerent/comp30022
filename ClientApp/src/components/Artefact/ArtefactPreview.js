@@ -1,6 +1,24 @@
 import React, { Component } from 'react';
 
+import CategoriesPreview from '../Category/CategoriesPreview.js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
+
 export class ArtefactPreview extends Component {
+
+    static categoryJoinsToCategories(categoryJoins) {
+        return categoryJoins.map((cj) => {
+            if (cj.categoryId && cj.category) {
+                return {
+                    id: cj.categoryId,
+                    name: cj.category.name,
+                };
+            }
+            else {
+                return null;
+            }
+        }).filter(cat => cat !== null);
+    }
 
     render() {
         let a = this.props.artefact;
@@ -50,7 +68,7 @@ export class ArtefactPreview extends Component {
         <h5 className="text-center card-title">{a.title}</h5>
         <p className="card-text text-muted">{a.description}</p>
         <hr/>
-        <CategoriesPreview categories={categoryJoinsToCategories(a.categoryJoin)}>
+        <CategoriesPreview categories={this.constructor.categoryJoinsToCategories(a.categoryJoin)}>
         </CategoriesPreview>
         <div className="text-right">
             <a className="card-link" href={`/artefact/${a.id}`}>

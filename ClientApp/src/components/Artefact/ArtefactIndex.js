@@ -68,6 +68,7 @@ export class ArtefactIndex extends Component {
                                 PLACEHOLDER_IMAGE_03,
                             ],
                             visibility: 0,
+                            categoryJoin: [],
                         },
                         {
                             id:     'd5fcd605-a5d7-4de9-bfcc-4c0373b00e46',
@@ -81,6 +82,7 @@ export class ArtefactIndex extends Component {
                                 PLACEHOLDER_IMAGE_03,
                             ],
                             visibility: 0,
+                            categoryJoin: [],
                         },
                         {
                             id:     'b43e9584-9ad6-4c77-bb84-dee40670ea71',
@@ -94,6 +96,7 @@ export class ArtefactIndex extends Component {
                                 PLACEHOLDER_IMAGE_03,
                             ],
                             visibility: 0,
+                            categoryJoin: [],
                         },
                     ]}
                     class="col-xs-6"/>
