@@ -22,7 +22,7 @@ export default class CategorySelect extends Component {
 
         this.select = <AsyncCreatableSelect
             onChange={this.handleChange}
-            values={this.props.categoryVals}
+            value={this.props.categoryVals}
 
             defaultOptions
             loadOptions={this.getCategoryOptionsThenFilter}

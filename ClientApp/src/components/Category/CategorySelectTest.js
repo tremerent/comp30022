@@ -28,7 +28,7 @@ export default class CategorySelectTest extends Component {
             <div>
                 <AsyncCreatableSelect
                     onChange={this.handleChange}
-                    values={this.props.categoryVals}
+                    value={this.props.categoryVals}
 
                     defaultOptions
                     loadOptions={this.getCategoryOptionsThenFilter}
@@ -134,7 +134,7 @@ export default class CategorySelectTest extends Component {
     }
 }
 
-CategorySelect.defaultProps = {
+CategorySelectTest.defaultProps = {
     categoryVals: [],
     placeholder: "Select your artefact's categories, or create a new one",
     categoryInputName: "categories",
