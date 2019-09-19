@@ -1,6 +1,8 @@
 ﻿import React, { Component } from 'react';
 import AsyncCreatableSelect from 'react-select/async-creatable';
 
+import CategorySelect from './CategorySelect.js';
+
 import { getCategories, postCategory } from '../../scripts/requests.js';
 
 export default class CategorySelectTest extends Component {
