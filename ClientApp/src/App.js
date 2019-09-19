@@ -8,6 +8,8 @@ import AuthorizeRoute from './components/api-authorization/AuthorizeRoute';
 import MyArtefacts from './components/Artefact/MyArtefacts.js';
 import LandingPage from './components/LandingPage.js';
 import ArtefactBrowser from './components/Artefact/ArtefactBrowser.js';
+
+import TestingHome from './components/Testing/TestingHome.js';
 //import Login from './components/Auth/Login';
 //import Signup from './components/Auth/Signup';
 
@@ -35,6 +37,7 @@ export default class App extends Component {
         {/*<Route path='/signup' component={Signup} />*/}
         <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
         <Route path='/browse' component={ArtefactBrowser} />
+        <Route path='/tests' component={TestingHome} />
         <AuthorizeRoute path='/my-artefacts' component={MyArtefacts} />
         {/*<Route path='/profile' component={UserProfile} />*/}
         {/*<Route path='/family' component={FamilyView} />*/}

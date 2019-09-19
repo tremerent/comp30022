@@ -8,7 +8,7 @@ import {
     NavbarToggler,
     NavLink,
 } from 'reactstrap';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, } from 'react-router-dom';
 import { LoginMenu } from './api-authorization/LoginMenu';
 import authService from './api-authorization/AuthorizeService';
 
