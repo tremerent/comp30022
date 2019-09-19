@@ -31,30 +31,36 @@ export class ArtefactPreview extends Component {
             class="carousel slide artefact-preview-carousel"
             data-ride="carousel"
             data-interval="false"
-    >
-        <ol class="carousel-indicators">
-            {Array.from(a.images.keys()).map(n => (
-                <li
-                        data-target={`#${carouselId}`}
-                        key={n}
-                        data-slide-to={n}
-                        class={n ? undefined : 'active'}
-                >
-                </li>
-            ))}
-        </ol>
-        <div class="carousel-inner">
-            {Array.from(a.images.keys()).map(n => (
-                <div class={n === 0 ? 'carousel-item' : 'carousel-item active'} key={n}>
-                    <img
-                            src={a.images[n]}
-                            class='d-block artefact-image'
-                            style={{ height: '12rem', margin: '0 auto' }}
-                            alt='TODO'
-                    />
-                </div>
-            ))}
-        </div>
+               >
+                   {a.images
+                       ?
+                       (<div>
+                           <ol class="carousel-indicators">
+                               {Array.from(a.images.keys()).map(n => (
+                                   <li
+                                       data-target={`#${carouselId}`}
+                                       key={n}
+                                       data-slide-to={n}
+                                       class={n ? undefined : 'active'}
+                                   >
+                                   </li>
+                               ))}
+                           </ol>
+                           <div class="carousel-inner">
+                               {Array.from(a.images.keys()).map(n => (
+                                   <div class={n === 0 ? 'carousel-item' : 'carousel-item active'} key={n}>
+                                       <img
+                                           src={a.images[n]}
+                                           class='d-block artefact-image'
+                                           style={{ height: '12rem', margin: '0 auto' }}
+                                           alt='TODO'
+                                       />
+                                   </div>
+                               ))}
+                           </div>
+                        </div>)
+                       : <div> </div>
+                       }
         <a class="carousel-control-prev" href={`#${carouselId}`} role="button" data-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="sr-only">Previous</span>

@@ -2,6 +2,8 @@
 import Joi from 'joi';
 
 import CategorySelect from '../Category/CategorySelect.js';
+import CategorySelectTest from '../Category/CategorySelectTest.js';
+
 import { UploadArtefactDocs } from './UploadArtefactDocs.js';
 import {
     getArtefact,
@@ -201,6 +203,7 @@ export class CreateArtefact extends Component {
                 <div className="form-group">
                     {/*<CategorySelect categoryVals={this.state.artefact.categories} setCategories={this.handleFormChange} placeholder={"Pick categories or create a new one"} />*/}
                     <CategorySelect categoryVals={this.state.artefact.categories} setCategoryVals={this.handleSelectValsChange("categories")} />
+                    <CategorySelectTest categoryVals={this.state.artefact.categories} setCategoryVals={this.handleSelectValsChange("categories")} />
                 </div>
             </div>
         );

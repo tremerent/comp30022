@@ -8,7 +8,7 @@ import {
     NavbarToggler,
     NavLink,
 } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { LoginMenu } from './api-authorization/LoginMenu';
 import authService from './api-authorization/AuthorizeService';
 
@@ -52,7 +52,7 @@ export class NavMenu extends React.Component {
     render() {
         return (
 <header>
-    <Navbar light className="navbar-expand-sm ng-white border-bottom box-shadow mb-3">
+                <Navbar light className={"navbar-expand-sm ng-white border-bottom box-shadow" + " "}>
         <Container>
             <NavbarBrand tag={Link} to="/">Artefactor</NavbarBrand>
             <NavbarToggler onClick={this.toggleNav}/>
