@@ -8,12 +8,19 @@ export default class ArtefactScroller extends Component {
     }
 
     render() {
-        return (
-            <div style={{ height: '500px', overflowY: 'scroll' }}>
-                {this.props.artefacts.map(a => {
-                    return (
-                        <ArtefactPreview key={a.id} artefact={a} className="my-1" />
-                   );
+       return (
+           <div>
+               {this.props.artefacts.map(a => {
+                   if (a) {
+                       return (
+                           <div className="my-3" style={{ height: '500px', overflowY: 'scroll' }}>
+                               <ArtefactPreview key={a.id} artefact={a} className="my-1" />
+                           </div>
+                       );
+                   }
+                   else {
+                       return <div> </div>;
+                   }
                })}
             </div>
         );

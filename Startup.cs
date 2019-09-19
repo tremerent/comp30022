@@ -30,7 +30,7 @@ namespace Artefactor
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     //Configuration.GetConnectionString("DefaultConnection")));
-                    Configuration.GetConnectionString("AzureDbConnection")));
+            Configuration.GetConnectionString("AzureDbConnection")));
 
             services.AddDefaultIdentity<ApplicationUser>(options => {
                     // <https://stackoverflow.com/a/27831598>
