@@ -37,7 +37,7 @@ export default class CategorySelect extends Component {
     render() {
         return (
             <div>
-               
+
                 {this.select}
             </div>
         );
@@ -57,7 +57,7 @@ export default class CategorySelect extends Component {
     /*
      * Need to post the newly created options to api, then replace the value of
      * those options with the id returned by api
-     */ 
+     */
     handleCreateOption = async (newValues) => {
         const [createdVals, other] = bifurcateBy(newValues, (val) => val.__isNew__);
 
@@ -110,7 +110,7 @@ export default class CategorySelect extends Component {
             }
         });
 
-        return filtered; 
+        return filtered;
     }
 
     // use this instead of this.state.categoryOpts
