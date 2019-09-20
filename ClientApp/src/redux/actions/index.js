@@ -1,25 +1,32 @@
 ﻿import { authTypes } from './types';
 
-function reqLogin(loginData) {
+import { postLogin } from '../../scripts/requests';
+
+// request login
+function reqLogin() {
     return {
-        type: authTypes.REQUEST_LOGIN,
-        loginData,
+        type: authTypes.REQ_LOGIN,
     }
 }
 
-function resLogin(loginData, json) {
+// receive login response
+function resLogin(userData) {
     return {
-        type: authTypes.RECEIVE_LOGIN,
-        userData: {
-            username: json.data.username,
-        },
+        type: authTypes.RES_LOGIN,
+        userData,
     }
 }
 
 function login(loginData) {
-    return {
-        type: authTypes.LOGIN,
-        loginData,
+    return async function (dispatch) {
+        dispatch(reqLogin());
+
+        const resp = await postLogin(loginData);
+        const respData = await resp.json();
+
+        dispatch(resLogin(respData.user));
+
+        return respData;
     }
 }
 
@@ -28,7 +35,9 @@ function register(registerData) {
 }
 
 function logout() {
+    return async function (dispatch) {
 
+    }
 }
 
 const auth = {

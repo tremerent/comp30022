@@ -1,7 +1,7 @@
 ﻿import { authTypes } from '../actions/types';
 
 const initAuthState = {
-    user: "guest",
+    user: {},
     isLoggedIn: false,
     loading: false,
 };
@@ -10,29 +10,24 @@ function auth(state = initAuthState, action) {
     switch (action.type) {
         case authTypes.RES_LOGIN:
             return {
-                ...state,
-                auth: {
-                    ...state.auth,
-                    user: action.userData,
-                    isLoggedIn: true,
-                }
+                loading: false,
+                user: action.userData,
+                isLoggedIn: true,
             };
         case authTypes.REQ_LOGIN:
             return {
                 ...state,
-                loading: true,
             };
         case authTypes.REGISTER:
-            return state;
+            return {
+                ...state
+            };
         case authTypes.LOGOUT:
             return {
-                ...state,
-                auth: {
-                    ...auth,
-                    user: "guest",
-                    isLoggedIn: false,
-                }
-            }
+                ...auth,
+                user: {},
+                isLoggedIn: false,
+            };
         default:
             return state
     }

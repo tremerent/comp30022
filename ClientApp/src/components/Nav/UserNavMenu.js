@@ -52,18 +52,15 @@ class UserNavMenu extends React.Component {
 
 UserNavMenu.propTypes = {
     isLoggedIn: PropTypes.bool.isRequired,
-    user: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.shape({
+    user: PropTypes.shape({
             username: PropTypes.string,
-        }),
-    ]).isRequired,
+    }).isRequired,
 }
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
     return {
-        ...state.auth,
+        ...state.auth
     }
 }
 
-export default connect(mapStateToProps) (UserNavMenu)
+export default connect(mapStateToProps, null) (UserNavMenu)

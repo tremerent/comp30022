@@ -1,10 +1,14 @@
 
 import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { PropTypes } from 'prop-types';
+
+import { auth } from '../../redux/actions';
 
 import { Login as MsftLogin } from '../api-authorization/Login.js';
 
 import authService from './AuthorizeService.js';
-import { postLogin } from '../../scripts/requests';
 
 class Input extends React.Component {
 
@@ -66,10 +70,11 @@ class Input extends React.Component {
     }
 }
 
-export default class Login extends React.Component {
+class Login extends React.Component {
 
     constructor(props) {
         super(props);
+
 
         this.state = { };
     }
@@ -100,19 +105,10 @@ export default class Login extends React.Component {
         e.preventDefault();
         const loginData = formToJson(e.target);
 
-        (async () => {
-            try {
-                const resp = await postLogin(loginData);
-                const data = await resp.json();
-                console.log(data)
-
-            }
-            catch (e) {
-                // handle invalid login
-            }
-
-
-        })();
+        this.props.login(loginData)
+            .then((t) => {
+                console.log(t);
+            });
 
         function formToJson(formEle) {
             const formData = new FormData(formEle);
@@ -127,4 +123,17 @@ export default class Login extends React.Component {
         }
     }
 }
+
+Login.propTypes = {
+    login: PropTypes.func.isRequired,
+}
+
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators({ login: auth.login }, dispatch);
+};
+
+export default connect(
+    null,
+    mapDispatchToProps
+) (Login);
 

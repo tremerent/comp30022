@@ -2,4 +2,4 @@
 
 import * as auth from './authReducers';
 
-export default combineReducers({ auth });
+export default combineReducers({ ...auth });
