@@ -1,10 +1,39 @@
 
+/* This div holds a div which holds the list of artefact cards. */
 .af-artefact-scroller {
+    /* Grow to fit height. */
+    height: 100%;
+    /* Make it twice as wide as parent so the scrollbar is hidden off to
+       the side. (Unless some browser's scrollbar is wider than the page
+       content, which would be ridiculous.) */
+    width: 200%;
+    /* The child list of cards is longer than the scroller, so we, uh, *scroll*
+       it. */
+    overflow-y: scroll;
+    /* Needed so the parent div will not resize to fit this div, because that
+       would in turn resize to fit the whole list of cards. */
+    position: absolute;
+}
 
-    background-color: grey;
+.af-artefact-scroller-wrapper {
+    /* Artefact scroller fills the available space. */
+    height: 100%;
+    width: 100%;
+    /* Needs to be 'positioned' so the child div's 'absolute' positioning is
+       still relative to us. */
+    position: relative;
+    /* Crop the child div, hiding the scrollbar (which is shoved waaaay over
+       to the edge by the 'width: 200%'. */
+    overflow-x: hidden;
+}
 
-    height: 100px;
-    width: 100px;
-
+.af-artefact-scroller-inner {
+    /* Since the div holding this div has 'width: 200%', we cancel this out
+       with 'width: 50%'. Note however that the parent's '200%' *includes* that
+       parent's scrollbar, but this 50% excludes the parent scrollbar. This
+       means that the inner div is actually off-center in the page by
+       one-quarter the width of the browser's scrollbar. Not going to try to
+       fix this now or hopefully ever. */
+    width: 50%;
 }
 

@@ -11,24 +11,22 @@ export default class ArtefactScroller extends Component {
 
     render() {
        return (
-            <div className='af-artefact-scroller'>
-            </div>
+            //<div className={this.props.className + ' af-artefact-scroller-wrapper'}>
+            //    <div className='af-artefact-scroller'>
+            //        <div className='af-artefact-scroller-inner'>
+               <>
+                        {this.props.artefacts.map(a => {
+                            return a &&
+                                <ArtefactPreview key={a.id} artefact={a} />
+                        })}
+                </>
+            //        </div>
+            //    </div>
+            //</div>
             //<div style={{
             //    height: '500px',
             //    overflowY: 'scroll'
             //}}>
-            //   {this.props.artefacts.map(a => {
-            //       if (a) {
-            //           return (
-            //               <div className="my-3">
-            //                   <ArtefactPreview key={a.id} artefact={a} className="my-1" />
-            //               </div>
-            //           );
-            //       }
-            //       else {
-            //           return <div> </div>;
-            //       }
-            //   })}
             //</div>
         );
    }
