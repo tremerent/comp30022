@@ -33,9 +33,7 @@ export default class ArtefactBrowser extends React.Component {
 
     render() {
         return (
-            <ArtefactScroller
-                artefacts={this.state.artefacts}
-            />
+            <ArtefactScroller artefacts={this.state.artefacts}/>
         );
     }
 
