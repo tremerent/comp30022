@@ -34,11 +34,8 @@ export default class MyArtefacts extends React.Component {
 
     render() {
         return (
-            <div className="row mt-5 justify-content-around">
-                <ArtefactScroller
-                    artefacts={this.state.artefacts}
-                    className="col-xs-6"/>
-
+            <div className="row justify-content-around">
+                <ArtefactScroller artefacts={this.state.artefacts}/>
                 <CreateArtefact addArtefact={this.addArtefact} className="col-xs-6" />
             </div>
         );

@@ -1,0 +1,17 @@
+
+.af-artefact-preview {
+    width: 100%;
+    min-height: 500px;
+    border: 0.13rem solid #f0f0f0;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0.4em 0.4em 0.8em rgba(0, 0, 0, 0.13);
+    margin-top: 1.5em;
+}
+
+.af-artefact-preview-image {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
