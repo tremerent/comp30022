@@ -15,7 +15,8 @@ html {
 }
 
 .af-layout-top {
-    background-color: #464d5d;
+    /* Oh god that colour (from the logo) is so ugly. */
+    /*background-color: #464d5d;*/
     color: #ffffff;
 }
 
