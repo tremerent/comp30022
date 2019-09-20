@@ -3,12 +3,16 @@ import { Container } from 'reactstrap';
 
 import { NavMenu } from './NavMenu.js';
 
+import './Layout.css';
+
 export class Layout extends React.Component {
     render () {
         return (
-            <div>
+            <div className='af-layout'>
                 <NavMenu />
-                {this.props.children}
+                <div className='af-content'>
+                    {this.props.children}
+                </div>
             </div>
         );
     }

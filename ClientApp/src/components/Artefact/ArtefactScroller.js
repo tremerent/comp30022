@@ -1,6 +1,8 @@
 ﻿import React, { Component } from 'react';
 import { ArtefactPreview } from './ArtefactPreview.js';
 
+import './ArtefactScroller.css';
+
 export default class ArtefactScroller extends Component {
     constructor(props) {
         super(props);
@@ -9,20 +11,25 @@ export default class ArtefactScroller extends Component {
 
     render() {
        return (
-           <div>
-               {this.props.artefacts.map(a => {
-                   if (a) {
-                       return (
-                           <div className="my-3" style={{ height: '500px', overflowY: 'scroll' }}>
-                               <ArtefactPreview key={a.id} artefact={a} className="my-1" />
-                           </div>
-                       );
-                   }
-                   else {
-                       return <div> </div>;
-                   }
-               })}
+            <div className='af-artefact-scroller'>
             </div>
+            //<div style={{
+            //    height: '500px',
+            //    overflowY: 'scroll'
+            //}}>
+            //   {this.props.artefacts.map(a => {
+            //       if (a) {
+            //           return (
+            //               <div className="my-3">
+            //                   <ArtefactPreview key={a.id} artefact={a} className="my-1" />
+            //               </div>
+            //           );
+            //       }
+            //       else {
+            //           return <div> </div>;
+            //       }
+            //   })}
+            //</div>
         );
    }
 }

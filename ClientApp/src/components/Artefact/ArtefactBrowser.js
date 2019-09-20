@@ -31,9 +31,12 @@ export default class ArtefactBrowser extends React.Component {
             });
     }
 
-
     render() {
-        return <ArtefactScroller artefacts={this.state.artefacts} className="col-xs-6" style={{ margin: 'auto' }}/>
+        return (
+            <ArtefactScroller
+                artefacts={this.state.artefacts}
+            />
+        );
     }
 
 }
