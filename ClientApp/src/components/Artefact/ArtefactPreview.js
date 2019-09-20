@@ -34,7 +34,7 @@ function ArtefactCarousel(props) {
        </ol>
        <div className="carousel-inner">
            {Array.from(a.images.keys()).map(n => (
-               <div className={n === 0 ? 'carousel-item' : 'carousel-item active'} key={n}>
+               <div className={n !== 0 ? 'carousel-item' : 'carousel-item active'} key={n}>
                     <img
                         src={a.images[n]}
                         className='d-block af-artcard-image'
