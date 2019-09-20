@@ -8,6 +8,8 @@ import PLACEHOLDER_IMAGE_01 from '../../images/filler/artefact-01.jpg';
 import PLACEHOLDER_IMAGE_02 from '../../images/filler/artefact-02.jpg';
 import PLACEHOLDER_IMAGE_03 from '../../images/filler/artefact-03.jpg';
 
+import './MyArtefacts.css';
+
 export default class MyArtefacts extends React.Component {
 
     constructor(props) {
@@ -34,8 +36,10 @@ export default class MyArtefacts extends React.Component {
 
     render() {
         return (
-            <div className="row justify-content-around">
-                <ArtefactScroller artefacts={this.state.artefacts}/>
+            <div className='af-myart'>
+                <div className='af-myart-scroller'>
+                    <ArtefactScroller artefacts={this.state.artefacts}/>
+                </div>
                 <CreateArtefact addArtefact={this.addArtefact} className="col-xs-6" />
             </div>
         );

@@ -58,6 +58,12 @@ function ArtefactCarousel(props) {
 
 export class ArtefactPreview extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = { descToggle: false };
+    }
+
     categoryJoinsToCategories(categoryJoins) {
         return categoryJoins.map((cj) => {
             if (cj.categoryId && cj.category) {
@@ -85,7 +91,7 @@ export class ArtefactPreview extends Component {
                 <h5 className="af-artcard-title">{a.title}</h5>
                 {/*<p className="text-muted af-artcard-text">{a.description}</p>*/}
                 {/*<span className="af-artcard-separator"/>*/}
-                <div className='af-artcard-owner'>Jesus</div>
+                <div className='af-artcard-owner'>Granny Bample</div>
             </div>
             <div className="af-artcard-categories">
                 {this.categoryJoinsToCategories(a.categoryJoin).map(c =>
@@ -98,8 +104,22 @@ export class ArtefactPreview extends Component {
                 )}
             </div>
             <span className="af-artcard-actions">
-                <a href="#null" className="af-artcard-action" data-toggle="collapse" data-target={`#${id}`}>
-                    View Description ▶ {/* U+25b6 */}
+                <a
+                        href="#null"
+                        className="af-artcard-action"
+                        data-toggle="collapse"
+                        data-target={`#${id}`}
+                        onClick={
+                            e => this.setState({
+                                descToggle: !this.state.descToggle
+                            })
+                        }
+                >
+                    View Description { this.state.descToggle ?
+                            '▼' /* U+25bc */
+                        :
+                            '▶' /* U+25b6 */
+                    }
                 </a>
                 <div className="af-artcard-actions-divider"></div>
                 <a className="af-artcard-action" href={`/artefact/${a.id}`}>
