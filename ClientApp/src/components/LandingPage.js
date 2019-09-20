@@ -3,16 +3,36 @@ import React from 'react';
 
 import BACKGROUND_IMAGE from '../images/landing-page.jpg';
 
+import './LandingPage.css';
+
+function BgImage(props) {
+    return (
+        <div
+            style={{ backgroundImage: `url(${props.image})` }}
+            className='af-lp-background'
+        >
+            {props.children}
+        </div>
+    );
+}
+
 export default function LandingPage(props) {
     // TODO(sam) if user is logged in, just redirect to profile/family/
     // artefacts/whatever.
     return (
-        <div style={{ backgroundImage: `url(${BACKGROUND_IMAGE})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundAttachment: 'fixed', maxHeight: '100%', height: '100%', width: '100%', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ width: '60%', margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <h1 style={{ textAlign: 'center', color: '#dddddd' }}>Discover, record, and share your family's legacy.</h1>
-                <a className='btn btn-primary mt-1' href='/authentication/signup'>Get Started</a>
+        <BgImage image={BACKGROUND_IMAGE} className='af-billboard'>
+            <div className='af-billboard'>
+                <h1 className='af-billboard-text'>
+                    Discover, record, and share your family's legacy.
+                </h1>
+                <a
+                    className='btn btn-primary mt-1'
+                    href='/authentication/signup'
+                >
+                    Get Started
+                </a>
             </div>
-        </div>
+        </BgImage>
     );
     //
 }
