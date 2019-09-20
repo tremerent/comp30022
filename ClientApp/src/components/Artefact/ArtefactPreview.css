@@ -1,17 +1,89 @@
 
-.af-artefact-preview {
+.af-artcard {
     width: 100%;
-    min-height: 500px;
+    min-height: 100px;
     border: 0.13rem solid #f0f0f0;
-    border-radius: 6px;
+    border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0.4em 0.4em 0.8em rgba(0, 0, 0, 0.13);
     margin-top: 1.5em;
+    display: flex;
+    flex-direction: column;
 }
 
-.af-artefact-preview-image {
+.af-artcard-carousel-fade {
+    box-shadow: 0 .55rem .85rem rgba(0, 0, 0, .85) inset;
+}
+
+.af-artcard-image {
     display: block;
     width: 100%;
     height: auto;
 }
 
+.af-artcard-body {
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+    padding-left: 2em;
+    padding-right: 2em;
+    width: 100%;
+}
+
+.af-artcard-header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    flex-grow: 1;
+    width: 100%;
+}
+
+.af-artcard-title-owner {
+    margin-top: 0.6em;
+    margin-bottom: 0.8em;
+}
+
+.af-artcard-title {
+    padding-right: 1em;
+    font-weight: bold;
+}
+
+.af-artcard-owner {
+    padding-right: 1em;
+}
+
+.af-artcard-categories {
+    margin-bottom: 0.8em;
+}
+
+.badge {
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
+}
+
+.af-artcard-actions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap-reverse;
+    margin-bottom: 1em;
+}
+
+.af-artcard-action {
+    white-space: nowrap;
+}
+
+.af-artcard-actions-divider {
+    width: 2em;
+    height: 1em;
+}
+
+.af-artcard-desc {
+    width: 100%;
+}
+
+.af-artcard-desc p {
+    width: 100%;
+    margin-bottom: 0;
+}

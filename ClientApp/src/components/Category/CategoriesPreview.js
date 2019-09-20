@@ -11,9 +11,9 @@ export default class CategoriesPreview extends Component {
         function categoryBadge(category) {
             if (category.name && category.id) {
                 return (
-                    <div key={category.id} className="badge badge-decal-text mx-1">
+                    <a href={`/browse?category=${category.id}`} key={category.id} className="badge badge-decal-text mx-1">
                         {category.name}
-                    </div>
+                    </a>
                 );
             }
             else {
@@ -21,11 +21,7 @@ export default class CategoriesPreview extends Component {
             }
         }
 
-        return (
-            <div> 
-                {this.props.categories.map(category => categoryBadge(category))}
-            </div>
-        ); 
+        return this.props.categories.map(category => categoryBadge(category));
     }
 
     //this.props.categories.map(
