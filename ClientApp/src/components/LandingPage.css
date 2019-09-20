@@ -12,6 +12,8 @@
     /* Background fills entire page. */
     height: 100%;
     width: 100%;
+    /* Background should go behind everything else. */
+    z-index: -64;
 }
 
 .af-billboard {
