@@ -1,6 +1,9 @@
 ﻿import { authTypes } from './types';
 
-import { postLogin } from '../../scripts/requests';
+import {
+    postLogin,
+    postRegister,
+} from '../../scripts/requests';
 
 // request login
 function reqLogin() {

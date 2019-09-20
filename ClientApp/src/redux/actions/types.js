@@ -2,6 +2,7 @@
 const REQ_LOGIN = 'REQ_LOGIN';
 const REQ_REGISTER = 'REQ_REGISTER';
 const RES_REGISTER = 'RES_REGISTER';
+const ERR_REGISTER = 'ERR_REGISTER';
 const LOGOUT = 'LOGOUT';
 
 const authTypes = {
@@ -9,6 +10,7 @@ const authTypes = {
     REQ_LOGIN,
     REQ_REGISTER,
     RES_REGISTER,
+    ERR_REGISTER,
     LOGOUT,
 }
 

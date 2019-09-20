@@ -1,9 +1,17 @@
 ﻿import Joi from 'joi';
 import authService from '../components/api-authorization/AuthorizeService';
 
-/*
- * TODO: abstract the headers section going on in all the ajax functions
- */ 
+function formToJson(formEle) {
+    const formData = new FormData(formEle);
+
+    let jsonData = {};
+
+    for (const [key, value] of formData.entries()) {
+        jsonData[key] = value;
+    }
+
+    return jsonData;
+}
 
 // Function maps 'idNameObjs' to a string of html '<option>'s with value 'id' and label 'name'.
 // Param 'idNameObjs' expects a list of objects of form { id, name}.
@@ -16,4 +24,7 @@ function convertToSelectOptsStr(idNameObjs) {
     return selectOpts;
 }
 
-export { convertToSelectOptsStr, };
+export {
+    convertToSelectOptsStr,
+    formToJson,
+};

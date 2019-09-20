@@ -1,14 +1,10 @@
-
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { PropTypes } from 'prop-types';
 
 import { auth } from '../../redux/actions';
-
-import { Login as MsftLogin } from '../api-authorization/Login.js';
-
-import authService from './AuthorizeService.js';
+import { formToJson } from '../../scripts/utilityService';
 
 class Input extends React.Component {
 
@@ -72,13 +68,6 @@ class Input extends React.Component {
 
 class Login extends React.Component {
 
-    constructor(props) {
-        super(props);
-
-
-        this.state = { };
-    }
-
     render() {
         return (
             <div>
@@ -109,18 +98,6 @@ class Login extends React.Component {
             .then((t) => {
                 console.log(t);
             });
-
-        function formToJson(formEle) {
-            const formData = new FormData(formEle);
-
-            let jsonData = {};
-
-            for (const [key, value] of formData.entries()) {
-                jsonData[key] = value;
-            }
-
-            return jsonData;
-        }
     }
 }
 
