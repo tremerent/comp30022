@@ -17,6 +17,19 @@ async function postLogin(loginDetails) {
     return response;
 }
 
+async function postRegister(registerDetails) {
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+
+    const response = await fetch(`api/auth/register`, {
+        headers,
+        method: 'POST',
+        body: JSON.stringify(registerDetails),
+    });
+    return response;
+}
+
 async function getArtefact(artefactId) {
     const token = await authService.getAccessToken();
     const headers = {
@@ -138,4 +151,5 @@ export {
     getCategories,
 
     postLogin,
+    postRegister,
 }

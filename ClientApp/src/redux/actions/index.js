@@ -30,8 +30,32 @@ function login(loginData) {
     }
 }
 
+// request login
+function reqRegister() {
+    return {
+        type: authTypes.REQ_REGISTER,
+    }
+}
+
+// receive login response
+function resRegister(userData) {
+    return {
+        type: authTypes.RES_REGISTER,
+        userData,
+    }
+}
+
 function register(registerData) {
-    
+    return async function (dispatch) {
+        dispatch(reqRegister());
+
+        const resp = await postRegister(registerData);
+        const respData = await resp.json();
+
+        dispatch(resRegister(respData.user));
+
+        return respData;
+    }
 }
 
 function logout() {
