@@ -2,13 +2,11 @@
 .af-layout {
     display: flex;
     flex-direction: column;
-    border: 1px solid red;
     width: 100%;
     height: 100%;
 }
 
 .af-content {
-    flex: 1;
-    border: 1px solid blue;
+    flex-grow: 1;
 }
 
