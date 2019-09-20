@@ -70,11 +70,11 @@ export class CreateArtefact extends Component {
         return (
             <div>
                 <div className="text-center">
-                    <div class="spinner-border text-primary" role="status"
+                    <div className="spinner-border text-primary" role="status"
                         style={{
                             display: this.state.artefactWasCreated ? "none" : this.state.loading ? null : "none"
                         }}>
-                        <span class="sr-only">Loading...</span>
+                        <span className="sr-only">Loading...</span>
                     </div>
                 </div>
                 <div className="card"
@@ -94,8 +94,8 @@ export class CreateArtefact extends Component {
 
     renderArtefactCreated = () => {
         return (
-            <div class="alert alert-success" role="alert">
-                <h4 class="alert-heading">Thanks for registering an artefact!</h4>
+            <div className="alert alert-success" role="alert">
+                <h4 className="alert-heading">Thanks for registering an artefact!</h4>
                 <p> Important info about what you can now ... </p>
                 <hr/>
                 <div className="row justify-content-start">

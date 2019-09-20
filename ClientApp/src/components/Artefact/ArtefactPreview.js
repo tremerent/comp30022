@@ -25,33 +25,33 @@ export class ArtefactPreview extends Component {
         let carouselId = `artefact-preview-carousel-${a.id}`;
 
        return (
-<div class="artefact-preview" style={{width: '18rem'}}>
+<div className="artefact-preview" style={{width: '18rem'}}>
     <div
             id={carouselId}
-            class="carousel slide artefact-preview-carousel"
+            className="carousel slide artefact-preview-carousel"
             data-ride="carousel"
             data-interval="false"
                >
                    {a.images
                        ?
                        (<div>
-                           <ol class="carousel-indicators">
+                           <ol className="carousel-indicators">
                                {Array.from(a.images.keys()).map(n => (
                                    <li
                                        data-target={`#${carouselId}`}
                                        key={n}
                                        data-slide-to={n}
-                                       class={n ? undefined : 'active'}
+                                       className={n ? undefined : 'active'}
                                    >
                                    </li>
                                ))}
                            </ol>
-                           <div class="carousel-inner">
+                           <div className="carousel-inner">
                                {Array.from(a.images.keys()).map(n => (
-                                   <div class={n === 0 ? 'carousel-item' : 'carousel-item active'} key={n}>
+                                   <div className={n === 0 ? 'carousel-item' : 'carousel-item active'} key={n}>
                                        <img
                                            src={a.images[n]}
-                                           class='d-block artefact-image'
+                                           className='d-block artefact-image'
                                            style={{ height: '12rem', margin: '0 auto' }}
                                            alt='TODO'
                                        />
@@ -61,13 +61,13 @@ export class ArtefactPreview extends Component {
                         </div>)
                        : <div> </div>
                        }
-        <a class="carousel-control-prev" href={`#${carouselId}`} role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
+        <a className="carousel-control-prev" href={`#${carouselId}`} role="button" data-slide="prev">
+            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span className="sr-only">Previous</span>
         </a>
-        <a class="carousel-control-next" href={`#${carouselId}`} role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
+        <a className="carousel-control-next" href={`#${carouselId}`} role="button" data-slide="next">
+            <span className="carousel-control-next-icon" aria-hidden="true"></span>
+            <span className="sr-only">Next</span>
         </a>
     </div>
     <div className="card-body">

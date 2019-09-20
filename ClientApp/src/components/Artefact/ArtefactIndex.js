@@ -99,7 +99,7 @@ export class ArtefactIndex extends Component {
                             categoryJoin: [],
                         },
                     ]}
-                    class="col-xs-6"/>
+                    className="col-xs-6"/>
 
                 <CreateArtefact addArtefact={this.addArtefact} className="col-xs-6" />
             </div>
