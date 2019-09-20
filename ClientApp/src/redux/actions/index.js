@@ -48,6 +48,13 @@ function resRegister(userData) {
     }
 }
 
+function errRegister(errorCode) {
+    return {
+        type: authTypes.ERR_REGISTER,
+        errorCode: errorCode,
+    }
+}
+
 function register(registerData) {
     return async function (dispatch) {
         dispatch(reqRegister());

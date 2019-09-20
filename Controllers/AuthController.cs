@@ -106,6 +106,7 @@ namespace Artefactor.Controllers
             }
             else
             {
+                // todo
                 return new BadRequestObjectResult("Malformed body");
             }
         }
@@ -124,24 +125,53 @@ namespace Artefactor.Controllers
 
                 var result = await _userManager.CreateAsync(user, registerReq.Password);
 
-                await _signInManager.SignInAsync(user, isPersistent: false);
+                if (result.Succeeded)
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
 
-                if (returnUrl != null)
-                {
-                    return LocalRedirect(returnUrl);
-                }
-                else
-                {
-                    return new JsonResult(new
+                    var resp = new JsonResult(new
                     {
                         IsOk = true,
                         user = new { user.UserName },
                     });
+
+                    return JsonRespIfNoRedir(resp, returnUrl);
+                }
+                else
+                {
+                    JsonResult resp;
+
+                    // cherry pick error codes handled by client
+
+                    var dupUsernameError = result
+                        .Errors
+                        .SingleOrDefault(e => e.Code == "DuplicateUserName");
+
+                    if (dupUsernameError != null)
+                    {
+                        resp = new JsonResult(new
+                        {
+                            IsOk = false,
+                            errorCode = dupUsernameError.Code,
+                        });
+                    }
+                    else
+                    {
+                        // TODO
+                        resp = new JsonResult(new
+                        {
+                            IsOk = false,
+                            errorCode = "Other",
+                        });
+                    }
+
+                    return resp;
                 }
             }
             else
             {
                 // todo
+                return new BadRequestObjectResult("Malformed body");
             }
         }
 
@@ -150,42 +180,25 @@ namespace Artefactor.Controllers
         {
             await _signInManager.SignOutAsync();
 
+            var resp = new JsonResult(new
+            {
+                IsOk = true
+            });
+
+            return JsonRespIfNoRedir(resp, returnUrl);
+        }
+
+        private IActionResult JsonRespIfNoRedir(Object jsonObj, 
+            string returnUrl = null)
+        {
             if (returnUrl != null)
             {
                 return LocalRedirect(returnUrl);
             }
             else
             {
-                return new JsonResult(new
-                {
-                    IsOk = true
-                });
+                return new JsonResult(jsonObj);
             }
-        }
-
-        // GET api/<controller>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<controller>
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }
