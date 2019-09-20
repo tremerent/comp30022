@@ -4,6 +4,19 @@
  * All request functions assume parameters have already been validated.
  */
 
+async function postLogin(loginDetails) {
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+
+    const response = await fetch(`api/auth/login`, {
+        headers,
+        method: 'POST',
+        body: JSON.stringify(loginDetails),
+    });
+    return response;
+}
+
 async function getArtefact(artefactId) {
     const token = await authService.getAccessToken();
     const headers = {
@@ -123,4 +136,6 @@ export {
 
     postCategory,
     getCategories,
+
+    postLogin,
 }

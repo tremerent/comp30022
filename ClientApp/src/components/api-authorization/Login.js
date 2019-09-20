@@ -45,7 +45,7 @@ export class Login extends Component {
     render() {
         const action = this.props.action;
         const { message } = this.state;
-
+        
         if (!!message) {
             return <div>{message}</div>
         } else {

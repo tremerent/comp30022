@@ -1,11 +1,10 @@
 import React from 'react';
-import { Container } from 'reactstrap';
-import { NavMenu } from './NavMenu';
+import { NavMenu } from './Nav/NavMenu';
 
 export class Layout extends React.Component {
     render () {
         return (
-            <div style={{ width: "100%", height: "100%" }}>
+            <div style={{height: "100%", width: "100%"}}>
                 <NavMenu />
                 {this.props.children}
             </div>

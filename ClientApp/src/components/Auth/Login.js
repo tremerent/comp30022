@@ -4,6 +4,7 @@ import React from 'react';
 import { Login as MsftLogin } from '../api-authorization/Login.js';
 
 import authService from './AuthorizeService.js';
+import { postLogin } from '../../scripts/requests';
 
 class Input extends React.Component {
 
@@ -43,7 +44,8 @@ class Input extends React.Component {
                         {this.props.label}
                     </label>}
                 {this.props.id ?
-                        <input
+                    <input
+                        name={this.props.name}
                             value={this.state.value}
                             onChange={this.onChange}
                             className="form-control"
@@ -51,7 +53,8 @@ class Input extends React.Component {
                             id={this.props.id}
                         />
                     :
-                        <input
+                    <input
+                            name={this.props.name}
                             value={this.state.value}
                             onChange={this.onChange}
                             type={this.type}
@@ -61,7 +64,6 @@ class Input extends React.Component {
             </>
         );
     }
-
 }
 
 export default class Login extends React.Component {
@@ -70,12 +72,6 @@ export default class Login extends React.Component {
         super(props);
 
         this.state = { };
-
-        this.onSubmit = this.onSubmit.bind(this);
-    }
-
-    onSubmit() {
-        console.log("======================= SUBMITTED ======================");
     }
 
     render() {
@@ -85,12 +81,13 @@ export default class Login extends React.Component {
                 <form onSubmit={this.handleSubmit}>
                     <div className="form-group">
                         <Input
+                            name='username'
                             id='login-username'
                             label='Username'
                             checks={[[ /\W+/, 'Username may only contain letters, numbers, and underscores ("_").' ]]}
                         >
                         </Input>
-                        <Input id='login-password' type='password' label='Password'></Input>
+                        <Input name='password' id='login-password' type='password' label='Password'></Input>
 
                         <button className="form-submit" type="submit">Log In</button>
                     </div>
@@ -99,5 +96,35 @@ export default class Login extends React.Component {
         );
     }
 
+    handleSubmit = (e) => {
+        e.preventDefault();
+        const loginData = formToJson(e.target);
+
+        (async () => {
+            try {
+                const resp = await postLogin(loginData);
+                const data = await resp.json();
+                console.log(data)
+
+            }
+            catch (e) {
+                // handle invalid login
+            }
+
+
+        })();
+
+        function formToJson(formEle) {
+            const formData = new FormData(formEle);
+
+            let jsonData = {};
+
+            for (const [key, value] of formData.entries()) {
+                jsonData[key] = value;
+            }
+
+            return jsonData;
+        }
+    }
 }
 
