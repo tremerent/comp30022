@@ -70,24 +70,68 @@ class Login extends React.Component {
 
     render() {
         return (
-            <div>
+            <>
                 <h3>Log in to your Artefactor account</h3>
-                <form onSubmit={this.handleSubmit}>
-                    <div className="form-group">
-                        <Input
-                            name='username'
-                            id='login-username'
-                            label='Username'
-                            checks={[[ /\W+/, 'Username may only contain letters, numbers, and underscores ("_").' ]]}
-                        >
-                        </Input>
-                        <Input name='password' id='login-password' type='password' label='Password'></Input>
+                <div className="row">
+                    <div className="col-md-4">
+                        <form onSubmit={this.handleSubmit}>
+                            <hr />
+                            <div className="form-group">
+                                <label htmlFor="username">Username</label>
+                                <input name="username" className="form-control" />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="password">Password</label>
+                                <input name="password" className="form-control" type="password" />
+                            </div>
+                            <div className="form-group form-check">
+                                <input name="rememberMe" type="checkbox" value="" className="form-check-input" />
+                                <label htmlFor="rememberMe" className="form-check-label">
+                                    Remember me
+                                </label>
+                            </div>
 
-                        <button className="form-submit" type="submit">Log In</button>
+                            <div className="form-row justify-content-start my-3">
+                                <div className="col-xs-3 mx-1">
+                                    <a className="btn btn-outline-secondary" to="/auth/signup">Signup</a>
+                                </div>
+                                <div className="col-xs-3">
+                                    <button type="submit" className="btn btn-primary">Login</button>
+                                </div>
+                            </div>
+               
+                        </form>
                     </div>
-                </form>
-            </div>
+                </div>
+            </>
         );
+
+        //<div class="form-group">
+        //    <p>
+        //        <a disabled>Forgot your password?</a>
+        //    </p>
+        //</div>
+
+
+        //return (
+        //    <div>
+        //        <h3>Log in to your Artefactor account</h3>
+        //        <form onSubmit={this.handleSubmit}>
+        //            <div className="form-group">
+        //                <Input
+        //                    name='username'
+        //                    id='login-username'
+        //                    label='Username'
+        //                    checks={[[ /\W+/, 'Username may only contain letters, numbers, and underscores ("_").' ]]}
+        //                >
+        //                </Input>
+        //                <Input name='password' id='login-password' type='password' label='Password'></Input>
+
+        //                <button className="form-submit" type="submit">Log In</button>
+        //            </div>
+        //        </form>
+        //    </div>
+        //);
     }
 
     handleSubmit = (e) => {

@@ -78,7 +78,8 @@ namespace Artefactor.Controllers
                         user = new { user.UserName }
                     });
 
-                    return JsonRespIfNoRedir(resp, returnUrl);
+                    return resp;
+                    //return JsonRespIfNoRedir(resp, returnUrl);
                 }
                 if (result.RequiresTwoFactor)
                 {
@@ -127,7 +128,8 @@ namespace Artefactor.Controllers
                         user = new { user.UserName },
                     });
 
-                    return JsonRespIfNoRedir(resp, returnUrl);
+                    return resp;
+                    //return JsonRespIfNoRedir(resp, returnUrl);
                 }
                 else
                 {
@@ -177,9 +179,13 @@ namespace Artefactor.Controllers
                 IsOk = true
             });
 
-            return JsonRespIfNoRedir(resp, returnUrl);
+            return resp;
+            //return JsonRespIfNoRedir(resp, returnUrl);
         }
 
+        // TODO: this is broken for now - the JsonResult casts (or something) 
+        //       to an IActionResult, wrapping it in a non-conformant manner 
+        //       ie. { statusCode, ..., value: jsonObj }
         private IActionResult JsonRespIfNoRedir(Object jsonObj, 
             string returnUrl = null)
         {
@@ -189,7 +195,7 @@ namespace Artefactor.Controllers
             }
             else
             {
-                return new JsonResult(jsonObj);
+                return Json(jsonObj);
             }
         }
     }

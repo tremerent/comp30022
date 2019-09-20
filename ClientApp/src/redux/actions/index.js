@@ -27,6 +27,7 @@ function login(loginData) {
         const resp = await postLogin(loginData);
         const respData = await resp.json();
 
+        console.log(respData)
         dispatch(resLogin(respData.user));
 
         return respData;
