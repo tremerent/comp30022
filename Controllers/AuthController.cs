@@ -36,7 +36,6 @@ namespace Artefactor.Controllers
 
             [Display(Name = "Remember me?")]
             public bool RememberMe { get; set; }
-            public string ReturnUrl { get; set; }
         }
 
         public class RegisterRequest
@@ -73,20 +72,13 @@ namespace Artefactor.Controllers
                 var result = await _signInManager.PasswordSignInAsync(user, loginReq.Password, loginReq.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
-                    if (returnUrl != null)
+                    var resp = new JsonResult(new
                     {
-                        return new JsonResult(new
-                        {
-                            RedirectUrl = loginReq.ReturnUrl,
-                            IsOk = true,
-                            user = new { user.UserName }
-                        });
-                    }
-                    else
-                    {
-                        return LocalRedirect(returnUrl);
-                    }
-                    
+                        IsOk = true,
+                        user = new { user.UserName }
+                    });
+
+                    return JsonRespIfNoRedir(resp, returnUrl);
                 }
                 if (result.RequiresTwoFactor)
                 {
