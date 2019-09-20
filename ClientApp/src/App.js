@@ -16,7 +16,7 @@ import TestingHome from './components/Testing/TestingHome.js';
 import ApiAuthorizationRoutes from './components/api-authorization/ApiAuthorizationRoutes';
 import { ApplicationPaths } from './components/api-authorization/ApiAuthorizationConstants';
 
-import './App.css'
+import './App.css';
 
 export default class App extends Component {
     static displayName = App.name;
