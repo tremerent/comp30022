@@ -2,6 +2,8 @@
 import React from 'react';
 import ArtefactScroller from './ArtefactScroller.js';
 
+import './ArtefactBrowser.css';
+
 export default class ArtefactBrowser extends React.Component {
 
     constructor(props) {
@@ -10,7 +12,7 @@ export default class ArtefactBrowser extends React.Component {
 
     render() {
         return (
-            <div style={{ maxWidth: '60%', height: '100%', margin: 'auto' }}>
+            <div className='af-artbrowser'>
                 <ArtefactScroller/>
             </div>
         );
