@@ -31,6 +31,6 @@ html {
 .box-shadow {
     box-shadow: 0 .15rem .85rem rgba(0, 0, 0, .35);
     /* Render above everything else. */
-    z-index: 1;
+    z-index: 32;
 }
 
