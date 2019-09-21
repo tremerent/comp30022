@@ -43,10 +43,12 @@ export default class ArtefactScroller extends Component {
             //<div className={this.props.className + ' af-artefact-scroller-wrapper'}>
             //    <div className='af-artefact-scroller'>
             //        <div className='af-artefact-scroller-inner'>
-                        this.state.artefacts.map(a => {
+                    <div className='af-artefact-srcoller-container'>
+                        {this.state.artefacts.map(a => {
                             return a &&
                                 <ArtefactPreview key={a.id} artefact={a} />
-                        })
+                        })}
+                    </div>
             //        </div>
             //    </div>
             //</div>
