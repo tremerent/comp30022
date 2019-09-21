@@ -34,7 +34,7 @@ class UserNavMenu extends React.Component {
                     <NavLink tag={Link} className="text-dark" to={profilePath}>Hello {user.userName}</NavLink>
                 </NavItem>
                 <NavItem>
-                    <button onClick={(e) => { e.preventDefault(); this.props.logout(); }} className="text-dark nav-link">
+                    <button onClick={(e) => { e.preventDefault(); this.props.logout(); }} className="text-dark btn nav-link">
                         Logout
                     </button>
                 </NavItem>
