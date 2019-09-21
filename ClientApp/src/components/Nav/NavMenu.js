@@ -13,6 +13,8 @@ import UserNavMenu from './UserNavMenu.js';
 
 import './NavMenu.css';
 
+import ARTEFACTOR_BRAND from '../../images/artefactor-brand.png';
+
 export class NavMenu extends React.Component {
 
     constructor(props) {
@@ -36,7 +38,9 @@ export class NavMenu extends React.Component {
     <div className='af-navmenu'>
         <Navbar light className="navbar-expand-sm ng-white box-shadow">
             <Container>
-                <NavbarBrand tag={Link} to="/">Artefactor</NavbarBrand>
+                <NavbarBrand tag={Link} to="/">
+                    <img src={ARTEFACTOR_BRAND} className='af-navmenu-brand'/>
+                </NavbarBrand>
                 <NavbarToggler onClick={this.toggleNav}/>
                 <Collapse
                     className="d-sm-inline-flex flex-sm-row-reverse"
