@@ -1,0 +1,35 @@
+a.navbar-brand {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+html {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.af-navmenu {
+    /* Render above everything else. */
+    z-index: 32;
+    position: fixed;
+    width: 100%;
+    background-color: #464d5d;
+}
+
+.af-navmenu-placeholder {
+    /* XXX this needs to be kept in sync with whatever the navmenu's height
+       is. */
+    height: 3.5rem;
+}
+
+.box-shadow {
+    box-shadow: 0 .15rem .85rem rgba(0, 0, 0, .35);
+    /* Render above everything else. */
+    z-index: 32;
+}
+

@@ -1,7 +1,8 @@
+
 import React from 'react';
 import { Container } from 'reactstrap';
 
-import { NavMenu } from './NavMenu.js';
+import { NavMenu } from './Nav/NavMenu.js';
 
 import './Layout.css';
 
