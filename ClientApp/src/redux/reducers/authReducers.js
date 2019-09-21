@@ -1,12 +1,7 @@
 ﻿import { authTypes } from '../actions/types';
+import initAuthState from './initAuthState'
 
-const initAuthState = {
-    user: {},
-    isLoggedIn: false,
-    loading: false,
-};
-
-function auth(state = initAuthState, action) {
+function auth(state = initAuthState(), action) {
     switch (action.type) {
         case authTypes.REQ_LOGIN:
             return {

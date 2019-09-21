@@ -12,6 +12,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux'
 
 import store from './redux/store'
+
 import App from './App';
 
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
@@ -26,3 +27,6 @@ ReactDOM.render(
     rootElement
 );
 
+function configureStore(store) {
+
+}

@@ -1,4 +1,5 @@
 ﻿import { authTypes } from './types';
+import { setUser } from '../../scripts/auth';
 
 import {
     postLogin,
@@ -24,28 +25,30 @@ function login(loginData) {
     return async function (dispatch) {
         dispatch(reqLogin());
 
-        const resp = await postLogin(loginData);
-        const respData = await resp.json();
+        if (await setUser(loginData)) {
+            console.log('user set');
 
-        console.log(respData)
-        dispatch(resLogin(respData.user));
-
-        return respData;
+            dispatch(resLogin({
+                username: loginData.username,
+            }));
+        }
+        else {
+            console.log('user not set');
+        }
     }
 }
 
-// request login
+// begin registration
 function reqRegister() {
     return {
         type: authTypes.REQ_REGISTER,
     }
 }
 
-// receive login response
-function resRegister(userData) {
+// registration complete
+function resRegister() {
     return {
         type: authTypes.RES_REGISTER,
-        userData,
     }
 }
 
@@ -56,6 +59,10 @@ function errRegister(errorCode) {
     }
 }
 
+// register action makes a register request to api,
+// then calls login action (since still need a jwt - 
+// in future this could be given by server - see 
+// https://identitymodel.readthedocs.io/en/latest/client/token.html)
 function register(registerData) {
     return async function (dispatch) {
         dispatch(reqRegister());
@@ -63,9 +70,19 @@ function register(registerData) {
         const resp = await postRegister(registerData);
         const respData = await resp.json();
 
-        dispatch(resRegister(respData.user));
+        if (respData.isOk) {
+            dispatch(login(registerData));
+        }
+        else {
+            if (respData.errorCode) {
+                dispatch(errRegister(respData.errorCode));
+            }
+            else {
+                dispatch(errRegister("NO ERROR CODE"));
+            }
+        }
 
-        return respData;
+        dispatch(resRegister());
     }
 }
 
