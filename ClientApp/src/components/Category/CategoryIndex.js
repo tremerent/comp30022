@@ -1,6 +1,5 @@
 ﻿import React, { Component } from 'react';
 import CreateCategory from './CreateCategory.js';
-import authService from '../api-authorization/AuthorizeService';
 
 export class CategoryIndex extends Component {
     static displayName = CategoryIndex.name;

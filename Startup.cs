@@ -30,34 +30,12 @@ namespace Artefactor
                     //Configuration.GetConnectionString("DefaultConnection")));
             Configuration.GetConnectionString("AzureDbConnection")));
 
-            //services
-            //    .AddDefaultIdentity<ApplicationUser>(options => {
-            //        // <https://stackoverflow.com/a/27831598>
-            //        // Needlessly complex password validation rules do not
-            //        // meaningfully increase entropy and usually cause
-            //        // users to resort to password reuse in order to remember
-            //        // logins, thus substantially *reducing* the effective
-            //        // security.
-            //        // - Sam
-            //        options.Password.RequireDigit = false;
-            //        options.Password.RequireLowercase = false;
-            //        options.Password.RequireUppercase = false;
-            //        options.Password.RequireNonAlphanumeric = false;
-            //        options.Password.RequiredLength = 10;
-            //    })
-            //    .AddEntityFrameworkStores<ApplicationDbContext>();
-
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            //services.AddIdentityServer()
-            //    .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
-
-            //var certificate = new X509Certificate2(certificateFilePath, "test");
-
             services.AddIdentityServer()
-                .AddDeveloperSigningCredential()  // DEFINTELY DON'T REMOVE THIS W/O KNOWING WHAT IT DOES - :(
+                .AddDeveloperSigningCredential()
                 .AddInMemoryPersistedGrants()
                 .AddInMemoryIdentityResources(TokenAuth.Config.GetIdentityResources())
                 .AddInMemoryApiResources(TokenAuth.Config.GetApiResources())

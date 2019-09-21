@@ -1,5 +1,4 @@
 ﻿import React from 'react';
-//import authService from '../../../components/api-authorization/AuthorizeService';
 
 export default class AuthTest extends React.Component {
     render() {
@@ -12,17 +11,5 @@ export default class AuthTest extends React.Component {
 
     handleOnClick = (e) => {
         e.preventDefault();
-
-        //authService.getAccessToken()
-        //    .then((token) => {
-        //        console.log(token)
-        //        const headers = {
-        //            'Authorization': `Bearer ${token}`,
-        //            'Content-Type': 'application/json'
-        //        };
-
-        //        return fetch('/api/profile', {
-        //        })
-        //    });
     }
 }
