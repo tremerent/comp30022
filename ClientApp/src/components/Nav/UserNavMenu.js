@@ -32,11 +32,15 @@ class UserNavMenu extends React.Component {
             //<NavItem>
             //    <NavLink tag={Link} className="text-dark" to={profilePath}>Hello {user.userName}</NavLink>
             //</NavItem>
-            <NavItem>
-                <button onClick={(e) => { e.preventDefault(); this.props.logout(); }} className="text-dark btn nav-link">
-                    Logout
-                </button>
-            </NavItem>
+            <>
+                <NavLink tag={Link} to="/profile">Profile</NavLink>
+                <NavLink tag={Link} to="/my-artefacts">My Artefacts</NavLink>
+                <NavItem>
+                    <button onClick={(e) => { e.preventDefault(); this.props.logout(); }} className="text-dark btn nav-link">
+                        Logout
+                    </button>
+                </NavItem>
+            </>
         );
 
         //<NavLink tag={Link} className="text-dark" to={landingPage} onClick={this.props.logout}>
