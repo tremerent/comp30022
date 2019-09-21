@@ -1,4 +1,5 @@
-﻿import tokenFetch from './apiFetchWithAuth';  // supply token
+﻿// supply a token
+import tokenFetch from './apiFetch';  
 
 /*
  * All request functions assume parameters have already been validated.
@@ -27,7 +28,7 @@ async function getArtefact(artefactId) {
 async function postArtefact(artefact) {
     // post the artefact
     const resp = await tokenFetch()
-        .post(`api/Artefacts/${artefactId}`, artefact);
+        .post(`api/Artefacts`, artefact);
 
     return resp.data();
 }

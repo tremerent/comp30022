@@ -6,22 +6,6 @@ const identityConnectDetails = {
     scope: 'artefactorapi',
 }
 
-async function postTokenReq(loginDetails) {
-    const resp = await fetch('/connect/token', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-        },
-        body: new URLSearchParams({
-            ...identityConnectDetails,
-            username: loginDetails.username,
-            password: loginDetails.password,
-        }),
-    });
-
-    return await resp.json();
-}
-
 function getCurUser() {
     const authDetails = JSON.parse(
         localStorage.getItem("authDetails")
@@ -59,8 +43,28 @@ async function setUser(loginDetails) {
     return true;
 }
 
+function logoutUser() {
+    localStorage.removeItem("authDetails");
+}
+
+async function postTokenReq(loginDetails) {
+    const resp = await fetch('/connect/token', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: new URLSearchParams({
+            ...identityConnectDetails,
+            username: loginDetails.username,
+            password: loginDetails.password,
+        }),
+    });
+
+    return await resp.json();
+}
+
 export {
     getCurUser,
     setUser,
-
+    logoutUser,
 }

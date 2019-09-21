@@ -4,10 +4,13 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import { auth } from '../../redux/actions';
+
 const loginPath = '/auth/login';
 const signupPath = '/auth/signup'
 const profilePath = '/';
 const logoutPath = '/';
+const landingPage = '/'
 
 class UserNavMenu extends React.Component {
     constructor(props) {
@@ -23,17 +26,23 @@ class UserNavMenu extends React.Component {
         }
     }
 
-    authedView(user) {
+    authedView = (user) => {
         return (
             <>
                 <NavItem>
                     <NavLink tag={Link} className="text-dark" to={profilePath}>Hello {user.userName}</NavLink>
                 </NavItem>
                 <NavItem>
-                    <NavLink tag={Link} className="text-dark" to={logoutPath}>Logout</NavLink>
+                    <button onClick={(e) => { e.preventDefault(); this.props.logout(); }} className="text-dark nav-link">
+                        Logout
+                    </button>
                 </NavItem>
             </>
         );
+
+        //<NavLink tag={Link} className="text-dark" to={landingPage} onClick={this.props.logout}>
+        //    Logout
+        //            </NavLink>
     }
 
     unauthedView() {
@@ -55,6 +64,7 @@ UserNavMenu.propTypes = {
     user: PropTypes.shape({
             username: PropTypes.string,
     }).isRequired,
+    logout: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => {
@@ -63,4 +73,10 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, null) (UserNavMenu)
+const mapDispatchToProps = (dispatch) => {
+    return {
+        logout: dispatch(auth.logout),
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps) (UserNavMenu)

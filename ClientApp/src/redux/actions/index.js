@@ -1,8 +1,7 @@
 ﻿import { authTypes } from './types';
-import { setUser } from '../../scripts/auth';
+import { setUser, logoutUser, } from '../../scripts/auth';
 
 import {
-    postLogin,
     postRegister,
 } from '../../scripts/requests';
 
@@ -86,9 +85,11 @@ function register(registerData) {
     }
 }
 
-function logout() {
-    return async function (dispatch) {
+function logout(redirUrl) {
+    logoutUser();
 
+    return {
+        type: authTypes.LOGOUT,
     }
 }
 
