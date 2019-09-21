@@ -4,6 +4,10 @@ a {
   color: #0366d6;
 }
 
+#root {
+    height: 100vh;
+}
+
 code {
   color: #E01A76;
 }
@@ -45,12 +49,6 @@ code {
 
 .artefact-preview-carousel {
     background-color: #000000;
-}
-
-.artefact-preview {
-    border: 0.13rem solid #f0f0f0;
-    border-radius: 6px;
-    overflow: hidden;
 }
 
 .artefact-preview .card-title {

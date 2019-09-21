@@ -14,6 +14,10 @@
     width: 100%;
 }
 
+.af-lp-vignette {
+    background-image: radial-gradient(closest-side, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0));
+}
+
 .af-billboard {
     width: 60%;
     height: 100%;
@@ -28,5 +32,12 @@
 .af-billboard-text {
     text-align: center;
     color: #dddddd;
+    font-size: 1.8rem;
+}
+
+@media (min-width: 400px) {
+    .af-billboard-text {
+        font-size: 2.5rem;
+    }
 }
 

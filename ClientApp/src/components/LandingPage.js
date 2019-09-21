@@ -11,7 +11,9 @@ function BgImage(props) {
             style={{ backgroundImage: `url(${props.image})` }}
             className='af-lp-background'
         >
-            {props.children}
+            <div className='af-lp-background af-lp-vignette'>
+                {props.children}
+            </div>
         </div>
     );
 }

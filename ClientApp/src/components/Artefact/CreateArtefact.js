@@ -18,6 +18,8 @@ import 'bs-stepper/dist/css/bs-stepper.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImages, faShareAltSquare, faTrophy } from '@fortawesome/free-solid-svg-icons';
 
+import './CreateArtefact.css';
+
 export class CreateArtefact extends Component {
     constructor(props) {
         super(props);
@@ -56,9 +58,9 @@ export class CreateArtefact extends Component {
 
         this.createArtefactFirstPage =
             document.querySelector('#create-artefact-first-page');
-        this.createArtefactSecondPage = 
+        this.createArtefactSecondPage =
             document.querySelector('#create-artefact-second-page');
-        this.createArtefactThirdPage = 
+        this.createArtefactThirdPage =
             document.querySelector('#create-artefact-third-page');
         this.createArtefactTitle =
             document.querySelector('#title');
@@ -68,7 +70,7 @@ export class CreateArtefact extends Component {
 
     render() {
         return (
-            <div>
+            <div className='af-createart'>
                 <div className="text-center">
                     <div className="spinner-border text-primary" role="status"
                         style={{
@@ -78,7 +80,7 @@ export class CreateArtefact extends Component {
                     </div>
                 </div>
                 <div className="card"
-                    style={{ 
+                    style={{
                         display: this.state.artefactWasCreated
                             ? "none"
                             : this.state.loading ? "none" : null
@@ -105,7 +107,7 @@ export class CreateArtefact extends Component {
                     <button className="btn btn-primary" onClick={this.resetArtefactCreation}> Create another artefact</button>
                 </div>
             </div>
-        ); 
+        );
     }
 
     renderArtefactForm = () => {
@@ -420,16 +422,16 @@ export class CreateArtefact extends Component {
 
         const valid = this.firstFormPageValid();
 
-        // adding the classes the hacky way instead of simple 
+        // adding the classes the hacky way instead of simple
         // "this.createArtefactFirstPage.classList.add('was-validated');"
-        // because having 'required' on '#description' added a red border 
+        // because having 'required' on '#description' added a red border
         // that I was unable to find the css for (this was only for <textarea/>,
         // it was fine with <input/>, but the text area is probably a nice thing
         // to have) - Jonah
         if (valid) {
             this.createArtefactTitle.classList.remove('is-invalid');
             this.createArtefactTitle.classList.add('is-valid');
-            
+
             this.createArtefactDescription.classList.remove('is-invalid');
             this.createArtefactDescription.classList.add('is-valid');
 
@@ -469,8 +471,8 @@ export class CreateArtefact extends Component {
     }
 
     formIsValid = () => {
-        return this.firstFormPageValid() && 
-            this.secondFormPageValid() && 
+        return this.firstFormPageValid() &&
+            this.secondFormPageValid() &&
             this.thirdFormPageValid()
     }
 
