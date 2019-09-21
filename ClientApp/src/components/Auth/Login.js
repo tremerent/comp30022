@@ -150,7 +150,9 @@ Login.propTypes = {
 }
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ login: auth.login }, dispatch);
+    const t = bindActionCreators({ login: auth.login }, dispatch);
+    console.log(t);
+    return t;
 };
 
 export default connect(

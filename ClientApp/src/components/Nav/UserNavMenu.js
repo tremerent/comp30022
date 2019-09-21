@@ -1,7 +1,8 @@
 ﻿import React from 'react';
 import { NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { connect, } from 'react-redux';
+import { bindActionCreators } from 'react';
 import PropTypes from 'prop-types';
 
 import { auth } from '../../redux/actions';
@@ -74,8 +75,11 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
+    //return bindActionCreators({ logout: auth.logout }, dispatch);
     return {
-        logout: dispatch(auth.logout),
+        logout: () => {
+            dispatch(auth.logout());
+        }
     };
 }
 
