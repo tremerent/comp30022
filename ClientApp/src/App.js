@@ -15,6 +15,9 @@ import Signup from './components/Auth/Signup';
 
 import './App.css';
 
+// XXX -- Sam
+const AuthorizeRoute = Route;
+
 export default class App extends Component {
     static displayName = App.name;
 
@@ -30,13 +33,14 @@ export default class App extends Component {
     */}
     <Route exact path='/' component={LandingPage} />
     <Container>
+        <Route path='/auth' component={this.authRoutes} />
+        <Route path='/browse' component={ArtefactBrowser} />
+        <AuthorizeRoute path='/profile' component={UserProfile} />
+        <AuthorizeRoute path='/my-artefacts' component={MyArtefacts} />
+        <Route path='/tests' component={TestingHome} />
+        {/*<Route path='/family' component={FamilyView} />*/}
         {/*<Route path='/login' render={() => <Login action='login'></Login>} />*/}
         {/*<Route path='/signup' component={Signup} />*/}
-        <Route path='/browse' component={ArtefactBrowser} />
-        <Route path='/tests' component={TestingHome} />
-        <Route path='/my-artefacts' component={MyArtefacts} />
-        <Route path='/profile' component={UserProfile} />
-        {/*<Route path='/family' component={FamilyView} />*/}
     </Container>
 </Layout>
         );

@@ -1,4 +1,4 @@
-﻿import { createInstance } from 'axios';
+﻿import axios from 'axios';
 
 /**
  * Wrapper for axios. Invoke with token to receive the initialised instance (
@@ -15,7 +15,7 @@ function apiFetch() {
         }
     }
 
-    const instance = createInstance(apiOpts);
+    const instance = axios.create(apiOpts);
 
     instance.interceptors.request.use(function (config) {
         const token = localStorage.getItem('token');
@@ -38,4 +38,4 @@ function apiFetchWithAuth(token) {
 
 // given a token, returns an initialised axios instance
 export default apiFetchWithAuth;
-    
+
