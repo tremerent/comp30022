@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 
 import Scratch from './Scratch.js';
+import AuthTest from './components/AuthTest';
 import ComponentTests from './ComponentTests.js';
 
 export default class TestingHome extends Component {
@@ -19,6 +20,7 @@ export default class TestingHome extends Component {
             <div className="row">
                 <div className="col-xs-6">
                     <Scratch />
+                    <AuthTest />
                 </div>
                 <div className="col-xs-6">
                     <ComponentTests />

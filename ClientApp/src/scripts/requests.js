@@ -1,116 +1,75 @@
-﻿import authService from '../components/api-authorization/AuthorizeService';
+﻿// supply a token
+import tokenFetch from './apiFetch';  
 
 /*
  * All request functions assume parameters have already been validated.
  */
 
-async function getArtefact(artefactId) {
-    const token = await authService.getAccessToken();
-    const headers = {
-        'Content-Type': 'application/json'
-    };
-    const response = await fetch(`api/Artefacts/${artefactId}`, {
-        headers: !token ? { ...headers } : {
-            ...headers,
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        },
-    });
+async function postLogin(loginDetails) {
+    const resp = await tokenFetch().post(`api/auth/login`, loginDetails);
 
-    return response.json();
+    return resp.data();
+}
+
+async function postRegister(registerDetails) {
+    const resp = await tokenFetch().post(`api/auth/login`, registerDetails);
+
+    return resp.data();
+}
+
+async function getArtefact(artefactId) {
+    const resp = await tokenFetch()
+        .get(`api/Artefacts/${artefactId}`);
+
+    return resp.data();
 }
 
 // assumes param. 'artefact' has been validated
 async function postArtefact(artefact) {
     // post the artefact
-    const token = await authService.getAccessToken();
-    const headers = {
-        'Content-Type': 'application/json'
-    };
-    const response = await fetch('api/Artefacts', {
-        method: 'POST',
-        headers: !token ? { ...headers } : {
-            ...headers,
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(artefact),
-    });
+    const resp = await tokenFetch()
+        .post(`api/Artefacts`, artefact);
 
-    return response.json();
+    return resp.data();
 }
 
 // 'category' should already be validated
 async function postCategory(category) {
-    const token = await authService.getAccessToken();
-    const headers = {
-        'Content-Type': 'application/json'
-    };
+    const resp = await tokenFetch()
+        .post(`api/Categories`);
 
-    const response = await fetch('api/Categories', {
-        method: 'POST',
-        headers: !token ? { ...headers } : {
-            ...headers,
-            'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(category),
-    });
-    const respData = await response.json();
-
-    return respData;
+    return resp.data();
 }
 
 async function getCategories() {
-    const resp = await fetch('api/Categories', {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-    const respData = await resp.json();
+    const resp = await tokenFetch()
+        .get(`/Categories`);
 
-    return respData;
+    return resp.data();
 }
 
 async function postArtefactCategories(artefactId, categories) {
-    const token = await authService.getAccessToken();
-    const headers = {
-        'Content-Type': 'application/json'
-    };
-
     const artefactCategories = categories
         .map(cat => ({ artefactId, categoryId: cat.id }));
 
-    const response = await fetch('api/ArtefactCategories/Many', {
-        method: 'POST',
-        headers: !token ? { ...headers } : {
-            ...headers,
-            'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(artefactCategories),
-    });
-    const respData = await response.json();
+    const resp = await tokenFetch()
+        .post(`/ArtefactCategories/Many`, artefactCategories);
 
-    return respData;
+    return resp.data();
 }
 
 async function getVisibilityOpts() {
-    const token = await authService.getAccessToken();
-    const response = await fetch('api/Artefacts/VisibilityOpts', {
-        headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-    });
-    const respData = await response.json();
+    const resp = await tokenFetch()
+        .get(`/Artefacts/VisibilityOpts`);
 
-    return respData;
+    return resp.data();
 }
 
 async function getArtefacts() {
-    const token = await authService.getAccessToken();
-    const response = await fetch('api/Artefacts', {
-        headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-    });
-    const respData = await response.json();
+    const resp = await tokenFetch()
+        .get(`/Artefacts`);
 
-    return respData;
+    return resp.data();
 }
 
 export {
@@ -123,4 +82,7 @@ export {
 
     postCategory,
     getCategories,
+
+    postLogin,
+    postRegister,
 }

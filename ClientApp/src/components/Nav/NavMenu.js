@@ -10,7 +10,6 @@ import {
 } from 'reactstrap';
 import { Link, } from 'react-router-dom';
 import { LoginMenu } from './api-authorization/LoginMenu';
-import authService from './api-authorization/AuthorizeService';
 
 import './NavMenu.css';
 
@@ -26,26 +25,6 @@ export class NavMenu extends React.Component {
 
         this.toggleNav = this.toggleNav.bind(this);
     }
-
-    componentDidMount() {
-        this.authServiceSubscription = authService.subscribe(() =>
-                this.populateState());
-        this.populateState();
-    }
-
-    componentWillUnmount() {
-        authService.unsubscribe(this.authServiceSubscription);
-    }
-
-    async populateState() {
-        const [isAuthenticated, user] =
-            await Promise.all([authService.isAuthenticated(), authService.getUser()])
-        this.setState({
-            authenticated: isAuthenticated,
-            userName: user && user.name
-        });
-    }
-
 
     toggleNav() {
         this.setState({ collapsed: !this.state.collapsed });

@@ -29,7 +29,7 @@ export default function LandingPage(props) {
                 </h1>
                 <a
                     className='btn btn-primary mt-1'
-                    href='/authentication/signup'
+                    href='/auth/signup'
                 >
                     Get Started
                 </a>
