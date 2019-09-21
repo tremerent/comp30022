@@ -2,7 +2,7 @@
 .af-artcard {
     width: 100%;
     min-height: 100px;
-    /*border: 1px solid #f0f0f0;*/
+    border: 1px solid #f0f0f0;
     border-radius: 14px;
     overflow: hidden;
     margin-top: 1.5em;
