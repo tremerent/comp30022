@@ -39,7 +39,6 @@ function getCurUser() {
 
 // loginDetails: { username, password }
 async function setUser(loginDetails) {
-    console.log('hello')
     try {
         const tokenResp = await postTokenReq(loginDetails);
 
