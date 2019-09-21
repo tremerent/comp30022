@@ -53,6 +53,12 @@ namespace Artefactor.Controllers
 
         }
 
+        //[HttpPost("/Token")]
+        //public async Task<JsonResult> Login(TokenReq tokReq)
+        //{
+
+        //}
+
         // GET: api/<controller>
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginRequest loginReq, string returnUrl = null)

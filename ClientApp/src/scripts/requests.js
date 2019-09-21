@@ -1,4 +1,4 @@
-﻿import authService from '../components/api-authorization/AuthorizeService';
+﻿//import authService from '../components/api-authorization/AuthorizeService';
 
 /*
  * All request functions assume parameters have already been validated.
@@ -31,7 +31,8 @@ async function postRegister(registerDetails) {
 }
 
 async function getArtefact(artefactId) {
-    const token = await authService.getAccessToken();
+    //const token = await authService.getAccessToken();
+    const token = null;
     const headers = {
         'Content-Type': 'application/json'
     };
@@ -39,7 +40,6 @@ async function getArtefact(artefactId) {
         headers: !token ? { ...headers } : {
             ...headers,
             'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
         },
     });
 
@@ -49,7 +49,8 @@ async function getArtefact(artefactId) {
 // assumes param. 'artefact' has been validated
 async function postArtefact(artefact) {
     // post the artefact
-    const token = await authService.getAccessToken();
+    //const token = await authService.getAccessToken();
+    const token = null;
     const headers = {
         'Content-Type': 'application/json'
     };
@@ -68,7 +69,8 @@ async function postArtefact(artefact) {
 
 // 'category' should already be validated
 async function postCategory(category) {
-    const token = await authService.getAccessToken();
+    //const token = await authService.getAccessToken();
+    const token = null;
     const headers = {
         'Content-Type': 'application/json'
     };
@@ -98,7 +100,8 @@ async function getCategories() {
 }
 
 async function postArtefactCategories(artefactId, categories) {
-    const token = await authService.getAccessToken();
+    //const token = await authService.getAccessToken();
+    const token = null;
     const headers = {
         'Content-Type': 'application/json'
     };
@@ -120,7 +123,8 @@ async function postArtefactCategories(artefactId, categories) {
 }
 
 async function getVisibilityOpts() {
-    const token = await authService.getAccessToken();
+    //const token = await authService.getAccessToken();
+    const token = null;
     const response = await fetch('api/Artefacts/VisibilityOpts', {
         headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
     });
@@ -130,7 +134,8 @@ async function getVisibilityOpts() {
 }
 
 async function getArtefacts() {
-    const token = await authService.getAccessToken();
+    //const token = await authService.getAccessToken();
+    const token = null;
     const response = await fetch('api/Artefacts', {
         headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
     });

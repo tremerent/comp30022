@@ -1,6 +1,4 @@
-﻿import Joi from 'joi';
-import authService from '../components/api-authorization/AuthorizeService';
-
+﻿
 function formToJson(formEle) {
     const formData = new FormData(formEle);
 

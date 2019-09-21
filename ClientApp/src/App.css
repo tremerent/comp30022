@@ -32,9 +32,11 @@ code {
     margin-bottom: none;
 }
 
+.artefactor-nav {
+    background-color: "#D88855";
+}
 
 /* These things should probably have their own file: */
-
 .badge {
     background-color: #17a2b8;
 }

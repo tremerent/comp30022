@@ -41,7 +41,7 @@ export class NavMenu extends React.Component {
     render() {
         return (
 <header>
-                <Navbar light className={"navbar-expand-sm ng-white border-bottom box-shadow" + " "}>
+    <Navbar light className={"navbar-expand-sm ng-white border-bottom box-shadow" + " " + "artefactor-nav"}>
         <Container>
             <NavbarBrand tag={Link} to="/">Artefactor</NavbarBrand>
             <NavbarToggler onClick={this.toggleNav}/>

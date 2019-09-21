@@ -8,6 +8,8 @@ using Artefactor.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 
 namespace Artefactor
 {
@@ -28,27 +30,56 @@ namespace Artefactor
                     //Configuration.GetConnectionString("DefaultConnection")));
             Configuration.GetConnectionString("AzureDbConnection")));
 
-            services.AddDefaultIdentity<ApplicationUser>(options => {
-                    // <https://stackoverflow.com/a/27831598>
-                    // Needlessly complex password validation rules do not
-                    // meaningfully increase entropy and usually cause
-                    // users to resort to password reuse in order to remember
-                    // logins, thus substantially *reducing* the effective
-                    // security.
-                    // - Sam
-                    options.Password.RequireDigit = false;
-                    options.Password.RequireLowercase = false;
-                    options.Password.RequireUppercase = false;
-                    options.Password.RequireNonAlphanumeric = false;
-                    options.Password.RequiredLength = 10;
-                })
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            //services
+            //    .AddDefaultIdentity<ApplicationUser>(options => {
+            //        // <https://stackoverflow.com/a/27831598>
+            //        // Needlessly complex password validation rules do not
+            //        // meaningfully increase entropy and usually cause
+            //        // users to resort to password reuse in order to remember
+            //        // logins, thus substantially *reducing* the effective
+            //        // security.
+            //        // - Sam
+            //        options.Password.RequireDigit = false;
+            //        options.Password.RequireLowercase = false;
+            //        options.Password.RequireUppercase = false;
+            //        options.Password.RequireNonAlphanumeric = false;
+            //        options.Password.RequiredLength = 10;
+            //    })
+            //    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+            //services.AddIdentityServer()
+            //    .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+
+            //var certificate = new X509Certificate2(certificateFilePath, "test");
 
             services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+                .AddDeveloperSigningCredential()  // DEFINTELY DON'T REMOVE THIS W/O KNOWING WHAT IT DOES - :(
+                .AddInMemoryPersistedGrants()
+                .AddInMemoryIdentityResources(TokenAuth.Config.GetIdentityResources())
+                .AddInMemoryApiResources(TokenAuth.Config.GetApiResources())
+                .AddInMemoryClients(TokenAuth.Config.GetClients())
+                .AddAspNetIdentity<ApplicationUser>();
 
-            services.AddAuthentication()
-                .AddIdentityServerJwt();
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
+                {
+                    // base-address of your identityserver
+                    options.Authority = "http://localhost:44377/";
+
+                    // name of the API resource
+                    options.Audience = "artefactorapi";
+
+                    options.RequireHttpsMetadata = false;
+                });
+
 
             services.AddMvc(options => options.EnableEndpointRouting = false)
                     .AddNewtonsoftJson(options =>
@@ -83,8 +114,8 @@ namespace Artefactor
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-            app.UseAuthentication();
             app.UseIdentityServer();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
