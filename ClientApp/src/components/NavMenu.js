@@ -69,7 +69,7 @@ export class NavMenu extends React.Component {
                             this.state.authenticated ? (
                                 <>
                                 {/*<NavLink tag={Link} to="/family">My Family</NavLink>*/}
-                                {/*<NavLink tag={Link} to="/profile">Profile</NavLink>*/}
+                                <NavLink tag={Link} to="/profile">Profile</NavLink>
                                 <NavLink tag={Link} to="/my-artefacts">My Artefacts</NavLink>
                                 {/*<NavLink tag={Link} to="/logout">Log Out</NavLink>*/}
                                 </>
