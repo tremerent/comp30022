@@ -9,7 +9,8 @@ import {
     NavLink,
 } from 'reactstrap';
 import { Link, } from 'react-router-dom';
-import { LoginMenu } from './api-authorization/LoginMenu';
+
+import UserNavMenu from './UserNavMenu';
 
 import './NavMenu.css';
 
@@ -44,22 +45,7 @@ export class NavMenu extends React.Component {
                 >
                     <ul className="navbar-nav">
                         <NavLink tag={Link} to="/browse">Browse</NavLink>
-                        {
-                            this.state.authenticated ? (
-                                <>
-                                {/*<NavLink tag={Link} to="/family">My Family</NavLink>*/}
-                                <NavLink tag={Link} to="/profile">Profile</NavLink>
-                                <NavLink tag={Link} to="/my-artefacts">My Artefacts</NavLink>
-                                {/*<NavLink tag={Link} to="/logout">Log Out</NavLink>*/}
-                                </>
-                            ) : (
-                                <>
-                                {/*<NavLink tag={Link} to="/login">Log In</NavLink>*/}
-                                {/*<NavLink tag={Link} to="/signup">Sign Up</NavLink>*/}
-                                </>
-                            )
-                        }
-                        <LoginMenu></LoginMenu>
+                        <UserNavMenu></UserNavMenu>
                     </ul>
                 </Collapse>
             </Container>

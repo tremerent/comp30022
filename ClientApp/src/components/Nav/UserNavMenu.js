@@ -30,9 +30,9 @@ class UserNavMenu extends React.Component {
     authedView = (user) => {
         return (
             <>
-                <NavItem>
-                    <NavLink tag={Link} className="text-dark" to={profilePath}>Hello {user.userName}</NavLink>
-                </NavItem>
+                            
+                <NavLink tag={Link} to="/my-artefacts">My Artefacts</NavLink>
+                <NavLink tag={Link} to="/profile">Profile</NavLink>
                 <NavItem>
                     <button onClick={(e) => { e.preventDefault(); this.props.logout(); }} className="text-dark btn nav-link">
                         Logout

@@ -32,7 +32,6 @@ export default class App extends Component {
     <Container>
         {/*<Route path='/login' render={() => <Login action='login'></Login>} />*/}
         {/*<Route path='/signup' component={Signup} />*/}
-        <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
         <Route path='/browse' component={ArtefactBrowser} />
         <Route path='/tests' component={TestingHome} />
         <Route path='/my-artefacts' component={MyArtefacts} />
