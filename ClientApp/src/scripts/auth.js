@@ -29,7 +29,7 @@ function getCurUser() {
 
     console.log(authDetails);
 
-    if (authDetails) {
+    if (authDetails && authDetails.user) {
         return authDetails.user;
     }
     else {
@@ -46,7 +46,9 @@ async function setUser(loginDetails) {
         const authDetails = {
             token: tokenResp.access_token,
             expiry: tokenResp.expires_in,
-            username: loginDetails.username,
+            user: {
+                username: loginDetails.username,
+            },
         };
 
         localStorage.setItem("authDetails", JSON.stringify(authDetails));
