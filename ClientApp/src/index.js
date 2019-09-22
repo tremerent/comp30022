@@ -26,7 +26,3 @@ ReactDOM.render(
     </Provider>,
     rootElement
 );
-
-function configureStore(store) {
-
-}
