@@ -32,6 +32,7 @@ export default class UserProfile extends React.Component {
         return (
 
 <div className='af-profile-outer'>
+    <div className='af-profile-inner-placeholder'></div>
     <div className='af-profile-inner'>
         <img src={PLACEHOLDER_IMAGE} className='af-profile-image'></img>
         <div className='af-profile-info'>

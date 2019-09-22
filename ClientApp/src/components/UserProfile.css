@@ -2,9 +2,9 @@
 .af-profile-outer {
 
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 
-    align-items: center;
+    align-items: top;
 
     height: 100%;
 
@@ -12,32 +12,36 @@
 
 .af-profile-scroller {
     height: 100%;
-    max-width: 60%;
+    max-width: 40%;
 }
 
 .af-profile-inner {
 
     display: flex;
     flex-direction: column;
-
-    width: 100%;
-    margin-top: 1.5em;
-
-    margin-right: 3em;
-
+    position: fixed;
+    width: 40%;
+    top: 7em;
+    margin-right: 5em;
     flex-basis: 60%;
+    align-items: center;
 
-    height: 500px;
+}
 
-    position: relative;
+.af-profile-inner-placeholder {
+    width: 100%;
+    margin-top: 4em;
+    margin-right: 5em;
+    flex-basis: 60%;
     align-items: center;
 }
+
 
 .af-profile-info {
     padding-top: 1.2em;
     padding-bottom: 0.8em;
-    padding-left: 2em;
-    padding-right: 2em;
+    /*padding-left: 2em;*/
+    /*padding-right: 2em;*/
     display: flex;
     flex-direction: column;
 }
@@ -45,7 +49,7 @@
 .af-profile-image {
     display: block;
     height: auto;
-    width: 30%;
+    width: 50%;
     border-radius: 60%;
 }
 
@@ -71,6 +75,24 @@
 }
 
 .af-profile-bio {
+
+}
+
+@media (max-width: 576px) {
+    .af-profile-outer {
+        flex-direction: column;
+    }
+    .af-profile-inner {
+        margin-top: 0;
+        position: static;
+        width: 100%;
+    }
+    .af-profile-scroller {
+        max-width: 100%;
+    }
+    .af-profile-image {
+        width: 60%;
+    }
 
 }
 
