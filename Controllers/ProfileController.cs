@@ -1,52 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+
+using Artefactor.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Artefactor.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
-    public class ProfileController : Controller
+    public class UserController : Controller
     {
-        // GET: api/<controller>
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public ProfileController(UserManager<ApplicationUser> um)
+        {
+            _userManager = um;
+        }
+
+        // GET: api/user?username=<username>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<ActionResult<ApplicationUser>> GetProfile(
+                [FromQuery] string username
+            )
         {
-            return new string[] { "value1", "value2" };
-        }
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null) {
+                return new JsonResult(new {
+                    ok = false,
+                    error = "No user with that username."
+                });
+            }
 
-        // GET api/<controller>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            //if (HttpContext.User.Claims["Id"] == id)
-            //{
-
-            //}
-            return "value";
-        }
-
-        // POST api/<controller>
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return new JsonResult(new {
+                ok = true,
+                user = new {
+                    user = user.UserName,
+                    bio = user.Biography,
+                    artefactCount = user.ArtefactCount
+                }
+            });
         }
     }
 }

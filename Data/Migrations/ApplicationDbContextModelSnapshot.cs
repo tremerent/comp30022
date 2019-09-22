@@ -25,6 +25,10 @@ namespace Artefactor.Data.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
+                    b.Property<string>("ArtefactCount");
+
+                    b.Property<string>("Biography");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
@@ -80,8 +84,6 @@ namespace Artefactor.Data.Migrations
                     b.Property<string>("OwnerId");
 
                     b.Property<string>("Title");
-
-                    b.Property<string>("OwnerId");
 
                     b.Property<int>("Visibility");
 
@@ -247,11 +249,9 @@ namespace Artefactor.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.Property<string>("LoginProvider")
-                        .HasMaxLength(128);
+                    b.Property<string>("LoginProvider");
 
-                    b.Property<string>("ProviderKey")
-                        .HasMaxLength(128);
+                    b.Property<string>("ProviderKey");
 
                     b.Property<string>("ProviderDisplayName");
 
@@ -282,11 +282,9 @@ namespace Artefactor.Data.Migrations
                 {
                     b.Property<string>("UserId");
 
-                    b.Property<string>("LoginProvider")
-                        .HasMaxLength(128);
+                    b.Property<string>("LoginProvider");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(128);
+                    b.Property<string>("Name");
 
                     b.Property<string>("Value");
 
