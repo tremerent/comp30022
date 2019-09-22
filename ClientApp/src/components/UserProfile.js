@@ -36,7 +36,7 @@ export default class UserProfile extends React.Component {
     <div className='af-profile-inner'>
         <div className='af-profile-card-wrapper'>
             <div className='af-profile-card'>
-                <div className='text-muted af-profile-card-inner'>
+                <div className='af-profile-card-inner'>
                     <img src={PLACEHOLDER_IMAGE} className='af-profile-image'></img>
                     <div className='af-profile-info'>
                         <h2 className='af-profile-name'>{user.name}</h2>
