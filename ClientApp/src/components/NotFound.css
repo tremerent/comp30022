@@ -1,9 +1,11 @@
-﻿.af-not-found-box {
+﻿.af-not-found-outer {
     display: flex;
-    justify-content: center;
-    margin-top: 10vw;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
 }
 
-.af-not-found-content {
+.af-not-found-inner {
+    margin-top: 10%;
     max-width: 25vw;
 }
