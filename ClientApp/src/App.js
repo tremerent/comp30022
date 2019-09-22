@@ -1,48 +1,56 @@
-
 import React, { Component } from 'react';
-import { Route } from 'react-router';
-import { Layout } from './components/Layout';
+import { Route, Switch } from 'react-router';
 import { Container } from 'reactstrap';
+import { connect } from 'react-redux';
 
+import { Layout } from './components/Layout';
 import MyArtefacts from './components/Artefact/MyArtefacts.js';
 import LandingPage from './components/LandingPage.js';
 import ArtefactBrowser from './components/Artefact/ArtefactBrowser.js';
 import UserProfile from './components/UserProfile.js';
-
 import TestingHome from './components/Testing/TestingHome.js';
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
+import requireAuth from './components/Auth/requireAuth';
+import NotFound from './components/NotFound';
 
 import './App.css';
 
-// XXX -- Sam
-const AuthorizeRoute = Route;
+function loginIfUnauthed(Component) {
+    return requireAuth(Component, '/auth/login');
+}
 
 export default class App extends Component {
     static displayName = App.name;
 
     render() {
         return (
-<Layout>
-    {/*
-        LandingPage component needs to fill the entire width of the
-        page, so put it outside of the container. Everything else
-        goes inside though.
-        Help I don't know react.
-        -- Sam
-    */}
-    <Route exact path='/' component={LandingPage} />
-    <Container>
-        <Route path='/auth' component={this.authRoutes} />
-        <Route path='/browse' component={ArtefactBrowser} />
-        <AuthorizeRoute path='/profile' component={UserProfile} />
-        <AuthorizeRoute path='/my-artefacts' component={MyArtefacts} />
-        <Route path='/tests' component={TestingHome} />
-        {/*<Route path='/family' component={FamilyView} />*/}
-        {/*<Route path='/login' render={() => <Login action='login'></Login>} />*/}
-        {/*<Route path='/signup' component={Signup} />*/}
-    </Container>
-</Layout>
+            <Layout>
+                {/*
+                    LandingPage component needs to fill the entire width of the
+                    page, so put it outside of the container. Everything else
+                    goes inside though.
+                    Help I don't know react.
+                    -- Sam
+                */}
+                <Switch>
+                    <Route exact path='/' component={LandingPage} />
+                    <Container>
+                        <Route path='/auth' component={this.authRoutes} />
+                        <Route path='/browse' component={ArtefactBrowser} />
+
+                        <Route path='/profile' component={loginIfUnauthed(UserProfile)} />
+                        <Route path='/my-artefacts' component={loginIfUnauthed(MyArtefacts)} />
+
+                        <Route path='/tests' component={TestingHome} />
+
+                        <Route component={NotFound} />
+                    {/*<Route path='/family' component={FamilyView} />*/}
+                    {/*<Route path='/login' render={() => <Login action='login'></Login>} />*/}
+                    {/*<Route path='/signup' component={Signup} />*/}
+                    </Container>
+                </Switch>
+            </Layout>
         );
     }
 

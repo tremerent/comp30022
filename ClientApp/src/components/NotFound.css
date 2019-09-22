@@ -1,0 +1,9 @@
+﻿.af-not-found-box {
+    display: flex;
+    justify-content: center;
+    margin-top: 10vw;
+}
+
+.af-not-found-content {
+    max-width: 25vw;
+}
