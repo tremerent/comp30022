@@ -50,7 +50,7 @@ namespace Artefactor
                 .AddJwtBearer(options =>
                 {
                     // base-address of your identityserver
-                    options.Authority = "http://localhost:44377/";
+                    options.Authority = "https://localhost:44377";
 
                     // name of the API resource
                     options.Audience = "artefactorapi";
@@ -59,7 +59,8 @@ namespace Artefactor
                 });
 
 
-            services.AddMvc(options => options.EnableEndpointRouting = false)
+            services.AddMvcCore(options => options.EnableEndpointRouting = false)
+                    .AddAuthorization()
                     .AddNewtonsoftJson(options =>
                     {
                         options.SerializerSettings.ReferenceLoopHandling =

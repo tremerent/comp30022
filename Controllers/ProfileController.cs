@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Artefactor.Controllers
 {
-    [Route("api/[controller]")]
     [Authorize]
+    [Route("api/[controller]")]
     public class ProfileController : Controller
     {
         // GET: api/<controller>
