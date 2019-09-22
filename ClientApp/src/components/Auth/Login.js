@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { push } from 'connected-react-router';
 import { PropTypes } from 'prop-types';
 
 
@@ -81,8 +81,8 @@ class Login extends React.Component {
         return (
             <>
                 <h3>Log in</h3>
+                <hr />
                 <form onSubmit={this.handleSubmit}>
-                    <hr />
                     <div className="form-group">
                         <label htmlFor="username">Username</label>
                         <input name="username" className="form-control" />
@@ -114,7 +114,13 @@ class Login extends React.Component {
 
         this.props.login(loginData)
             .then((t) => {
-                console.log(t);
+                // TODO: handle e
+
+                const nextDir =
+                    this.props.redir
+                        ? this.props.redir
+                        : '/my-artefacts';
+                push(nextDir);
             });
     }
 }
@@ -131,8 +137,15 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ login: auth.login }, dispatch);
-};
+    return {
+        login: (details) => {
+            dispatch(auth.login(details))
+        },
+        push: (dir) => {
+            dispatch(push(dir));
+        },
+    };
+}
 
 export default connect(
     mapStateToProps,

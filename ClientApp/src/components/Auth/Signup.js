@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { PropTypes } from 'prop-types';
+import { push } from 'connected-react-router';
 
 import { auth } from '../../redux/actions';
 import { formToJson } from '../../scripts/utilityService';
@@ -51,12 +51,14 @@ class Signup extends React.Component {
         e.preventDefault();
 
         const regData = formToJson(e.target);
-
-        this.props.register(regData)
-            .then(() => {
-                // handle username already taken
-
-            });
+        const nextDir = this.props.redir ? this.props.redir : '/my-artefacts';
+        console.log('hi');
+        this.props.push(nextDir);
+        //this.props.register(regData)
+        //    .then(() => {
+        //        // TODO: handle username already taken
+                
+        //    });
     }
 }
 
@@ -72,7 +74,14 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ register: auth.register }, dispatch);
+    return {
+        register: (details) => {
+            dispatch(auth.register(details))
+        },
+        push: (dir) => {
+            dispatch(push(dir));
+        },
+    };
 };
 
 export default connect(
