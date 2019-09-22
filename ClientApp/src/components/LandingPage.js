@@ -28,7 +28,7 @@ export default function LandingPage(props) {
                     Discover, record, and share your family's legacy.
                 </h1>
                 <a
-                    className='btn btn-primary mt-1'
+                    className='btn btn-primary mt-3'
                     href='/auth/signup'
                 >
                     Get Started

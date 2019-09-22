@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { ArtefactPreview } from './ArtefactPreview.js';
+import CentreLoading from '../CenterLoading.js';
 import { getArtefacts } from '../../scripts/requests.js';
 
 import './ArtefactScroller.css';
@@ -33,11 +34,7 @@ export default class ArtefactScroller extends Component {
     render() {
         if (this.state.loading)
             return (
-                <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                    <div className="spinner-border text-primary" role="status">
-                        <span className="sr-only">Loading...</span>
-                    </div>
-                </div>
+                <CentreLoading />
             );
         return (
             //<div className={this.props.className + ' af-artefact-scroller-wrapper'}>

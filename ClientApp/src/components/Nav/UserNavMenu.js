@@ -52,7 +52,7 @@ class UserNavMenu extends React.Component {
         return (
             <>
                 <NavItem>
-                    <NavLink tag={Link} className="text-dark" to={signupPath}>Register</NavLink>
+                    <NavLink tag={Link} className="text-dark" to={signupPath}>Signup</NavLink>
                 </NavItem>
                 <NavItem>
                     <NavLink tag={Link} className="text-dark" to={loginPath}>Login</NavLink>

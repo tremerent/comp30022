@@ -66,6 +66,18 @@ code {
     align-items: center;
 }
 
+.vert-horiz-centre {
+    min-height: 100%; /* Fallback for browsers do NOT support vh unit */
+    min-height: 100vh; /* These two lines are counted as one :-)       */
+    min-width: 100%;
+    min-width: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 .artefact-image {
     object-fit: contain;
     width: 100%;
@@ -75,4 +87,3 @@ code {
 .container {
     height: 100%;
 }
-

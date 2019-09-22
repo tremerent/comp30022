@@ -36,15 +36,17 @@ export default class App extends Component {
                 <Switch>
                     <Route exact path='/' component={LandingPage} />
                     <Container>
-                        <Route path='/auth' component={this.authRoutes} />
-                        <Route path='/browse' component={ArtefactBrowser} />
+                        <Switch>
+                            <Route path='/auth' component={this.authRoutes} />
+                            <Route path='/browse' component={ArtefactBrowser} />
 
-                        <Route path='/profile' component={loginIfUnauthed(UserProfile)} />
-                        <Route path='/my-artefacts' component={loginIfUnauthed(MyArtefacts)} />
+                            <Route path='/profile' component={loginIfUnauthed(UserProfile)} />
+                            <Route path='/my-artefacts' component={loginIfUnauthed(MyArtefacts)} />
 
-                        <Route path='/tests' component={TestingHome} />
+                            <Route path='/tests' component={TestingHome} />
 
-                        <Route component={NotFound} />
+                            <Route component={NotFound} />
+                        </Switch>
                     {/*<Route path='/family' component={FamilyView} />*/}
                     {/*<Route path='/login' render={() => <Login action='login'></Login>} />*/}
                     {/*<Route path='/signup' component={Signup} />*/}
