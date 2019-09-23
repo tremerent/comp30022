@@ -8,5 +8,7 @@ namespace Artefactor.Models
 {
     public class ApplicationUser : IdentityUser
     {
+        public string ArtefactCount { get; set; }
+        public string Biography { get; set; }
     }
 }

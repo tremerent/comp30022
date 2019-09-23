@@ -32,17 +32,24 @@ export default class UserProfile extends React.Component {
         return (
 
 <div className='af-profile-outer'>
+    <div className='af-profile-inner-placeholder'></div>
     <div className='af-profile-inner'>
-        <img src={PLACEHOLDER_IMAGE} className='af-profile-image'></img>
-        <div className='af-profile-info'>
-            <h2 className='af-profile-name'>{user.name}</h2>
-            <div className='af-profile-badges'>
-                <span className="badge badge-decal-text mx-1 af-profile-art-badge">
-                    {user.artefacts_registered + ' Artefacts'}
-                </span>
+        <div className='af-profile-card-wrapper'>
+            <div className='af-profile-card'>
+                <div className='af-profile-card-inner'>
+                    <img src={PLACEHOLDER_IMAGE} className='af-profile-image'></img>
+                    <div className='af-profile-info'>
+                        <h2 className='af-profile-name'>{user.name}</h2>
+                        <div className='af-profile-badges'>
+                            <span className="badge badge-decal-text mx-1 af-profile-art-badge">
+                                {user.artefacts_registered + ' Artefacts'}
+                            </span>
+                        </div>
+                        <hr/>
+                        <div className='text-muted'>{user.bio}</div>
+                    </div>
+                </div>
             </div>
-            <hr/>
-            <div className='text-muted af-profile-bio'>{user.bio}</div>
         </div>
     </div>
     <div className='af-profile-scroller'>
