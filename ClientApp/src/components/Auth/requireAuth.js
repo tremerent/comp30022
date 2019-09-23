@@ -2,8 +2,8 @@ import React from 'react';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 
-import { auth as authActions } from '../../redux/actions';
-import { bindActionCreators } from '../../../../../../../AppData/Local/Microsoft/TypeScript/3.4.4/node_modules/redux';
+import { auth as authActions } from 'redux/actions';
+import { bindActionCreators } from 'redux';
 
 /**
  * Higher order component that renders 'Component' if
@@ -16,11 +16,11 @@ function requireAuth(Component, unauthedRedirTo) {
                 return <Component />;
             }
             else {
-                // store the addr. of 'Component' - component at 
-                // 'unauthedRedirTo' can intiate redir. to 'Component' 
+                // store the addr. of 'Component' - component at
+                // 'unauthedRedirTo' can intiate redir. to 'Component'
                 this.props.setRedir(this.props.goingToAddr);
 
-                return <Redirect to={unauthedRedirTo} />; 
+                return <Redirect to={unauthedRedirTo} />;
             }
         }
     }
@@ -45,6 +45,6 @@ export default requireAuth;
 
 
 
-    
-    
-    
+
+
+
