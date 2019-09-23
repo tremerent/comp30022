@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Artefactor.Data;
 using Artefactor.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Artefactor.Controllers
 {
@@ -15,10 +17,14 @@ namespace Artefactor.Controllers
     public class ArtefactsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ArtefactsController(ApplicationDbContext context)
+
+        public ArtefactsController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: api/Artefacts/VisibilityOpts
@@ -58,6 +64,19 @@ namespace Artefactor.Controllers
 
             return artefacts;
         }
+
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<IEnumerable<Artefact>>> GetMyArtefacts(string userId)
+        {
+            var artefacts = await _context.Artefacts
+                                          .Where(a => a.Owner.Id == userId)
+                                          .Include(a => a.CategoryJoin)
+                                            .ThenInclude(cj => cj.Category)
+                                          .ToListAsync();
+
+            return artefacts;
+        }
+
 
         // GET: api/Artefacts/5
         [HttpGet("{id}")]
@@ -109,9 +128,14 @@ namespace Artefactor.Controllers
         }
 
         // POST: api/Artefacts
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Artefact>> PostArtefact(Artefact artefact)
         {
+            var curUser = await _userManager.GetUserAsync(HttpContext.User);
+
+            artefact.Owner = curUser;
+
             _context.Artefacts.Add(artefact);
             try
             {

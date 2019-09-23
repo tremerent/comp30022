@@ -1,9 +1,10 @@
-﻿import { authTypes } from './types';
+﻿import { authTypes, artefactTypes } from './types';
 import { setUser, logoutUser, } from '../../scripts/auth';
 import { push } from 'connected-react-router';
 
 import {
     postRegister,
+    getArtefacts,
 } from '../../scripts/requests';
 
 function setRedir(to) {
@@ -39,8 +40,6 @@ function login(loginData) {
         dispatch(reqLogin());
 
         if (await setUser(loginData)) {
-            console.log('user set');
-
             dispatch(resLogin({
                 username: loginData.username,
             }));
@@ -120,6 +119,48 @@ const auth = {
     setRedir,
 }
 
+function reqGetMyArtefacts() {
+    return {
+        type: artefactTypes.REQ_GET_MY_ARTEFACTS,
+    }
+}
+
+function resGetMyArtefacts(myArtefacts) {
+    return {
+        type: artefactTypes.RES_GET_MY_ARTEFACTS,
+        myArtefacts,
+    }
+}
+
+function errGetMyArtefacts() {
+    return {
+        type: artefactTypes.ERR_GET_MY_ARTEFACTS,
+    }
+}
+
+function getMyArtefacts() {
+    return async function (dispatch, getState) {
+        const { user: { id: curUserId } } =
+            getState().auth;
+
+        dispatch(reqGetMyArtefacts(curUserId));
+
+        try {
+            const myArtefacts = await getArtefacts(curUserId);
+            dispatch(resGetMyArtefacts(myArtefacts));
+        }
+        catch (e) {
+            // TODO
+            dispatch(errGetMyArtefacts());
+        }
+    }
+}
+
+const artefacts = {
+    getMyArtefacts
+}
+
 export {
     auth,
+    artefacts,
 }

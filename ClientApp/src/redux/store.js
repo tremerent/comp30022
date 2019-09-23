@@ -17,8 +17,9 @@ export function configureStore() {
             applyMiddleware(
                 thunkMw,
                 routerMiddleware(history),
-            )
+            ),
         ),
+
     );
 
     return store;

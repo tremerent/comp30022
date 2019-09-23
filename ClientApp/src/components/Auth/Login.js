@@ -148,14 +148,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators({ login: auth.login, push, }, dispatch);
-    //return {
-    //    login: (details) => {
-    //        dispatch(auth.login(details))
-    //    },
-    //    push: (dir) => {
-    //        dispatch(push(dir));
-    //    },
-    //};
 }
 
 export default connect(

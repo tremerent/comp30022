@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Artefactor.Data;
+using Artefactor.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -13,22 +16,37 @@ namespace Artefactor.Controllers
     [Route("api/[controller]")]
     public class ProfileController : Controller
     {
-        // GET: api/<controller>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public ProfileController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager)
         {
-            return new string[] { "value1", "value2" };
+            _context = context;
+            _userManager = userManager;
         }
 
-        // GET api/<controller>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // GET: api/<controller>
+        [AllowAnonymous]
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> Get(string userId)
         {
-            //if (HttpContext.User.Claims["Id"] == id)
-            //{
+            var user = _context.Users.SingleOrDefault(u => u.Id == userId);
 
-            //}
-            return "value";
+            if (user != null)
+            {
+                return new JsonResult(new
+                {
+                    id = user.Id,
+                    username = user.UserName,
+                    email = user.Email,
+                    bio = user.Bio,
+                });
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         // POST api/<controller>

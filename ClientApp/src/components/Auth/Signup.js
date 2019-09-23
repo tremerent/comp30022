@@ -56,8 +56,13 @@ class Signup extends React.Component {
         this.props.register(regData)
             .then(() => {
                 // TODO: handle username already taken
-                const nextDir = this.props.redir ? this.props.redir : '/my-artefacts';
-                this.props.push(nextDir);
+                if (this.props.error) {
+
+                }
+                else {
+                    const nextDir = this.props.redir ? this.props.redir : '/my-artefacts';
+                    this.props.push(nextDir);
+                }
             });
     }
 }
@@ -79,6 +84,6 @@ const mapDispatchToProps = dispatch => {
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
 )(Signup);
 

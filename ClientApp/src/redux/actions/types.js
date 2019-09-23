@@ -16,7 +16,19 @@ const authTypes = {
     LOGOUT,
 }
 
+const REQ_GET_MY_ARTEFACTS = 'REQ_GET_MY_ARTEFACTS';
+const RES_GET_MY_ARTEFACTS = 'RES_GET_MY_ARTEFACTS';
+const ERR_GET_MY_ARTEFACTS = 'ERR_GET_MY_ARTEFACTS';
+
+
+const artefactTypes = {
+    REQ_GET_MY_ARTEFACTS,
+    RES_GET_MY_ARTEFACTS,
+    ERR_GET_MY_ARTEFACTS,
+}
+
 export {
-    authTypes
+    authTypes,
+    artefactTypes,
 }
 

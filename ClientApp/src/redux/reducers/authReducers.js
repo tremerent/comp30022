@@ -30,6 +30,13 @@ function auth(state = initAuthState(), action) {
                 user: action.userData,
                 isLoggedIn: true,
             };
+        case authTypes.ERR_REGISTER:
+            return {
+                loading: false,
+                user: {},
+                isLoggedIn: true,
+                error: action.errorCode,
+            };
         case authTypes.LOGOUT:
             return {
                 ...auth,

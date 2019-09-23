@@ -67,9 +67,29 @@ async function getVisibilityOpts() {
     return resp.data;
 }
 
-async function getArtefacts() {
-    const resp = await tokenFetch()
-        .get(`/Artefacts`);
+/**
+ * Get all artefacts owned by 'userId', 
+ * or all artefacts if null.
+ */
+async function getArtefacts(userId) {
+    let resp;
+
+    if (userId == null) {
+        resp = await tokenFetch()
+            .get(`/Artefacts`);
+    }
+    else {
+        resp = await tokenFetch()
+            .get(`/Artefacts/${userId}`);
+    }
+
+    return resp.data;
+}
+
+async function getProfile(userId) {
+
+    const resp = await noTokenFetch()
+        .get(`/Profile/${userId}`);
 
     return resp.data;
 }
@@ -81,10 +101,11 @@ export {
     getVisibilityOpts,
 
     postArtefactCategories,
-
     postCategory,
     getCategories,
 
     postLogin,
     postRegister,
+
+    getProfile,
 }

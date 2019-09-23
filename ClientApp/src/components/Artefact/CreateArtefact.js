@@ -364,6 +364,8 @@ export class CreateArtefact extends Component {
                 Number(artefactToPost.visibility);
 
             const createdArtefact = await postArtefact(artefactToPost);
+            console.log('created');
+            console.log(createdArtefact);
 
             if (artefactCategories.length) {
                 await postArtefactCategories(createdArtefact.id, artefactCategories);
