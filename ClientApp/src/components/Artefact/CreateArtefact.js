@@ -1,8 +1,6 @@
 ﻿import React, { Component } from 'react';
-import Joi from 'joi';
 
 import CategorySelect from '../Category/CategorySelect.js';
-import CategorySelectTest from '../Category/CategorySelectTest.js';
 
 import { UploadArtefactDocs } from './UploadArtefactDocs.js';
 import {

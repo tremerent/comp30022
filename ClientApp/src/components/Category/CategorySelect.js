@@ -16,29 +16,28 @@ export default class CategorySelect extends Component {
     constructor(props) {
         super(props);
 
+
         this.state = {
             categoryOpts: [],
         };
 
-        this.select = <AsyncCreatableSelect
-            onChange={this.handleChange}
-            value={this.props.categoryVals}
-
-            defaultOptions
-            loadOptions={this.getCategoryOptionsThenFilter}
-
-            isMulti
-            isSearchable
-            closeMenuOnSelect={false}
-            placeholder={this.props.placeholder}
-        />
     }
 
     render() {
         return (
             <div>
+            <AsyncCreatableSelect
+                onChange={this.handleChange}
+                value={this.props.categoryVals}
 
-                {this.select}
+                defaultOptions
+                loadOptions={this.getCategoryOptionsThenFilter}
+
+                isMulti
+                isSearchable
+                closeMenuOnSelect={false}
+                placeholder={this.props.placeholder}
+            />
             </div>
         );
     }
@@ -80,7 +79,6 @@ export default class CategorySelect extends Component {
             this.props.setCategoryVals([...newCategoryOpts, ...other]);
         }
         catch (e) {
-            console.log(e)
         }
 
         // Return list of form [[f evaluated to true], [f evaluated to false]]

@@ -58,11 +58,11 @@ function reqRegister() {
 }
 
 // registration complete
-function resRegister() {
-    return {
-        type: authTypes.RES_REGISTER,
-    }
-}
+//function resRegister() {
+//    return {
+//        type: authTypes.RES_REGISTER,
+//    }
+//}
 
 function errRegister(errorCode) {
     return {
@@ -72,8 +72,8 @@ function errRegister(errorCode) {
 }
 
 // register action makes a register request to api,
-// then calls login action (since still need a jwt - 
-// in future this could be given by server - see 
+// then calls login action (since still need a jwt -
+// in future this could be given by server - see
 // https://identitymodel.readthedocs.io/en/latest/client/token.html)
 function register(registerData) {
     return async function (dispatch) {
@@ -94,7 +94,7 @@ function register(registerData) {
             }
         }
 
-        
+
     }
 }
 

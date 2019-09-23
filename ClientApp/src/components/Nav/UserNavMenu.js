@@ -1,6 +1,5 @@
 ﻿import React from 'react';
-import { NavItem, NavLink } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { NavItem } from 'reactstrap';
 import { connect, } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -11,13 +10,8 @@ const loginPath = '/auth/login';
 const signupPath = '/auth/signup'
 const profilePath = '/profile';
 const myArtefactsPath = '/my-artefacts';
-const logoutPath = '/';
-const landingPage = '/'
 
 class UserNavMenu extends React.Component {
-    constructor(props) {
-        super(props);
-    }
 
     render() {
         if (this.props.isLoggedIn) {

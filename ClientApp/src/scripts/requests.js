@@ -21,6 +21,7 @@ async function postRegister(registerDetails) {
 
 async function getArtefact(artefactId) {
     const resp = await tokenFetch()
+        // XXX not sure if this is sanitised -- Sam
         .get(`/Artefacts/${artefactId}`);
 
     return resp.data;
@@ -38,7 +39,7 @@ async function postArtefact(artefact) {
 // 'category' should already be validated
 async function postCategory(category) {
     const resp = await tokenFetch()
-        .post(`/Categories`);
+        .post(`/Categories`, category);
 
     return resp.data;
 }

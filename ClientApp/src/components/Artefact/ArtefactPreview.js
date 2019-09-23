@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 
-import CategoriesPreview from '../Category/CategoriesPreview.js';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
-
 import './ArtefactPreview.css';
 
 function ArtefactCarousel(props) {

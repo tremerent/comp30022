@@ -7,14 +7,6 @@ import ComponentTests from './ComponentTests.js';
 export default class TestingHome extends Component {
     static displayName = TestingHome.name;
 
-    constructor(props) {
-        super(props);
-    }
-
-    componentDidMount() {
-
-    }
-
     render() {
         return (
             <div className="row">

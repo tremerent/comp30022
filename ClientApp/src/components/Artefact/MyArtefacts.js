@@ -48,6 +48,15 @@ class MyArtefacts extends React.Component {
             this.props.myArtefacts.length
                 ? <ArtefactScroller artefacts={this.props.myArtefacts} />
                 : this.noArtefactsView();
+                    /* Key hac ^^^
+                        This is a hack. Changing the key forces React to
+                        construct a new ArtefactScroller, which it was
+                        previously optimising away. We should definitely
+                        learn how react actually works instead of just doing
+                        this.
+                            -- Sam
+                    */
+                    // <ArtefactScroller key={this.state.artefacts.length} artefacts={this.state.artefacts}/>
 
         return (
             <div className='af-myart'>
@@ -61,16 +70,14 @@ class MyArtefacts extends React.Component {
 
     noArtefactsView = () => {
         return (
-            <div>
-                <h5> Oh no! Looks like you haven't registered any artefacts yet! </h5>
+            <div className='af-myart-noarts'>
+                <h5 className='text-light'> Oh no! Looks like you haven't registered any artefacts yet! </h5>
             </div>
         );
     }
 
     addArtefact = (artefact) => {
-        let artefacts = [...this.state.artefacts];
-        // add 'artefact' to head of list
-        artefacts.unshift(artefact);
+        let artefacts = [ artefact, ...this.state.artefacts ];
 
         this.setState({
             ...this.state,
