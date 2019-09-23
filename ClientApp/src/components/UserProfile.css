@@ -1,51 +1,53 @@
 
+/* I want this CSS engraved on my tombstone. It is my greatest achievment. */
+
 .af-profile-outer {
-
     display: flex;
-    flex-direction: column;
-
-    align-items: center;
-
+    flex-direction: row;
+    align-items: top;
     height: 100%;
-
 }
 
 .af-profile-scroller {
     height: 100%;
-    max-width: 60%;
+    max-width: 40%;
 }
 
 .af-profile-inner {
-
-    display: flex;
-    flex-direction: column;
-
-    width: 100%;
-    margin-top: 1.5em;
-
-    margin-right: 3em;
-
+    position: fixed;
+    width: 40%;
+    top: 0em;
+    margin-right: 5em;
     flex-basis: 60%;
+    height: 100%;
 
-    height: 500px;
+}
 
-    position: relative;
-    align-items: center;
+.af-profile-inner-placeholder {
+    width: 100%;
+    margin-top: 4em;
+    margin-right: 5em;
+    flex-basis: 60%;
 }
 
 .af-profile-info {
     padding-top: 1.2em;
-    padding-bottom: 0.8em;
-    padding-left: 2em;
-    padding-right: 2em;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.af-profile-card-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .af-profile-image {
     display: block;
     height: auto;
-    width: 30%;
+    width: 50%;
     border-radius: 60%;
 }
 
@@ -70,8 +72,43 @@
     text-align: center;
 }
 
-.af-profile-bio {
+@media (min-width: 576px) {
+    .af-profile-card {
+        height: 100%;
+        width: 200%;
+        overflow-y: scroll;
+        position: absolute;
+    }
 
+    .af-profile-card-wrapper {
+        height: 100%;
+        width: 100%;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    .af-profile-card-inner {
+        width: 50%;
+        padding-bottom: 4em;
+        margin-top: 7em;
+    }
 }
 
+@media (max-width: 576px) {
+    .af-profile-outer {
+        flex-direction: column;
+    }
+    .af-profile-inner {
+        margin-top: 0;
+        position: static;
+        width: 100%;
+    }
+    .af-profile-scroller {
+        max-width: 100%;
+    }
+    .af-profile-image {
+        width: 70%;
+    }
+
+}
 
