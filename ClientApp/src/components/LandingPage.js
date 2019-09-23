@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import BACKGROUND_IMAGE from '../images/landing-page.jpg';
 
@@ -27,15 +28,13 @@ export default function LandingPage(props) {
                 <h1 className='af-billboard-text'>
                     Discover, record, and share your family's legacy.
                 </h1>
-                <a
-                    className='btn btn-primary mt-3'
-                    href='/auth/signup'
-                >
-                    Get Started
-                </a>
+                <Link to="/auth/signup">
+                    <button className="btn btn-primary mt-3">
+                        Get Started
+                    </button>
+                </Link>
             </div>
         </BgImage>
     );
-    //
 }
 
