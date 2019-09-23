@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router';
 import { Container } from 'reactstrap';
-import { connect } from 'react-redux';
 
 import { Layout } from './components/Layout';
 import MyArtefacts from './components/Artefact/MyArtefacts.js';

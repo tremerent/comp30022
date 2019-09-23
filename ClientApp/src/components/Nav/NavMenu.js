@@ -43,7 +43,7 @@ class NavMenu extends React.Component {
                     <Navbar light className="navbar-expand-sm ng-white box-shadow">
                         <Container>
                             <NavbarBrand tag={Link} to="/">
-                                <img src={ARTEFACTOR_BRAND} className='af-navmenu-brand'/>
+                                <img src={ARTEFACTOR_BRAND} className='af-navmenu-brand' alt='Artefactor logo'/>
                             </NavbarBrand>
                             <NavbarToggler onClick={this.toggleNav}/>
                             <Collapse

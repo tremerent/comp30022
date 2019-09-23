@@ -1,6 +1,5 @@
 ﻿import React from 'react';
 
-import ARTEFACTOR_BRAND from '../../images/artefactor-brand.png';
 import CentreLoading from '../CenterLoading.js';
 
 /**

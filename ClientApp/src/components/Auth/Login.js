@@ -12,66 +12,6 @@ import AuthLayout from './AuthLayout';
 import './Auth.css';
 import { bindActionCreators } from 'redux';
 
-class Input extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-        this.type = this.props.type || 'text';
-
-        this.state = {
-            value: this.props.children || '',
-            name: this.props.name || 'input',
-        };
-
-        this.onChange = this.onChange.bind(this);
-    }
-
-    onChange(e) {
-        const checks = this.props.checks || [ ];
-        let errmsg;
-        for (const [ pattern, msg ] of checks) {
-            if (e.target.value.match(pattern)) {
-                errmsg = msg;
-                break;
-            }
-        }
-        this.setState({
-            value: e.target.value,
-            errmsg
-        });
-    }
-
-    render() {
-        return (
-            <>
-                {this.props.label && this.props.id &&
-                    <label htmlFor={this.props.id}>
-                        {this.props.label}
-                    </label>}
-                {this.props.id ?
-                    <input
-                        name={this.props.name}
-                            value={this.state.value}
-                            onChange={this.onChange}
-                            className="form-control"
-                            type={this.type}
-                            id={this.props.id}
-                        />
-                    :
-                    <input
-                            name={this.props.name}
-                            value={this.state.value}
-                            onChange={this.onChange}
-                            type={this.type}
-                            className="form-control"
-                        />}
-                {this.state.errmsg && <div className='input-error-message'>{this.state.errmsg}</div>}
-            </>
-        );
-    }
-}
-
 class Login extends React.Component {
 
     render() {
