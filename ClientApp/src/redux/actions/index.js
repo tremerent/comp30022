@@ -66,15 +66,14 @@ function register(registerData) {
     return async function (dispatch) {
         dispatch(reqRegister());
 
-        const resp = await postRegister(registerData);
-        const respData = await resp.json();
+        const responseData = await postRegister(registerData);
 
-        if (respData.isOk) {
+        if (responseData.isOk) {
             dispatch(login(registerData));
         }
         else {
-            if (respData.errorCode) {
-                dispatch(errRegister(respData.errorCode));
+            if (responseData.errorCode) {
+                dispatch(errRegister(responseData.errorCode));
             }
             else {
                 dispatch(errRegister("NO ERROR CODE"));

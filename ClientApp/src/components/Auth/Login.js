@@ -10,6 +10,7 @@ import { formToJson } from '../../scripts/utilityService';
 
 import AuthLayout from './AuthLayout';
 import './Auth.css';
+import { bindActionCreators } from '../../../../../../../AppData/Local/Microsoft/TypeScript/3.4.4/node_modules/redux';
 
 class Input extends React.Component {
 
@@ -78,6 +79,8 @@ class Login extends React.Component {
     }
 
     loginForm = () => {
+        console.log(this);
+        console.log(this.props);
         return (
             <>
                 <h3>Log in</h3>
@@ -112,6 +115,9 @@ class Login extends React.Component {
         e.preventDefault();
         const loginData = formToJson(e.target);
 
+        console.log('handle');
+        console.log(this);
+
         this.props.login(loginData)
             .then((t) => {
                 // TODO: handle e
@@ -120,7 +126,7 @@ class Login extends React.Component {
                     this.props.redir
                         ? this.props.redir
                         : '/my-artefacts';
-                push(nextDir);
+                this.props.push(nextDir);
             });
     }
 }
@@ -137,14 +143,15 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => {
-    return {
-        login: (details) => {
-            dispatch(auth.login(details))
-        },
-        push: (dir) => {
-            dispatch(push(dir));
-        },
-    };
+    return bindActionCreators({ login: auth.login, push, }, dispatch);
+    //return {
+    //    login: (details) => {
+    //        dispatch(auth.login(details))
+    //    },
+    //    push: (dir) => {
+    //        dispatch(push(dir));
+    //    },
+    //};
 }
 
 export default connect(

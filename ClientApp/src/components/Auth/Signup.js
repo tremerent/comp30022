@@ -9,6 +9,7 @@ import { formToJson } from '../../scripts/utilityService';
 
 import AuthLayout from './AuthLayout';
 import './Auth.css';
+import { bindActionCreators } from '../../../../../../../AppData/Local/Microsoft/TypeScript/3.4.4/node_modules/redux';
 
 class Signup extends React.Component {
 
@@ -34,7 +35,7 @@ class Signup extends React.Component {
                     </div>
                     <div className="form-group">
                         <label for='password'>Password</label>
-                        <input text='password' className="form-control" type='password' />
+                        <input name='password' text='password' className="form-control" type='password' />
                     </div>
                     <div className="form-group">
                         <label for='confirmpassword'>Confirm password</label>
@@ -51,14 +52,13 @@ class Signup extends React.Component {
         e.preventDefault();
 
         const regData = formToJson(e.target);
-        const nextDir = this.props.redir ? this.props.redir : '/my-artefacts';
-        console.log('hi');
-        this.props.push(nextDir);
-        //this.props.register(regData)
-        //    .then(() => {
-        //        // TODO: handle username already taken
-                
-        //    });
+        
+        this.props.register(regData)
+            .then(() => {
+                // TODO: handle username already taken
+                const nextDir = this.props.redir ? this.props.redir : '/my-artefacts';
+                this.props.push(nextDir);
+            });
     }
 }
 
@@ -74,14 +74,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => {
-    return {
-        register: (details) => {
-            dispatch(auth.register(details))
-        },
-        push: (dir) => {
-            dispatch(push(dir));
-        },
-    };
+    return bindActionCreators({ register: auth.register, push, }, dispatch);
 };
 
 export default connect(

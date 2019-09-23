@@ -1,25 +1,27 @@
 ﻿// supply a token
 import tokenFetch from './apiFetch';
 
+const noTokenFetch = tokenFetch();
+
 /*
  * All request functions assume parameters have already been validated.
  */
 
 async function postLogin(loginDetails) {
-    const resp = await tokenFetch().post(`api/auth/login`, loginDetails);
+    const resp = await noTokenFetch.post(`auth/login`, loginDetails);
 
     return resp.data;
 }
 
 async function postRegister(registerDetails) {
-    const resp = await tokenFetch().post(`api/auth/login`, registerDetails);
+    const resp = await noTokenFetch.post(`auth/register`, registerDetails);
 
     return resp.data;
 }
 
 async function getArtefact(artefactId) {
     const resp = await tokenFetch()
-        .get(`api/Artefacts/${artefactId}`);
+        .get(`/Artefacts/${artefactId}`);
 
     return resp.data;
 }
@@ -28,7 +30,7 @@ async function getArtefact(artefactId) {
 async function postArtefact(artefact) {
     // post the artefact
     const resp = await tokenFetch()
-        .post(`api/Artefacts`, artefact);
+        .post(`/Artefacts`, artefact);
 
     return resp.data;
 }
@@ -36,7 +38,7 @@ async function postArtefact(artefact) {
 // 'category' should already be validated
 async function postCategory(category) {
     const resp = await tokenFetch()
-        .post(`api/Categories`);
+        .post(`/Categories`);
 
     return resp.data;
 }
