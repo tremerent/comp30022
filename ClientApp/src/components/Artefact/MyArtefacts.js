@@ -38,7 +38,15 @@ export default class MyArtefacts extends React.Component {
         return (
             <div className='af-myart'>
                 <div className='af-myart-scroller'>
-                    <ArtefactScroller artefacts={this.state.artefacts}/>
+                    {/*
+                        This is a hack. Changing the key forces React to
+                        construct a new ArtefactScroller, which it was
+                        previously optimising away. We should definitely
+                        learn how react actually works instead of just doing
+                        this.
+                            -- Sam
+                    */}
+                    <ArtefactScroller key={this.state.artefacts.length} artefacts={this.state.artefacts}/>
                 </div>
                 <CreateArtefact addArtefact={this.addArtefact} className="col-xs-6" />
             </div>
@@ -46,9 +54,7 @@ export default class MyArtefacts extends React.Component {
     }
 
     addArtefact = (artefact) => {
-        let artefacts = [...this.state.artefacts];
-        // add 'artefact' to head of list
-        artefacts.unshift(artefact);
+        let artefacts = [ artefact, ...this.state.artefacts ];
 
         this.setState({
             ...this.state,
