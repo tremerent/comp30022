@@ -2,14 +2,15 @@
 import { NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { connect, } from 'react-redux';
-import { bindActionCreators } from 'react';
 import PropTypes from 'prop-types';
 
 import { auth } from '../../redux/actions';
+import StyledNavLink from './StyledNavLink';
 
 const loginPath = '/auth/login';
 const signupPath = '/auth/signup'
-const profilePath = '/';
+const profilePath = '/profile';
+const myArtefactsPath = '/my-artefacts';
 const logoutPath = '/';
 const landingPage = '/'
 
@@ -29,12 +30,17 @@ class UserNavMenu extends React.Component {
 
     authedView = (user) => {
         return (
-            //<NavItem>
-            //    <NavLink tag={Link} className="text-dark" to={profilePath}>Hello {user.userName}</NavLink>
-            //</NavItem>
             <>
-                <NavLink tag={Link} to="/profile">Profile</NavLink>
-                <NavLink tag={Link} to="/my-artefacts">My Artefacts</NavLink>
+                <StyledNavLink
+                    to={profilePath}
+                    label="Profile"
+                    curPath={this.props.curPath}
+                />
+                <StyledNavLink
+                    to={myArtefactsPath}
+                    label="My Artefacts"
+                    curPath={this.props.curPath}
+                />
                 <NavItem>
                     <button onClick={(e) => { e.preventDefault(); this.props.logout("/browse"); }} className="text-dark btn nav-link">
                         Logout
@@ -42,21 +48,23 @@ class UserNavMenu extends React.Component {
                 </NavItem>
             </>
         );
-
-        //<NavLink tag={Link} className="text-dark" to={landingPage} onClick={this.props.logout}>
-        //    Logout
-        //            </NavLink>
     }
 
     unauthedView() {
         return (
             <>
-                <NavItem>
-                    <NavLink tag={Link} className="text-dark" to={signupPath}>Signup</NavLink>
-                </NavItem>
-                <NavItem>
-                    <NavLink tag={Link} className="text-dark" to={loginPath}>Login</NavLink>
-                </NavItem>
+                <StyledNavLink
+                    to={signupPath}
+                    label="Signup"
+                    curPath={this.props.curPath}
+                    className="af-inactive-nav-link"
+                />
+                <StyledNavLink
+                    to={loginPath}
+                    label="Login"
+                    curPath={this.props.curPath}
+                    className="af-inactive-nav-link"
+                />
             </>
         );
     }
@@ -72,7 +80,8 @@ UserNavMenu.propTypes = {
 
 const mapStateToProps = (state) => {
     return {
-        ...state.auth
+        ...state.auth,
+        curPath: state.router.location.pathname,
     }
 }
 
