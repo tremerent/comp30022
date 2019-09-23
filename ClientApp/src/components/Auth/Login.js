@@ -10,7 +10,7 @@ import { formToJson } from '../../scripts/utilityService';
 
 import AuthLayout from './AuthLayout';
 import './Auth.css';
-import { bindActionCreators } from '../../../../../../../AppData/Local/Microsoft/TypeScript/3.4.4/node_modules/redux';
+import { bindActionCreators } from 'redux';
 
 class Input extends React.Component {
 

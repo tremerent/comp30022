@@ -9,7 +9,7 @@ import { formToJson } from '../../scripts/utilityService';
 
 import AuthLayout from './AuthLayout';
 import './Auth.css';
-import { bindActionCreators } from '../../../../../../../AppData/Local/Microsoft/TypeScript/3.4.4/node_modules/redux';
+import { bindActionCreators } from 'redux';
 
 class Signup extends React.Component {
 
@@ -52,7 +52,7 @@ class Signup extends React.Component {
         e.preventDefault();
 
         const regData = formToJson(e.target);
-        
+
         this.props.register(regData)
             .then(() => {
                 // TODO: handle username already taken
