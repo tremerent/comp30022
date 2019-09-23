@@ -1,4 +1,5 @@
-﻿const RES_LOGIN = 'RES_LOGIN';
+﻿const SET_REDIR = 'SET_REDIR';
+const RES_LOGIN = 'RES_LOGIN';
 const REQ_LOGIN = 'REQ_LOGIN';
 const REQ_REGISTER = 'REQ_REGISTER';
 const RES_REGISTER = 'RES_REGISTER';
@@ -6,6 +7,7 @@ const ERR_REGISTER = 'ERR_REGISTER';
 const LOGOUT = 'LOGOUT';
 
 const authTypes = {
+    SET_REDIR,
     RES_LOGIN,
     REQ_LOGIN,
     REQ_REGISTER,

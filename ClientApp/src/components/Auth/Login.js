@@ -115,18 +115,21 @@ class Login extends React.Component {
         e.preventDefault();
         const loginData = formToJson(e.target);
 
-        console.log('handle');
-        console.log(this);
+        const component = this;
 
         this.props.login(loginData)
-            .then((t) => {
-                // TODO: handle e
+            .then(() => {
+                if (component.props.isLoggedIn) {
+                    const nextDir =
+                        component.props.redirAddr
+                            ? component.props.redirAddr
+                            : '/my-artefacts';
 
-                const nextDir =
-                    this.props.redir
-                        ? this.props.redir
-                        : '/my-artefacts';
-                this.props.push(nextDir);
+                    this.props.push(nextDir);
+                }
+                else {
+                    // TODO: handle login error
+                }
             });
     }
 }
@@ -140,6 +143,7 @@ Login.propTypes = {
 const mapStateToProps = state => ({
     loading: state.auth.loading,
     redir: state.auth.redir,
+    isLoggedIn: state.auth.isLoggedIn,
 });
 
 const mapDispatchToProps = dispatch => {

@@ -1,9 +1,17 @@
 ﻿import { authTypes } from './types';
 import { setUser, logoutUser, } from '../../scripts/auth';
+import { push } from 'connected-react-router';
 
 import {
     postRegister,
 } from '../../scripts/requests';
+
+function setRedir(to) {
+    return {
+        type: authTypes.SET_REDIR,
+        to,
+    }
+}
 
 // request login
 function reqLogin() {
@@ -20,6 +28,12 @@ function resLogin(userData) {
     }
 }
 
+function errLogin() {
+    return {
+        type: authTypes.ERR_LOGIN,
+    }
+}
+
 function login(loginData) {
     return async function (dispatch) {
         dispatch(reqLogin());
@@ -32,7 +46,7 @@ function login(loginData) {
             }));
         }
         else {
-            console.log('user not set');
+            dispatch(errLogin())
         }
     }
 }
@@ -70,6 +84,7 @@ function register(registerData) {
 
         if (responseData.isOk) {
             dispatch(login(registerData));
+            return responseData;
         }
         else {
             if (responseData.errorCode) {
@@ -80,15 +95,21 @@ function register(registerData) {
             }
         }
 
-        dispatch(resRegister());
+        
     }
 }
 
-function logout(redirUrl) {
-    logoutUser();
-
+function logoutActionCreator() {
     return {
         type: authTypes.LOGOUT,
+    }
+}
+
+function logout(redirTo) {
+    return async function (dispatch) {
+        logoutUser();
+        dispatch(logoutActionCreator());
+        dispatch(push(redirTo));
     }
 }
 
@@ -96,6 +117,7 @@ const auth = {
     login,
     register,
     logout,
+    setRedir,
 }
 
 export {

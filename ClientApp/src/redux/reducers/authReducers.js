@@ -3,6 +3,11 @@ import initAuthState from './initAuthState'
 
 function auth(state = initAuthState(), action) {
     switch (action.type) {
+        case authTypes.SET_REDIR:
+            return {
+                ...state,
+                redir: action.to,
+            };
         case authTypes.REQ_LOGIN:
             return {
                 ...state,

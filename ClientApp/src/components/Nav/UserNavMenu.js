@@ -36,7 +36,7 @@ class UserNavMenu extends React.Component {
                 <NavLink tag={Link} to="/profile">Profile</NavLink>
                 <NavLink tag={Link} to="/my-artefacts">My Artefacts</NavLink>
                 <NavItem>
-                    <button onClick={(e) => { e.preventDefault(); this.props.logout(); }} className="text-dark btn nav-link">
+                    <button onClick={(e) => { e.preventDefault(); this.props.logout("/browse"); }} className="text-dark btn nav-link">
                         Logout
                     </button>
                 </NavItem>
@@ -79,8 +79,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     //return bindActionCreators({ logout: auth.logout }, dispatch);
     return {
-        logout: () => {
-            dispatch(auth.logout());
+        logout: redirTo => {
+            dispatch(auth.logout(redirTo));
         }
     };
 }
