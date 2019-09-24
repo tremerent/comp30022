@@ -1,7 +1,18 @@
 ﻿export default function getInitArtState() {
     const initArtState = {
-        myArtefacts: [],
-        loading: false,
+        myArts: {
+            myArtefacts: [],
+            loading: false,
+        },
+        publicArts: {
+            publicArtefacts: [],
+            loading: false,
+        },
+        familyArts: {
+            familyArtefacts: [],
+            loading: false,
+        }
+
     }
 
     return initArtState;

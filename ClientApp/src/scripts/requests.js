@@ -80,19 +80,19 @@ async function getVisibilityOpts() {
 }
 
 /**
- * Get all artefacts owned by 'userId', 
+ * Get all artefacts owned by user with 'username', 
  * or all artefacts if null.
  */
-async function getArtefacts(userId) {
+async function getArtefacts(username) {
     let resp;
 
-    if (userId == null) {
+    if (username == null) {
         resp = await tokenFetch()
             .get(`/Artefacts`);
     }
     else {
         resp = await tokenFetch()
-            .get(`/Artefacts/${userId}`);
+            .get(`/Artefacts/${username}`);
     }
 
     return resp.data;

@@ -65,11 +65,11 @@ namespace Artefactor.Controllers
             return artefacts;
         }
 
-        [HttpGet("{userId}")]
-        public async Task<ActionResult<IEnumerable<Artefact>>> GetMyArtefacts(string userId)
+        [HttpGet("{username}")]
+        public async Task<ActionResult<IEnumerable<Artefact>>> GetMyArtefacts(string username)
         {
             var artefacts = await _context.Artefacts
-                                          .Where(a => a.Owner.Id == userId)
+                                          .Where(a => a.Owner.UserName == username)
                                           .Include(a => a.CategoryJoin)
                                             .ThenInclude(cj => cj.Category)
                                           .ToListAsync();

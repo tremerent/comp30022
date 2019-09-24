@@ -81,7 +81,7 @@ namespace Artefactor.Controllers
                     var resp = new JsonResult(new
                     {
                         IsOk = true,
-                        user = new { user.UserName }
+                        user = new { user.UserName, user.Id, }
                     });
 
                     return resp;
@@ -131,7 +131,7 @@ namespace Artefactor.Controllers
                     var resp = new JsonResult(new
                     {
                         IsOk = true,
-                        user = new { user.UserName },
+                        user = new { user.UserName, user.Id, },
                     });
 
                     return resp;

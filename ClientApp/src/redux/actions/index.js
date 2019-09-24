@@ -140,18 +140,52 @@ function errGetMyArtefacts() {
 
 function getMyArtefacts() {
     return async function (dispatch, getState) {
-        const { user: { id: curUserId } } =
+        const { user: { username: curUserUsername } } =
             getState().auth;
 
-        dispatch(reqGetMyArtefacts(curUserId));
+        dispatch(reqGetMyArtefacts());
 
         try {
-            const myArtefacts = await getArtefacts(curUserId);
+            const myArtefacts = await getArtefacts(curUserUsername);
             dispatch(resGetMyArtefacts(myArtefacts));
         }
         catch (e) {
             // TODO
             dispatch(errGetMyArtefacts());
+        }
+    }
+}
+
+function reqGetPublicArtefacts() {
+    return {
+        type: artefactTypes.REQ_GET_PUBLIC_ARTEFACTS,
+    }
+}
+
+function resGetPublicArtefacts(publicArtefacts) {
+    return {
+        type: artefactTypes.RES_GET_PUBLIC_ARTEFACTS,
+        publicArtefacts,
+    }
+}
+
+function errGetPublicArtefacts() {
+    return {
+        type: artefactTypes.ERR_GET_PUBLIC_ARTEFACTS,
+    }
+}
+
+function getPublicArtefacts() {
+    return async function (dispatch) {
+        dispatch(reqGetPublicArtefacts());
+
+        try {
+            const publicArtefacts = await getArtefacts();
+            dispatch(reqGetPublicArtefacts(publicArtefacts));
+        }
+        catch (e) {
+            // TODO
+            dispatch(errGetPublicArtefacts());
         }
     }
 }
@@ -166,6 +200,7 @@ function addMyArtefact(newArtefact) {
 const artefacts = {
     getMyArtefacts,
     addMyArtefact,
+    getPublicArtefacts,
 }
 
 export {

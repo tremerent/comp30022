@@ -6,25 +6,54 @@ function art(state = getInitArtState(), action) {
         case artefactTypes.REQ_GET_MY_ARTEFACTS:
             return {
                 ...state,
-                loading: true,
+                myArts: {
+                    ...state.myArts,
+                    loading: true,
+                }
             };
         case artefactTypes.RES_GET_MY_ARTEFACTS:
             return {
                 ...state,
-                loading: false,
-                myArtefacts: action.myArtefacts,
+                myArts: {
+                    loading: false,
+                    myArtefacts: action.myArtefacts,
+                }
             };
+        case artefactTypes.ERR_GET_MY_ARTEFACTS:
+            return {
+                // TODO
+            }
         case artefactTypes.ADD_MY_ARTEFACTS:
-            console.log('state in reducer');
-            console.log(state);
             const updatedMyArtefacts =
                 [action.newArtefact, ...state.myArtefacts];
-            const obj = {
+
+            return {
                 ...state,
-                myArtefacts: updatedMyArtefacts,
+                myArts: {
+                    ...state.myArts,
+                    myArtefacts: updatedMyArtefacts,
+                }
+            };
+        case artefactTypes.REQ_GET_PUBLIC_ARTEFACTS:
+            return {
+                ...state,
+                publicArts: {
+                    ...state.publicArts,
+                    loading: true,
+                }
+            };
+        case artefactTypes.RES_GET_PUBLIC_ARTEFACTS:
+            return {
+                ...state,
+                publicArts: {
+                    loading: false,
+                    publicArts: action.publicArts,
+                }
+            };
+        case artefactTypes.ERR_GET_PUBLIC_ARTEFACTS:
+            return {
+                // TODO
             }
-            console.log(obj);
-            return obj;
         default:
             return state
     }

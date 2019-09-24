@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 
-import CentreLoading from '../CenterLoading.js';
+import CentreLoading from '../CentreLoading.js';
 
 /**
  * Perhaps this should have a 'Switch' with 'Route's, but for now
