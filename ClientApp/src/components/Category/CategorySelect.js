@@ -33,6 +33,7 @@ export default class CategorySelect extends Component {
                 defaultOptions
                 loadOptions={this.getCategoryOptionsThenFilter}
 
+                menuPlacement="top"
                 isMulti
                 isSearchable
                 closeMenuOnSelect={false}

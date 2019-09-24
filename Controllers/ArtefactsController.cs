@@ -128,7 +128,6 @@ namespace Artefactor.Controllers
         }
 
         // POST: api/Artefacts
-        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Artefact>> PostArtefact(Artefact artefact)
         {

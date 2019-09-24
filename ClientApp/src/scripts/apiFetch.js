@@ -7,7 +7,7 @@
 
 const apiUrl = '/api'
 
-function apiFetch() {
+function getApiFetch() {
     const apiOpts = {
         baseURL: apiUrl,
         headers: {
@@ -16,18 +16,19 @@ function apiFetch() {
     }
 
     const instance = axios.create(apiOpts);
-
-    instance.interceptors.request.use(function (config) {
-        const token = localStorage.getItem('token');
-        config.headers.Authorization = token ? `Bearer ${token}` : '';
-        return config;
-    });
+    
+    //instance.interceptors.request.use(function (config) {
+    //    const token = localStorage.getItem('authDetails').token;
+    //    console.log(token);
+    //    config.headers.Authorization = token ? `Bearer ${token}` : '';
+    //    return config;
+    //});
 
     return instance;
 }
 
 function apiFetchWithAuth(token) {
-    const ax = apiFetch();
+    const ax = getApiFetch();
 
     if (token) {
         ax.defaults.headers.common.Authorization = `Bearer ${token}`;

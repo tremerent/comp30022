@@ -1,20 +1,31 @@
 ﻿// supply a token
-import tokenFetch from './apiFetch';
+import apiFetch from './apiFetch';
 
-const noTokenFetch = tokenFetch();
+const authDetails = localStorage.getItem('authDetails');
+let token;
+if (authDetails) {
+    token = authDetails.token;
+}
+else {
+    token = null;
+}
+
+
+const tokenFetch = () => apiFetch(token);
+const noTokenFetch = apiFetch;
 
 /*
  * All request functions assume parameters have already been validated.
  */
 
 async function postLogin(loginDetails) {
-    const resp = await noTokenFetch.post(`auth/login`, loginDetails);
+    const resp = await noTokenFetch().post(`auth/login`, loginDetails);
 
     return resp.data;
 }
 
 async function postRegister(registerDetails) {
-    const resp = await noTokenFetch.post(`auth/register`, registerDetails);
+    const resp = await noTokenFetch().post(`auth/register`, registerDetails);
 
     return resp.data;
 }

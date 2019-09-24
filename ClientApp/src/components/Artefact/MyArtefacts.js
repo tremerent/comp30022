@@ -46,7 +46,7 @@ class MyArtefacts extends React.Component {
     render() {
         const myArtefacts =
             this.props.myArtefacts.length
-                ? <ArtefactScroller artefacts={this.props.myArtefacts} />
+                ? <ArtefactScroller key={this.state.artefacts.length} artefacts={this.props.myArtefacts} />
                 : this.noArtefactsView();
                     /* Key hac ^^^
                         This is a hack. Changing the key forces React to
@@ -71,18 +71,13 @@ class MyArtefacts extends React.Component {
     noArtefactsView = () => {
         return (
             <div className='af-myart-noarts'>
-                <h5 className='text-light'> Oh no! Looks like you haven't registered any artefacts yet! </h5>
+                <h5 className='text-faded'> Oh no! Looks like you haven't registered any artefacts yet! </h5>
             </div>
         );
     }
 
     addArtefact = (artefact) => {
-        let artefacts = [ artefact, ...this.state.artefacts ];
-
-        this.setState({
-            ...this.state,
-            artefacts,
-        });
+        this.props.addMyArtefact(artefact);
     }
 }
 
@@ -92,7 +87,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ getMyArtefacts: artActions.getMyArtefacts, }, dispatch);
+    return bindActionCreators({
+        getMyArtefacts: artActions.getMyArtefacts,
+        addMyArtefact: artActions.addMyArtefact,
+    }, dispatch);
 }
 
 export default connect(

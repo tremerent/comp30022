@@ -14,13 +14,23 @@ export default class ArtefactScroller extends Component {
         super(props);
 
         let artefacts = this.props.artefacts;
-        this.state = {
-            artefacts: Array.isArray(artefacts) && artefacts.length ? (
-                    artefacts
-                ) : (
-                    []
-                ),
-        };
+        if (!this.props.artefacts) {
+            this.state = {
+                artefacts: Array.isArray(artefacts) && artefacts.length ? (
+                        artefacts
+                    ) : (
+                        []
+                    ),
+            };
+        }
+
+        if (!this.state) {
+            this.state = {
+                loading: false,
+                artefacts: [],
+            }
+        }
+
         this.state.loading = !this.state.artefacts.length;
     }
 
@@ -41,17 +51,30 @@ export default class ArtefactScroller extends Component {
             //<div className={this.props.className + ' af-artefact-scroller-wrapper'}>
             //    <div className='af-artefact-scroller'>
             //        <div className='af-artefact-scroller-inner'>
-                    <div className='af-artefact-srcoller-container'>
-                        {this.state.artefacts.map(a => {
-                            if (a) {
-                                a.images = [
-                                    PLACEHOLDER_IMAGE_01,
-                                    PLACEHOLDER_IMAGE_02,
-                                    PLACEHOLDER_IMAGE_03,
-                                ];
-                                return <ArtefactPreview key={a.id} artefact={a} />;
-                            }
-                        })}
+                    <div className='af-artefact-scroller-container'>
+                        {
+                            this.props.artefacts
+                                ? this.props.artefacts.map(a => {
+                                    if (a) {
+                                        a.images = [
+                                            PLACEHOLDER_IMAGE_01,
+                                            PLACEHOLDER_IMAGE_02,
+                                            PLACEHOLDER_IMAGE_03,
+                                        ];
+                                        return <ArtefactPreview key={a.id} artefact={a} />;
+                                    }
+                                  })
+                                : this.state.artefacts.map(a => {
+                                    if (a) {
+                                        a.images = [
+                                            PLACEHOLDER_IMAGE_01,
+                                            PLACEHOLDER_IMAGE_02,
+                                            PLACEHOLDER_IMAGE_03,
+                                        ];
+                                        return <ArtefactPreview key={a.id} artefact={a} />;
+                                    }
+                                })
+                        }
                     </div>
             //        </div>
             //    </div>

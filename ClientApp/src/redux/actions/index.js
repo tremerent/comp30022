@@ -156,8 +156,16 @@ function getMyArtefacts() {
     }
 }
 
+function addMyArtefact(newArtefact) {
+    return {
+        type: artefactTypes.ADD_MY_ARTEFACTS,
+        newArtefact,
+    }
+}
+
 const artefacts = {
-    getMyArtefacts
+    getMyArtefacts,
+    addMyArtefact,
 }
 
 export {
