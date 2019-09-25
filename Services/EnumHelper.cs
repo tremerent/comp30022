@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Helpers
+namespace Artefactor.Services
 {
     public static class EnumHelper
     {

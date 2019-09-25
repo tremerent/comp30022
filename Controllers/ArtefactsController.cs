@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Artefactor.Data;
@@ -11,10 +10,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-
-using Helpers;
 using System.Runtime.Serialization;
-using System.Security.Claims;
+
+using Artefactor.Services;
+
 namespace Artefactor.Controllers
 {
     [Route("api/[controller]")]
@@ -41,6 +40,7 @@ namespace Artefactor.Controllers
             // to 'Visibility'
             var visVals = 
                 new List<Visibility>((Visibility[])Enum.GetValues(typeof(Visibility)));
+
             var visValsEnumMemberAttribs = visVals
                 .Select(eVal => EnumHelper.GetAttributeOfType<EnumMemberAttribute>(eVal))
                 .Where(enumMemberAttrib => enumMemberAttrib != null)
@@ -63,19 +63,72 @@ namespace Artefactor.Controllers
             return artefacts;
         }
 
+        /**
+         * Get artefacts owned by 'username' with visibility 'vis',
+         * or all visibilities if 'vis' not specified.
+         * 
+         * The requesting user must have the appropriate permissions.
+         */
         [HttpGet("user/{username}")]
         public async Task<ActionResult<IEnumerable<Artefact>>> GetUserArtefacts(string username, 
             [FromQuery]
             [JsonConverter(typeof(StringEnumConverter))]
             Visibility vis)
         {
-            var artefacts = await _context.Artefacts
-                                        .Include(a => a.Owner)
-                                        .Where(a => a.Owner.UserName == username)
-                                        .Where(a => a.Visibility == vis)
-                                        .Include(a => a.CategoryJoin)
-                                            .ThenInclude(cj => cj.Category)
-                                        .ToListAsync();
+            ApplicationUser userWArtefacts;
+
+            ApplicationUser curUser = await UserService.GetCurUser(HttpContext, _userManager);
+            bool curUserIsUsername = false;  
+            bool curUserIsFamily = false;  // TODO once families implemented
+
+            // user {username} is either curUser or another user - assign to 'userWArtefacts'
+
+            if (curUser != null && curUser.UserName == username)
+            {
+                userWArtefacts = curUser;
+            }
+            else
+            {
+                userWArtefacts = await _userManager.FindByNameAsync(username);
+
+                if (userWArtefacts == null)
+                {
+                    return NotFound();
+                }
+            }
+
+            // the request user can access 'private' artefacts of 'username' if
+            // they are the same user
+            if (curUser != null)
+            {
+                curUserIsUsername = curUser.Id == userWArtefacts.Id;
+            }
+
+            // filter artefacts based on permissions and current user
+
+            List<Artefact> artefacts = await
+                _context.Artefacts
+                        .Include(a => a.CategoryJoin)
+                            .ThenInclude(cj => cj.Category)
+                        .Where(a => a.OwnerId == userWArtefacts.Id)
+                        .ToListAsync();
+
+            if ((!curUserIsUsername && vis == Visibility.Private) ||
+                 !curUserIsFamily && vis == Visibility.PrivateFamily)
+            {
+                return Unauthorized("Insufficient permissions to " +
+                                    "view the requested recourse.");
+            }
+
+            // don't filter on visibility if vis == Visibility.Unspecified
+            if ((curUserIsUsername && vis == Visibility.Private) ||
+                     (curUserIsFamily && vis == Visibility.PrivateFamily) ||
+                     (!curUserIsUsername && vis == Visibility.Public))
+            {
+                artefacts = artefacts.Select(a => a)
+                                     .Where(a => a.Visibility == vis)
+                                     .ToList();
+            }
 
             return artefacts;
         }
@@ -130,17 +183,12 @@ namespace Artefactor.Controllers
             return NoContent();
         }
 
-        private string GetCurUserId(HttpContext httpContext)
-        {
-           return  httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-        }
-
         // POST: api/Artefacts
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<Artefact>> PostArtefact(Artefact artefact)
         {
-            var curUserId = GetCurUserId(HttpContext);
+            var curUserId = UserService.GetCurUserId(HttpContext);
 
             _context.Attach(artefact);
             // OwnerId is shadow property

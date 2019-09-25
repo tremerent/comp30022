@@ -16,6 +16,7 @@ namespace Artefactor.Models
         [JsonConverter(typeof(StringEnumConverter))]
         [JsonRequired]
         public Visibility Visibility { get; set; }
+        public string OwnerId { get; set; }
         public ApplicationUser Owner { get; set; }
     }
 
