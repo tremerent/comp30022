@@ -92,7 +92,7 @@ async function getArtefacts(username) {
     }
     else {
         resp = await tokenFetch()
-            .get(`/Artefacts/${username}`);
+            .get(`/Artefacts/user/${username}`);
     }
 
     return resp.data;

@@ -18,6 +18,12 @@ import { faImages, faShareAltSquare, faTrophy } from '@fortawesome/free-solid-sv
 
 import './CreateArtefact.css';
 
+const visbilityOptLabels = {
+    "private": "Only me",
+    "family": "My family",
+    "public": "Anyone",
+};
+
 export class CreateArtefact extends Component {
     constructor(props) {
         super(props);
@@ -35,12 +41,6 @@ export class CreateArtefact extends Component {
             loading: true,
             artefactWasCreated: false,
             createdArtefactId: null,
-        };
-
-        this.visbilityOptLabels = {
-            "Private": "Only me",
-            "PrivateFamily": "My family",
-            "Public": "Anyone",
         };
     }
 
@@ -217,7 +217,7 @@ export class CreateArtefact extends Component {
 
     renderThirdFormPage = () => {
 
-        const visibilityOptRadios = this.state.visibilityOpts.map((opt, i) => {
+        const visibilityOptRadios = this.state.visibilityOpts.map((visOpt, i) => {
 
             let invalidFeedback;
             if (i === 0) {
@@ -231,19 +231,19 @@ export class CreateArtefact extends Component {
 
             return (
                 <div>
-                    <div key={opt.value} className="form-check">
+                    <div key={visOpt} className="form-check">
                         { invalidFeedback }
                         <input
                             className="form-check-input"
                             type="radio"
                             name="visibility"
                             id="visibility"
-                            value={opt.value}
+                            value={visOpt}
                             onChange={this.handleFormChange}
                             required
                         />
                         <label className="form-check-label">
-                            {this.visbilityOptLabels[opt.name]}
+                            {visbilityOptLabels[visOpt]}
                         </label>
 
                     </div>
@@ -358,18 +358,13 @@ export class CreateArtefact extends Component {
                 );
             delete artefactToPost.categories;
 
-            artefactToPost.visibility =
-                Number(artefactToPost.visibility);
-
             const createdArtefact = await postArtefact(artefactToPost);
-            console.log('created');
-            console.log(createdArtefact);
 
             if (artefactCategories.length) {
                 await postArtefactCategories(createdArtefact.id, artefactCategories);
             }
 
-            // fetch artefact again now that it has category relationships
+            // fetch artefact again now that it has category q relationships
             // (this could also be stored prior to posting the artefact, and then
             // appended to the 'postedArtefact', but fetching now ensures
             // client-server synchronisation

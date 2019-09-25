@@ -22,10 +22,11 @@ function art(state = getInitArtState(), action) {
         case artefactTypes.ERR_GET_MY_ARTEFACTS:
             return {
                 // TODO
+                ...state,
             }
         case artefactTypes.ADD_MY_ARTEFACTS:
             const updatedMyArtefacts =
-                [action.newArtefact, ...state.myArtefacts];
+                [action.newArtefact, ...state.myArts.myArtefacts];
 
             return {
                 ...state,
@@ -52,6 +53,7 @@ function art(state = getInitArtState(), action) {
             };
         case artefactTypes.ERR_GET_PUBLIC_ARTEFACTS:
             return {
+                ...state,
                 // TODO
             }
         default:

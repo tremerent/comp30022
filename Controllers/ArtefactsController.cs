@@ -9,6 +9,11 @@ using Artefactor.Data;
 using Artefactor.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+using Helpers;
+using System.Runtime.Serialization;
 
 namespace Artefactor.Controllers
 {
@@ -29,28 +34,19 @@ namespace Artefactor.Controllers
 
         // GET: api/Artefacts/VisibilityOpts
         [HttpGet("VisibilityOpts")]
-        public async Task<ActionResult<IEnumerable<object>>> VisibilityOpts()
+        public async Task<ActionResult<IEnumerable<string>>> VisibilityOpts()
         {
-            var genreList = MapEnumToDictionary<Visibility>()
-                .Select(entry => new { Value = entry.Key, Name = entry.Value })
+            // get value of 'EnumMemberAttribute' from each value of enum 'Visibility' -
+            // 'EnumMemberAttribute' values are desiralised to 'Visibility'
+            var visVals = 
+                new List<Visibility>((Visibility[])Enum.GetValues(typeof(Visibility)));
+            var visValsEnumMemberAttribs = visVals
+                .Select(eVal => EnumHelper.GetAttributeOfType<EnumMemberAttribute>(eVal)
+                                       .Value)
                 .ToList();
 
-            return genreList;
-        }
+            return visValsEnumMemberAttribs;
 
-        // thanks to - https://stackoverflow.com/a/41499029
-        private Dictionary<int, string> MapEnumToDictionary<T>()
-        {
-            // Ensure T is an enumerator
-            if (!typeof(T).IsEnum)
-            {
-                throw new ArgumentException("T must be an enumerator type.");
-            }
-
-            // Return Enumertator as a Dictionary
-            return Enum.GetValues(typeof(T))
-                       .Cast<T>()
-                       .ToDictionary(i => (int)Convert.ChangeType(i, i.GetType()), t => t.ToString());
         }
 
         // GET: api/Artefacts
@@ -65,14 +61,20 @@ namespace Artefactor.Controllers
             return artefacts;
         }
 
-        [HttpGet("{username}")]
-        public async Task<ActionResult<IEnumerable<Artefact>>> GetMyArtefacts(string username)
+        [HttpGet("user/{username}")]
+        public async Task<ActionResult<IEnumerable<Artefact>>> GetUserArtefacts(string username, 
+            [FromQuery]
+            [JsonConverter(typeof(StringEnumConverter))]
+            Visibility vis)
         {
+
             var artefacts = await _context.Artefacts
-                                          .Where(a => a.Owner.UserName == username)
-                                          .Include(a => a.CategoryJoin)
+                                        .Include(a => a.Owner)
+                                        .Where(a => a.Owner.UserName == username)
+                                        .Where(a => a.Visibility == vis)
+                                        .Include(a => a.CategoryJoin)
                                             .ThenInclude(cj => cj.Category)
-                                          .ToListAsync();
+                                        .ToListAsync();
 
             return artefacts;
         }

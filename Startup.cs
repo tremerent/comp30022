@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 
 namespace Artefactor
 {
@@ -65,6 +66,10 @@ namespace Artefactor
                     {
                         options.SerializerSettings.ReferenceLoopHandling =
                             Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+
+                        options.SerializerSettings.Converters = new List<Newtonsoft.Json.JsonConverter> {
+                            new Newtonsoft.Json.Converters.StringEnumConverter()
+                        };
                     });
 
             // In production, the React files will be served from this directory
@@ -98,6 +103,9 @@ namespace Artefactor
 
             app.UseMvc(routes =>
             {
+                routes.MapRoute(
+                    name: "userArtefacts",
+                    template: "Artefacts/user/{username}");
                 routes.MapRoute(
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");

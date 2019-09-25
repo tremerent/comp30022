@@ -181,10 +181,12 @@ function getPublicArtefacts() {
 
         try {
             const publicArtefacts = await getArtefacts();
-            dispatch(reqGetPublicArtefacts(publicArtefacts));
+            dispatch(resGetPublicArtefacts(publicArtefacts));
         }
         catch (e) {
             // TODO
+            console.log('error');
+            console.log(e);
             dispatch(errGetPublicArtefacts());
         }
     }
