@@ -13,6 +13,7 @@ using Newtonsoft.Json.Converters;
 using System.Runtime.Serialization;
 
 using Artefactor.Services;
+using System.Collections;
 
 namespace Artefactor.Controllers
 {
@@ -102,6 +103,7 @@ namespace Artefactor.Controllers
             if (curUser != null)
             {
                 curUserIsUsername = curUser.Id == userWArtefacts.Id;
+                curUserIsFamily = curUser.Id == userWArtefacts.Id;  // TODO
             }
 
             // filter artefacts based on permissions and current user
@@ -130,7 +132,63 @@ namespace Artefactor.Controllers
                                      .ToList();
             }
 
-            return artefacts;
+            // it would be much better for performance reasons to create
+            // a Newtonsoft.Json.JsonConverter, but this will be done for now
+            IList<object> artefactsJson = new List<object>(artefacts.Count);
+            foreach (var a in artefacts)
+            {
+                var owner = new
+                {
+                    a.Owner.Id,
+                    a.Owner.UserName,
+                };
+
+                var categoryJoin =
+                    a.CategoryJoin
+                     .Select(cj =>
+                     {
+                         cj.Category = new Category
+                         {
+                             Name = cj.Category.Name,
+                             Id = cj.Category.Id ,
+                         };
+                         return cj;
+                     })
+                     .ToList();
+
+                var convertedArtefact = new
+                {
+                    a.Id,
+                    a.Title,
+                    a.Description,
+                    owner = RestrictedObjAppUserView(a.Owner),
+                    categoryJoin,
+                };
+
+                artefactsJson.Add(convertedArtefact);
+            }
+
+            return new JsonResult(artefactsJson);
+
+            object RestrictedObjAppUserView(ApplicationUser u)
+            {
+                return new
+                {
+                    Id = u.Id,
+                    Username = u.UserName,
+                    Bio = u.Bio,
+                };
+            }
+
+            //ApplicationUser RestrictedAppUserView(ApplicationUser u)
+            //{
+            //    return new ApplicationUser
+            //    {
+            //        Id = u.Id,
+            //        UserName = u.UserName,
+            //        Bio = u.Bio,
+            //    };
+            //}
         }
 
 

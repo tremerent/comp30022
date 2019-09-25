@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Artefactor.Data;
 using Artefactor.Models;
+using Artefactor.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +15,12 @@ namespace Artefactor.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
-    public class ProfileController : Controller
+    public class UserController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public ProfileController(ApplicationDbContext context,
+        public UserController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager)
         {
             _context = context;
@@ -28,10 +29,10 @@ namespace Artefactor.Controllers
 
         // GET: api/<controller>
         [AllowAnonymous]
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> Get(string userId)
+        [HttpGet("{username}")]
+        public async Task<IActionResult> Get(string username)
         {
-            var user = _context.Users.SingleOrDefault(u => u.Id == userId);
+            var user = _context.Users.SingleOrDefault(u => u.UserName == username);
 
             if (user != null)
             {
@@ -39,7 +40,6 @@ namespace Artefactor.Controllers
                 {
                     id = user.Id,
                     username = user.UserName,
-                    email = user.Email,
                     bio = user.Bio,
                 });
             }
@@ -50,9 +50,29 @@ namespace Artefactor.Controllers
         }
 
         // POST api/<controller>
+        [Authorize]
         [HttpPost]
-        public void Post([FromBody]string value)
+        public async Task<IActionResult> EditProfile([FromBody] string username, [FromBody] string bio)
         {
+            ApplicationUser curUser = 
+                await UserService.GetCurUser(HttpContext, _userManager);
+
+            if (curUser == null || curUser.UserName != username)
+            {
+                return Unauthorized();
+            }
+
+            _context.Attach(curUser);
+            curUser.Bio = bio;
+
+            await _context.SaveChangesAsync();
+
+            return new JsonResult(new
+            {
+                curUser.Id,
+                curUser.UserName,
+                curUser.Bio,
+            });
         }
 
         // PUT api/<controller>/5

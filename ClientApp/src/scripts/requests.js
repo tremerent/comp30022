@@ -91,10 +91,9 @@ async function getArtefacts(username) {
     return resp.data;
 }
 
-async function getProfile(userId) {
-
+async function getUser(username) {
     const resp = await noTokenFetch
-        .get(`/Profile/${userId}`);
+        .get(`/User/${username}`);
 
     return resp.data;
 }
@@ -112,5 +111,5 @@ export {
     postLogin,
     postRegister,
 
-    getProfile,
+    getUser,
 }

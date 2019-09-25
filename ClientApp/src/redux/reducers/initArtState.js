@@ -2,15 +2,15 @@
     const initArtState = {
         myArts: {
             myArtefacts: [],
-            loading: false,
+            loading: true,
         },
         publicArts: {
             publicArtefacts: [],
-            loading: false,
+            loading: true,
         },
         familyArts: {
             familyArtefacts: [],
-            loading: false,
+            loading: true,
         }
 
     }

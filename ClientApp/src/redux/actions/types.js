@@ -24,6 +24,9 @@ const RES_GET_PUBLIC_ARTEFACTS = 'RES_GET_PUBLIC_ARTEFACTS';
 const ERR_GET_PUBLIC_ARTEFACTS = 'ERR_GET_PUBLIC_ARTEFACTS';
 const ADD_MY_ARTEFACTS = 'ADD_MY_ARTEFACTS';
 
+const REQ_GET_USER = 'REQ_GET_USER';
+const RES_GET_USER = 'RES_GET_USER';
+const ERR_GET_USER = 'ERR_GET_USER';
 
 const artefactTypes = {
     REQ_GET_MY_ARTEFACTS,
@@ -35,8 +38,15 @@ const artefactTypes = {
     ERR_GET_PUBLIC_ARTEFACTS,
 }
 
+const usersTypes = {
+    REQ_GET_USER,
+    RES_GET_USER,
+    ERR_GET_USER,
+}
+
 export {
     authTypes,
     artefactTypes,
+    usersTypes,
 }
 

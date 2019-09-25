@@ -1,10 +1,11 @@
-﻿import { authTypes, artefactTypes } from './types';
+﻿import { authTypes, artefactTypes, usersTypes } from './types';
 import { setUser, logoutUser, } from '../../scripts/auth';
 import { push } from 'connected-react-router';
 
 import {
     postRegister,
     getArtefacts,
+    getUser as fetchUser,
 } from '../../scripts/requests';
 
 function setRedir(to) {
@@ -203,7 +204,52 @@ const artefacts = {
     getPublicArtefacts,
 }
 
+function reqGetUser(username) {
+    return {
+        type: usersTypes.REQ_GET_USER,
+        username,
+    }
+}
+
+function resGetUser(user) {
+    return {
+        type: usersTypes.RES_GET_USER,
+        user,
+    }
+}
+
+function errGetUser(username) {
+    return {
+        type: usersTypes.ERR_GET_USER,
+        username,
+    }
+}
+
+function getUser(username) {
+    return async function(dispatch) {
+        dispatch(reqGetUser(username));
+
+        try {
+            const user = await fetchUser(username);
+
+            dispatch(resGetUser(user));
+        }
+        catch (e) {
+            // TODO
+            dispatch(errGetUser(username));
+        }
+    }
+}
+
+const users = {
+    reqGetUser,
+    resGetUser,
+    errGetUser,
+    getUser,
+}
+
 export {
     auth,
     artefacts,
+    users,
 }
