@@ -185,8 +185,6 @@ function getPublicArtefacts() {
         }
         catch (e) {
             // TODO
-            console.log('error');
-            console.log(e);
             dispatch(errGetPublicArtefacts());
         }
     }

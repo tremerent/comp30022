@@ -9,21 +9,25 @@ namespace Artefactor.Models
     {
         public string Id { get; set; }
         public IEnumerable<ArtefactCategory> CategoryJoin { get; set; }
+        [JsonRequired]
         public string Title { get; set; }
+        [JsonRequired]
         public string Description { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
+        [JsonRequired]
         public Visibility Visibility { get; set; }
         public ApplicationUser Owner { get; set; }
     }
 
     public enum Visibility
     {
+        Unspecified = 0,  // default to unspecified
         [EnumMember(Value = "private")]
-        Private,
+        Private = 1,
         [EnumMember(Value = "family")]
-        PrivateFamily,
+        PrivateFamily = 2,
         [EnumMember(Value = "public")]
-        Public,
+        Public = 3,
     }
     
 }

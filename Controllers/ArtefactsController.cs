@@ -14,7 +14,7 @@ using Newtonsoft.Json.Converters;
 
 using Helpers;
 using System.Runtime.Serialization;
-
+using System.Security.Claims;
 namespace Artefactor.Controllers
 {
     [Route("api/[controller]")]
@@ -37,12 +37,14 @@ namespace Artefactor.Controllers
         public async Task<ActionResult<IEnumerable<string>>> VisibilityOpts()
         {
             // get value of 'EnumMemberAttribute' from each value of enum 'Visibility' -
-            // 'EnumMemberAttribute' values are desiralised to 'Visibility'
+            // 'EnumMemberAttribute' values are converted by 'NewtonsoftJsonConverter'
+            // to 'Visibility'
             var visVals = 
                 new List<Visibility>((Visibility[])Enum.GetValues(typeof(Visibility)));
             var visValsEnumMemberAttribs = visVals
-                .Select(eVal => EnumHelper.GetAttributeOfType<EnumMemberAttribute>(eVal)
-                                       .Value)
+                .Select(eVal => EnumHelper.GetAttributeOfType<EnumMemberAttribute>(eVal))
+                .Where(enumMemberAttrib => enumMemberAttrib != null)
+                .Select(enumMemberAttrib => enumMemberAttrib.Value)
                 .ToList();
 
             return visValsEnumMemberAttribs;
@@ -67,7 +69,6 @@ namespace Artefactor.Controllers
             [JsonConverter(typeof(StringEnumConverter))]
             Visibility vis)
         {
-
             var artefacts = await _context.Artefacts
                                         .Include(a => a.Owner)
                                         .Where(a => a.Owner.UserName == username)
@@ -129,15 +130,23 @@ namespace Artefactor.Controllers
             return NoContent();
         }
 
+        private string GetCurUserId(HttpContext httpContext)
+        {
+           return  httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
+
         // POST: api/Artefacts
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Artefact>> PostArtefact(Artefact artefact)
         {
-            var curUser = await _userManager.GetUserAsync(HttpContext.User);
+            var curUserId = GetCurUserId(HttpContext);
 
-            artefact.Owner = curUser;
+            _context.Attach(artefact);
+            // OwnerId is shadow property
+            _context.Entry(artefact).Property("OwnerId").CurrentValue = curUserId;
 
-            _context.Artefacts.Add(artefact);
+            //_context.Artefacts.Add(artefact);
             try
             {
                 await _context.SaveChangesAsync();
