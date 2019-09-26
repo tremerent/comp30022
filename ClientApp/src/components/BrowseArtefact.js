@@ -1,23 +1,29 @@
 import React from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
-// import CameraIcon from '@material-ui/icons/PhotoCamera';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Link from '@material-ui/core/Link';
 
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import PropTypes from 'prop-types'
+//Dialog dependencies
+import {withStyles} from '@material-ui/core/styles'
+import Dialog from '@material-ui/core/Dialog'
+import MuiDialogTitle from '@material-ui/core/DialogTitle'
+import MuiDialogContent from '@material-ui/core/DialogContent'
+import MuiDialogActions from '@material-ui/core/DialogActions'
+import CloseIcon from '@material-ui/icons/Close'
+import IconButton from '@material-ui/core/IconButton'
 
+/* This page is intended to display user's artefacts that are fetched 
+   from the server.
+*/
+
+
+// Function that renders the copyright section of the footer.
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -31,16 +37,56 @@ function Copyright() {
   );
 }
 
-function handleChange(event, newValue) {
-  // setValue(newValue);
-}
 
-// TabPanel.propTypes = {
-//   children: PropTypes.node,
-//   index: PropTypes.any.isRequired,
-//   value: PropTypes.any.isRequired,
-// };
 
+// Variables for the DIALOG component
+const styles = theme => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(2),
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+});
+
+const DialogTitle = withStyles(styles)(props => {
+  const { children, classes, onClose } = props;
+  return (
+    <MuiDialogTitle disableTypography className={classes.root}>
+      <Typography variant="h6">{children}</Typography>
+      {onClose ? (
+        <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </MuiDialogTitle>
+  );
+});
+
+const DialogContent = withStyles(theme => ({
+  root: {
+    padding: theme.spacing(2),
+    backgroundImage:"url(https://source.unsplash.com/random)",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center center",
+    width:800,
+    height:800,
+  },
+}))(MuiDialogContent);
+
+const DialogActions = withStyles(theme => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(1),
+  },
+}))(MuiDialogActions);
+
+
+// Styles for various objects in this page.
 const useStyles = makeStyles(theme => ({
   icon: {
     marginRight: theme.spacing(2),
@@ -63,6 +109,8 @@ const useStyles = makeStyles(theme => ({
   },
   cardMedia: {
     paddingTop: '56.25%', // 16:9
+    tooltip: "click to enlarge",
+    cursor: 'pointer',
   },
   cardContent: {
     flexGrow: 1,
@@ -75,79 +123,57 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+/* variable that determines the number of cards that are 
+   displayed. Expected to be changed based on the backend.
+*/
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 export default function BrowseArtefact() {
   const classes = useStyles();
 
+  //Dialog variables to handle opening and closing
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  
+  // render the page
   return (
     <React.Fragment>
       <CssBaseline />
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" color="inherit" noWrap>
-            Artefactor
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Tabs /*value={value} */ onChange={handleChange} aria-label="simple tabs example">
-        <Tab label="Item One"  />
-        <Tab label="Item Two"  />
-        <Tab label="Item Three"  />
-      </Tabs>
 
       <main>
-        {/* Hero unit */}
         <div className={classes.heroContent}>
           <Container maxWidth="sm">
+          	{/* Title of the page */}
             <Typography component="h3" variant="h4" align="center" color="textPrimary" gutterBottom>
               Browse Artefact
             </Typography>
-            {/* <Typography variant="h5" align="center" color="textSecondary" paragraph>
-              Something short and leading about the collection below—its contents, the creator, etc.
-              Make it short and sweet, but not too short so folks don&apos;t simply skip over it
-              entirely.
-            </Typography> */}
-            {/* <div className={classes.heroButtons}>
-              <Grid container spacing={2} justify="center">
-                <Grid item>
-                  <Button variant="contained" color="primary">
-                    Main call to action
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button variant="outlined" color="primary">
-                    Secondary action
-                  </Button>
-                </Grid>
-              </Grid>
-            </div> */}
           </Container>
         </div>
         <Container className={classes.cardGrid} maxWidth="md">
-          {/* End hero unit */}
+          {/* card section */}
           <Grid container spacing={4}>
             {cards.map(card => (
-              <Grid item key={card} xs={6}> {/**xs={12} sm={6} md={4} */}
-                <Card className={classes.card}>
+              <Grid item key={card} xs={6}>
+              	{/* hints the user at clicking the image to enlarge */}
+                <Card className={classes.card} onClick={handleClickOpen} 
+                  tooltip="Click to enlarge"
+                >
                   <CardMedia
                     className={classes.cardMedia}
                     image="https://source.unsplash.com/random"
-                    title="Image title"
+                    title="Click to enlarge"
                   />
                   <CardContent className={classes.cardContent}>
                     <Typography>
                       <p>Genre: ... Category: ...</p>
                     </Typography>
                   </CardContent>
-                  {/* <CardActions>
-                    <Button size="small" color="primary">
-                      View
-                    </Button>
-                    <Button size="small" color="primary">
-                      Edit
-                    </Button>
-                  </CardActions> */}
                 </Card>
               </Grid>
             ))}
@@ -164,7 +190,16 @@ export default function BrowseArtefact() {
         </Typography>
         <Copyright />
       </footer>
-      {/* End footer */}
+
+      {/* Dialog component */}
+      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
+        <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+          View Artefact
+        </DialogTitle>
+        <DialogContent dividers>
+        </DialogContent>
+      </Dialog>
+
     </React.Fragment>
   );
 }

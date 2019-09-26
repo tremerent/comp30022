@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid,Paper } from '@material-ui/core'
+import { Grid,Paper,Button } from '@material-ui/core'
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia'
 import AppBar from '@material-ui/core/AppBar';
@@ -9,7 +9,18 @@ import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
+import Avatar from '@material-ui/core/Avatar'
+import Divider from '@material-ui/core/Divider'
+
+import FolderIcon from '@material-ui/icons/Folder'
+import ChatIcon from '@material-ui/icons/Chat'
+import ArtTrackIcon from '@material-ui/icons/ArtTrack'
+import DeviceHubIcon from '@material-ui/icons/DeviceHub'
+
 import Header from './Header'
+
+/* This page is intended to display user's profile.
+*/
 
 // The styles attributes are grouped into this variable.
 const style ={
@@ -17,35 +28,82 @@ const style ={
     CardMedia:{paddingTop:'56.25%',height:0,width:'inherit',margin:10}, //
     Card:{width:'500px',marginTop:30,marginBottom:30},
     AppBar: {background:'blue'},
-
+    gridBelowDivider: {margin:50},
+    familyTreeButton: {margin:10},
+    familyTreeButtonIcon: {marginLeft:10},
 }
+// The styles for the profile picture
+const style2 = {
+    avatar:{
+        margin: 10,
+    },
+    bigAvatar: {
+        margin: 10,
+        width: 300,
+        height: 300,
+    },
+}
+
+
 // The main section of the Profile page
 export default Profile =>
     <React.Fragment>
-        <Header />
+        {/* <Header /> */}
         <Grid container>
             <Grid item sm>
                 <Paper style={style.Paper} >
-                    <Typography variant="h6" color="inherit">
-                        Profile information
-                    </Typography>
-                    <Card style={style.Card}>
-                        <CardMedia
-                            // className={classes.cardMedia}
-                            style={style.CardMedia}
-                            image={require("../images/1.jpg")}
-                            title="Image title"
-                        />
-                    </Card>
-                    <Typography variant="p" color="inherit">
+                    <Grid container alignItems="center" justify="center">
+                        <Grid item xs>
+                            <Avatar alt='profile name' src="https://source.unsplash.com/random" style={style2.bigAvatar} />
+                        </Grid>
+                    </Grid>
+                    <Typography variant="h3" color="inherit"> {/* gutterBottom */}
                         Profile details
+                    </Typography>
+
+                    <Divider variant="middle" />
+
+                    <Grid container alignItems="center" justify="center" style={style.gridBelowDivider}>
+                        <Grid item xs>
+                            <ArtTrackIcon />
+                            {/* displays the number of artefacts */}
+                            <Typography variant="p" color="inherit">
+                                ... Artefacts
+                            </Typography>
+                        </Grid>
+                        <Grid item xs>
+                            {/* displays the number of comments */}
+                            <ChatIcon />
+                            <Typography variant="p" color="inherit">
+                                ... Comments
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                    {/* button that pops out the family tree image related to the user */}
+                    <Button variant="contained" color="default" style={style.familyTreeButton}>
+                        See in Family Tree
+                        <DeviceHubIcon style={style.familyTreeButtonIcon}/>
+                    </Button>
+                    <br /><br />
+                    {/* biography of the user */}
+                    <Typography variant="p" color="inherit">
+                        Description of profile
                     </Typography>
                 </Paper>
             </Grid>
             <Grid item sm>
                 <Paper style={style.Paper}>
-                    Artefact scroller
+                    <Typography variant="h5" color="inherit">
+                        Profile name's Artefact
+                    </Typography>
+                    Search, Artefact scroller
                 </Paper>
             </Grid>
         </Grid>
+
+        
+
+
+
+
     </React.Fragment>
