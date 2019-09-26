@@ -5,14 +5,16 @@
             loading: true,
         },
         publicArts: {
-            publicArtefacts: [],
+            artefacts: [],
             loading: true,
         },
         familyArts: {
             familyArtefacts: [],
             loading: true,
-        }
+        },
+        userArts: {
 
+        },
     }
 
     return initArtState;

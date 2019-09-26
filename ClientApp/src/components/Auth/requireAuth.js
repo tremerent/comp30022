@@ -12,7 +12,10 @@ import { bindActionCreators } from 'redux';
 function requireAuth(Component, unauthedRedirTo) {
     class AuthComponent extends React.Component {
         render() {
-            if (this.props.isLoggedIn) {
+            if (this.props.authLoading) {
+                return <> </>;
+            }
+            else if (this.props.isLoggedIn) {
                 return <Component />;
             }
             else {
@@ -28,6 +31,7 @@ function requireAuth(Component, unauthedRedirTo) {
     function mapStateToProps(state) {
         return {
             isLoggedIn: state.auth.isLoggedIn,
+            authLoading: state.auth.loading,
             goingToAddr: state.router.location.pathname,
         };
     }

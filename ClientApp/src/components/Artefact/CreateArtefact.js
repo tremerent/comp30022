@@ -96,7 +96,6 @@ export class CreateArtefact extends Component {
         return (
             <div className="alert alert-success" role="alert">
                 <h4 className="alert-heading">Thanks for registering an artefact!</h4>
-                <p> Important info about what you can now ... </p>
                 <hr/>
                 <div className="row justify-content-start">
                     <a href={"/Artefacts/" + this.state.createdArtefactId} role="button" className="btn btn-secondary mx-2" style={{color: "#fff !important"}}>

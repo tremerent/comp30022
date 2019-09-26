@@ -83,7 +83,8 @@ function register(registerData) {
         const responseData = await postRegister(registerData);
 
         if (responseData.isOk) {
-            dispatch(login(registerData));
+            await dispatch(login(registerData));
+
             return responseData;
         }
         else {
@@ -163,10 +164,10 @@ function reqGetPublicArtefacts() {
     }
 }
 
-function resGetPublicArtefacts(publicArtefacts) {
+function resGetPublicArtefacts(publicArts) {
     return {
         type: artefactTypes.RES_GET_PUBLIC_ARTEFACTS,
-        publicArtefacts,
+        artefacts: publicArts,
     }
 }
 
@@ -181,8 +182,8 @@ function getPublicArtefacts() {
         dispatch(reqGetPublicArtefacts());
 
         try {
-            const publicArtefacts = await getArtefacts();
-            dispatch(resGetPublicArtefacts(publicArtefacts));
+            const publicArts = await getArtefacts();
+            dispatch(resGetPublicArtefacts(publicArts));
         }
         catch (e) {
             // TODO
@@ -198,10 +199,48 @@ function addMyArtefact(newArtefact) {
     }
 }
 
+function reqUserArtefacts(username) {
+    return {
+        type: artefactTypes.REQ_GET_USER_ARTEFACTS,
+        username,
+    }
+}
+
+function resUserArtefacts(username, userArtefacts) {
+    return {
+        type: artefactTypes.RES_GET_USER_ARTEFACTS,
+        username,
+        userArtefacts,
+    }
+}
+
+function errGetUserArtefacts(username) {
+    return {
+        type: artefactTypes.ERR_GET_USER_ARTEFACTS,
+        username,
+    }
+}
+
+function getUserArtefacts(username, vis) {
+    return async function (dispatch) {
+        dispatch(reqUserArtefacts(username));
+
+        try {
+            const userArtefacts = await getArtefacts(username, vis);
+            dispatch(resUserArtefacts(username, userArtefacts));
+        }
+        catch (e) {
+            // TODO
+            dispatch(errGetUserArtefacts());
+        }
+    }
+}
+
 const artefacts = {
     getMyArtefacts,
     addMyArtefact,
     getPublicArtefacts,
+    getUserArtefacts,
 }
 
 function reqGetUser(username) {

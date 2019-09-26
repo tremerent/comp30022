@@ -38,8 +38,8 @@ function art(state = getInitArtState(), action) {
         case artefactTypes.REQ_GET_PUBLIC_ARTEFACTS:
             return {
                 ...state,
-                publicArts: {
-                    ...state.publicArts,
+                artefacts: {
+                    ...state.artefacts,
                     loading: true,
                 }
             };
@@ -47,14 +47,46 @@ function art(state = getInitArtState(), action) {
             return {
                 ...state,
                 publicArts: {
+                    artefacts: action.artefacts,
                     loading: false,
-                    publicArts: action.publicArts,
-                }
+                },
             };
         case artefactTypes.ERR_GET_PUBLIC_ARTEFACTS:
             return {
                 ...state,
                 // TODO
+            }
+        case artefactTypes.REQ_GET_USER_ARTEFACTS:
+            return {
+                ...state,
+                userArts: {
+                    ...state.userArts,
+                    [action.username]: {
+                        artefacts: [],
+                        loading: true,
+                    },
+                },
+            }
+        case artefactTypes.RES_GET_USER_ARTEFACTS:
+            return {
+                ...state,
+                userArts: {
+                    ...state.userArtefacts,
+                    [action.username]: {
+                        artefacts: action.userArtefacts,
+                        loading: true,
+                    },
+                },
+            }
+        case artefactTypes.ERR_GET_PUBLIC_ARTEFACTS:
+            return {
+                ...state,
+                userArts: {
+                    ...state.userArtefacts,
+                    [action.username]: {
+                        error: true,
+                    },
+                },
             }
         default:
             return state

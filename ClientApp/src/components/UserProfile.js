@@ -42,11 +42,13 @@ export default class UserProfile extends React.Component {
                                     <h2 className='af-profile-name'>{this.props.user.username}</h2>
                                     <div className='af-profile-badges'>
                                         <span className="badge badge-decal-text mx-1 af-profile-art-badge">
-                                            {this.props.user.artefacts_registered + ' Artefacts'}
+                                            {(this.props.numArtefactsReg
+                                                ? this.props.numArtefactsReg
+                                                : 0) + ' Artefacts'}
                                         </span>
                                     </div>
                                     <hr/>
-                                                <div className='text-muted'>{
+                                                <div className='text-muted text-center'>{
                                                     this.props.user.bio != null && this.props.user.bio.length != 0
                                                         ? this.props.user.bio
                                                         : this.EMPTY_BIO_PLACEHOLDER
@@ -60,7 +62,10 @@ export default class UserProfile extends React.Component {
                     <hr/>
                     <h3>{this.props.user.username + "'s Artefacts"}</h3>
                     <hr/>
-                    <ArtefactScroller/>
+                    <ArtefactScroller
+                        artefacts={this.props.userArtefacts}
+                        placeholder={"Oh no! This user hasn't registered any artefacts yet."}
+                    />
                 </div>
             </div>
         );

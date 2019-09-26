@@ -29,10 +29,7 @@ class Signup extends React.Component {
                         <label for='username' >Username</label>
                         <input name='username' className="form-control" />
                     </div>
-                    <div className="form-group">
-                        <label for='email'>Email</label>
-                        <input name='email' className="form-control" />
-                    </div>
+
                     <div className="form-group">
                         <label for='password'>Password</label>
                         <input name='password' text='password' className="form-control" type='password' />
@@ -45,6 +42,11 @@ class Signup extends React.Component {
                     <button type="submit" className="btn btn-primary">Sign up</button>
                 </form>
             </>
+
+            //<div className="form-group">
+            //    <label for='email'>Email</label>
+            //    <input name='email' className="form-control" />
+            //</div>
         );
     }
 
@@ -60,6 +62,7 @@ class Signup extends React.Component {
 
                 }
                 else {
+                    console.log('going to nextdir');
                     const nextDir = this.props.redir ? this.props.redir : '/my-artefacts';
                     this.props.push(nextDir);
                 }

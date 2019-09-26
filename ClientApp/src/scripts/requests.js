@@ -76,16 +76,19 @@ async function getVisibilityOpts() {
  * Get all artefacts owned by user with 'username', 
  * or all artefacts if null.
  */
-async function getArtefacts(username) {
+async function getArtefacts(username, vis) {
     let resp;
+
+    const visQuery = vis ? `?vis=${vis}` : ``;
 
     if (username == null) {
         resp = await tokenFetch
             .get(`/Artefacts`);
     }
     else {
+
         resp = await tokenFetch
-            .get(`/Artefacts/user/${username}`);
+            .get(`/Artefacts/user/${username}` + visQuery);
     }
 
     return resp.data;

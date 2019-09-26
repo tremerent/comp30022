@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 
 import './ArtefactPreview.css';
@@ -81,25 +82,28 @@ export class ArtefactPreview extends Component {
                         </div>
                         <div className="af-artcard-categories">
                             {this.categoryJoinsToCategories(a.categoryJoin).map(c =>
-                                <a
-                                        href={`/browse?category=${c.id}`}
+                                <Link
+                                        to={`/browse?category=${c.id}`}
                                         key={c.id} className="badge badge-decal-text mx-1"
                                 >
                                     {c.name}
-                                </a>
+                                </Link>
                             )}
                         </div>
                         <span className="af-artcard-actions">
                             <a
-                                    href="#null"
-                                    className="af-artcard-action"
-                                    data-toggle="collapse"
-                                    data-target={`#${id}`}
-                                    onClick={
-                                        e => this.setState({
+                                href="#null"
+                                className="af-artcard-action"
+                                data-toggle="collapse"
+                                data-target={`#${id}`}
+                                onClick={
+                                    e => {
+                                        e.preventDefault();
+                                        this.setState({
                                             descToggle: !this.state.descToggle
                                         })
                                     }
+                                }
                             >
                                 View Description { this.state.descToggle ?
                                         '▼' /* U+25bc */
@@ -108,9 +112,9 @@ export class ArtefactPreview extends Component {
                                 }
                             </a>
                             <div className="af-artcard-actions-divider"></div>
-                            <a className="af-artcard-action" href={`/artefact/${a.id}`}>
+                            <Link className="af-artcard-action" to={`/artefact/${a.id}`}>
                                 View Full Page ↗ {/* <- U+2197 */}
-                            </a>
+                            </Link>
                         </span>
                     </div>
                     <div className="text-muted af-artcard-desc collapse" id={id}>

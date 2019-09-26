@@ -6,7 +6,7 @@ export default function getInitAuthState() {
     const initAuthState = {
         user: {},
         isLoggedIn: false,
-        loading: true,
+        loading: false,
     };
 
     if (loggedInUser != null) {

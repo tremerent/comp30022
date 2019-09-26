@@ -32,12 +32,12 @@ class ArtefactBrowser extends React.Component {
 
 const mapStateToProps = state => ({
     loading: state.art.publicArts.loading,
-    publicArtefacts: state.art.publicArts.myArtefacts,
+    publicArtefacts: state.art.publicArts.artefacts,
 });
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators({
-        getPublicArtefacts: artActions.getMyArtefacts,
+        getPublicArtefacts: artActions.getPublicArtefacts,
     }, dispatch);
 }
 

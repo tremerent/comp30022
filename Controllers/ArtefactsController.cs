@@ -54,14 +54,21 @@ namespace Artefactor.Controllers
 
         // GET: api/Artefacts
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Artefact>>> GetArtefacts()
+        public async Task<IActionResult> GetPublicArtefacts()
         {
             var artefacts = await _context.Artefacts
                                           .Include(a => a.CategoryJoin)
                                             .ThenInclude(cj => cj.Category)
+                                          .Include(a => a.Owner)
+                                          .Where(a => 
+                                            a.Visibility == Visibility.Public)
                                           .ToListAsync();
 
-            return artefacts;
+            var artefactsJson = artefacts
+                .Select(a => ArtefactJson(a))
+                .Where(a => a != null);
+
+            return new JsonResult(artefactsJson);
         }
 
         /**
@@ -108,12 +115,11 @@ namespace Artefactor.Controllers
 
             // filter artefacts based on permissions and current user
 
-            List<Artefact> artefacts = await
+            IQueryable<Artefact> artefacts =
                 _context.Artefacts
                         .Include(a => a.CategoryJoin)
                             .ThenInclude(cj => cj.Category)
-                        .Where(a => a.OwnerId == userWArtefacts.Id)
-                        .ToListAsync();
+                        .Where(a => a.OwnerId == userWArtefacts.Id);
 
             if ((!curUserIsUsername && vis == Visibility.Private) ||
                  !curUserIsFamily && vis == Visibility.PrivateFamily)
@@ -127,68 +133,79 @@ namespace Artefactor.Controllers
                      (curUserIsFamily && vis == Visibility.PrivateFamily) ||
                      (!curUserIsUsername && vis == Visibility.Public))
             {
-                artefacts = artefacts.Select(a => a)
-                                     .Where(a => a.Visibility == vis)
-                                     .ToList();
+                artefacts = artefacts.Where(a => a.Visibility == vis);
             }
 
+            //var artefactsJson = await
+            //    .ToListAsync();
+
+            return new JsonResult((await artefacts.ToListAsync())
+                .Select(a => ArtefactJson(a)));
+        }
+
+        /**
+         * 'a' must have owner and category join non-null, or this method will
+         * return null.
+         */
+        private object ArtefactJson(Artefact a)
+        {
             // it would be much better for performance reasons to create
             // a Newtonsoft.Json.JsonConverter, but this will be done for now
-            IList<object> artefactsJson = new List<object>(artefacts.Count);
-            foreach (var a in artefacts)
+
+            if (a.Owner == null || a.CategoryJoin == null)
             {
-                var owner = new
-                {
-                    a.Owner.Id,
-                    a.Owner.UserName,
-                };
-
-                var categoryJoin =
-                    a.CategoryJoin
-                     .Select(cj =>
-                     {
-                         cj.Category = new Category
-                         {
-                             Name = cj.Category.Name,
-                             Id = cj.Category.Id ,
-                         };
-                         return cj;
-                     })
-                     .ToList();
-
-                var convertedArtefact = new
-                {
-                    a.Id,
-                    a.Title,
-                    a.Description,
-                    owner = RestrictedObjAppUserView(a.Owner),
-                    categoryJoin,
-                };
-
-                artefactsJson.Add(convertedArtefact);
+                Console.WriteLine("Artefact just disappeared into the void!");
+                return null;  // TODO
             }
 
-            return new JsonResult(artefactsJson);
+            var owner = RestrictedObjAppUserView(a.Owner);
 
+            var categoryJoin =
+                a.CategoryJoin
+                    .Select(cj => RestrictedObjCategoryJoinView(cj));
+
+            return new
+            {
+                a.Id,
+                a.Title,
+                a.Description,
+
+                owner,
+                categoryJoin,
+            };
+
+            // Prepare an 'ApplicationUser' for returning to a client.
             object RestrictedObjAppUserView(ApplicationUser u)
             {
                 return new
                 {
-                    Id = u.Id,
+                    u.Id,
                     Username = u.UserName,
-                    Bio = u.Bio,
+                    u.Bio,
                 };
             }
 
-            //ApplicationUser RestrictedAppUserView(ApplicationUser u)
-            //{
-            //    return new ApplicationUser
-            //    {
-            //        Id = u.Id,
-            //        UserName = u.UserName,
-            //        Bio = u.Bio,
-            //    };
-            //}
+            // Prepare an 'CategoryJoin' for returning to a client.
+            // 'cj' must have 'cj.Category' and 'cj.Artefact' loaded.
+            object RestrictedObjCategoryJoinView(ArtefactCategory cj)
+            {
+                var category = new
+                {
+                    cj.Category.Name,
+                };
+                var artefact = new
+                {
+                    cj.Artefact.Title,
+                };
+
+                return new
+                {
+                    cj.CategoryId,
+                    category,
+                    cj.ArtefactId,
+                    artefact,
+                };
+            }
         }
 
 
