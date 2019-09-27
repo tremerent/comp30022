@@ -126,8 +126,6 @@ namespace Artefactor.Controllers
 
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-
                     var resp = new JsonResult(new
                     {
                         IsOk = true,
