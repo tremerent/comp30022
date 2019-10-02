@@ -8,6 +8,7 @@ namespace Artefactor.Models
     public class Artefact
     {
         public string Id { get; set; }
+        public System.DateTime CreatedAt { get; set; }
         public IEnumerable<ArtefactCategory> CategoryJoin { get; set; }
         [JsonRequired]
         public string Title { get; set; }

@@ -172,6 +172,7 @@ namespace Artefactor.Controllers
                 a.Id,
                 a.Title,
                 a.Description,
+                a.CreatedAt,
 
                 owner,
                 categoryJoin,
@@ -271,6 +272,8 @@ namespace Artefactor.Controllers
             var curUser = await UserService.GetCurUser(HttpContext, _userManager);
 
             _context.Attach(artefact);
+
+            artefact.CreatedAt = DateTime.UtcNow;
             // OwnerId is shadow property
             _context.Entry(artefact).Property("OwnerId").CurrentValue = curUser.Id;
 

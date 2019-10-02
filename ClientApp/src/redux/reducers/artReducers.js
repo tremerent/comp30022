@@ -43,7 +43,7 @@ function art(state = getInitArtState(), action) {
                     ...state.myArts,
                     create: {
                         ...state.myArts.create,
-                        loading: true,
+                        loading: false,
                         createdArtefact: action.createdArtefact,
                     },
                 },
@@ -56,7 +56,7 @@ function art(state = getInitArtState(), action) {
                     create: {
                         ...state.myArts.create,
                         createdArtefact: action.createdArtefact,
-                        loading: false,
+                        loading: true,
                     },
                 },
             }
