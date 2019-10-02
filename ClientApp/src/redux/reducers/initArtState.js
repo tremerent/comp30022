@@ -1,5 +1,10 @@
 ﻿export default function getInitArtState() {
     const initArtState = {
+        visOpts:[
+            "private",
+            "family",
+            "public"
+        ],
         myArts: {
             myArtefacts: [],
             loading: true,

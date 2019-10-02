@@ -37,6 +37,30 @@ async function postArtefact(artefact) {
     return resp.data;
 }
 
+async function postArtefactAndCategories(artefactToPost) {
+    const artefactCategories =
+        artefactToPost.categories.map(selectOpt => (
+            // convert { label, value } categories select opts to
+            // category data models { id, name }
+            { id: selectOpt.value, name: selectOpt.label })
+        );
+    delete artefactToPost.categories;
+
+    const createdArtefact = await postArtefact(artefactToPost);
+
+    if (artefactCategories.length) {
+        await postArtefactCategories(createdArtefact.id, artefactCategories);
+    }
+
+    // fetch artefact again now that it has category relationships
+    // (this could also be stored prior to posting the artefact, and then
+    // appended to the 'postedArtefact', but fetching now ensures
+    // client-server synchronisation
+    const newArtefact = await getArtefact(createdArtefact.id);
+
+    return newArtefact;
+}
+
 // 'category' should already be validated
 async function postCategory(category) {
     const resp = await apiFetch(getToken())
@@ -100,6 +124,7 @@ async function getUser(username) {
 
 export {
     postArtefact,
+    postArtefactAndCategories,
     getArtefact,
     getArtefacts,
     getVisibilityOpts,

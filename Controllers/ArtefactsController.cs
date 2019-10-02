@@ -152,17 +152,20 @@ namespace Artefactor.Controllers
             // it would be much better for performance reasons to create
             // a Newtonsoft.Json.JsonConverter, but this will be done for now
 
-            if (a.Owner == null || a.CategoryJoin == null)
+            object owner = null;
+            if (a.Owner != null)
             {
-                Console.WriteLine("Artefact just disappeared into the void!");
-                return null;  // TODO
+                owner = RestrictedObjAppUserView(a.Owner);
             }
 
-            var owner = RestrictedObjAppUserView(a.Owner);
 
-            var categoryJoin =
-                a.CategoryJoin
-                    .Select(cj => RestrictedObjCategoryJoinView(cj));
+            object categoryJoin = null;
+            if (a.CategoryJoin != null)
+            {
+                categoryJoin = 
+                    a.CategoryJoin
+                     .Select(cj => RestrictedObjCategoryJoinView(cj));
+            }
 
             return new
             {
@@ -263,11 +266,13 @@ namespace Artefactor.Controllers
         [HttpPost]
         public async Task<ActionResult<Artefact>> PostArtefact(Artefact artefact)
         {
-            var curUserId = UserService.GetCurUserId(HttpContext);
+            // it would be better design to just return id, but clients
+            // may need owner username
+            var curUser = await UserService.GetCurUser(HttpContext, _userManager);
 
             _context.Attach(artefact);
             // OwnerId is shadow property
-            _context.Entry(artefact).Property("OwnerId").CurrentValue = curUserId;
+            _context.Entry(artefact).Property("OwnerId").CurrentValue = curUser.Id;
 
             //_context.Artefacts.Add(artefact);
             try
@@ -286,7 +291,11 @@ namespace Artefactor.Controllers
                 }
             }
 
-            return CreatedAtAction("GetArtefact", new { id = artefact.Id }, artefact);
+            artefact.Owner = curUser;
+            var artefactJson = ArtefactJson(artefact);
+            
+            return CreatedAtAction("GetArtefact", new { id = artefact.Id },
+              artefactJson);
         }
 
         // DELETE: api/Artefacts/5

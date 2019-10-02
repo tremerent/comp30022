@@ -15,6 +15,7 @@ function art(state = getInitArtState(), action) {
             return {
                 ...state,
                 myArts: {
+                    ...state.myArts,
                     loading: false,
                     myArtefacts: action.myArtefacts,
                 }
@@ -34,6 +35,38 @@ function art(state = getInitArtState(), action) {
                     ...state.myArts,
                     myArtefacts: updatedMyArtefacts,
                 }
+            };
+        case artefactTypes.RES_CREATE_MY_ARTEFACTS:
+            return {
+                ...state,
+                myArts: {
+                    ...state.myArts,
+                    create: {
+                        ...state.myArts.create,
+                        loading: true,
+                        createdArtefact: action.createdArtefact,
+                    },
+                },
+            }
+        case artefactTypes.REQ_CREATE_MY_ARTEFACTS:
+            return {
+                ...state,
+                myArts: {
+                    ...state.myArts,
+                    create: {
+                        ...state.myArts.create,
+                        createdArtefact: action.createdArtefact,
+                        loading: false,
+                    },
+                },
+            }
+        case artefactTypes.SET_PUBLIC_ARTEFACTS:
+            return {
+                ...state,
+                publicArts: {
+                    artefacts: action.artefacts,
+                    ...state.publicArts,
+                },
             };
         case artefactTypes.REQ_GET_PUBLIC_ARTEFACTS:
             return {
@@ -74,7 +107,7 @@ function art(state = getInitArtState(), action) {
                     ...state.userArtefacts,
                     [action.username]: {
                         artefacts: action.userArtefacts,
-                        loading: true,
+                        loading: false,
                     },
                 },
             }

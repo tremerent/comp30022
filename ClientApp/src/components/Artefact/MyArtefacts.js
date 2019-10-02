@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { CreateArtefact } from './CreateArtefact.js';
+import CreateMyArtefact from './CreateMyArtefact.js';
 import CentreLoading from '../CentreLoading.js';
 import ArtefactScroller from './ArtefactScroller.js';
 import { artefacts as artActions } from '../../redux/actions';
@@ -28,23 +28,28 @@ class MyArtefacts extends React.Component {
     }
 
     render() {
-        const myArtefacts =
-            this.props.myArtefacts.length
-                ? <ArtefactScroller
-                    key={this.props.myArtefacts.length}
-                    artefacts={this.props.myArtefacts}
-                    loading={this.props.loading}
+        if (this.props.myArtefactsLoading) {
+            return <CentreLoading />;
+        }
+        else {
+            const myArtefacts =
+                this.props.myArtefacts.length
+                    ? <ArtefactScroller
+                        key={this.props.myArtefacts.length}
+                        artefacts={this.props.myArtefacts}
+                        loading={this.props.loading}
                     />
-                : this.noArtefactsView();
+                    : this.noArtefactsView();
 
-        return (
-            <div className='af-myart'>
-                <div className='af-myart-scroller'>
-                    {myArtefacts}
+            return (
+                <div className='af-myart'>
+                    <div className='af-myart-scroller'>
+                        {myArtefacts}
+                    </div>
+                    <CreateMyArtefact className="col-xs-6" />
                 </div>
-                <CreateArtefact addArtefact={this.addArtefact} className="col-xs-6" />
-            </div>
-        );
+            );
+        }
     }
 
     noArtefactsView = () => {
@@ -54,14 +59,10 @@ class MyArtefacts extends React.Component {
             </div>
         );
     }
-
-    addArtefact = (artefact) => {
-        this.props.addMyArtefact(artefact);
-    }
 }
 
 const mapStateToProps = state => ({
-    loading: state.art.myArts.loading,
+    myArtefactsLoading: state.art.myArts.loading,
     myArtefacts: state.art.myArts.myArtefacts,
 });
 
