@@ -50,10 +50,16 @@ namespace Artefactor.Controllers
             }
         }
 
+        public class ProfileUpdate
+        {
+            public string bio;
+            public string image_url;
+        }
+
         // POST api/<controller>
         [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> EditProfile([FromBody] string username, [FromBody] string bio)
+        [HttpPost("{username}")]
+        public async Task<IActionResult> EditProfile([FromRoute] string username, [FromBody] ProfileUpdate diff)
         {
             ApplicationUser curUser =
                 await UserService.GetCurUser(HttpContext, _userManager);
@@ -64,7 +70,13 @@ namespace Artefactor.Controllers
             }
 
             _context.Attach(curUser);
-            curUser.Bio = bio;
+
+            if (diff.bio != null)  {
+                Console.WriteLine("HERE");
+                curUser.Bio = diff.bio;
+            }
+            if (diff.image_url != null)
+                curUser.ImageUrl = diff.image_url;
 
             await _context.SaveChangesAsync();
 
@@ -73,6 +85,7 @@ namespace Artefactor.Controllers
                 curUser.Id,
                 curUser.UserName,
                 curUser.Bio,
+                curUser.ImageUrl,
             });
         }
 
