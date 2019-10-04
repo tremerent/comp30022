@@ -37,7 +37,15 @@ export default class UserProfile extends React.Component {
                     <div className='af-profile-card-wrapper'>
                         <div className='af-profile-card'>
                             <div className='af-profile-card-inner'>
-                                <img src={PLACEHOLDER_IMAGE} className='af-profile-image' alt={`${this.props.user.username}'s profile image`}></img>
+                                <img
+                                    src={ this.props.user.image_url ?
+                                            this.props.user.image_url
+                                        :
+                                            '/img/profile-placeholder.png'
+                                    }
+                                    className='af-profile-image'
+                                    alt={`${this.props.user.username}'s profile image`}
+                                />
                                 <div className='af-profile-info'>
                                     <h2 className='af-profile-name'>{this.props.user.username}</h2>
                                     <div className='af-profile-badges'>
