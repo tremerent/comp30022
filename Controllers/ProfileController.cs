@@ -41,6 +41,7 @@ namespace Artefactor.Controllers
                     id = user.Id,
                     username = user.UserName,
                     bio = user.Bio,
+                    image_url = user.ImageUrl,
                 });
             }
             else
@@ -54,7 +55,7 @@ namespace Artefactor.Controllers
         [HttpPost]
         public async Task<IActionResult> EditProfile([FromBody] string username, [FromBody] string bio)
         {
-            ApplicationUser curUser = 
+            ApplicationUser curUser =
                 await UserService.GetCurUser(HttpContext, _userManager);
 
             if (curUser == null || curUser.UserName != username)
