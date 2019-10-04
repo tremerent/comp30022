@@ -2,6 +2,8 @@ import React from 'react';
 
 import ArtefactScroller from './Artefact/ArtefactScroller.js';
 
+import { changeCurUserInfo } from '../scripts/requests.js';
+
 import './UserProfile.css';
 import PLACEHOLDER_IMAGE from '../images/filler/artefact-03.jpg';
 
@@ -21,12 +23,88 @@ import PLACEHOLDER_IMAGE from '../images/filler/artefact-03.jpg';
 //    };
 //}
 
+class SubmitTextArea extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            value: this.props.children || '',
+            name: this.props.name || 'textarea',
+        };
+
+        this.onChange = this.onChange.bind(this);
+    }
+
+    onChange(e) {
+        this.setState({
+            value: e.target.value,
+        });
+    }
+
+    getValue() {
+        return this.state.value;
+    }
+
+    submit = () => {
+        this.props.onSubmit(this.state.value);
+    }
+
+    render() {
+        return (
+            <>
+                {this.props.label && this.props.id &&
+                    <label htmlFor={this.props.id}>
+                        {this.props.label}
+                    </label>}
+                {this.props.id ?
+                    <textarea
+                        name={this.props.name}
+                            value={this.state.value}
+                            onChange={this.onChange}
+                            className="form-control"
+                            id={this.props.id}
+                        />
+                    :
+                    <textarea
+                            name={this.props.name}
+                            value={this.state.value}
+                            onChange={this.onChange}
+                            className="form-control"
+                        />}
+                <button class='btn btn-primary' onClick={this.submit}>{
+                    this.props.buttonText ?
+                        this.props.buttonText
+                    :
+                        'Submit'
+                }</button>
+            </>
+        );
+    }
+}
+
+
 export default class UserProfile extends React.Component {
 
     constructor(props) {
         super(props);
 
-        this.EMPTY_BIO_PLACEHOLDER = `Oh no! ${props.user.username} is yet to provide a bio.`;
+        this.state = {
+            bio: props.user.bio
+        };
+
+        if (this.state.bio == null || this.state.bio.length === 0)
+            this.state.bio =
+                `Oh no! ${props.user.username} is yet to provide a bio.`;
+    }
+
+    changeBio = (newBio) => {
+        console.log(`Set bio to "${newBio}"`);
+        this.setState({
+            ...this.state,
+            bio: newBio
+        });
+        changeCurUserInfo(this.props.user, { bio: newBio });
     }
 
     render() {
@@ -56,11 +134,14 @@ export default class UserProfile extends React.Component {
                                         </span>
                                     </div>
                                     <hr/>
-                                                <div className='text-muted text-center'>{
-                                                    this.props.user.bio != null && this.props.user.bio.length != 0
-                                                        ? this.props.user.bio
-                                                        : this.EMPTY_BIO_PLACEHOLDER
-                                                        }</div>
+                                                <div className='text-muted text-center'>{this.state.bio}</div>
+                                                <SubmitTextArea
+                                                    id='af-edit-bio'
+                                                    name='edit-bio'
+                                                    onSubmit={this.changeBio}
+                                                >
+                                                    Describe yourself
+                                                </SubmitTextArea>
                                 </div>
                             </div>
                         </div>
