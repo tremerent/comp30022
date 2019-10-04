@@ -2,7 +2,7 @@
 
 function formIsValid(formData, schema) {
     const res = Joi.validate(formData, schema);
-    console.log(res.error)
+
     return !res.error;
 }
 

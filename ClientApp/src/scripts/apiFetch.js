@@ -8,21 +8,12 @@
 const apiUrl = '/api'
 
 function getApiFetch() {
-    const apiOpts = {
+    const instance = axios.create({
         baseURL: apiUrl,
         headers: {
             'Content-Type': 'application/json',
-        }
-    }
-
-    const instance = axios.create(apiOpts);
-    
-    //instance.interceptors.request.use(function (config) {
-    //    const token = localStorage.getItem('authDetails').token;
-    //    console.log(token);
-    //    config.headers.Authorization = token ? `Bearer ${token}` : '';
-    //    return config;
-    //});
+        },
+    });
 
     return instance;
 }

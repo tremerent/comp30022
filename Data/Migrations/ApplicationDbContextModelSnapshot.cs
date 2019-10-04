@@ -77,6 +77,8 @@ namespace Artefactor.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue("NEWID()");
 
+                    b.Property<DateTime>("CreatedAt");
+
                     b.Property<string>("Description");
 
                     b.Property<string>("OwnerId");

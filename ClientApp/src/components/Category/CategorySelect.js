@@ -16,11 +16,13 @@ export default class CategorySelect extends Component {
     constructor(props) {
         super(props);
 
+        this.blurPlaceholder = "Choose your artefact's categories";
+        this.focusPlaceholder = "Type to search for a category or create your own";
 
         this.state = {
             categoryOpts: [],
+            placeholder: this.blurPlaceholder
         };
-
     }
 
     render() {
@@ -33,14 +35,31 @@ export default class CategorySelect extends Component {
                 defaultOptions
                 loadOptions={this.getCategoryOptionsThenFilter}
 
+                onFocus={this.setFocusPlaceholder}
+                onBlur={this.setBlurPlaceholder}
+
                 menuPlacement="top"
                 isMulti
                 isSearchable
                 closeMenuOnSelect={false}
-                placeholder={this.props.placeholder}
+                placeholder={this.state.placeholder}
             />
             </div>
         );
+    }
+
+    setBlurPlaceholder = () => {
+        this.setState({
+            ...this.state,
+            placeholder: this.blurPlaceholder,
+        });
+    }
+
+    setFocusPlaceholder = () => {
+        this.setState({
+            ...this.state,
+            placeholder: this.focusPlaceholder,
+        });
     }
 
     handleChange = (newValues, actionMeta) => {

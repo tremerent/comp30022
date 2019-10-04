@@ -1,7 +1,25 @@
 ﻿export default function getInitArtState() {
     const initArtState = {
-        myArtefacts: [],
-        loading: false,
+        visOpts:[
+            "private",
+            "family",
+            "public"
+        ],
+        myArts: {
+            myArtefacts: [],
+            loading: true,
+        },
+        publicArts: {
+            artefacts: [],
+            loading: true,
+        },
+        familyArts: {
+            familyArtefacts: [],
+            loading: true,
+        },
+        userArts: {
+
+        },
     }
 
     return initArtState;

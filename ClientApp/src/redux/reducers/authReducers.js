@@ -34,8 +34,10 @@ function auth(state = initAuthState(), action) {
             return {
                 loading: false,
                 user: {},
-                isLoggedIn: true,
-                error: action.errorCode,
+                isLoggedIn: false,
+                error: {
+                    code: action.errorCode,
+                }
             };
         case authTypes.LOGOUT:
             return {

@@ -1,37 +1,27 @@
 ﻿// supply a token
 import apiFetch from './apiFetch';
-
-const authDetails = localStorage.getItem('authDetails');
-let token;
-if (authDetails) {
-    token = authDetails.token;
-}
-else {
-    token = null;
-}
-
-
-const tokenFetch = () => apiFetch(token);
-const noTokenFetch = apiFetch;
+import { getToken } from './auth';
 
 /*
  * All request functions assume parameters have already been validated.
  */
 
 async function postLogin(loginDetails) {
-    const resp = await noTokenFetch().post(`auth/login`, loginDetails);
+    const resp = await apiFetch()
+        .post(`auth/login`, loginDetails);
 
     return resp.data;
 }
 
 async function postRegister(registerDetails) {
-    const resp = await noTokenFetch().post(`auth/register`, registerDetails);
+    const resp = await apiFetch()
+        .post(`auth/register`, registerDetails);
 
     return resp.data;
 }
 
 async function getArtefact(artefactId) {
-    const resp = await tokenFetch()
+    const resp = await apiFetch(getToken())
         // XXX not sure if this is sanitised -- Sam
         .get(`/Artefacts/${artefactId}`);
 
@@ -41,22 +31,46 @@ async function getArtefact(artefactId) {
 // assumes param. 'artefact' has been validated
 async function postArtefact(artefact) {
     // post the artefact
-    const resp = await tokenFetch()
+    const resp = await apiFetch(getToken())
         .post(`/Artefacts`, artefact);
 
     return resp.data;
 }
 
+async function postArtefactAndCategories(artefactToPost) {
+    const artefactCategories =
+        artefactToPost.categories.map(selectOpt => (
+            // convert { label, value } categories select opts to
+            // category data models { id, name }
+            { id: selectOpt.value, name: selectOpt.label })
+        );
+    delete artefactToPost.categories;
+
+    const createdArtefact = await postArtefact(artefactToPost);
+
+    if (artefactCategories.length) {
+        await postArtefactCategories(createdArtefact.id, artefactCategories);
+    }
+
+    // fetch artefact again now that it has category relationships
+    // (this could also be stored prior to posting the artefact, and then
+    // appended to the 'postedArtefact', but fetching now ensures
+    // client-server synchronisation
+    const newArtefact = await getArtefact(createdArtefact.id);
+
+    return newArtefact;
+}
+
 // 'category' should already be validated
 async function postCategory(category) {
-    const resp = await tokenFetch()
+    const resp = await apiFetch(getToken())
         .post(`/Categories`, category);
 
     return resp.data;
 }
 
 async function getCategories() {
-    const resp = await tokenFetch()
+    const resp = await apiFetch(getToken())
         .get(`/Categories`);
 
     return resp.data;
@@ -66,48 +80,51 @@ async function postArtefactCategories(artefactId, categories) {
     const artefactCategories = categories
         .map(cat => ({ artefactId, categoryId: cat.id }));
 
-    const resp = await tokenFetch()
+    const resp = await apiFetch(getToken())
         .post(`/ArtefactCategories/Many`, artefactCategories);
 
     return resp.data;
 }
 
 async function getVisibilityOpts() {
-    const resp = await tokenFetch()
+    const resp = await apiFetch(getToken())
         .get(`/Artefacts/VisibilityOpts`);
 
     return resp.data;
 }
 
 /**
- * Get all artefacts owned by 'userId', 
+ * Get all artefacts owned by user with 'username', 
  * or all artefacts if null.
  */
-async function getArtefacts(userId) {
+async function getArtefacts(username, vis) {
     let resp;
 
-    if (userId == null) {
-        resp = await tokenFetch()
+    const visQuery = vis ? `?vis=${vis}` : ``;
+
+    if (username == null) {
+        resp = await apiFetch(getToken())
             .get(`/Artefacts`);
     }
     else {
-        resp = await tokenFetch()
-            .get(`/Artefacts/${userId}`);
+
+        resp = await apiFetch(getToken())
+            .get(`/Artefacts/user/${username}` + visQuery);
     }
 
     return resp.data;
 }
 
-async function getProfile(userId) {
-
-    const resp = await noTokenFetch()
-        .get(`/Profile/${userId}`);
+async function getUser(username) {
+    const resp = await apiFetch()
+        .get(`/User/${username}`);
 
     return resp.data;
 }
 
 export {
     postArtefact,
+    postArtefactAndCategories,
     getArtefact,
     getArtefacts,
     getVisibilityOpts,
@@ -119,5 +136,5 @@ export {
     postLogin,
     postRegister,
 
-    getProfile,
+    getUser,
 }

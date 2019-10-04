@@ -1,10 +1,12 @@
-﻿import { authTypes, artefactTypes } from './types';
+﻿import { authTypes, artefactTypes, usersTypes } from './types';
 import { setUser, logoutUser, } from '../../scripts/auth';
 import { push } from 'connected-react-router';
 
 import {
+    postArtefactAndCategories,
     postRegister,
     getArtefacts,
+    getUser as fetchUser,
 } from '../../scripts/requests';
 
 function setRedir(to) {
@@ -82,7 +84,8 @@ function register(registerData) {
         const responseData = await postRegister(registerData);
 
         if (responseData.isOk) {
-            dispatch(login(registerData));
+            await dispatch(login(registerData));
+
             return responseData;
         }
         else {
@@ -140,18 +143,59 @@ function errGetMyArtefacts() {
 
 function getMyArtefacts() {
     return async function (dispatch, getState) {
-        const { user: { id: curUserId } } =
+        const { user: { username: curUserUsername } } =
             getState().auth;
 
-        dispatch(reqGetMyArtefacts(curUserId));
+        dispatch(reqGetMyArtefacts());
 
         try {
-            const myArtefacts = await getArtefacts(curUserId);
+            const myArtefacts = await getArtefacts(curUserUsername);
             dispatch(resGetMyArtefacts(myArtefacts));
         }
         catch (e) {
             // TODO
             dispatch(errGetMyArtefacts());
+        }
+    }
+}
+
+function setPublicArtefacts(publicArts) {
+    return {
+        type: artefactTypes.RES_GET_PUBLIC_ARTEFACTS,
+        artefacts: publicArts,
+    }
+}
+
+function reqGetPublicArtefacts() {
+    return {
+        type: artefactTypes.REQ_GET_PUBLIC_ARTEFACTS,
+    }
+}
+
+function resGetPublicArtefacts(publicArts) {
+    return {
+        type: artefactTypes.RES_GET_PUBLIC_ARTEFACTS,
+        artefacts: publicArts,
+    }
+}
+
+function errGetPublicArtefacts() {
+    return {
+        type: artefactTypes.ERR_GET_PUBLIC_ARTEFACTS,
+    }
+}
+
+function getPublicArtefacts() {
+    return async function (dispatch) {
+        dispatch(reqGetPublicArtefacts());
+
+        try {
+            const publicArts = await getArtefacts();
+            dispatch(resGetPublicArtefacts(publicArts));
+        }
+        catch (e) {
+            // TODO
+            dispatch(errGetPublicArtefacts());
         }
     }
 }
@@ -163,12 +207,163 @@ function addMyArtefact(newArtefact) {
     }
 }
 
+// addMyArtefact, but synchronise 'state.auth.browse' and 'user' if
+// newArtefact is public
+function addMyArtefactSync(newArtefact) {
+    return async function (dispatch, getState) {
+
+        dispatch(addMyArtefact(newArtefact));
+
+        if (newArtefact.vis == "public") {
+
+            updatePublicArts();
+            updateUserArts();
+        }
+
+        function updatePublicArts() {
+            const { art:
+                { publicArts: { artefacts: publicArtefacts } }
+            } = getState();
+
+            dispatch(setPublicArtefacts([newArtefact, ...publicArtefacts]))
+        }
+
+        function updateUserArts() {
+            const { art: { userArts } } = getState();
+
+            // if the user doesn't already artefacts stored in 'userArts',
+            // just let it be fetched from server - REQ_GET_USER_ARTEFACTS
+            if (userArts[newArtefact.owner.username]) {
+                const userArtefacts =
+                    userArts[newArtefact.owner.username].artefacts;
+
+                if (userArtefacts) {
+                    dispatch(resUserArtefacts(
+                        newArtefact.owner.username,
+                        [newArtefact, userArtefacts],
+                    ));
+                }
+            }
+        }
+    }
+}
+
+function reqCreateMyArtefact() {
+    return {
+        type: artefactTypes.REQ_CREATE_MY_ARTEFACTS,
+        loading: true,
+    }
+}
+
+function resCreateMyArtefact(createdArtefact) {
+    return {
+        type: artefactTypes.RES_CREATE_MY_ARTEFACTS,
+        createdArtefact,
+    }
+}
+
+function createMyArtefact(newArtefact) {
+    return async function (dispatch) {
+        dispatch(reqCreateMyArtefact())
+
+        const postedArtefact = await postArtefactAndCategories(newArtefact);
+
+        dispatch(addMyArtefactSync(postedArtefact));
+        dispatch(resCreateMyArtefact(postedArtefact));
+    }
+}
+
+function reqUserArtefacts(username) {
+    return {
+        type: artefactTypes.REQ_GET_USER_ARTEFACTS,
+        username,
+    }
+}
+
+function resUserArtefacts(username, userArtefacts) {
+    return {
+        type: artefactTypes.RES_GET_USER_ARTEFACTS,
+        username,
+        userArtefacts,
+    }
+}
+
+function errGetUserArtefacts(username) {
+    return {
+        type: artefactTypes.ERR_GET_USER_ARTEFACTS,
+        username,
+    }
+}
+
+function getUserArtefacts(username, vis) {
+    return async function (dispatch) {
+        dispatch(reqUserArtefacts(username));
+
+        try {
+            const userArtefacts = await getArtefacts(username, vis);
+            dispatch(resUserArtefacts(username, userArtefacts));
+        }
+        catch (e) {
+            // TODO
+            dispatch(errGetUserArtefacts());
+        }
+    }
+}
+
 const artefacts = {
+    createMyArtefact,
     getMyArtefacts,
-    addMyArtefact,
+    addMyArtefactSync,
+    getPublicArtefacts,
+    getUserArtefacts,
+}
+
+function reqGetUser(username) {
+    return {
+        type: usersTypes.REQ_GET_USER,
+        username,
+    }
+}
+
+function resGetUser(user) {
+    return {
+        type: usersTypes.RES_GET_USER,
+        user,
+    }
+}
+
+function errGetUser(username) {
+    return {
+        type: usersTypes.ERR_GET_USER,
+        username,
+    }
+}
+
+function getUser(username) {
+    return async function(dispatch) {
+        dispatch(reqGetUser(username));
+
+        try {
+            const user = await fetchUser(username);
+
+            dispatch(resGetUser(user));
+        }
+        catch (e) {
+            // TODO
+            dispatch(errGetUser(username));
+        }
+    }
+}
+
+const users = {
+    reqGetUser,
+    resGetUser,
+    errGetUser,
+    getUser,
 }
 
 export {
     auth,
     artefacts,
+    users,
 }

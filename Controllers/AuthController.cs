@@ -81,7 +81,7 @@ namespace Artefactor.Controllers
                     var resp = new JsonResult(new
                     {
                         IsOk = true,
-                        user = new { user.UserName }
+                        user = new { user.UserName, user.Id, }
                     });
 
                     return resp;
@@ -126,12 +126,10 @@ namespace Artefactor.Controllers
 
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-
                     var resp = new JsonResult(new
                     {
                         IsOk = true,
-                        user = new { user.UserName },
+                        user = new { user.UserName, user.Id, },
                     });
 
                     return resp;
@@ -189,9 +187,10 @@ namespace Artefactor.Controllers
             //return JsonRespIfNoRedir(resp, returnUrl);
         }
 
-        // TODO: this is broken for now - the JsonResult casts (or something) 
-        //       to an IActionResult, wrapping it in a non-conformant manner 
-        //       ie. { statusCode, ..., value: jsonObj }
+        // TODO: this was a method used in promotion of DRY, but
+        //       is broken for now - the JsonResult casts (or something)
+        //       to an IActionResult, and the response is formatted as:
+        //       { statusCode, ..., value: jsonObj }
         private IActionResult JsonRespIfNoRedir(Object jsonObj, 
             string returnUrl = null)
         {
