@@ -1,7 +1,6 @@
 ﻿// supply a token
 import apiFetch from './apiFetch';
 import { getToken } from './auth';
-import { Store } from 'redux';
 
 /*
  * All request functions assume parameters have already been validated.
