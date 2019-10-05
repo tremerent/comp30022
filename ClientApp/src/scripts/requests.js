@@ -94,7 +94,7 @@ async function getVisibilityOpts() {
 }
 
 /**
- * Get all artefacts owned by user with 'username',
+ * Get all artefacts owned by user with 'username', 
  * or all artefacts if null.
  */
 async function getArtefacts(username, vis) {
@@ -122,15 +122,6 @@ async function getUser(username) {
     return resp.data;
 }
 
-// This is a total hack. Will fix to be proper reduxy given more time.
-// -- Sam
-async function changeCurUserInfo(user, newInfo) {
-    const resp = await apiFetch(getToken())
-        .post(`/user/${user.username}`, newInfo);
-
-    return resp.data;
-}
-
 export {
     postArtefact,
     postArtefactAndCategories,
@@ -146,5 +137,4 @@ export {
     postRegister,
 
     getUser,
-    changeCurUserInfo,
 }
