@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
+using Microsoft.IdentityModel.Logging;
 
 namespace Artefactor
 {
@@ -51,12 +52,12 @@ namespace Artefactor
                 .AddJwtBearer(options =>
                 {
                     // base-address of your identityserver
-                    options.Authority = "https://localhost:44377";
+                    options.Authority = "https://localhost:5001";
 
                     // name of the API resource
                     options.Audience = "artefactorapi";
 
-                    options.RequireHttpsMetadata = false;
+                    options.RequireHttpsMetadata = true;
                 });
 
 
@@ -86,6 +87,7 @@ namespace Artefactor
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+                IdentityModelEventSource.ShowPII = true;
             }
             else
             {

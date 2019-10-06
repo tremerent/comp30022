@@ -78,6 +78,7 @@ namespace Artefactor.Controllers
          * The requesting user must have the appropriate permissions.
          */
         [HttpGet("user/{username}")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Artefact>>> GetUserArtefacts(string username, 
             [FromQuery]
             [JsonConverter(typeof(StringEnumConverter))]
