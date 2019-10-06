@@ -24,7 +24,6 @@ namespace Artefactor.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-
         public ArtefactsController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager)
         {
@@ -105,6 +104,12 @@ namespace Artefactor.Controllers
                 }
             }
 
+            IQueryable<Artefact> artefacts =
+                _context.Artefacts
+                        .Include(a => a.CategoryJoin)
+                            .ThenInclude(cj => cj.Category)
+                        .Where(a => a.OwnerId == userWArtefacts.Id);
+
             // the request user can access 'private' artefacts of 'username' if
             // they are the same user
             if (curUser != null)
@@ -112,14 +117,16 @@ namespace Artefactor.Controllers
                 curUserIsUsername = curUser.Id == userWArtefacts.Id;
                 curUserIsFamily = curUser.Id == userWArtefacts.Id;  // TODO
             }
+            else
+            {
+                artefacts = artefacts.Where(a => a.Visibility == Visibility.Public);
+                return new JsonResult((await artefacts.ToListAsync())
+                        .Select(a => ArtefactJson(a)));
+            }
 
             // filter artefacts based on permissions and current user
 
-            IQueryable<Artefact> artefacts =
-                _context.Artefacts
-                        .Include(a => a.CategoryJoin)
-                            .ThenInclude(cj => cj.Category)
-                        .Where(a => a.OwnerId == userWArtefacts.Id);
+            
 
             if ((!curUserIsUsername && vis == Visibility.Private) ||
                  !curUserIsFamily && vis == Visibility.PrivateFamily)
@@ -128,13 +135,17 @@ namespace Artefactor.Controllers
                                     "view the requested recourse.");
             }
 
-            // don't filter on visibility if vis == Visibility.Unspecified
+            // filter on private or family if user logged in
             if ((curUserIsUsername && vis == Visibility.Private) ||
-                     (curUserIsFamily && vis == Visibility.PrivateFamily) ||
-                     (!curUserIsUsername && vis == Visibility.Public))
+                (curUserIsFamily && vis == Visibility.PrivateFamily))
             {
                 artefacts = artefacts.Where(a => a.Visibility == vis);
             }
+
+            //if (!curUserIsUsername && (vis == Visibility.Public || vis == Visibility.Unspecified))
+            //{
+            //    artefacts = artefacts.Where(a => a.Visibility == Visibility.Public);
+            //}
 
             //var artefactsJson = await
             //    .ToListAsync();
@@ -245,9 +256,9 @@ namespace Artefactor.Controllers
 
             try
             {
-                await _context.SaveChangesAsync();
+               await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+             catch (DbUpdateConcurrencyException)
             {
                 if (!ArtefactExists(id))
                 {

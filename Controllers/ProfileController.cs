@@ -1,33 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Artefactor.Data;
 using Artefactor.Models;
 using Artefactor.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace Artefactor.Controllers
 {
+    /** Controller for user profile actions. */
+
     [Authorize]
-    [Route("api/[controller]")]
-    public class UserController : Controller
+    [Route("api/user")]
+    public class ProfileController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UploadService _uploadService;
 
-        public UserController(ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager)
+        public ProfileController(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager,
+            UploadService uploadService)
         {
             _context = context;
             _userManager = userManager;
+            _uploadService = uploadService;
         }
 
-        // GET: api/<controller>
         [AllowAnonymous]
         [HttpGet("{username}")]
         public async Task<IActionResult> Get(string username)
@@ -56,7 +60,6 @@ namespace Artefactor.Controllers
             public string image_url;
         }
 
-        // POST api/<controller>
         [Authorize]
         [HttpPost("{username}")]
         public async Task<IActionResult> EditProfile([FromRoute] string username, [FromBody] ProfileUpdate diff)
@@ -89,16 +92,30 @@ namespace Artefactor.Controllers
             });
         }
 
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        // POST api/<controller>
+        [Authorize]
+        [HttpPost("display-picture")]
+        public async Task<IActionResult> SetProfileImage(IFormFile file)
         {
-        }
+            ApplicationUser curUser =
+                await UserService.GetCurUser(HttpContext, _userManager);
 
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            if (curUser == null)
+            {
+                return Unauthorized();
+            }
+
+            Uri uri = await _uploadService.UploadFileToBlobAsync(file.FileName, file);
+
+            await EditProfile(
+                curUser.UserName, 
+                new ProfileUpdate { image_url = uri.AbsoluteUri }
+            );
+
+            return new JsonResult(new
+            {
+                url = uri.AbsoluteUri
+            });
         }
     }
 }

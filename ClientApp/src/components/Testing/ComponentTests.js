@@ -1,4 +1,5 @@
 ﻿import React, { Component } from 'react';
+import ProfileImageUploadTest from './components/ProfileImageUploadTest';
 
 export default class ComponentTests extends Component {
     constructor(props) {
@@ -16,6 +17,7 @@ export default class ComponentTests extends Component {
         return (
             <div>
                 Component tests
+                <ProfileImageUploadTest />
             </div>
         );
     }

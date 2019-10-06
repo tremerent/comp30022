@@ -131,6 +131,17 @@ async function changeCurUserInfo(user, newInfo) {
     return resp.data;
 }
 
+async function setProfileImage(file) {
+
+    const data = new FormData();
+    data.append("file", file);
+
+    const resp = await apiFetch(getToken())
+        .post(`/profile/set-profile-image`, data)
+
+    return resp.data;
+}
+
 export {
     postArtefact,
     postArtefactAndCategories,
@@ -147,4 +158,5 @@ export {
 
     getUser,
     changeCurUserInfo,
+    setProfileImage,
 }
