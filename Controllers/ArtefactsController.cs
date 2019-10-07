@@ -282,7 +282,7 @@ namespace Artefactor.Controllers
               artefactJson);
         }
 
-        // PUT: api/Artefacts/5
+        // PATCH: api/Artefacts/as23-123
         [HttpPatch("{id}")]
         [Authorize]
         public async Task<IActionResult> EditArtefact(string id, Artefact artefact)
