@@ -125,15 +125,6 @@ namespace Artefactor.Controllers
                             .ThenInclude(cj => cj.Category)
                         .Where(a => a.OwnerId == userWArtefacts.Id);
 
-            // only return public artefacts
-            if (!curUserIsUsername)
-            {
-                artefacts = artefacts.Where(a => a.Visibility == Visibility.Public);
-
-                return new JsonResult((await artefacts.ToListAsync())
-                        .Select(a => ArtefactJson(a)));
-            }
-
             // check permissions
             if ((!curUserIsUsername && vis == Visibility.Private) ||
                  !curUserIsFamily && vis == Visibility.PrivateFamily)
@@ -144,7 +135,8 @@ namespace Artefactor.Controllers
 
             // user has appropriate permissions, so return the filtered list
             if ((curUserIsUsername && vis == Visibility.Private) ||
-                (curUserIsFamily && vis == Visibility.PrivateFamily))
+                (curUserIsFamily && vis == Visibility.PrivateFamily) ||
+                (!curUserIsUsername && !curUserIsFamily && vis == Visibility.Public))
             {
                 artefacts = artefacts.Where(a => a.Visibility == vis);
             }
