@@ -1,23 +1,15 @@
 import React from 'react'
 import { Grid,Paper,Button } from '@material-ui/core'
-import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia'
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-
-import Avatar from '@material-ui/core/Avatar'
 import Divider from '@material-ui/core/Divider'
 
-import FolderIcon from '@material-ui/icons/Folder'
+
 import ChatIcon from '@material-ui/icons/Chat'
 import ArtTrackIcon from '@material-ui/icons/ArtTrack'
 import DeviceHubIcon from '@material-ui/icons/DeviceHub'
 
-import Header from './Header'
+//Presuming that Bootstrap css and js have been imported from the parent page
 
 /* This page is intended to display user's profile.
 */
@@ -32,7 +24,7 @@ const style ={
     familyTreeButton: {margin:10},
     familyTreeButtonIcon: {marginLeft:10},
 }
-// The styles for the profile picture
+// The styles for the avatar (profile picture)
 const style2 = {
     avatar:{
         margin: 10,
@@ -48,62 +40,63 @@ const style2 = {
 // The main section of the Profile page
 export default Profile =>
     <React.Fragment>
-        {/* <Header /> */}
-        <Grid container>
-            <Grid item sm>
-                <Paper style={style.Paper} >
-                    <Grid container alignItems="center" justify="center">
-                        <Grid item xs>
-                            <Avatar alt='profile name' src="https://source.unsplash.com/random" style={style2.bigAvatar} />
-                        </Grid>
-                    </Grid>
-                    <Typography variant="h3" color="inherit"> {/* gutterBottom */}
+        <div class="container">
+            <div class="row">
+            <div class="col-sm">
+                <Paper style={style.Paper}>
+                    <div align="center"> 
+                        <div> 
+                            <img src="https://source.unsplash.com/random" class="rounded-circle" style={style2.bigAvatar} />
+                        </div>
+                    </div>
+                    <Typography variant="h3" color="inherit" align='center'> {/* gutterBottom */}
                         Profile details
                     </Typography>
-
+                    
                     <Divider variant="middle" />
 
-                    <Grid container alignItems="center" justify="center" style={style.gridBelowDivider}>
-                        <Grid item xs>
-                            <ArtTrackIcon />
+                    <div alignItems="center" justify="center" style={style.gridBelowDivider}>
+                        <div>
+                            
                             {/* displays the number of artefacts */}
+                            <ArtTrackIcon />
                             <Typography variant="p" color="inherit">
                                 ... Artefacts
                             </Typography>
-                        </Grid>
-                        <Grid item xs>
+                        </div>
+                        <div>
+                            
                             {/* displays the number of comments */}
                             <ChatIcon />
                             <Typography variant="p" color="inherit">
                                 ... Comments
                             </Typography>
-                        </Grid>
-                    </Grid>
+                        </div>
+                    </div>
                     {/* button that pops out the family tree image related to the user */}
-                    <Button variant="contained" color="default" style={style.familyTreeButton}>
-                        See in Family Tree
-                        <DeviceHubIcon style={style.familyTreeButtonIcon}/>
-                    </Button>
+                    <div align="center">
+                        <Grid item xs>
+                            <Button variant="contained" color="default" style={style.familyTreeButton}>
+                                See in Family Tree
+                                <DeviceHubIcon style={style.familyTreeButtonIcon}/>
+                            </Button>
+                        </Grid>
+                    </div>
                     <br /><br />
                     {/* biography of the user */}
                     <Typography variant="p" color="inherit">
                         Description of profile
                     </Typography>
                 </Paper>
-            </Grid>
-            <Grid item sm>
+            </div>
+            <div class="col-sm">
                 <Paper style={style.Paper}>
                     <Typography variant="h5" color="inherit">
                         Profile name's Artefact
                     </Typography>
                     Search, Artefact scroller
                 </Paper>
-            </Grid>
-        </Grid>
-
-        
-
-
-
-
+            </div>
+            </div>
+        </div>
     </React.Fragment>

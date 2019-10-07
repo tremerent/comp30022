@@ -1,0 +1,11 @@
+.edit-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform: translate(-8%,-21%);
+    display: none;
+}
+
+.profile-pic:hover .edit-image{
+    display: block;
+}
