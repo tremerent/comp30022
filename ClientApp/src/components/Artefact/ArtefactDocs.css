@@ -1,0 +1,12 @@
+
+.af-docs-carousel-item {
+    position: relative;
+}
+
+.af-docs-delimg {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    z-index: 20;
+}
+

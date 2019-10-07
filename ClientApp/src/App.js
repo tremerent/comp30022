@@ -13,6 +13,8 @@ import Signup from './components/Auth/Signup';
 import requireAuth from './components/Auth/requireAuth';
 import NotFound from './components/NotFound';
 
+import ArtefactDocsTest from './components/Testing/ArtefactDocsTest.js';
+
 import './App.css';
 
 function loginIfUnauthed(Component) {
@@ -43,6 +45,8 @@ export default class App extends Component {
                             <Route path='/my-artefacts' component={loginIfUnauthed(MyArtefacts)} />
 
                             <Route path='/tests' component={TestingHome} />
+
+                            <Route path='/docs' component={ArtefactDocsTest}/>
 
                             <Route component={NotFound} />
                         </Switch>

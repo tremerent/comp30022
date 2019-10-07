@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImages, faShareAltSquare, faTrophy } from '@fortawesome/free-solid-svg-icons';
 
 import CategorySelect from '../Category/CategorySelect.js';
-import { ArtefactDocs } from './ArtefactDocs.js';
+import ArtefactDocs from './ArtefactDocs.js';
 
 import './CreateArtefactForm.css';
 
