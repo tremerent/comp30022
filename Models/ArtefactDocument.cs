@@ -5,6 +5,7 @@ namespace Artefactor.Models
     public class ArtefactDocument
     {
         public string Id { get; set; }
+        public string Title { get; set; }
         public string Url { get; set; }
         public DocType DocType { get; set; }
         public string ArtefactId { get; set; }

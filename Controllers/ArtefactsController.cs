@@ -407,6 +407,7 @@ namespace Artefactor.Controllers
 
                 await _context.AddAsync(new ArtefactDocument
                 {
+                    Title = file.FileName,
                     Url = uri.AbsoluteUri,
                     ArtefactId = artefactId,
                     DocType = DocType.Image,
