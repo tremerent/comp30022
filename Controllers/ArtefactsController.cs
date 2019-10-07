@@ -13,7 +13,6 @@ using Newtonsoft.Json.Converters;
 using System.Runtime.Serialization;
 
 using Artefactor.Services;
-using System.Collections;
 
 namespace Artefactor.Controllers
 {
@@ -23,12 +22,15 @@ namespace Artefactor.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserService _userService;
 
         public ArtefactsController(ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager)
+                                UserManager<ApplicationUser> userManager,
+                                UserService userService)
         {
             _context = context;
             _userManager = userManager;
+            _userService = userService;
         }
 
         // GET: api/Artefacts/VisibilityOpts
@@ -82,25 +84,34 @@ namespace Artefactor.Controllers
             [JsonConverter(typeof(StringEnumConverter))]
             Visibility vis)
         {
-            ApplicationUser userWArtefacts;
-
-            ApplicationUser curUser = await UserService.GetCurUser(HttpContext, _userManager);
-            bool curUserIsUsername = false;  
+            bool curUserIsUsername = false;
             bool curUserIsFamily = false;  // TODO once families implemented
 
-            // user {username} is either curUser or another user - assign to 'userWArtefacts'
+            ApplicationUser userWArtefacts = await _userManager.FindByNameAsync(username);
 
-            if (curUser != null && curUser.UserName == username)
+            if (userWArtefacts == null)
             {
-                userWArtefacts = curUser;
+                return NotFound();
             }
-            else
-            {
-                userWArtefacts = await _userManager.FindByNameAsync(username);
 
-                if (userWArtefacts == null)
+            try
+            {
+                curUserIsUsername = await _userService.IsCurUser(null, username, HttpContext);
+            }
+            catch (Exception e)
+            {
+                if (e is ArgumentException)
                 {
+                    // not current 
+                }
+                else if (e is ArgumentNullException)
+                {
+                    // 'username' was not found
                     return NotFound();
+                }
+                else
+                {
+                    throw e;
                 }
             }
 
@@ -110,24 +121,16 @@ namespace Artefactor.Controllers
                             .ThenInclude(cj => cj.Category)
                         .Where(a => a.OwnerId == userWArtefacts.Id);
 
-            // the request user can access 'private' artefacts of 'username' if
-            // they are the same user
-            if (curUser != null)
-            {
-                curUserIsUsername = curUser.Id == userWArtefacts.Id;
-                curUserIsFamily = curUser.Id == userWArtefacts.Id;  // TODO
-            }
-            else
+            // only return public artefacts
+            if (!curUserIsUsername)
             {
                 artefacts = artefacts.Where(a => a.Visibility == Visibility.Public);
+
                 return new JsonResult((await artefacts.ToListAsync())
                         .Select(a => ArtefactJson(a)));
             }
 
-            // filter artefacts based on permissions and current user
-
-            
-
+            // check permissions
             if ((!curUserIsUsername && vis == Visibility.Private) ||
                  !curUserIsFamily && vis == Visibility.PrivateFamily)
             {
@@ -135,20 +138,12 @@ namespace Artefactor.Controllers
                                     "view the requested recourse.");
             }
 
-            // filter on private or family if user logged in
+            // user has appropriate permissions, so return the filtered list
             if ((curUserIsUsername && vis == Visibility.Private) ||
                 (curUserIsFamily && vis == Visibility.PrivateFamily))
             {
                 artefacts = artefacts.Where(a => a.Visibility == vis);
             }
-
-            //if (!curUserIsUsername && (vis == Visibility.Public || vis == Visibility.Unspecified))
-            //{
-            //    artefacts = artefacts.Where(a => a.Visibility == Visibility.Public);
-            //}
-
-            //var artefactsJson = await
-            //    .ToListAsync();
 
             return new JsonResult((await artefacts.ToListAsync())
                 .Select(a => ArtefactJson(a)));
@@ -184,6 +179,7 @@ namespace Artefactor.Controllers
                 a.Title,
                 a.Description,
                 a.CreatedAt,
+                a.Visibility,
 
                 owner,
                 categoryJoin,
@@ -243,36 +239,6 @@ namespace Artefactor.Controllers
             return artefact;
         }
 
-        // PUT: api/Artefacts/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutArtefact(string id, Artefact artefact)
-        {
-            if (id != artefact.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(artefact).State = EntityState.Modified;
-
-            try
-            {
-               await _context.SaveChangesAsync();
-            }
-             catch (DbUpdateConcurrencyException)
-            {
-                if (!ArtefactExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
         // POST: api/Artefacts
         [Authorize]
         [HttpPost]
@@ -280,7 +246,7 @@ namespace Artefactor.Controllers
         {
             // it would be better design to just return id, but clients
             // may need owner username
-            var curUser = await UserService.GetCurUser(HttpContext, _userManager);
+            var curUser = await _userService.GetCurUser(HttpContext);
 
             _context.Attach(artefact);
 
@@ -310,6 +276,80 @@ namespace Artefactor.Controllers
             
             return CreatedAtAction("GetArtefact", new { id = artefact.Id },
               artefactJson);
+        }
+
+        // PUT: api/Artefacts/5
+        [HttpPatch("{id}")]
+        [Authorize]
+        public async Task<IActionResult> EditArtefact(string id, Artefact artefact)
+        {
+            if (id != artefact.Id)
+            {
+                return BadRequest();
+            }
+
+            var dbArt = await _context
+                .Artefacts
+                .SingleOrDefaultAsync(a => a.Id == artefact.Id);
+
+            if (dbArt == null)
+            {
+                return NotFound();
+            }
+
+            if (!await _userService.IsCurUser(dbArt.OwnerId, null, HttpContext))
+            {
+                return Unauthorized();
+            }
+
+            foreach (var patchProperty in artefact.GetType().GetProperties())
+            {
+                string patchPropName = patchProperty.Name;
+                object patchPropValue = patchProperty.GetValue(artefact);
+
+                if (patchPropValue != null && IsModifiable(patchPropName))
+                {
+                    SetPropertyValue(dbArt, patchPropName, patchPropValue);
+                }
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ArtefactExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+
+            // it would be cool to have these as attributes on the Artefact object
+            bool IsModifiable(string artefactProperty)
+            {
+                return !(
+                    artefactProperty == "Id" ||
+                    artefactProperty == "CreatedAt" ||
+                    artefactProperty == "OwnerId" ||
+                    artefactProperty == "Owner" ||
+                    artefactProperty == "Title" ||
+                    artefactProperty == "CategoryJoin"
+                );
+            }
+
+            void SetPropertyValue<T> (T obj, string propertyName, object propertyValue)
+            {
+                typeof(T)
+                    .GetProperty(propertyName)
+                    .SetValue(obj, propertyValue);
+            }
         }
 
         // DELETE: api/Artefacts/5

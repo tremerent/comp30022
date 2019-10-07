@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Artefactor.Data;
 using Artefactor.Models;
@@ -22,14 +20,17 @@ namespace Artefactor.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly UploadService _uploadService;
+        private readonly UserService _userService;
 
         public ProfileController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            UploadService uploadService)
+            UploadService uploadService,
+            UserService userService)
         {
             _context = context;
             _userManager = userManager;
             _uploadService = uploadService;
+            _userService = userService;
         }
 
         [AllowAnonymous]
@@ -61,11 +62,11 @@ namespace Artefactor.Controllers
         }
 
         [Authorize]
-        [HttpPost("{username}")]
+        [HttpPatch("{username}")]
         public async Task<IActionResult> EditProfile([FromRoute] string username, [FromBody] ProfileUpdate diff)
         {
             ApplicationUser curUser =
-                await UserService.GetCurUser(HttpContext, _userManager);
+                await _userService.GetCurUser(HttpContext);
 
             if (curUser == null || curUser.UserName != username)
             {
@@ -75,7 +76,6 @@ namespace Artefactor.Controllers
             _context.Attach(curUser);
 
             if (diff.bio != null)  {
-                Console.WriteLine("HERE");
                 curUser.Bio = diff.bio;
             }
             if (diff.image_url != null)
@@ -98,7 +98,7 @@ namespace Artefactor.Controllers
         public async Task<IActionResult> SetProfileImage(IFormFile file)
         {
             ApplicationUser curUser =
-                await UserService.GetCurUser(HttpContext, _userManager);
+                await _userService.GetCurUser(HttpContext);
 
             if (curUser == null)
             {

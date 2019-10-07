@@ -56,7 +56,7 @@ namespace Artefactor
                     //options.Authority = "https://localhost:5001";
                     options.Authority = "https://localhost:44377";
 
-                
+
 
 
                     // name of the API resource
@@ -87,6 +87,7 @@ namespace Artefactor
             // Domain layer services
             services.AddSingleton(Configuration);
             services.AddScoped<UploadService>();
+            services.AddScoped<UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
