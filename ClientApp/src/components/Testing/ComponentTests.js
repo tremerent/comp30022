@@ -1,4 +1,7 @@
 ﻿import React, { Component } from 'react';
+import ProfileImageUploadTest from './components/ProfileImageUploadTest';
+import ArtefactImageUploadTest from './components/ArtefactImageUploadTest';
+
 
 export default class ComponentTests extends Component {
     constructor(props) {
@@ -16,6 +19,9 @@ export default class ComponentTests extends Component {
         return (
             <div>
                 Component tests
+                <ProfileImageUploadTest />
+                <ArtefactImageUploadTest />
+                
             </div>
         );
     }

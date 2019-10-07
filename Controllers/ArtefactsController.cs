@@ -11,9 +11,9 @@ using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Runtime.Serialization;
+using Microsoft.AspNetCore.Http;
 
 using Artefactor.Services;
-using System.Collections;
 
 namespace Artefactor.Controllers
 {
@@ -23,13 +23,18 @@ namespace Artefactor.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-
+        private readonly UserService _userService;
+        private readonly UploadService _uploadService;
 
         public ArtefactsController(ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager)
+                                UserManager<ApplicationUser> userManager,
+                                UserService userService,
+                                UploadService uploadService)
         {
             _context = context;
             _userManager = userManager;
+            _userService = userService;
+            _uploadService = uploadService;
         }
 
         // GET: api/Artefacts/VisibilityOpts
@@ -83,37 +88,36 @@ namespace Artefactor.Controllers
             [JsonConverter(typeof(StringEnumConverter))]
             Visibility vis)
         {
-            ApplicationUser userWArtefacts;
-
-            ApplicationUser curUser = await UserService.GetCurUser(HttpContext, _userManager);
-            bool curUserIsUsername = false;  
+            bool curUserIsUsername = false;
             bool curUserIsFamily = false;  // TODO once families implemented
 
-            // user {username} is either curUser or another user - assign to 'userWArtefacts'
+            ApplicationUser userWArtefacts = await _userManager.FindByNameAsync(username);
 
-            if (curUser != null && curUser.UserName == username)
+            if (userWArtefacts == null)
             {
-                userWArtefacts = curUser;
+                return NotFound();
             }
-            else
-            {
-                userWArtefacts = await _userManager.FindByNameAsync(username);
 
-                if (userWArtefacts == null)
+            try
+            {
+                curUserIsUsername = await _userService.IsCurUser(null, username, HttpContext);
+            }
+            catch (Exception e)
+            {
+                if (e is ArgumentException)
                 {
+                    // not current 
+                }
+                else if (e is ArgumentNullException)
+                {
+                    // 'username' was not found
                     return NotFound();
                 }
+                else
+                {
+                    throw e;
+                }
             }
-
-            // the request user can access 'private' artefacts of 'username' if
-            // they are the same user
-            if (curUser != null)
-            {
-                curUserIsUsername = curUser.Id == userWArtefacts.Id;
-                curUserIsFamily = curUser.Id == userWArtefacts.Id;  // TODO
-            }
-
-            // filter artefacts based on permissions and current user
 
             IQueryable<Artefact> artefacts =
                 _context.Artefacts
@@ -121,6 +125,7 @@ namespace Artefactor.Controllers
                             .ThenInclude(cj => cj.Category)
                         .Where(a => a.OwnerId == userWArtefacts.Id);
 
+            // check permissions
             if ((!curUserIsUsername && vis == Visibility.Private) ||
                  !curUserIsFamily && vis == Visibility.PrivateFamily)
             {
@@ -128,16 +133,13 @@ namespace Artefactor.Controllers
                                     "view the requested recourse.");
             }
 
-            // don't filter on visibility if vis == Visibility.Unspecified
+            // user has appropriate permissions, so return the filtered list
             if ((curUserIsUsername && vis == Visibility.Private) ||
-                     (curUserIsFamily && vis == Visibility.PrivateFamily) ||
-                     (!curUserIsUsername && vis == Visibility.Public))
+                (curUserIsFamily && vis == Visibility.PrivateFamily) ||
+                (!curUserIsUsername && !curUserIsFamily && vis == Visibility.Public))
             {
                 artefacts = artefacts.Where(a => a.Visibility == vis);
             }
-
-            //var artefactsJson = await
-            //    .ToListAsync();
 
             return new JsonResult((await artefacts.ToListAsync())
                 .Select(a => ArtefactJson(a)));
@@ -167,13 +169,22 @@ namespace Artefactor.Controllers
                      .Select(cj => RestrictedObjCategoryJoinView(cj));
             }
 
+            object images = null;
+            if (a.Images != null)
+            {
+                images = a.Images
+                    .Select(img => img.Url);
+            }
+
             return new
             {
                 a.Id,
                 a.Title,
                 a.Description,
                 a.CreatedAt,
+                a.Visibility,
 
+                images,
                 owner,
                 categoryJoin,
             };
@@ -215,13 +226,14 @@ namespace Artefactor.Controllers
 
         // GET: api/Artefacts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Artefact>> GetArtefact(string id)
+        public async Task<ActionResult> GetArtefact(string id)
         {
             // possibly a more performant way of doing this -
             // https://stackoverflow.com/questions/40360512/findasync-and-include-linq-statements
             var artefact = await _context.Artefacts
                                          .Include(a => a.CategoryJoin)
                                             .ThenInclude(cj => cj.Category)
+                                         .Include(a => a.Owner)
                                          .SingleOrDefaultAsync(a => a.Id == id);
 
             if (artefact == null)
@@ -229,37 +241,7 @@ namespace Artefactor.Controllers
                 return NotFound();
             }
 
-            return artefact;
-        }
-
-        // PUT: api/Artefacts/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutArtefact(string id, Artefact artefact)
-        {
-            if (id != artefact.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(artefact).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ArtefactExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return new JsonResult(ArtefactJson(artefact));
         }
 
         // POST: api/Artefacts
@@ -269,7 +251,7 @@ namespace Artefactor.Controllers
         {
             // it would be better design to just return id, but clients
             // may need owner username
-            var curUser = await UserService.GetCurUser(HttpContext, _userManager);
+            var curUser = await _userService.GetCurUser(HttpContext);
 
             _context.Attach(artefact);
 
@@ -277,7 +259,6 @@ namespace Artefactor.Controllers
             // OwnerId is shadow property
             _context.Entry(artefact).Property("OwnerId").CurrentValue = curUser.Id;
 
-            //_context.Artefacts.Add(artefact);
             try
             {
                 await _context.SaveChangesAsync();
@@ -301,6 +282,80 @@ namespace Artefactor.Controllers
               artefactJson);
         }
 
+        // PATCH: api/Artefacts/as23-123
+        [HttpPatch("{id}")]
+        [Authorize]
+        public async Task<IActionResult> EditArtefact(string id, Artefact artefact)
+        {
+            if (id != artefact.Id)
+            {
+                return BadRequest();
+            }
+
+            var dbArt = await _context
+                .Artefacts
+                .SingleOrDefaultAsync(a => a.Id == artefact.Id);
+
+            if (dbArt == null)
+            {
+                return NotFound();
+            }
+
+            if (!await _userService.IsCurUser(dbArt.OwnerId, null, HttpContext))
+            {
+                return Unauthorized();
+            }
+
+            foreach (var patchProperty in artefact.GetType().GetProperties())
+            {
+                string patchPropName = patchProperty.Name;
+                object patchPropValue = patchProperty.GetValue(artefact);
+
+                if (patchPropValue != null && IsModifiable(patchPropName))
+                {
+                    SetPropertyValue(dbArt, patchPropName, patchPropValue);
+                }
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ArtefactExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+
+            // it would be cool to have these as attributes on the Artefact object
+            bool IsModifiable(string artefactProperty)
+            {
+                return !(
+                    artefactProperty == "Id" ||
+                    artefactProperty == "CreatedAt" ||
+                    artefactProperty == "OwnerId" ||
+                    artefactProperty == "Owner" ||
+                    artefactProperty == "Title" ||
+                    artefactProperty == "CategoryJoin"
+                );
+            }
+
+            void SetPropertyValue<T> (T obj, string propertyName, object propertyValue)
+            {
+                typeof(T)
+                    .GetProperty(propertyName)
+                    .SetValue(obj, propertyValue);
+            }
+        }
+
         // DELETE: api/Artefacts/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Artefact>> DeleteArtefact(string id)
@@ -316,6 +371,84 @@ namespace Artefactor.Controllers
 
             return artefact;
         }
+
+        [HttpPost("image")]
+        [Authorize]
+        public async Task<IActionResult> AddImage(
+            [FromQuery] string artefactId, 
+            [FromForm] IFormFile file)
+        {
+            var dbArt = await _context
+                .Artefacts
+                .SingleOrDefaultAsync(a => a.Id == artefactId);
+
+            if (dbArt == null)
+            {
+                return NotFound();
+            }
+
+            if (!await _userService.IsCurUser(dbArt.OwnerId, null, HttpContext))
+            {
+                return Unauthorized();
+            }
+
+            try 
+            {
+                Uri uri = 
+                    await _uploadService.UploadFileToBlobAsync(file.FileName, file);
+
+                await _context.AddAsync(new ArtefactDocument
+                {
+                    Title = file.FileName,
+                    Url = uri.AbsoluteUri,
+                    ArtefactId = artefactId,
+                    DocType = DocType.Image,
+                });
+
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpDelete("{artefactId}/image")]
+        [Authorize]
+        public async Task<IActionResult> RemoveImage(
+            [FromQuery] string artefactId, 
+            [FromQuery] string img_url)
+        {
+            var dbArt = await _context
+                .Artefacts
+                .SingleOrDefaultAsync(a => a.Id == artefactId);
+
+            if (dbArt == null)
+            {
+                return NotFound();
+            }
+
+            if (!await _userService.IsCurUser(dbArt.OwnerId, null, HttpContext))
+            {
+                return Unauthorized();
+            }
+            
+            try {
+                _context.Remove(
+                    await _context
+                        .ArtefactDocuments
+                        .SingleOrDefaultAsync(doc => doc.Url == img_url)
+                );
+
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        } 
 
         private bool ArtefactExists(string id)
         {

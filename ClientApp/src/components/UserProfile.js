@@ -5,7 +5,6 @@ import ArtefactScroller from './Artefact/ArtefactScroller.js';
 import { changeCurUserInfo } from '../scripts/requests.js';
 
 import './UserProfile.css';
-import PLACEHOLDER_IMAGE from '../images/filler/artefact-03.jpg';
 
 //function getProfile(userId) {
 //    return {

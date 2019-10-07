@@ -28,6 +28,23 @@ async function getArtefact(artefactId) {
     return resp.data;
 }
 
+async function addArtefactImage(artefactId, file) {
+    const data = new FormData();
+    data.append("file", file);
+
+    const resp = await apiFetch(getToken())
+        .post(`/artefacts/image?artefactId=${artefactId}`, data)
+
+    return resp.data;
+}
+
+async function removeArtefactImage(artefactId, imgUrl) {
+    const resp = await apiFetch(getToken())
+        .delete(`/artefacts/image?img_url=${imgUrl}&artefactid=${artefactId}`)
+
+    return resp.data;
+}
+
 // assumes param. 'artefact' has been validated
 async function postArtefact(artefact) {
     // post the artefact
@@ -107,7 +124,6 @@ async function getArtefacts(username, vis) {
             .get(`/Artefacts`);
     }
     else {
-
         resp = await apiFetch(getToken())
             .get(`/Artefacts/user/${username}` + visQuery);
     }
@@ -131,6 +147,17 @@ async function changeCurUserInfo(user, newInfo) {
     return resp.data;
 }
 
+async function setProfileImage(file) {
+
+    const data = new FormData();
+    data.append("file", file);
+
+    const resp = await apiFetch(getToken())
+        .post(`/profile/set-profile-image`, data)
+
+    return resp.data;
+}
+
 export {
     postArtefact,
     postArtefactAndCategories,
@@ -142,9 +169,13 @@ export {
     postCategory,
     getCategories,
 
+    addArtefactImage,
+    removeArtefactImage,
+
     postLogin,
     postRegister,
 
     getUser,
     changeCurUserInfo,
+    setProfileImage,
 }
