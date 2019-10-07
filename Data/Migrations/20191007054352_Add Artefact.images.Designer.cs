@@ -4,14 +4,16 @@ using Artefactor.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Artefactor.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191007054352_Add Artefact.images")]
+    partial class AddArtefactimages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,13 +113,9 @@ namespace Artefactor.Data.Migrations
 
             modelBuilder.Entity("Artefactor.Models.ArtefactDocument", b =>
                 {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue("NEWID()");
+                    b.Property<string>("Id");
 
                     b.Property<string>("ArtefactId");
-
-                    b.Property<int>("DocType");
 
                     b.Property<string>("Url");
 

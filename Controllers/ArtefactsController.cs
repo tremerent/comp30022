@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Runtime.Serialization;
+using Microsoft.AspNetCore.Http;
 
 using Artefactor.Services;
 
@@ -23,14 +24,17 @@ namespace Artefactor.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly UserService _userService;
+        private readonly UploadService _uploadService;
 
         public ArtefactsController(ApplicationDbContext context,
                                 UserManager<ApplicationUser> userManager,
-                                UserService userService)
+                                UserService userService,
+                                UploadService uploadService)
         {
             _context = context;
             _userManager = userManager;
             _userService = userService;
+            _uploadService = uploadService;
         }
 
         // GET: api/Artefacts/VisibilityOpts
@@ -173,6 +177,13 @@ namespace Artefactor.Controllers
                      .Select(cj => RestrictedObjCategoryJoinView(cj));
             }
 
+            object images = null;
+            if (a.Images != null)
+            {
+                images = a.Images
+                    .Select(img => img.Url);
+            }
+
             return new
             {
                 a.Id,
@@ -181,6 +192,7 @@ namespace Artefactor.Controllers
                 a.CreatedAt,
                 a.Visibility,
 
+                images,
                 owner,
                 categoryJoin,
             };
@@ -222,13 +234,14 @@ namespace Artefactor.Controllers
 
         // GET: api/Artefacts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Artefact>> GetArtefact(string id)
+        public async Task<ActionResult> GetArtefact(string id)
         {
             // possibly a more performant way of doing this -
             // https://stackoverflow.com/questions/40360512/findasync-and-include-linq-statements
             var artefact = await _context.Artefacts
                                          .Include(a => a.CategoryJoin)
                                             .ThenInclude(cj => cj.Category)
+                                         .Include(a => a.Owner)
                                          .SingleOrDefaultAsync(a => a.Id == id);
 
             if (artefact == null)
@@ -236,7 +249,7 @@ namespace Artefactor.Controllers
                 return NotFound();
             }
 
-            return artefact;
+            return new JsonResult(ArtefactJson(artefact));
         }
 
         // POST: api/Artefacts
@@ -254,7 +267,6 @@ namespace Artefactor.Controllers
             // OwnerId is shadow property
             _context.Entry(artefact).Property("OwnerId").CurrentValue = curUser.Id;
 
-            //_context.Artefacts.Add(artefact);
             try
             {
                 await _context.SaveChangesAsync();
@@ -367,6 +379,83 @@ namespace Artefactor.Controllers
 
             return artefact;
         }
+
+        [HttpPost("image")]
+        [Authorize]
+        public async Task<IActionResult> AddImage(
+            [FromQuery] string artefactId, 
+            [FromForm] IFormFile file)
+        {
+            var dbArt = await _context
+                .Artefacts
+                .SingleOrDefaultAsync(a => a.Id == artefactId);
+
+            if (dbArt == null)
+            {
+                return NotFound();
+            }
+
+            if (!await _userService.IsCurUser(dbArt.OwnerId, null, HttpContext))
+            {
+                return Unauthorized();
+            }
+
+            try 
+            {
+                Uri uri = 
+                    await _uploadService.UploadFileToBlobAsync(file.FileName, file);
+
+                await _context.AddAsync(new ArtefactDocument
+                {
+                    Url = uri.AbsoluteUri,
+                    ArtefactId = artefactId,
+                    DocType = DocType.Image,
+                });
+
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpDelete("{artefactId}/image")]
+        [Authorize]
+        public async Task<IActionResult> RemoveImage(
+            [FromQuery] string artefactId, 
+            [FromQuery] string img_url)
+        {
+            var dbArt = await _context
+                .Artefacts
+                .SingleOrDefaultAsync(a => a.Id == artefactId);
+
+            if (dbArt == null)
+            {
+                return NotFound();
+            }
+
+            if (!await _userService.IsCurUser(dbArt.OwnerId, null, HttpContext))
+            {
+                return Unauthorized();
+            }
+            
+            try {
+                _context.Remove(
+                    await _context
+                        .ArtefactDocuments
+                        .SingleOrDefaultAsync(doc => doc.Url == img_url)
+                );
+
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        } 
 
         private bool ArtefactExists(string id)
         {
