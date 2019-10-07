@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImages, faShareAltSquare, faTrophy } from '@fortawesome/free-solid-svg-icons';
 
 import CategorySelect from '../Category/CategorySelect.js';
-import { UploadArtefactDocs } from './UploadArtefactDocs.js';
+import { ArtefactDocs } from './ArtefactDocs.js';
 
 import './CreateArtefactForm.css';
 
@@ -60,7 +60,7 @@ export class CreateArtefactForm extends Component {
                 <div className="text-center">
                     <div className="spinner-border text-primary" role="status"
                         style={{
-                            display: 
+                            display:
                                 this.state.artefactWasCreated ? "none" :
                                     this.state.loading ? null : "none",
                         }}>
@@ -196,11 +196,7 @@ export class CreateArtefactForm extends Component {
     }
 
     renderSecondFormPage = () => {
-        return (
-            <div>
-                <UploadArtefactDocs />
-            </div>
-        );
+        return <ArtefactDocs/>;
     }
 
     renderThirdFormPage = () => {
@@ -289,7 +285,7 @@ export class CreateArtefactForm extends Component {
 
     // null check created artefact's id
     getCreatedArtefactId = () => {
-        return this.props.createdArtefact 
+        return this.props.createdArtefact
                 ? this.props.createdArtefact.id
                 : null;
     }
