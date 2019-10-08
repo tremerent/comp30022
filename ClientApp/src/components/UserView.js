@@ -24,7 +24,7 @@ class UserView extends React.Component {
                 : <UserProfile
                     user={this.props.user}
                     userArtefacts={this.props.userArtefacts}
-                    umArtefactsReg={this.props.userArtefacts.length} />
+                    numArtefactsReg={this.props.userArtefacts.length} />
         );
     }
 }

@@ -16,17 +16,20 @@ namespace Artefactor.Services
     
         public UploadService(IConfiguration configuration)  
         {  
-            this._accessKey = configuration.GetConnectionString("BlobStorageAccessKey");
+            this._accessKey = configuration.GetConnectionString("BlobStorage:AccessKey");
             this._defaultContainerName = configuration.GetConnectionString("ProfileImagesContainerName");
         }
 
         // Returns Uri of uploaded param. 'file'. If successful, Uri will be
         //  'GenerateFileName(fileName)'. Otherwise, returns null.
-        public async Task<Uri> UploadFileToBlobAsync(string fileName, IFormFile file)  
+        public async Task<Uri> UploadFileToBlobAsync(
+            string fileName, 
+            IFormFile file)  
         {  
             // byte[] fileData, string fileMimeType
             try  
             {  
+                // TODO: use artefact container
                 var blobContainer = GetBlobContainer(this._accessKey, 
                                             this._defaultContainerName);
                                             

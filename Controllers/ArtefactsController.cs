@@ -14,6 +14,7 @@ using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Http;
 
 using Artefactor.Services;
+using System.Linq.Expressions;
 
 namespace Artefactor.Controllers
 {
@@ -44,7 +45,7 @@ namespace Artefactor.Controllers
             // get value of 'EnumMemberAttribute' from each value of enum 'Visibility' -
             // 'EnumMemberAttribute' values are converted by 'NewtonsoftJsonConverter'
             // to 'Visibility'
-            var visVals = 
+            var visVals =
                 new List<Visibility>((Visibility[])Enum.GetValues(typeof(Visibility)));
 
             var visValsEnumMemberAttribs = visVals
@@ -65,7 +66,7 @@ namespace Artefactor.Controllers
                                           .Include(a => a.CategoryJoin)
                                             .ThenInclude(cj => cj.Category)
                                           .Include(a => a.Owner)
-                                          .Where(a => 
+                                          .Where(a =>
                                             a.Visibility == Visibility.Public)
                                           .ToListAsync();
 
@@ -74,6 +75,202 @@ namespace Artefactor.Controllers
                 .Where(a => a != null);
 
             return new JsonResult(artefactsJson);
+        }
+
+        [HttpGet("feature")]
+        public async Task<ActionResult> GetArtefacts(
+            [FromQuery] string user,
+
+            [FromQuery] string q,
+            [FromQuery] bool? includeDesc,
+
+            [FromQuery] string vis,
+
+            [FromQuery] List<string> categories,
+            [FromQuery] bool? matchAll,
+
+            [FromQuery] DateTime since,
+            [FromQuery] DateTime until,
+
+            [FromQuery] string sort
+        )
+        {
+            IQueryable<Artefact> artefacts =
+                _context.Artefacts
+                        .Include(a => a.CategoryJoin)
+                            .ThenInclude(cj => cj.Category);
+
+            ParameterExpression artefactParam = 
+                Expression.Parameter(typeof(Artefact), "artefact");
+
+            IList<Expression> whereQueries = new List<Expression>();
+
+            if (q != null)
+            {
+                if (includeDesc.HasValue)
+                {
+                    whereQueries.Add(
+                        ArtefactQueryStringExpression(
+                            q, includeDesc.Value, artefactParam
+                        )
+                    );
+                }
+                else
+                {
+                    whereQueries.Add(
+                        ArtefactQueryStringExpression(
+                            q, false, artefactParam
+                        )
+                    );
+                }
+            }
+
+            Expression whereCallExpression = GetWhereExp(whereQueries.First(), 
+                artefactParam, artefacts);
+
+            IQueryable<Artefact> results =
+                artefacts.Provider.CreateQuery<Artefact>(whereCallExpression);
+
+            return new JsonResult(
+                (await results.ToListAsync()).Select(a => ArtefactJson(a))
+            );
+
+            //ApplicationUser queryUser;
+            //if (user != null)
+            //{
+            //    queryUser = await _userManager.FindByNameAsync(user);
+            //    try
+            //    {
+            //        WhereQueries.Add(await UserQuery(queryUser));
+            //    }
+            //    catch (QueryException e)
+            //    {
+            //        if (e.IsAuth)
+            //        {
+            //            return Unauthorized();
+            //        }
+            //        else if (e.IsQuery)
+            //        {
+            //            return NotFound();
+            //        }
+            //    }
+            //}
+
+            //if (vis != null)
+            //{
+            //    if (vis == "private" || vis == "public")
+            //    {
+
+            //    }
+            //}
+
+            // query string
+
+            //Func<Artefact, bool> QueryStringQuery()
+            //{
+            //    Func<Artefact, bool> queryString;
+
+            //    if (includeDesc.HasValue && includeDesc.Value == true)
+            //    {
+            //        queryString =
+            //            a => a.Title.ToLower().Contains(q) ||
+            //                    a.Title.ToLower().Contains(q);
+            //    }
+            //    else
+            //    {
+            //        queryString = a => a.Title.ToLower().Contains(q);
+            //    }
+
+            //    return queryString;
+
+            //}
+
+            //    a => a.Title.ToLower().Contains(q) ||
+            //            a.Title.ToLower().Contains(q);            
+            Expression ArtefactQueryStringExpression(string query, bool includeDesc,
+                ParameterExpression paramExp)
+            {
+                Expression paramTitle = Expression.Property(
+                    paramExp, typeof(Artefact).GetProperty("Title")
+                );
+
+
+                Expression paramTitleLowered = Expression.Call(
+                    paramTitle,
+                    typeof(string).GetMethod("ToLower", System.Type.EmptyTypes)
+                );
+
+                return Expression.Call(
+                    paramTitleLowered,
+                    typeof(string).GetMethod("Contains"),
+                    Expression.Constant(query, typeof(string))
+                );
+            }
+
+
+
+            // username & visibility
+
+            //async Task<Func<Artefact, bool>> UserQuery(ApplicationUser appUser)
+            //{
+            //    return a => a.OwnerId == appUser.Id;
+            //}
+
+            //async Task<Func<Artefact, bool>> VisQuery(ApplicationUser appUser)
+            //{
+            //    var appUser = await _userManager.FindByNameAsync(user);
+
+            //    if (appUser == null)
+            //    {
+            //        throw new QueryException { IsAuth = true };
+            //    }
+
+            //    bool curUserIsAppUser = false;
+            //    try
+            //    {
+            //        curUserIsAppUser =
+            //            await _userService.IsCurUser(appUser.Id, null, HttpContext);
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        if (e is ArgumentException)
+            //        {
+            //            // no current user logged in
+            //            curUserIsAppUser = false;
+            //        }
+            //        else if (e is ArgumentException)
+            //        {
+            //            // this is unreachable since checked 'appUser == null'
+            //            throw e;
+            //        }
+            //        else throw e;
+            //    }
+
+            //    curUserIsAppUser
+
+
+            //}
+
+            MethodCallExpression GetWhereExp<T>(
+                Expression whereExpBody,
+                ParameterExpression paramExp,
+                IQueryable<T> data)
+            {
+                return Expression.Call(
+                    typeof(Queryable),
+                    "Where",
+                    new Type[] { data.ElementType },
+                    data.Expression,
+                    Expression.Lambda<Func<T, bool>>(
+                        whereExpBody, new ParameterExpression[] { paramExp })
+                    );
+            }
+        }
+
+        private class QueryException : Exception
+        {
+            public bool IsAuth { get; set; } = false;
+            public bool IsQuery { get; set; } = false;
         }
 
         /**
@@ -104,11 +301,7 @@ namespace Artefactor.Controllers
             }
             catch (Exception e)
             {
-                if (e is ArgumentException)
-                {
-                    // not current 
-                }
-                else if (e is ArgumentNullException)
+                if (e is ArgumentNullException)
                 {
                     // 'username' was not found
                     return NotFound();
@@ -141,8 +334,9 @@ namespace Artefactor.Controllers
                 artefacts = artefacts.Where(a => a.Visibility == vis);
             }
 
-            return new JsonResult((await artefacts.ToListAsync())
-                .Select(a => ArtefactJson(a)));
+            return new JsonResult(
+                (await artefacts.ToListAsync()).Select(a => ArtefactJson(a))
+            );
         }
 
         /**

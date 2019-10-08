@@ -48,6 +48,8 @@ namespace Artefactor.Services
         public async Task<bool> IsCurUser(string userId, string username, HttpContext context)
         {
             ApplicationUser curUser = await GetCurUser(context);
+
+            // throw if there is no current user attached to 'context'
             if (curUser == null)
             {
                 throw new ArgumentException("No current user.");
@@ -63,6 +65,7 @@ namespace Artefactor.Services
 
                 return curUser.Id == userWithUsername.Id;
             }
+            // throw if both 'userId' and 'username' are null
             else
             {
                 throw new ArgumentNullException("Supply a non-null user to compare against.");
