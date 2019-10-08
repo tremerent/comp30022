@@ -6,7 +6,7 @@ import { Layout } from './components/Layout';
 import MyArtefacts from './components/Artefact/MyArtefacts.js';
 import LandingPage from './components/LandingPage.js';
 import ArtefactBrowser from './components/Artefact/ArtefactBrowser.js';
-import UserProfile from './components/UserProfile.js';
+import UserView from './components/UserView.js';
 import TestingHome from './components/Testing/TestingHome.js';
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
@@ -39,7 +39,7 @@ export default class App extends Component {
                             <Route path='/auth' component={this.authRoutes} />
                             <Route path='/browse' component={ArtefactBrowser} />
 
-                            <Route path='/profile' component={loginIfUnauthed(UserProfile)} />
+                            <Route path='/user' component={loginIfUnauthed(UserView)} />
                             <Route path='/my-artefacts' component={loginIfUnauthed(MyArtefacts)} />
 
                             <Route path='/tests' component={TestingHome} />

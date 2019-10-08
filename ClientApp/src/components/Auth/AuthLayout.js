@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 
-import CentreLoading from '../CenterLoading.js';
+import CentreLoading from '../CentreLoading.js';
 
 /**
  * Perhaps this should have a 'Switch' with 'Route's, but for now
@@ -10,7 +10,11 @@ import CentreLoading from '../CenterLoading.js';
  */
 
 export default function AuthLayout(props) {
-    const { loading, component: Component } = props;
+    const {
+        loading,
+        component: Component,
+        componentProps,
+    } = props;
 
     if (loading) {
         return <CentreLoading />;
@@ -20,7 +24,7 @@ export default function AuthLayout(props) {
             <div className="af-auth-outer">
                 <div className="af-auth-row">
                     <div className="af-auth-form">
-                        <Component />
+                        <Component {...componentProps}/>
                     </div>
                 </div>
             </div>
