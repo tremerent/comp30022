@@ -86,10 +86,10 @@ namespace Artefactor.Controllers
         public async Task<ActionResult> GetArtefacts(
             [FromQuery] string user,
 
-            [FromQuery] string q,
+            [FromQuery] string q,  // query by string
             [FromQuery] bool? includeDesc,
 
-            [FromQuery] Visibility vis,
+            [FromQuery] string vis,  // eg. ...&vis=public,private&...
 
             [FromQuery] List<string> categories,
             [FromQuery] bool? matchAll,
@@ -110,7 +110,7 @@ namespace Artefactor.Controllers
 
             IList<Expression> whereLambdas = new List<Expression>();
 
-            // query strings
+            // query string query
 
             if (q != null)
             {
@@ -132,41 +132,72 @@ namespace Artefactor.Controllers
                 }
             }
 
-            // visibility
+            // visibility query
+            
+            // first grab query user and check for NotFound
+            ApplicationUser curUser = await _userService.GetCurUser(HttpContext);
+            ApplicationUser queryUser = await 
+                _userManager.FindByNameAsync(user);
 
-            // if (vis != Visibility.Unspecified)
-            // {
-            //     try 
-            //     {
+            if (queryUser == null)
+            {
+                return NotFound("'user' does not exist.");
+            }
 
-            //     }
-            //     catch (Exception e) {
-            //         if (e is QueryException)
-            //         {
+            if (vis != null)
+            {
+                IList<string> visQueryStrings = QueryStringValueList(vis);
+                IEnumerable<Visibility> visQueryEnums;
+                try 
+                {
+                    visQueryEnums = visQueryStrings
+                        .Select(visString => VisStringQueryToEnum(visString));
+                }
+                catch (QueryException)
+                {
+                    return BadRequest("Badly formatted query 'vis'");
+                }
 
-            //         }
-            //         else if (e is )
-            //         else
-            //         {
-                        
-            //         }
-            //     }
-            //     var isAuthorised = VisQueryIsAuthorised();
+                if (visQueryEnums.Any(visQuery => 
+                    !VisQueryIsAuthorised(visQuery, curUser, queryUser)))
+                {
+                    return Unauthorized();
+                }
+                else
+                {
+                    foreach(Visibility visQuery in visQueryEnums)
+                    {
+                        whereLambdas.Add(
+                            ArtefactVisQueryExpression(visQuery, artefactParam)
+                        );
+                    }
 
-            //     if ()
-            //     {
-            //         whereLambdas.Add(
-            //             ArtefactVisQueryExpression(vis, artefactParam)
-            //         );
-            //     }
-            //     else
-            //     {
-            //         return Unauthorized();
-            //     }
-            // }
+                }
+            }
 
-            // user
+            // user query
 
+            // Visibility filter should already have been authorised and added 
+            // to 'whereLambdas'.
+            //
+            // If no 'vis' query was specified, just returns public artefacts
+            // of user.
+
+            if (user != null)
+            {
+                if (vis == null)
+                {
+                    whereLambdas.Add(
+                        ArtefactVisQueryExpression(
+                            Visibility.Public, artefactParam)
+                    );
+                }
+
+                whereLambdas.Add(
+                    ArtefactUserQueryExpression(queryUser.Id, artefactParam)
+                );
+
+            }
 
             // AndElse over queryStringExpressions, then call with Where
 
@@ -265,122 +296,16 @@ namespace Artefactor.Controllers
                 return Expression.Equal(Expression.Constant(vis), paramVis);
             }
 
-                  //ApplicationUser queryUser;
-            //if (user != null)
-            //{
-            //    queryUser = await _userManager.FindByNameAsync(user);
-            //    try
-            //    {
-            //        WhereQueries.Add(await UserQuery(queryUser));
-            //    }
-            //    catch (QueryException e)
-            //    {
-            //        if (e.IsAuth)
-            //        {
-            //            return Unauthorized();
-            //        }
-            //        else if (e.IsQuery)
-            //        {
-            //            return NotFound();
-            //        }
-            //    }
-            //}
+            // artefact => artefact.OwnerId == userId
+            Expression ArtefactUserQueryExpression(string userId, 
+                ParameterExpression artefactParamExp)
+            {
+                var paramOwnerId = Expression.Property(
+                    artefactParamExp, typeof(Artefact).GetProperty("OwnerId")
+                );
 
-            // ---
-
-            // expects the query string value 'visListValue' to be of
-            // IList<Visibility> VisQueries(string visListValue)
-            // {
-            //     var visListItems = visListValue.Split(",");
-
-            //     IList<Visibility> visQueries = 
-            //         new List<Visibility>(visListItems.Length);
-
-            //     try
-            //     {
-            //         foreach (var visListItem in visListItems)
-            //         {
-            //             Visibility itemVis;
-            //             Enum.TryParse(visListItem, out itemVis);
-
-            //             if (itemVis.)
-            //             visQueries.Add(
-
-            //             );
-            //         }
-            //         items.Select(visListItem => 
-                        
-            //     }
-            //     catch () {
-
-            //     }
-            //     items
-            // }
-
-            // bool VisQueryIsAuthorised(Visibility vis)
-            // {
-            //     if (vis == Visibility.Public)
-            //     {
-            //         return true;
-            //     }
-            //     else if (vis == Visibility.Unspecified)
-            //     {
-
-            //     }
-            //     else 
-            //     {
-            //         if (vis == Visibility.PrivateFamily)
-            //         else if (vis == Visibility.Private)
-
-            //     }
-            //     {
-
-            //     }
-            // }
-
-            // ---
-
-            // username & visibility
-
-            //async Task<Func<Artefact, bool>> UserQuery(ApplicationUser appUser)
-            //{
-            //    return a => a.OwnerId == appUser.Id;
-            //}
-
-            //async Task<Func<Artefact, bool>> VisQuery(ApplicationUser appUser)
-            //{
-            //    var appUser = await _userManager.FindByNameAsync(user);
-
-            //    if (appUser == null)
-            //    {
-            //        throw new QueryException { IsAuth = true };
-            //    }
-
-            //    bool curUserIsAppUser = false;
-            //    try
-            //    {
-            //        curUserIsAppUser =
-            //            await _userService.IsCurUser(appUser.Id, null, HttpContext);
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        if (e is ArgumentException)
-            //        {
-            //            // no current user logged in
-            //            curUserIsAppUser = false;
-            //        }
-            //        else if (e is ArgumentException)
-            //        {
-            //            // this is unreachable since checked 'appUser == null'
-            //            throw e;
-            //        }
-            //        else throw e;
-            //    }
-
-            //    curUserIsAppUser
-
-
-            //}
+                return Expression.Equal(Expression.Constant(userId), paramOwnerId);
+            }
 
             // Create expression tree represented by 
             // 'data.Where(paramExp => whereExpLambda(paramExp))'
@@ -398,12 +323,99 @@ namespace Artefactor.Controllers
                         whereExpBody, new ParameterExpression[] { paramExp })
                     );
             }
+
+            /* helper methods */
+
+            // convert a query value list of form "&query=item1,item2,..."
+            IList<string> QueryStringValueList(string queryStringListValue)
+            {
+                return queryStringListValue.Split(",");
+            }
+
+            // assumes 'vis != Visibility.Unspecified'
+            bool VisQueryIsAuthorised(
+                Visibility vis, 
+                // current app user
+                ApplicationUser curUser, 
+                // &user=
+                ApplicationUser queryUser)
+            {
+                switch (vis)
+                {
+                    case Visibility.Unspecified:
+                        throw new ArgumentException(
+                            "param. 'vis' cannot equal Visibility.Unspecified"
+                        );
+                    case Visibility.Public:
+                        return true;
+                    case Visibility.PrivateFamily:
+                        if (queryUser == null || curUser == null)
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return _userService.UsersAreFamily(curUser, queryUser);
+                        }
+                    case Visibility.Private:
+                        if (queryUser == null || curUser == null)
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return curUser.Id == queryUser.Id;
+                        }
+                    default:
+                        // this should never be reached, notify
+                        throw new InvalidOperationException("Unreachable code.");
+                }
+            }
+
+            // convert a visString to an enum, throwing a QueryException if
+            // string invalid
+            Visibility VisStringQueryToEnum(string visString)
+            {
+                Visibility visEnum;
+                if (Enum.TryParse(visString, true, out visEnum))
+                {
+                    if (visEnum == Visibility.Unspecified)
+                    {
+                        // user should not specify a 0 or null visibility value
+                        ThrowVisQueryConversionException();
+                        return Visibility.Unspecified;
+                    }
+                    else
+                    {
+                        return visEnum;
+                    }
+                }
+                else
+                {
+                    // user did not specify a valid visibility query
+                    ThrowVisQueryConversionException();
+                    return Visibility.Unspecified;
+                }
+
+                void ThrowVisQueryConversionException()
+                {
+                    throw new QueryException
+                    { 
+                        IsQuery = true, 
+                        Cause = 
+                            $"Invalid visibility query '{visString}'",
+                    };
+                }
+            }
         }
 
-        private class QueryException : Exception
+        public class QueryException : Exception
         {
+            // the query is unauthorised
             public bool IsAuth { get; set; } = false;
+            // the query is malformed in some manner
             public bool IsQuery { get; set; } = false;
+            public string Cause { get; set; } = "";
         }
 
         /**
