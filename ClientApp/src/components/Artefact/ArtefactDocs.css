@@ -1,12 +1,13 @@
 
-.af-docs-carousel-item {
-    position: relative;
-}
+.carousel { transition: transform 0.3s ease-in-out; }
 
 .af-artdoc-image {
     object-fit: contain;
     width: 100%;
     height: 100%;
+    /* Semi-hack to avoid carousel viewport shrinking enough that you can't
+       find the buttons. This happens with broken images. */
+    min-height: 100px;
 }
 
 
@@ -33,16 +34,23 @@
 
 .af-artdoc-listitem {
     margin: 0;
-    padding: 0.4em 0.8em;
     background-color: #ffffff;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+.af-artdoc-filename {
+    flex-grow: 1;
+    padding: 0.4em 0.8em;
+}
+
+.af-artdoc-listitem-clickable {
     cursor: pointer;
 }
 
-.af-artdoc-listitem:hover {
-    background-color: #aaaaaa;
+.af-artdoc-listitem-clickable:hover {
+    background-color: #dddddd;
 }
 
 .alt {
@@ -51,6 +59,7 @@
 
 .af-artdoc-listitem-del {
     font-size: 0.5em;
+    margin: 0.4rem 0.4rem;
 }
 
 .af-artdoc-upload {

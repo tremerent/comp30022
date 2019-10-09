@@ -10,19 +10,25 @@ export default function Carousel({ id, items, activeFrame, activeId, renderFrame
 >
         {items && items.length > 1 && <>
             <ol className="carousel-indicators">
-                {Array.from(items.keys()).map(n => (
-                   <li
-                       data-target={`#${id}`}
-                       key={n}
-                       data-slide-to={n}
-                       className={n ? undefined : 'active'}
-                   />
-                ))}
+                {items.map((item, n) => {
+                    const id = getId ? getId(item) : n;
+                    let className = '';
+                    if (getId && activeId && id === activeId || activeFrame !== null && n === activeFrame)
+                        className = 'active';
+                    return (
+                        <li
+                            data-target={`#${id}`}
+                            key={n}
+                            data-slide-to={n}
+                            className={className}
+                        />
+                    );
+                })}
             </ol>
         </>}
         <div className="carousel-inner">
-            {items.map((i, n, a) => {
-                const id = getId ? getId(i) : n;
+            {items.map((item, n, array) => {
+                const id = getId ? getId(item) : n;
                 let className = 'carousel-item';
                 if (getId && activeId && id === activeId || activeFrame !== null && n === activeFrame)
                     className = className + ' active';
@@ -31,7 +37,7 @@ export default function Carousel({ id, items, activeFrame, activeId, renderFrame
                         key={id}
                         className={className}
                     >
-                        {renderFrame(i, n, a)}
+                        {renderFrame(item, n, array)}
                     </div>
                 );
             })}
