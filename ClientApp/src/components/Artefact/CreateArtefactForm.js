@@ -196,7 +196,7 @@ export class CreateArtefactForm extends Component {
     }
 
     renderSecondFormPage = () => {
-        return <ArtefactDocs/>;
+        return <ArtefactDocs artefact={this.state.artefact}/>;
     }
 
     renderThirdFormPage = () => {

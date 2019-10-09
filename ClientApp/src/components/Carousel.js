@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Carousel({ id, items, activeFrame = 0, renderFrame = x => x, getId }) {
+export default function Carousel({ id, items, activeFrame, activeId, renderFrame = x => x, getId }) {
     return (
 <div
     id={id}
@@ -21,17 +21,20 @@ export default function Carousel({ id, items, activeFrame = 0, renderFrame = x =
             </ol>
         </>}
         <div className="carousel-inner">
-            {items.map((i, n, a) => (
-                <div
-                        key={getId ? getId(i) : n}
-                        className={'carousel-item' + (
-                                n === activeFrame ? ' active' : ''
-                            )}
-                        key={n}
-                >
-                    {renderFrame(i, n, a)}
-                </div>
-            ))}
+            {items.map((i, n, a) => {
+                const id = getId ? getId(i) : n;
+                let className = 'carousel-item';
+                if (getId && activeId && id === activeId || activeFrame !== null && n === activeFrame)
+                    className = className + ' active';
+                return (
+                    <div
+                        key={id}
+                        className={className}
+                    >
+                        {renderFrame(i, n, a)}
+                    </div>
+                );
+            })}
         </div>
     {items && items.length > 1 && <>
         <a className="carousel-control-prev" href={`#${id}`} role="button" data-slide="prev">
