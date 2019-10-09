@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import ProfileImageUploadTest from './components/ProfileImageUploadTest';
 import ArtefactImageUploadTest from './components/ArtefactImageUploadTest';
+import CommentsTest from './components/CommentsTest';
 
 
 export default class ComponentTests extends Component {
@@ -17,12 +18,11 @@ export default class ComponentTests extends Component {
 
     render() {
         return (
-            <div>
-                Component tests
-                <ProfileImageUploadTest />
-                <ArtefactImageUploadTest />
-                
-            </div>
+            <> 
+                <div>
+                </div>      
+                <CommentsTest />
+            </>
         );
     }
 }
