@@ -1,6 +1,11 @@
 import React from 'react';
 
 export default function Carousel({ id, items, activeFrame, activeId, renderFrame = x => x, getId }) {
+    // This doesn't work at the moment, so have to specify activeFrame
+    // or activeId.
+    if (activeId === null && activeFrame === null)
+        activeFrame = 0;
+
     return (
 <div
     id={id}
@@ -30,7 +35,10 @@ export default function Carousel({ id, items, activeFrame, activeId, renderFrame
             {items.map((item, n, array) => {
                 const id = getId ? getId(item) : n;
                 let className = 'carousel-item';
-                if (getId && activeId && id === activeId || activeFrame !== null && n === activeFrame)
+                if  (
+                        getId && activeId !== null && id === activeId
+                    ||  activeFrame !== null && n === activeFrame
+                    )
                     className = className + ' active';
                 return (
                     <div
