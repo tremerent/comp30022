@@ -30,31 +30,12 @@ class CreateMyArtefact extends React.Component {
             ...this.state,
             createdArtefact: createdArtefact,
         });
-
-        // 1) another solution would just be to leave this as it was like so -
-        // this.setState({
-        //     ...this.state,
-        //     createdArtefact: this.props.createdArtefact,
-        // });
     }
 }
 
-// this object is merged into this.props, and lets us access state in the redux 
-// store
 const mapStateToProps = state => ({
     visibilityOpts: state.art.visOpts,
-    // 2) and then add this, to make that the prop gets passed to us from the store
-    // createdArtefact: state.art.myArts.create.createdArtefact
 });
-
-// 3) In either case, we need to get the created object from the redux store -
-// this can be done by having the action return the createdArtefact (as above)
-// or by making sure we're passing the prop correctly (as it should have been).
-//
-// I went with the former so don't have to worry about null accessing the redux
-// state - ie. doing a state.myArts.create.... <- "sorry, create is null".
-// Also, it's probably good practice to return from redux thunks -
-// the action 'createMyArtefact' in 'redux/actions/index.js' is a redux thunk
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators({
