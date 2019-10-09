@@ -91,7 +91,7 @@ namespace Artefactor.Controllers
 
             [FromQuery] string vis,  // eg. ...&vis=public,private&...
 
-            [FromQuery] List<string> categories,
+            [FromQuery] string[] category,
             [FromQuery] bool? matchAll,
 
             [FromQuery] DateTime since,
@@ -134,14 +134,18 @@ namespace Artefactor.Controllers
 
             // visibility query
             
-            // first grab query user and check for NotFound
+            // first initialise curUser and queryUser - check for NotFound
             ApplicationUser curUser = await _userService.GetCurUser(HttpContext);
-            ApplicationUser queryUser = await 
-                _userManager.FindByNameAsync(user);
-
-            if (queryUser == null)
+            ApplicationUser queryUser = null;  // query 'user'
+            if (user != null)
             {
-                return NotFound("'user' does not exist.");
+                // this throws if 'user == null'
+                queryUser = await _userManager.FindByNameAsync(user);
+
+                if (queryUser == null)
+                {
+                    return NotFound("'user' does not exist.");
+                }
             }
 
             if (vis != null)
@@ -198,14 +202,46 @@ namespace Artefactor.Controllers
                 );
 
             }
-
-            // AndElse over queryStringExpressions, then call with Where
-
-            Expression whereLambdasAnded = whereLambdas
-                .Aggregate(
-                    (Expression) Expression.Constant(true),
-                    (acc, whereLambda) => Expression.AndAlso(acc, whereLambda)
+            else
+            {
+                // no user was specified and vis. authorisation has already
+                // been applied - so just filter to see only public
+                whereLambdas.Add(
+                    ArtefactVisQueryExpression(
+                        Visibility.Public, artefactParam)
                 );
+            }
+
+            // categories query
+
+            // WIP
+            // if (category != null && category.Length > 0)
+            // {
+            //     // foreach (var cat in category)
+            //     // {
+            //     //     Category catDb = await _context.Category
+            //     //         .SingleOrDefaultAsync(c => 
+            //     //             c.Name.ToLower() == cat.ToLower());
+            //     // }
+
+            //     var categoryLambdas = 
+
+            //     Expression categoryLambdas = FoldBoolLambdas(
+            //         (Expression) Expression.Constant(false),
+            //         categoryLambdas,
+            //         Expression.OrElse
+            //     );
+
+            // }
+
+            // All whereLambdas have been added. 
+            // AndElse over whereLambdas, then call with Where
+
+            Expression whereLambdasAnded = FoldBoolLambdas(
+                (Expression) Expression.Constant(true),
+                whereLambdas,
+                Expression.AndAlso
+            );
 
             Expression whereCallExpression = GetWhereExp(
                 whereLambdasAnded, 
@@ -307,6 +343,15 @@ namespace Artefactor.Controllers
                 return Expression.Equal(Expression.Constant(userId), paramOwnerId);
             }
 
+            // WIP
+            // Expression CategoryQueryExpression(string categoryId,
+            //     ParameterExpression artefactParamExp)
+            // {
+            //     var paramOwnerId = Expression.Property(
+            //         artefactParamExp, typeof(Artefact).GetProperty("OwnerId")
+            //     );
+            // }
+
             // Create expression tree represented by 
             // 'data.Where(paramExp => whereExpLambda(paramExp))'
             MethodCallExpression GetWhereExp<T>(
@@ -406,6 +451,30 @@ namespace Artefactor.Controllers
                             $"Invalid visibility query '{visString}'",
                     };
                 }
+            }
+
+            // Fold a number of lambdas with return type bool, 
+            // using 'booleanBinOpExp'. 
+            //
+            // 'booleanBinOpExp' should evaluate to bool or things will break.
+            //
+            // It would be really cool if this was typed properly, but it's
+            // just not practical right now.
+            Expression FoldBoolLambdas(
+                Expression start, // should be bool
+                IEnumerable<Expression> boolLambdas,  // 
+                Func<Expression, Expression, BinaryExpression> booleanBinOpExp)
+            {
+                // why this no work?
+                // if (!(booleanBinOpExp.Conversion.ReturnType is bool))
+                // {
+                // }
+
+                return boolLambdas
+                    .Aggregate(
+                        start,
+                        (acc, whereLambda) => booleanBinOpExp(acc, whereLambda)
+                    );
             }
         }
 
