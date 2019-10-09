@@ -13,6 +13,8 @@ import Signup from './components/Auth/Signup';
 import requireAuth from './components/Auth/requireAuth';
 import NotFound from './components/NotFound';
 
+import FloatingWindowTest from './components/Testing/components/FloatingWindowTest.js';
+
 import './App.css';
 
 function loginIfUnauthed(Component) {
@@ -25,25 +27,13 @@ export default class App extends Component {
     render() {
         return (
             <Layout>
-                {/*
-                    LandingPage component needs to fill the entire width of the
-                    page, so put it outside of the container. Everything else
-                    goes inside though.
-                    Help I don't know react.
-                    -- Sam
-                */}
                 <Switch>
                     <Route exact path='/' component={LandingPage} />
                     <Container>
                         <Switch>
                             <Route path='/auth' component={this.authRoutes} />
                             <Route path='/browse' component={ArtefactBrowser} />
-
                             <Route path='/user' component={loginIfUnauthed(UserView)} />
-                            <Route path='/my-artefacts' component={loginIfUnauthed(MyArtefacts)} />
-
-                            <Route path='/tests' component={TestingHome} />
-
                             <Route component={NotFound} />
                         </Switch>
                     {/*<Route path='/family' component={FamilyView} />*/}

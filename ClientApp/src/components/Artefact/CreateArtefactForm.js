@@ -56,11 +56,11 @@ export class CreateArtefactForm extends Component {
 
     render() {
         return (
-            <div className='af-createart'>
+            <div style={{ height: '100%' }}>
                 <div className="text-center">
                     <div className="spinner-border text-primary" role="status"
                         style={{
-                            display: 
+                            display:
                                 this.state.artefactWasCreated ? "none" :
                                     this.state.loading ? null : "none",
                         }}>
@@ -289,7 +289,7 @@ export class CreateArtefactForm extends Component {
 
     // null check created artefact's id
     getCreatedArtefactId = () => {
-        return this.props.createdArtefact 
+        return this.props.createdArtefact
                 ? this.props.createdArtefact.id
                 : null;
     }

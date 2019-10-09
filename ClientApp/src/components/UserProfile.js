@@ -1,26 +1,12 @@
 import React from 'react';
 
 import ArtefactScroller from './Artefact/ArtefactScroller.js';
+import FloatingWindow from './FloatingWindow.js';
+import CreateArtefacts from './Artefact/CreateMyArtefact.js';
 
 import { changeCurUserInfo } from '../scripts/requests.js';
 
 import './UserProfile.css';
-
-//function getProfile(userId) {
-//    return {
-//        username: 'Granny Bample',
-//        artefacts_registered: 15,
-//        bio: `
-//            My full name is Granny Bample, but you can call me Esmerelda.
-//            I've been collecting artefacts since 143 CE, and in that time I've
-//            built up an impressive collection of over 14 items. When I'm not
-//            scouring auctions, warehouses, or museum gift shops for rare and
-//            unique artefacts, I enjoy answering others' questions about their
-//            own artefacts, as well as arguing incessantly with other Artefactor
-//            users about the market value of dinosaur keychains.
-//        `,
-//    };
-//}
 
 class SubmitTextArea extends React.Component {
 
@@ -89,6 +75,7 @@ export default class UserProfile extends React.Component {
         super(props);
 
         this.state = {
+            creating: false,
             bio: props.user.bio
         };
 
@@ -106,9 +93,20 @@ export default class UserProfile extends React.Component {
         changeCurUserInfo(this.props.user, { bio: newBio });
     }
 
+    createArtefacts = () => {
+        this.setState({ ...this.state, creating: true });
+    }
+
+    closeCreateArtefacts = () => {
+        this.setState({ ...this.state, creating: false });
+    }
+
     render() {
         return (
             <div className='af-profile-outer'>
+                <FloatingWindow isOpen={this.state.creating} onWinClose={this.closeCreateArtefacts}>
+                    <CreateArtefacts/>
+                </FloatingWindow>
                 <div className='af-profile-inner-placeholder'></div>
                 <div className='af-profile-inner'>
                     <div className='af-profile-card-wrapper'>
@@ -148,7 +146,10 @@ export default class UserProfile extends React.Component {
                 </div>
                 <div className='af-profile-scroller'>
                     <hr/>
-                    <h3>{this.props.user.username + "'s Artefacts"}</h3>
+                    <h3 style={{ display: 'inline' }}>{this.props.user.username + "'s Artefacts"}</h3>
+                    <button className='btn btn-primary af-profile-addbutton' onClick={this.createArtefacts}>
+                        Add
+                    </button>
                     <hr/>
                     <ArtefactScroller
                         artefacts={this.props.userArtefacts}
