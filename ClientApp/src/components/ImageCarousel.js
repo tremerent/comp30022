@@ -18,8 +18,8 @@ function renderFrame(image, n) {
 
 export default function ImageCarousel(props) {
     if (!props.items || !props.items.length) {
-        console.log(props.items);
-        return <img className='af-imgcar-image' src={NO_IMAGES} alt='No images'/>;
+        return null;
+        //return <img className='af-imgcar-image' src={NO_IMAGES} alt='No images'/>;
     }
     return <Carousel getId={i => i.id} renderFrame={renderFrame} {...props}/>;
 }
