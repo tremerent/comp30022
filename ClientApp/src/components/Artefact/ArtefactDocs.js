@@ -55,7 +55,7 @@ export default class ArtefactDocs extends React.Component {
         if  (
                     item.type === 'image'
                 &&  this.state.image.length > 1
-                &&  item.id === (this.state.activeItemId = this.currentCarouselItemId())
+                &&  item.id === this.currentCarouselItemId()
             ) {
             console.log("deleted currently visible item");
             console.assert(item.type === 'image');
@@ -144,6 +144,7 @@ export default class ArtefactDocs extends React.Component {
                 id: `${Date.now()}`,
                 title: event.target.files[0].name,
                 url: URL.createObjectURL(event.target.files[0]),
+                blob: event.target.files[0],
                 type: 'image',
                 isNew: true,
             });
@@ -203,7 +204,6 @@ export default class ArtefactDocs extends React.Component {
                     {this.docList('image', "Images")}
                     {this.docList('file', "Documents")}
                 </div>
-                <button onClick={this.submit}>submit</button>
             </>
         );
     }
