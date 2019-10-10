@@ -13,6 +13,7 @@ using Newtonsoft.Json.Converters;
 using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Http;
 using System.Linq.Expressions;
+using System.Reflection;
 
 using Artefactor.Services;
 using Artefactor.Services.Converters;
@@ -110,29 +111,7 @@ namespace Artefactor.Controllers
 
             IList<Expression> whereLambdas = new List<Expression>();
 
-            // query string query
-
-            if (q != null)
-            {
-                if (includeDesc.HasValue)
-                {
-                    whereLambdas.Add(
-                        ArtefactStrQueryExpression(
-                            q, includeDesc.Value, artefactParam
-                        )
-                    );
-                }
-                else
-                {
-                    whereLambdas.Add(
-                        ArtefactStrQueryExpression(
-                            q, false, artefactParam
-                        )
-                    );
-                }
-            }
-
-            // visibility query
+            // visibility query - handles auth
             
             // first initialise curUser and queryUser - check for NotFound
             ApplicationUser curUser = await _userService.GetCurUser(HttpContext);
@@ -212,27 +191,90 @@ namespace Artefactor.Controllers
                 );
             }
 
+            // query string query
+
+            if (q != null)
+            {
+                if (includeDesc.HasValue)
+                {
+                    whereLambdas.Add(
+                        ArtefactStrQueryExpression(
+                            q, includeDesc.Value, artefactParam
+                        )
+                    );
+                }
+                else
+                {
+                    whereLambdas.Add(
+                        ArtefactStrQueryExpression(
+                            q, false, artefactParam
+                        )
+                    );
+                }
+            }
+
             // categories query
 
-            // WIP
-            // if (category != null && category.Length > 0)
-            // {
-            //     // foreach (var cat in category)
-            //     // {
-            //     //     Category catDb = await _context.Category
-            //     //         .SingleOrDefaultAsync(c => 
-            //     //             c.Name.ToLower() == cat.ToLower());
-            //     // }
+            if (category != null && category.Length > 0)
+            {
+                var categoryLambdas = category
+                    .Select(cat => CategoryQueryExpression(cat, artefactParam));
 
-            //     var categoryLambdas = 
+                Expression categoryLambdasJoined;
 
-            //     Expression categoryLambdas = FoldBoolLambdas(
-            //         (Expression) Expression.Constant(false),
-            //         categoryLambdas,
-            //         Expression.OrElse
-            //     );
+                // if matchAll, artefact must belong to every category in query
+                // 'category'
+                if (matchAll.HasValue && matchAll.Value) {
+                    categoryLambdasJoined = FoldBoolLambdas(
+                        (Expression) Expression.Constant(true),
+                        categoryLambdas,
+                        Expression.AndAlso
+                    );
+                }
+                else {
+                    categoryLambdasJoined = FoldBoolLambdas(
+                        (Expression) Expression.Constant(false),
+                        categoryLambdas,
+                        Expression.OrElse
+                    );
+                }
 
-            // }
+                whereLambdas.Add(categoryLambdasJoined);
+            }
+
+            // since & until
+
+            bool isSpecified(DateTime date) 
+            {
+                return since.Kind != DateTimeKind.Unspecified;
+            }
+
+            if (since != null && isSpecified(since))
+            {
+                whereLambdas.Add(
+                    // ArtefactCreatedAtQueryExpression(
+                    //     (artCreatedAtDate) => { 
+                    //         return 0 <= since.CompareTo(artCreatedAtDate); 
+                    //     },
+                    //     artefactParam
+                    // )
+                    ArtefactCreatedAtQueryExpression(
+                        since,
+                        true,
+                        artefactParam
+                    )
+                );
+            }
+            if (until != null && isSpecified(until))
+            {
+                whereLambdas.Add(
+                    ArtefactCreatedAtQueryExpression(
+                        until,
+                        false,
+                        artefactParam
+                    )
+                );
+            }
 
             // All whereLambdas have been added. 
             // AndElse over whereLambdas, then call with Where
@@ -243,11 +285,28 @@ namespace Artefactor.Controllers
                 Expression.AndAlso
             );
 
-            Expression whereCallExpression = GetWhereExp(
+            Expression whereCallExpression = GetWhereExp<Artefact>(
                 whereLambdasAnded, 
                 artefactParam, 
                 artefacts
             );
+
+            MethodCallExpression GetWhereExp<T>(
+                Expression whereExpBody,
+                ParameterExpression paramExp,
+                IQueryable<T> data)
+            {
+                return Expression.Call(
+                    typeof(Queryable),
+                    "Where",
+                    new Type[] { data.ElementType },
+                    data.Expression,
+                    Expression.Lambda<Func<T, bool>>(
+                        whereExpBody, new ParameterExpression[] { paramExp })
+                    );
+            }
+
+            // finally, compile and return results
 
             IQueryable<Artefact> results =
                 artefacts.Provider.CreateQuery<Artefact>(whereCallExpression);
@@ -255,6 +314,9 @@ namespace Artefactor.Controllers
             return new JsonResult(
                 (await results.ToListAsync()).Select(a => _artefactConverter.ToJson(a))
             );
+
+
+            /// linq query expressions
 
             // Returns a method call expression represented by 
             //
@@ -343,30 +405,110 @@ namespace Artefactor.Controllers
                 return Expression.Equal(Expression.Constant(userId), paramOwnerId);
             }
 
-            // WIP
-            // Expression CategoryQueryExpression(string categoryId,
-            //     ParameterExpression artefactParamExp)
-            // {
-            //     var paramOwnerId = Expression.Property(
-            //         artefactParamExp, typeof(Artefact).GetProperty("OwnerId")
-            //     );
-            // }
-
-            // Create expression tree represented by 
-            // 'data.Where(paramExp => whereExpLambda(paramExp))'
-            MethodCallExpression GetWhereExp<T>(
-                Expression whereExpBody,
-                ParameterExpression paramExp,
-                IQueryable<T> data)
+            // it would be more efficient to express this query by doing a 
+            // `_context.ArtefactCategories
+            //           .Include(ac => ac.Category).Where(ac => ac.Category.Name == category)`
+            // but going to do the "easy" expression way for now
+            // (this hopefully shouldn't be too unperformant since linq will
+            // compile to joins anyway?)
+            Expression CategoryQueryExpression(string categoryName,
+                ParameterExpression artefactParamExp)
             {
-                return Expression.Call(
-                    typeof(Queryable),
-                    "Where",
-                    new Type[] { data.ElementType },
-                    data.Expression,
-                    Expression.Lambda<Func<T, bool>>(
-                        whereExpBody, new ParameterExpression[] { paramExp })
+                // a => a.CategoryJoin.Any(cj => cj.Category.Name == category)
+
+                var queryCategory = Expression.Constant(categoryName);
+
+                // cj.Category.Name
+                var cjExp = 
+                    Expression.Parameter(typeof(ArtefactCategory));
+                var cjCategoryNameExp = Expression.Property(
+                    Expression.Property(cjExp, "Category"), 
+                "Name");
+
+                // cj.Category.Name == category
+                var condition = Expression.Equal(queryCategory, cjCategoryNameExp);
+
+                // cj => cj.Category.Name == category
+                var predicate = Expression.Lambda<Func<ArtefactCategory, bool>>(
+                    condition,
+                    cjExp
+                );
+
+                // a.CategoryJoin
+                Expression paramCategoryJoin = Expression.Property(
+                    artefactParamExp, typeof(Artefact).GetProperty("CategoryJoin")
+                );
+
+                var expBody = Expression.Call(
+                    typeof(Enumerable),
+                    "Any",
+                    new Type[] { typeof(ArtefactCategory) },
+                    paramCategoryJoin,
+                    predicate
+                );
+
+                return expBody;
+            }
+
+            
+            // 'shouldIncludeArtefact' should return true when the DateTime 
+            // should be included.
+            Expression ArtefactCreatedAtQueryExpression(
+                DateTime queryDate,
+                bool isSince,  // if false, then is until
+                //Func<DateTime, bool> shouldIncludeArtefact, ahhhh why can this not be done
+                ParameterExpression artefactParamExp)
+            {
+                var paramCreatedAt = Expression.Property(
+                    artefactParamExp, typeof(Artefact).GetProperty("CreatedAt")
+                );
+
+                // WIP... see above ...
+                // var param = Expression.Parameter(typeof(DateTime));
+                // var lam = Expression.Invoke(
+                //     Expression.Constant(shouldIncludeArtefact),
+                //     param
+                // );
+                // return Expression.Lambda(
+                //     lam, 
+                // );
+
+                // var call = Expression.Invoke(
+                //     Expression.Constant(shouldIncludeArtefact), 
+                //     paramCreatedAt
+                // ).Expression;
+                
+                // var call = Expression.Invoke(
+                //         Expression.Constant(shouldIncludeArtefact),
+                //         paramCreatedAt
+                //     );
+
+                // return Expression.Call(
+                //     paramCreatedAt,
+                //     call.MethodCallExpression
+                // )
+
+                // queryDate.CompareTo(artefact.CreatedAt)
+                var comparison = Expression.Call(
+                    typeof(DateTime).GetMethod("Compare"),
+                    Expression.Constant(queryDate),
+                    paramCreatedAt
+                );
+
+                if (isSince) 
+                {
+                    return Expression.GreaterThanOrEqual(
+                        comparison, 
+                        Expression.Constant(0)
                     );
+                }
+                else
+                {
+                    return Expression.LessThanOrEqual(
+                        comparison, 
+                        Expression.Constant(0)
+                    );
+                }
             }
 
             /* helper methods */
