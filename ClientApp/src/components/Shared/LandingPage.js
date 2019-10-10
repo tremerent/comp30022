@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import BACKGROUND_IMAGE from '../images/landing-page.jpg';
+import BACKGROUND_IMAGE from 'images/landing-page.jpg';
 
 import './LandingPage.css';
 

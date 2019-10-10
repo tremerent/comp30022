@@ -7,6 +7,7 @@ import {
     postRegister,
     getArtefacts,
     getUser as fetchUser,
+    patchUserInfo,
 } from '../../scripts/requests';
 
 function setRedir(to) {
@@ -355,11 +356,52 @@ function getUser(username) {
     }
 }
 
+function reqPatchUserDetails(username) {
+    return {
+        type: usersTypes.REQ_PATCH_USER_DETAILS,
+        username,
+    }
+}
+
+function resPatchUserDetails(username, patchedDetails) {
+    return {
+        type: usersTypes.RES_PATCH_USER_DETAILS,
+        username,
+        patchedDetails,
+    }
+}
+
+function errPatchUserDetails(username) {
+    return {
+        type: usersTypes.ERR_PATCH_USER_DETAILS,
+        username,
+    }
+}
+
+function updateCurUserDetails(newDetails) {
+    return async function(dispatch, getState) {
+        const curUserName = getState().auth.user.username;
+
+        dispatch(reqPatchUserDetails(curUserName));
+
+        try {
+            await patchUserInfo(curUserName, newDetails);
+
+            dispatch(resPatchUserDetails(curUserName, newDetails));
+        }
+        catch (e) {
+            // unauthed or other?
+            dispatch(errPatchUserDetails(curUserName));
+        }
+    }
+}
+
 const users = {
     reqGetUser,
     resGetUser,
     errGetUser,
     getUser,
+    updateCurUserDetails,
 }
 
 export {

@@ -1,0 +1,28 @@
+.editable-text-area {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    border: 1px solid grey;
+    border-radius: 5px;
+}
+
+.editable-text-area-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    margin: 3%;
+}
+
+.submit-text-area-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.submit-text-area-submit-box {
+    display: flex;
+    justify-content: center;
+
+    margin-top: 5%;
+}
