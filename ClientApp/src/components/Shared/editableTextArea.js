@@ -26,7 +26,6 @@ function editableTextArea(TextArea) {
                 content = (
                     <div className="editable-text-area-content">
                         <TextArea value={value}/>
-                        
                     </div>
                 );
             }

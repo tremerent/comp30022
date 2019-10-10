@@ -45,7 +45,10 @@ export default class UserProfile extends React.Component {
                 </div>;
         }
 
-        const EditableBio = editableTextArea(BioText);
+        let EditableBio;
+        if (this.props.editable) {
+            EditableBio = editableTextArea(BioText);
+        }
 
         return (
             <div className='af-profile-outer'>
@@ -59,21 +62,8 @@ export default class UserProfile extends React.Component {
                                     updateProfilePic={this.props.
                                         updateUserProfilePic
                                     }
+                                    editable={this.props.editable}
                                 />
-                                {/* <div class="profile-pic">
-
-                                    <img
-                                        src={ this.props.user.image_url ?
-                                                this.props.user.image_url
-                                            :
-                                                '/img/profile-placeholder.png'
-                                        }
-                                        className='af-profile-image'
-                                        alt={`${this.props.user.username}'s profile image`}
-                                    />
-                                </div> */}
-                                
-
                                 <div className='af-profile-info'>
                                     <h2 className='af-profile-name'>{this.props.user.username}</h2>
                                     <div className='af-profile-badges'>
@@ -84,11 +74,17 @@ export default class UserProfile extends React.Component {
                                         </span>
                                     </div>
                                     <hr/>
-
-                                    <EditableBio
-                                        value={this.props.user.bio}
-                                        onValueSubmit={this.changeBio}
-                                    />
+                                    {
+                                        this.props.editable 
+                                        ? 
+                                        <EditableBio
+                                            value={this.props.user.bio}
+                                            onValueSubmit={this.changeBio}
+                                        />
+                                        :
+                                        <BioText />
+                                    }
+                                    
                                     {/* <EditableTextArea 
                                         Text={bio} 
                                         value={this.state.bio}

@@ -19,7 +19,10 @@ export default class ProfilePicture extends React.Component {
                     }
                     className='profile-pic-img'
                 />
-                <div className="profile-pic-overlay">
+                {
+                    this.props.editable
+                    ?
+                    <div className="profile-pic-overlay">
                         <label className="btn btn-primary">
                                 Set profile picture
                                 <input type="file" name="file" 
@@ -27,7 +30,11 @@ export default class ProfilePicture extends React.Component {
                                     onChange={this.handleOnChange}
                                     />
                         </label>
-                </div>
+                    </div>
+                    : 
+                    null
+                }
+                
             </div>
         );
     }
