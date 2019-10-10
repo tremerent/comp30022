@@ -3,7 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Link from '@material-ui/core/Link';
 
-//Presuming that Bootstrap css and js have been imported from the parent page
+// Presuming that bootstrap css and js have been imported from the parent page
 
 /* This page is intended to display user's artefacts that are fetched 
    from the server.
@@ -28,33 +28,34 @@ const useStyles = makeStyles(theme => ({
   icon: {
     marginRight: theme.spacing(2),
   },
-  heroContent: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(4, 0, 3),
-  },
-  heroButtons: {
-    marginTop: theme.spacing(4),
-  },
   card: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    cursor: 'pointer',
     marginBottom: '30px',
   },
   cardMedia: {
-    tooltip: "click to enlarge",
     cursor: 'pointer',
   },
   cardContent: {
-    flexGrow: 1,
-    paddingTop: 0,
+    padding: '20px',
   },
   footer: {
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(6),
   },
 }));
+// Style for the modal
+const style={
+  imageViewer:{
+    width: '100%',
+  },
+  cardMedia:{
+    cursor:'pointer',
+  },
+  card:{
+    marginBottom: '20px',
+  }
+}
+
+
 /* variable that determines the number of cards that are 
    displayed. Expected to be changed based on the backend.
 */
@@ -77,22 +78,75 @@ export default function BrowseArtefact() {
             </Typography>
           </div>
         </div>
-        <div class="container"> {/* className={classes.cardGrid} */}
-          
-          {/* card section */}
-          <div class="row" > {/* spacing={4} */}
+        <div class="container">
+          {/* section to show the iterated cards */}
+          <div class="row" > 
             {cards.map(card => (
-              <div class="col-md-4"> {/* item key={card} xs={6} */}
-                {/* hints the user at clicking the image to enlarge */}
-                <div class="card"  onClick={handleClickOpen} className={classes.card}
-                  tooltip="Click to enlarge"
+              <div class="col-md-4"> 
+                <div class="card"
+                  style={style.card} 
                 >
+                  {/* MODAL - modal to display an enlarged artefact image. */}
+                  <div class="modal fade " tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="myModal">
+                    <div class="modal-dialog modal-lg">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLongTitle">Artefact Name</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <img src="https://source.unsplash.com/random" id="imagepreview" style={style.imageViewer} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* modal for displaying edit artefact form with its category editing. */}
+                  <div class="modal fade" id="editMyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Edit Artefact information</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <form>
+                            <div class="form-group">
+                              <label for="recipient-name" class="col-form-label">Title:</label>
+                              <input type="text" class="form-control" id="recipient-name" />
+                            </div>
+                            {/* show the category selection for the artefact */}
+                            <div class="form-group">
+                              <label for="category" class="col-form-label">Category:</label>
+                              <select class="form-control" id="category">
+                                <option>Category 1</option>
+                                <option>Category 2</option>
+                              </select>
+                            </div>
+                          </form>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-primary">Update</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* the image of the artefact in each rectangles/boxes */}
                   <img class="card-img-top"
                     src="https://source.unsplash.com/random"
-                    alt="Click to enlarge"
-                  /> {/*  */}
-                  <div class="card-body" className={classes.cardContent}> {/* */}
-                    <p class="card-text">Genre: ... Category: ...</p>
+                    alt="Artefact"
+                    data-toggle="modal" data-target="#myModal"
+                    title="click to enlarge"
+                    style={style.cardMedia}
+                  />
+                  {/* the description of the artefact */}
+                  <div class="card-body" className={classes.cardContent}>
+                    <p class="card-text">Category: ...</p>
+                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editMyModal" >Edit</button>
                   </div>
                 </div>
               </div>
@@ -112,16 +166,6 @@ export default function BrowseArtefact() {
       </footer>
       {/* End footer */}
 
-      {/** DIALOG */}
-      <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            ...
-          </div>
-        </div>
-      </div>
-
-        {/** END OF DIALOG */}
     </React.Fragment>
   );
 }

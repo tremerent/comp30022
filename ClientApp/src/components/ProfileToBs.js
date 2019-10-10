@@ -1,15 +1,13 @@
 import React from 'react'
-import { Grid,Paper,Button } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography';
 
 import Divider from '@material-ui/core/Divider'
-
 
 import ChatIcon from '@material-ui/icons/Chat'
 import ArtTrackIcon from '@material-ui/icons/ArtTrack'
 import DeviceHubIcon from '@material-ui/icons/DeviceHub'
 
-//Presuming that Bootstrap css and js have been imported from the parent page
+// Presuming that bootstrap css and js have been imported from the parent page
 
 /* This page is intended to display user's profile.
 */
@@ -17,18 +15,24 @@ import DeviceHubIcon from '@material-ui/icons/DeviceHub'
 // The styles attributes are grouped into this variable.
 const style ={
     Paper:{padding:20,marginTop:10,marginBottom:10,marginLeft:10,marginRight:10},
-    CardMedia:{paddingTop:'56.25%',height:0,width:'inherit',margin:10}, //
+    
     Card:{width:'500px',marginTop:30,marginBottom:30},
     AppBar: {background:'blue'},
-    gridBelowDivider: {margin:50},
+    gridBelowDivider: {marginBottom:30,marginTop:20},
     familyTreeButton: {margin:10},
     familyTreeButtonIcon: {marginLeft:10},
+    icon:{marginRight:10},
+    bio:{marginTop:20},
+    editImage: {
+        position: 'absolute',
+        transform:'translate(100%,-800%)',
+        display: 'block',
+    },
+    editName:{marginBottom:'30px'},
+    
 }
 // The styles for the avatar (profile picture)
 const style2 = {
-    avatar:{
-        margin: 10,
-    },
     bigAvatar: {
         margin: 10,
         width: 300,
@@ -40,62 +44,85 @@ const style2 = {
 // The main section of the Profile page
 export default Profile =>
     <React.Fragment>
+        {/* <Header /> */}
         <div class="container">
             <div class="row">
             <div class="col-sm">
-                <Paper style={style.Paper}>
-                    <div align="center"> 
-                        <div> 
+                {/* left section of the page */}
+                <div class="card" style={style.Paper}>
+                    <div align="center">
+                        <div>
                             <img src="https://source.unsplash.com/random" class="rounded-circle" style={style2.bigAvatar} />
                         </div>
                     </div>
-                    <Typography variant="h3" color="inherit" align='center'> {/* gutterBottom */}
-                        Profile details
-                    </Typography>
+                    <div class="row">
+                        <div class="col"><h3 class="text-center">Profile Name</h3></div>
+                    </div>
                     
                     <Divider variant="middle" />
 
-                    <div alignItems="center" justify="center" style={style.gridBelowDivider}>
-                        <div>
-                            
+                    <div class="row" align="center" justify="center" style={style.gridBelowDivider}>
+                        <div class="col-sm">
                             {/* displays the number of artefacts */}
-                            <ArtTrackIcon />
+                            <ArtTrackIcon style={style.icon} />
                             <Typography variant="p" color="inherit">
                                 ... Artefacts
                             </Typography>
                         </div>
-                        <div>
-                            
+                        <div class="col-sm">
                             {/* displays the number of comments */}
-                            <ChatIcon />
+                            <ChatIcon style={style.icon} />
                             <Typography variant="p" color="inherit">
                                 ... Comments
                             </Typography>
                         </div>
                     </div>
                     {/* button that pops out the family tree image related to the user */}
-                    <div align="center">
-                        <Grid item xs>
-                            <Button variant="contained" color="default" style={style.familyTreeButton}>
-                                See in Family Tree
+                    <div class="row" align="center">
+                        <div class="col" style={style.familyTreeButton} >
+                            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#viewFamily">
+                                View family tree
                                 <DeviceHubIcon style={style.familyTreeButtonIcon}/>
-                            </Button>
-                        </Grid>
+                            </button>
+                        </div>
                     </div>
-                    <br /><br />
+                    {/* modal to view family tree */}
+                    <div class="modal fade " tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="viewFamily"
+                    >
+                        <div class="modal-dialog modal-lg"
+                        >
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Family Tree</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body">
+                            <img src="https://images.all-free-download.com/images/graphiclarge/family_tree_infographic_illustration_face_icons_6825019.jpg" id="imagepreview" style={style.imageViewer} />
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    
+                    <Divider variant="middle" />
+
                     {/* biography of the user */}
-                    <Typography variant="p" color="inherit">
-                        Description of profile
-                    </Typography>
-                </Paper>
+                    <div class="row" style={style.bio}>
+                        <div class="col">
+                            <p>Description of profile</p>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-sm">
-                <Paper style={style.Paper}>
+                {/* right section of the page */}
+                <div class="card" style={style.Paper} >
                     <Typography variant="h5" color="inherit">
                         Profile name's Artefact
                     </Typography>
                     Search, Artefact scroller
-                </Paper>
+                </div>
             </div>
             </div>
         </div>
