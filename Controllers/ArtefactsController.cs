@@ -252,12 +252,6 @@ namespace Artefactor.Controllers
             if (since != null && isSpecified(since))
             {
                 whereLambdas.Add(
-                    // ArtefactCreatedAtQueryExpression(
-                    //     (artCreatedAtDate) => { 
-                    //         return 0 <= since.CompareTo(artCreatedAtDate); 
-                    //     },
-                    //     artefactParam
-                    // )
                     ArtefactCreatedAtQueryExpression(
                         since,
                         true,
@@ -405,12 +399,6 @@ namespace Artefactor.Controllers
                 return Expression.Equal(Expression.Constant(userId), paramOwnerId);
             }
 
-            // it would be more efficient to express this query by doing a 
-            // `_context.ArtefactCategories
-            //           .Include(ac => ac.Category).Where(ac => ac.Category.Name == category)`
-            // but going to do the "easy" expression way for now
-            // (this hopefully shouldn't be too unperformant since linq will
-            // compile to joins anyway?)
             Expression CategoryQueryExpression(string categoryName,
                 ParameterExpression artefactParamExp)
             {
@@ -451,42 +439,18 @@ namespace Artefactor.Controllers
             }
 
             
-            // 'shouldIncludeArtefact' should return true when the DateTime 
-            // should be included.
+            // If 'isSince' true, the expression returned is represented by
+            // 'a => queryDate.CreatedAt.CompareTo(a.CreatedAt) <= 0'.
+            // Otherwise,
+            // 'a => queryDate.CreatedAt.CompareTo(a.CreatedAt) >= 0'
             Expression ArtefactCreatedAtQueryExpression(
                 DateTime queryDate,
-                bool isSince,  // if false, then is until
-                //Func<DateTime, bool> shouldIncludeArtefact, ahhhh why can this not be done
+                bool isSince,  // if false, then the filter will be 
                 ParameterExpression artefactParamExp)
             {
                 var paramCreatedAt = Expression.Property(
                     artefactParamExp, typeof(Artefact).GetProperty("CreatedAt")
                 );
-
-                // WIP... see above ...
-                // var param = Expression.Parameter(typeof(DateTime));
-                // var lam = Expression.Invoke(
-                //     Expression.Constant(shouldIncludeArtefact),
-                //     param
-                // );
-                // return Expression.Lambda(
-                //     lam, 
-                // );
-
-                // var call = Expression.Invoke(
-                //     Expression.Constant(shouldIncludeArtefact), 
-                //     paramCreatedAt
-                // ).Expression;
-                
-                // var call = Expression.Invoke(
-                //         Expression.Constant(shouldIncludeArtefact),
-                //         paramCreatedAt
-                //     );
-
-                // return Expression.Call(
-                //     paramCreatedAt,
-                //     call.MethodCallExpression
-                // )
 
                 // queryDate.CompareTo(artefact.CreatedAt)
                 var comparison = Expression.Call(
@@ -511,7 +475,7 @@ namespace Artefactor.Controllers
                 }
             }
 
-            /* helper methods */
+            /// helper methods
 
             // convert a query value list of form "&query=item1,item2,..."
             IList<string> QueryStringValueList(string queryStringListValue)
