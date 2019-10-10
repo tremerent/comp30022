@@ -2,9 +2,9 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, } from '@fortawesome/free-solid-svg-icons';
 
-import './editableTextArea.css';
+import './EditableTextArea.css';
 
-function editableTextArea(TextArea) {
+function EditableTextArea(TextArea) {
     return class extends React.Component {
         constructor(props) {
             super(props);
@@ -13,13 +13,13 @@ function editableTextArea(TextArea) {
                 editing: this.props.editing ? this.props.editing : false,
             }
         }
-    
+
         render() {
             const {
                 value,
                 onValueSubmit,
                 ...otherProps } = this.props;
-    
+
             let content;
 
             if (!this.state.editing) {
@@ -32,7 +32,7 @@ function editableTextArea(TextArea) {
             else {
                 content = (
                     <div className="editable-text-area-content">
-                        <SubmitTextArea 
+                        <SubmitTextArea
                             onSubmit={this.onTextAreaSubmit}
                             value={value}
                             />
@@ -43,16 +43,16 @@ function editableTextArea(TextArea) {
             return (
                 <div className="editable-text-area">
                     {content}
-                    <button 
+                    <button
                         onClick={() => this.toggleEditor(true)}
                         className="btn"
                     >
                         <FontAwesomeIcon icon={faPen} />
                     </button>
                 </div>
-                
+
             )
-    
+
         }
 
         toggleEditor = () => {
@@ -131,4 +131,4 @@ class SubmitTextArea extends React.Component {
     }
 }
 
-export { editableTextArea };
+export { EditableTextArea };
