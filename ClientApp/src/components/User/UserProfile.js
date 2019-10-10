@@ -2,8 +2,10 @@ import React from 'react';
 
 import ArtefactScroller from '../Artefact/ArtefactScroller.js';
 import { editableTextArea } from 'components/Shared/editableTextArea';
+import ProfilePicture from './ProfilePicture';
 
 import './UserProfile.css';
+import './UserProfileEditing.css';
 
 //function getProfile(userId) {
 //    return {
@@ -52,15 +54,26 @@ export default class UserProfile extends React.Component {
                     <div className='af-profile-card-wrapper'>
                         <div className='af-profile-card'>
                             <div className='af-profile-card-inner'>
-                                <img
-                                    src={ this.props.user.image_url ?
-                                            this.props.user.image_url
-                                        :
-                                            '/img/profile-placeholder.png'
+                                <ProfilePicture 
+                                    imageUrl={this.props.user.imageUrl}
+                                    updateProfilePic={this.props.
+                                        updateUserProfilePic
                                     }
-                                    className='af-profile-image'
-                                    alt={`${this.props.user.username}'s profile image`}
                                 />
+                                {/* <div class="profile-pic">
+
+                                    <img
+                                        src={ this.props.user.image_url ?
+                                                this.props.user.image_url
+                                            :
+                                                '/img/profile-placeholder.png'
+                                        }
+                                        className='af-profile-image'
+                                        alt={`${this.props.user.username}'s profile image`}
+                                    />
+                                </div> */}
+                                
+
                                 <div className='af-profile-info'>
                                     <h2 className='af-profile-name'>{this.props.user.username}</h2>
                                     <div className='af-profile-badges'>

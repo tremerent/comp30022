@@ -28,6 +28,7 @@ class UserView extends React.Component {
                     userArtefacts={this.props.userArtefacts}
                     numArtefactsReg={this.props.userArtefacts.length}
                     updateUserDetails={this.props.updateCurUserDetails} 
+                    updateUserProfilePic={this.props.updateCurUserProfilePic}
                     editable={this.props.isViewOfCurUser}
                   />
         );
@@ -80,6 +81,7 @@ function mapDispatchToProps(dispatch) {
         getUser: usersActions.getUser,
         getUserArtefacts: artActions.getUserArtefacts,
         updateCurUserDetails: usersActions.updateCurUserDetails,
+        updateCurUserProfilePic: usersActions.updateCurUserProfilePic,
     }, dispatch);
 }
 

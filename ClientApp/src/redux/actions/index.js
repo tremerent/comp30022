@@ -8,6 +8,7 @@ import {
     getArtefacts,
     getUser as fetchUser,
     patchUserInfo,
+    setProfileImage,
 } from '../../scripts/requests';
 
 function setRedir(to) {
@@ -396,12 +397,33 @@ function updateCurUserDetails(newDetails) {
     }
 }
 
+function updateCurUserProfilePic(file) {
+    return async function(dispatch, getState) {
+        const curUserName = getState().auth.user.username;
+
+        dispatch(reqPatchUserDetails(curUserName));
+
+        try {
+            const respData = await setProfileImage(file);
+
+            dispatch(resPatchUserDetails(curUserName, { 
+                imageUrl: respData.url,
+            }));
+        }
+        catch (e) {
+            // unauthed or other?
+            dispatch(errPatchUserDetails(curUserName));
+        }
+    }
+}
+
 const users = {
     reqGetUser,
     resGetUser,
     errGetUser,
     getUser,
     updateCurUserDetails,
+    updateCurUserProfilePic,
 }
 
 export {

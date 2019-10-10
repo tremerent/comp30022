@@ -155,7 +155,7 @@ async function setProfileImage(file) {
     data.append("file", file);
 
     const resp = await apiFetch(getToken())
-        .post(`/profile/set-profile-image`, data)
+        .post(`/user/display-picture`, data)
 
     return resp.data;
 }

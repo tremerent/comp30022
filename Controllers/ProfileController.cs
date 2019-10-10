@@ -46,7 +46,7 @@ namespace Artefactor.Controllers
                     id = user.Id,
                     username = user.UserName,
                     bio = user.Bio,
-                    image_url = user.ImageUrl,
+                    imageUrl = user.ImageUrl,
                 });
             }
             else
