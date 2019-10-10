@@ -1,5 +1,4 @@
 import React from 'react';
-import { decycle } from 'json-cyclic';
 import $ from 'jquery';
 
 import ImageCarousel from '../ImageCarousel.js';
