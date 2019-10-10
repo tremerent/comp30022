@@ -246,7 +246,7 @@ namespace Artefactor.Controllers
 
             bool isSpecified(DateTime date) 
             {
-                return since.Kind != DateTimeKind.Unspecified;
+                return date.CompareTo(default(DateTime)) != 0;
             }
 
             if (since != null && isSpecified(since))
@@ -461,14 +461,14 @@ namespace Artefactor.Controllers
 
                 if (isSince) 
                 {
-                    return Expression.GreaterThanOrEqual(
+                    return Expression.LessThanOrEqual(
                         comparison, 
                         Expression.Constant(0)
                     );
                 }
                 else
                 {
-                    return Expression.LessThanOrEqual(
+                    return Expression.GreaterThanOrEqual(
                         comparison, 
                         Expression.Constant(0)
                     );
