@@ -6,22 +6,6 @@ import { changeCurUserInfo } from '../scripts/requests.js';
 
 import './UserProfile.css';
 
-//function getProfile(userId) {
-//    return {
-//        username: 'Granny Bample',
-//        artefacts_registered: 15,
-//        bio: `
-//            My full name is Granny Bample, but you can call me Esmerelda.
-//            I've been collecting artefacts since 143 CE, and in that time I've
-//            built up an impressive collection of over 14 items. When I'm not
-//            scouring auctions, warehouses, or museum gift shops for rare and
-//            unique artefacts, I enjoy answering others' questions about their
-//            own artefacts, as well as arguing incessantly with other Artefactor
-//            users about the market value of dinosaur keychains.
-//        `,
-//    };
-//}
-
 class SubmitTextArea extends React.Component {
 
     constructor(props) {

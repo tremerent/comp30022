@@ -263,13 +263,15 @@ function resCreateMyArtefact(createdArtefact) {
 }
 
 function createMyArtefact(newArtefact) {
-    return async function (dispatch) {
+    return async function (dispatch, getState) {
         dispatch(reqCreateMyArtefact())
 
         const postedArtefact = await postArtefactAndCategories(newArtefact);
 
         dispatch(addMyArtefactSync(postedArtefact));
         dispatch(resCreateMyArtefact(postedArtefact));
+
+        return getState().art.myArts.create.createdArtefact;
     }
 }
 

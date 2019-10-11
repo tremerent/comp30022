@@ -1,0 +1,82 @@
+
+.carousel { transition: transform 0.3s ease-in-out; }
+
+.af-artdoc-image {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    /* Semi-hack to avoid carousel viewport shrinking enough that you can't
+       find the buttons. This happens with broken images. */
+    min-height: 100px;
+}
+
+
+.af-docs-delimg {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    z-index: 20;
+    box-shadow: 2px 2px .4rem rgba(0, 0, 0, .25);
+}
+
+.af-artdoc-lists {
+    margin: 1em;
+}
+
+.af-artdoc-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.af-artdoc-list-title {
+    font-weight: bold;
+}
+
+.af-artdoc-listitem {
+    margin: 0;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.af-artdoc-filename {
+    flex-grow: 1;
+    padding: 0.4em 0.8em;
+}
+
+.af-artdoc-listitem-clickable {
+    cursor: pointer;
+}
+
+.af-artdoc-listitem-clickable:hover {
+    background-color: #dddddd;
+}
+
+.alt {
+    background-color: #eeeeee;
+}
+
+.af-artdoc-listitem-del {
+    font-size: 0.5em;
+    margin: 0.4rem 0.4rem;
+}
+
+.af-artdoc-upload {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1em 2em;
+    margin-top:
+}
+
+.af-artdoc-browse {
+    margin-left: 2em;
+}
+
+.af-artdoc-upload-desc {
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
