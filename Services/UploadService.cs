@@ -16,8 +16,9 @@ namespace Artefactor.Services
 
         public UploadService(IConfiguration configuration)
         {
-            this._accessKey = configuration.GetConnectionString("BlobStorageAccessKey");
-            this._defaultContainerName = configuration.GetConnectionString("ProfileImagesContainerName");
+            this._accessKey = configuration["BlobStorage:AccessKey"];
+            this._defaultContainerName =
+                configuration["BlobStorage:ProfileImagesContainer"];
         }
 
         // Returns Uri of uploaded param. 'file'. If successful, Uri will be

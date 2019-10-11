@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import CreateMyArtefact from './CreateMyArtefact.js';
-import CentreLoading from '../CentreLoading.js';
+import CentreLoading from '../Shared/CentreLoading.js';
 import ArtefactScroller from './ArtefactScroller.js';
 import { artefacts as artActions } from '../../redux/actions';
 
