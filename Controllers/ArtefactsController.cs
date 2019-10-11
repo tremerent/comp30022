@@ -44,7 +44,7 @@ namespace Artefactor.Controllers
             // get value of 'EnumMemberAttribute' from each value of enum 'Visibility' -
             // 'EnumMemberAttribute' values are converted by 'NewtonsoftJsonConverter'
             // to 'Visibility'
-            var visVals = 
+            var visVals =
                 new List<Visibility>((Visibility[])Enum.GetValues(typeof(Visibility)));
 
             var visValsEnumMemberAttribs = visVals
@@ -61,15 +61,34 @@ namespace Artefactor.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPublicArtefacts()
         {
-            var artefacts = await _context.Artefacts
+            var artefacts_ = await _context.Artefacts
                                           .Include(a => a.CategoryJoin)
                                             .ThenInclude(cj => cj.Category)
                                           .Include(a => a.Owner)
-                                          .Where(a => 
+                                          .Where(a =>
                                             a.Visibility == Visibility.Public)
                                           .ToListAsync();
 
-            var artefactsJson = artefacts
+            var artefacts = _context.Artefacts;
+
+            artefacts
+                .Include(a => a.CategoryJoin)
+                    .ThenInclude(cj => cj.Category)
+                .Include(a => a.Owner)
+                .Where(a =>
+                    a.Visibility == Visibility.Public
+                ).Load();
+
+            artefacts.Include(a => a.Images).Load();
+
+            //var allDocs = _context.ArtefactDocuments.;
+            //foreach (Artefact a in artefacts) {
+            //    var docs = await _context.ArtefactDocuments
+            //                    .Where(doc => doc.ArtefactId == a.Id).ToListAsync();
+            //    a.Images = docs;
+            //}
+
+            var artefactsJson = artefacts_
                 .Select(a => ArtefactJson(a))
                 .Where(a => a != null);
 
@@ -79,11 +98,11 @@ namespace Artefactor.Controllers
         /**
          * Get artefacts owned by 'username' with visibility 'vis',
          * or all visibilities if 'vis' not specified.
-         * 
+         *
          * The requesting user must have the appropriate permissions.
          */
         [HttpGet("user/{username}")]
-        public async Task<ActionResult<IEnumerable<Artefact>>> GetUserArtefacts(string username, 
+        public async Task<ActionResult<IEnumerable<Artefact>>> GetUserArtefacts(string username,
             [FromQuery]
             [JsonConverter(typeof(StringEnumConverter))]
             Visibility vis)
@@ -106,7 +125,7 @@ namespace Artefactor.Controllers
             {
                 if (e is ArgumentException)
                 {
-                    // not current 
+                    // not current
                 }
                 else if (e is ArgumentNullException)
                 {
@@ -119,11 +138,14 @@ namespace Artefactor.Controllers
                 }
             }
 
-            IQueryable<Artefact> artefacts =
-                _context.Artefacts
+            //IQueryable<Artefact> artefacts =
+            var artefacts =
+                _context.Artefacts; artefacts
                         .Include(a => a.CategoryJoin)
                             .ThenInclude(cj => cj.Category)
-                        .Where(a => a.OwnerId == userWArtefacts.Id);
+                        .Where(a => a.OwnerId == userWArtefacts.Id).Load();
+
+            artefacts.Include(a => a.Images).Load();
 
             // check permissions
             if ((!curUserIsUsername && vis == Visibility.Private) ||
@@ -138,7 +160,8 @@ namespace Artefactor.Controllers
                 (curUserIsFamily && vis == Visibility.PrivateFamily) ||
                 (!curUserIsUsername && !curUserIsFamily && vis == Visibility.Public))
             {
-                artefacts = artefacts.Where(a => a.Visibility == vis);
+                //artefacts = artefacts.Where(a => a.Visibility == vis);
+                artefacts.Where(a => a.Visibility == vis).Load();
             }
 
             return new JsonResult((await artefacts.ToListAsync())
@@ -161,10 +184,10 @@ namespace Artefactor.Controllers
             }
 
 
-            object categoryJoin = null;
+            object categoryJoin = new List<string>();
             if (a.CategoryJoin != null)
             {
-                categoryJoin = 
+                categoryJoin =
                     a.CategoryJoin
                      .Select(cj => RestrictedObjCategoryJoinView(cj));
             }
@@ -173,7 +196,12 @@ namespace Artefactor.Controllers
             if (a.Images != null)
             {
                 images = a.Images
-                    .Select(img => img.Url);
+                    .Select(img => new {
+                        id      = img.Id,
+                        title   = img.Title,
+                        url     = img.Url,
+                        type    = img.DocType,
+                    });
             }
 
             return new
@@ -280,7 +308,7 @@ namespace Artefactor.Controllers
 
             artefact.Owner = curUser;
             var artefactJson = ArtefactJson(artefact);
-            
+
             return CreatedAtAction("GetArtefact", new { id = artefact.Id },
               artefactJson);
         }
@@ -378,7 +406,7 @@ namespace Artefactor.Controllers
         [HttpPost("image")]
         [Authorize]
         public async Task<IActionResult> AddImage(
-            [FromQuery] string artefactId, 
+            [FromQuery] string artefactId,
             [FromForm] IFormFile file)
         {
             var dbArt = await _context
@@ -395,9 +423,9 @@ namespace Artefactor.Controllers
                 return Unauthorized();
             }
 
-            try 
+            try
             {
-                Uri uri = 
+                Uri uri =
                     await _uploadService.UploadFileToBlobAsync(file.FileName, file);
 
                 await _context.AddAsync(new ArtefactDocument
@@ -412,16 +440,18 @@ namespace Artefactor.Controllers
 
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return StatusCode(500);
+                return StatusCode(500, e.ToString());
             }
+
+            return Ok();
         }
 
         [HttpDelete("{artefactId}/image")]
         [Authorize]
         public async Task<IActionResult> RemoveImage(
-            [FromQuery] string artefactId, 
+            [FromQuery] string artefactId,
             [FromQuery] string img_url)
         {
             var dbArt = await _context
@@ -437,7 +467,7 @@ namespace Artefactor.Controllers
             {
                 return Unauthorized();
             }
-            
+
             try {
                 _context.Remove(
                     await _context
@@ -451,7 +481,7 @@ namespace Artefactor.Controllers
             {
                 return StatusCode(500);
             }
-        } 
+        }
 
         private bool ArtefactExists(string id)
         {

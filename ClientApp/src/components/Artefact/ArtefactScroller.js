@@ -36,11 +36,6 @@ export default class ArtefactScroller extends Component {
                     artefactsToScroll.length
                         ? artefactsToScroll.map(a => {
                             if (a) {
-                                a.images = [
-                                    PLACEHOLDER_IMAGE_01,
-                                    PLACEHOLDER_IMAGE_02,
-                                    PLACEHOLDER_IMAGE_03,
-                                ];
                                 return <ArtefactPreview key={a.id} artefact={a} />;
                             }
                           })

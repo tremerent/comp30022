@@ -26,17 +26,17 @@ import './UserProfileEditing.css';
 export default class UserProfile extends React.Component {
 
     changeBio = (newBio) => {
-        this.props.updateUserDetails({ 
+        this.props.updateUserDetails({
             bio: newBio
         });
     }
 
     render() {
-        
+
         const BioText = (props) => {
-            const bioPlaceholderStr = 
+            const bioPlaceholderStr =
                 `Oh no! ${this.props.user.username} is yet to provide a bio.`;
-            return <div className='text-muted'> 
+            return <div className='text-muted'>
                     {
                         props.value != null && props.value.length
                         ? props.value
@@ -57,7 +57,7 @@ export default class UserProfile extends React.Component {
                     <div className='af-profile-card-wrapper'>
                         <div className='af-profile-card'>
                             <div className='af-profile-card-inner'>
-                                <ProfilePicture 
+                                <ProfilePicture
                                     imageUrl={this.props.user.imageUrl}
                                     updateProfilePic={this.props.
                                         updateUserProfilePic
@@ -75,8 +75,8 @@ export default class UserProfile extends React.Component {
                                     </div>
                                     <hr/>
                                     {
-                                        this.props.editable 
-                                        ? 
+                                        this.props.editable
+                                        ?
                                         <EditableBio
                                             value={this.props.user.bio}
                                             onValueSubmit={this.changeBio}
@@ -84,9 +84,9 @@ export default class UserProfile extends React.Component {
                                         :
                                         <BioText />
                                     }
-                                    
-                                    {/* <EditableTextArea 
-                                        Text={bio} 
+
+                                    {/* <EditableTextArea
+                                        Text={bio}
                                         value={this.state.bio}
                                         onValueChange={this.changeBio}
                                     /> */}
@@ -100,7 +100,7 @@ export default class UserProfile extends React.Component {
                                                 :
                                         }
                                     </div>
-                                                
+
                                                 <SubmitTextArea
                                                     id='af-edit-bio'
                                                     name='edit-bio'
