@@ -259,10 +259,13 @@ namespace Artefactor.Controllers
             // possibly a more performant way of doing this -
             // https://stackoverflow.com/questions/40360512/findasync-and-include-linq-statements
             var artefact = await _context.Artefacts
+                                         .Include(a => a.Images)
                                          .Include(a => a.CategoryJoin)
                                             .ThenInclude(cj => cj.Category)
                                          .Include(a => a.Owner)
                                          .SingleOrDefaultAsync(a => a.Id == id);
+
+            var coolaf = await _context.ArtefactDocuments.SingleOrDefaultAsync(doc => doc.ArtefactId == id);
 
             if (artefact == null)
             {
