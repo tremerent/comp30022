@@ -45,13 +45,6 @@
     align-items: center;
 }
 
-.af-profile-image {
-    display: block;
-    height: auto;
-    width: 50%;
-    border-radius: 60%;
-}
-
 .af-profile-name {
     font-weight: bold;
     text-align: center;

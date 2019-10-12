@@ -1,6 +1,6 @@
 import React from 'react';
 
-import NavMenu from './Nav/NavMenu.js';
+import NavMenu from 'components/Nav/NavMenu.js';
 
 import './Layout.css';
 

@@ -18,10 +18,7 @@ namespace Artefactor.Models
         public string Description { get; set; }
         public System.DateTime CreatedAt { get; set; }
         public IEnumerable<ArtefactCategory> CategoryJoin { get; set; }
-        // [InverseProperty("Artefact")]
         public IEnumerable<ArtefactDocument> Images { get; set; }
-        // [InverseProperty("Artefact")]
-        // public ICollection<ArtefactDocument> Documents { get; set; }
         public string OwnerId { get; set; }
         public ApplicationUser Owner { get; set; }
     }
