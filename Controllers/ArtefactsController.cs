@@ -17,7 +17,7 @@ using System.Reflection;
 
 using Artefactor.Services;
 using Artefactor.Services.Converters;
-
+using Artefactor.Shared;
 
 namespace Artefactor.Controllers
 {
@@ -36,12 +36,14 @@ namespace Artefactor.Controllers
                                 UserService userService,
                                 UploadService uploadService,
                                 IConverter<Artefact> artefactConverter)
+                                // ExpressionService expressionService)
         {
             _context = context;
             _userManager = userManager;
             _userService = userService;
             _uploadService = uploadService;
             _artefactConverter = artefactConverter;
+            // _expressionService = expressionService;
         }
 
         // GET: api/Artefacts/VisibilityOpts
@@ -64,26 +66,7 @@ namespace Artefactor.Controllers
 
         }
 
-        // GET: api/Artefacts
         [HttpGet]
-        public async Task<IActionResult> GetPublicArtefacts()
-        {
-            var artefacts = await _context.Artefacts
-                                          .Include(a => a.CategoryJoin)
-                                            .ThenInclude(cj => cj.Category)
-                                          .Include(a => a.Owner)
-                                          .Where(a =>
-                                            a.Visibility == Visibility.Public)
-                                          .ToListAsync();
-
-            var artefactsJson = artefacts
-                .Select(a => _artefactConverter.ToJson(a))
-                .Where(a => a != null);
-
-            return new JsonResult(artefactsJson);
-        }
-
-        [HttpGet("feature")]
         public async Task<ActionResult> GetArtefacts(
             [FromQuery] string user,
 
@@ -98,18 +81,37 @@ namespace Artefactor.Controllers
             [FromQuery] DateTime since,
             [FromQuery] DateTime until,
 
-            [FromQuery] string sort
-        )
+            [FromQuery] string sort)
         {
-            IQueryable<Artefact> artefacts =
-                _context.Artefacts
-                        .Include(a => a.CategoryJoin)
-                            .ThenInclude(cj => cj.Category);
+            // Iterate through query params, adding lambdas of type 
+            // 'System.Linq.Expression'. 
+            //
+            // Their conjunction is applied ie. 'artefact.Where(conj)'
+            //
+            // Similar expressions are built for calls to '.OrderBy'.
+
+            IQueryable<Artefact> artefacts = _context.Artefacts;
+
+            // '.Load()' calls are made since can't '.Include(a => a.Images)'.
+            // See - https://github.com/aspnet/EntityFrameworkCore/issues/16061
+
+            artefacts
+                .Include(a => a.CategoryJoin)
+                    .ThenInclude(cj => cj.Category)
+                .Include(a => a.Owner)
+                .Where(a =>
+                    a.Visibility == Visibility.Public
+                ).Load();
+
+            artefacts.Include(a => a.Images).Load();
 
             ParameterExpression artefactParam = 
                 Expression.Parameter(typeof(Artefact), "artefact");
 
             IList<Expression> whereLambdas = new List<Expression>();
+            IList<Expression> orderByLambdas = new List<Expression>();
+
+            /// Build queries
 
             // visibility query - handles auth
             
@@ -129,20 +131,25 @@ namespace Artefactor.Controllers
 
             if (vis != null)
             {
-                IList<string> visQueryStrings = QueryStringValueList(vis);
+                IList<string> visQueryStrings = Queries.QueryStringValueList(vis);
                 IEnumerable<Visibility> visQueryEnums;
                 try 
                 {
                     visQueryEnums = visQueryStrings
-                        .Select(visString => VisStringQueryToEnum(visString));
+                        .Select(visString => Queries.VisStringQueryToEnum(visString));
                 }
                 catch (QueryException)
                 {
                     return BadRequest("Badly formatted query 'vis'");
                 }
 
-                if (visQueryEnums.Any(visQuery => 
-                    !VisQueryIsAuthorised(visQuery, curUser, queryUser)))
+                if (visQueryEnums.Any(visQuery => !Queries.VisQueryIsAuthorised(
+                        visQuery, 
+                        curUser, 
+                        queryUser,
+                        (curUser, queryUser) => curUser.Id == queryUser.Id,
+                        (curUser, queryUser) => true  // just one big happy family
+                    )))
                 {
                     return Unauthorized();
                 }
@@ -151,7 +158,7 @@ namespace Artefactor.Controllers
                     foreach(Visibility visQuery in visQueryEnums)
                     {
                         whereLambdas.Add(
-                            ArtefactVisQueryExpression(visQuery, artefactParam)
+                            QueryExpressions.ArtefactVisQueryExpression(visQuery, artefactParam)
                         );
                     }
 
@@ -171,13 +178,13 @@ namespace Artefactor.Controllers
                 if (vis == null)
                 {
                     whereLambdas.Add(
-                        ArtefactVisQueryExpression(
+                        QueryExpressions.ArtefactVisQueryExpression(
                             Visibility.Public, artefactParam)
                     );
                 }
 
                 whereLambdas.Add(
-                    ArtefactUserQueryExpression(queryUser.Id, artefactParam)
+                    QueryExpressions.ArtefactUserQueryExpression(queryUser.Id, artefactParam)
                 );
 
             }
@@ -186,7 +193,7 @@ namespace Artefactor.Controllers
                 // no user was specified and vis. authorisation has already
                 // been applied - so just filter to see only public
                 whereLambdas.Add(
-                    ArtefactVisQueryExpression(
+                    QueryExpressions.ArtefactVisQueryExpression(
                         Visibility.Public, artefactParam)
                 );
             }
@@ -198,7 +205,7 @@ namespace Artefactor.Controllers
                 if (includeDesc.HasValue)
                 {
                     whereLambdas.Add(
-                        ArtefactStrQueryExpression(
+                        QueryExpressions.ArtefactStrQueryExpression(
                             q, includeDesc.Value, artefactParam
                         )
                     );
@@ -206,7 +213,7 @@ namespace Artefactor.Controllers
                 else
                 {
                     whereLambdas.Add(
-                        ArtefactStrQueryExpression(
+                        QueryExpressions.ArtefactStrQueryExpression(
                             q, false, artefactParam
                         )
                     );
@@ -218,21 +225,21 @@ namespace Artefactor.Controllers
             if (category != null && category.Length > 0)
             {
                 var categoryLambdas = category
-                    .Select(cat => CategoryQueryExpression(cat, artefactParam));
+                    .Select(cat => QueryExpressions.CategoryQueryExpression(cat, artefactParam));
 
                 Expression categoryLambdasJoined;
 
                 // if matchAll, artefact must belong to every category in query
                 // 'category'
                 if (matchAll.HasValue && matchAll.Value) {
-                    categoryLambdasJoined = FoldBoolLambdas(
+                    categoryLambdasJoined = QueryExpressions.FoldBoolLambdas(
                         (Expression) Expression.Constant(true),
                         categoryLambdas,
                         Expression.AndAlso
                     );
                 }
                 else {
-                    categoryLambdasJoined = FoldBoolLambdas(
+                    categoryLambdasJoined = QueryExpressions.FoldBoolLambdas(
                         (Expression) Expression.Constant(false),
                         categoryLambdas,
                         Expression.OrElse
@@ -252,7 +259,7 @@ namespace Artefactor.Controllers
             if (since != null && isSpecified(since))
             {
                 whereLambdas.Add(
-                    ArtefactCreatedAtQueryExpression(
+                    QueryExpressions.ArtefactCreatedAtQueryExpression(
                         since,
                         true,
                         artefactParam
@@ -262,7 +269,7 @@ namespace Artefactor.Controllers
             if (until != null && isSpecified(until))
             {
                 whereLambdas.Add(
-                    ArtefactCreatedAtQueryExpression(
+                    QueryExpressions.ArtefactCreatedAtQueryExpression(
                         until,
                         false,
                         artefactParam
@@ -270,395 +277,165 @@ namespace Artefactor.Controllers
                 );
             }
 
-            // All whereLambdas have been added. 
-            // AndElse over whereLambdas, then call with Where
+            // Query param lambda have been appended to 'whereLambdas'. 
+            // Take conjunction, then call with Where.
 
-            Expression whereLambdasAnded = FoldBoolLambdas(
+            Expression whereLambdasAnded = QueryExpressions.FoldBoolLambdas(
                 (Expression) Expression.Constant(true),
                 whereLambdas,
                 Expression.AndAlso
             );
 
-            Expression whereCallExpression = GetWhereExp<Artefact>(
+            Expression whereCallExpression = QueryExpressions.GetWhereExp<Artefact>(
                 whereLambdasAnded, 
                 artefactParam, 
                 artefacts
             );
 
-            MethodCallExpression GetWhereExp<T>(
-                Expression whereExpBody,
-                ParameterExpression paramExp,
-                IQueryable<T> data)
+            // Where applied - build 'OrderBy' lambda
+
+            Expression finalExpr = whereCallExpression;
+
+            // sort queries
+
+            if (sort != null) 
             {
-                return Expression.Call(
-                    typeof(Queryable),
-                    "Where",
-                    new Type[] { data.ElementType },
-                    data.Expression,
-                    Expression.Lambda<Func<T, bool>>(
-                        whereExpBody, new ParameterExpression[] { paramExp })
-                    );
+                var split = sort.Split(':');
+
+                var sortBy = split[0];
+                string sortOrder;
+                if (split.Length > 1) 
+                {
+                    sortOrder = split[1];
+                }
+                else
+                {
+                    sortOrder = "asc";
+                }
+
+                Expression orderByBodyExp;
+                Type orderType = typeof(string);  // type of second in a => a.asdasd
+
+                // get the order by body - ie. OrderBy(orderByBodyExp)
+                switch (sortBy)
+                {
+                    case "title":
+                        orderType = typeof(string);
+
+                        orderByBodyExp = QueryExpressions.ArtefactPropertyExpression<string>(
+                            "Title", artefactParam);
+
+                        break;
+                    case "createdAt":
+                        orderType = typeof(DateTime);
+
+                        orderByBodyExp = QueryExpressions.ArtefactPropertyExpression<DateTime>(
+                            "CreatedAt", artefactParam);
+                        break;
+
+                    // TODO(jonah) test after merge
+
+                    // case "questionCount":
+                        
+                    //     var questionsPropertyExp = 
+                    //         QueryExpressions.ArtefactPropertyExpression<IEnumerable<ArtefactComment>>(
+                    //             "Comments",
+                    //             artefactParam
+                    //         );
+
+                    //     orderByBodyExp = QueryExpressions.CountExpression(
+                    //         (Expression<IEnumerable<ArtefactComment>>) questionsPropertyExp);
+
+                    //     break;
+
+                    // case "commentCount":
+
+                    //     var questionsPropertyExp = 
+                    //         QueryExpressions.ArtefactPropertyExpression<IEnumerable<ArtefactComment>>(
+                    //             "Comments",
+                    //             artefactParam
+                    //         );
+
+                    //     var commentsExp = Expression.Call(
+                    //         toCountExp,
+                    //         typeof(Enumerable)
+                    //             .GetMethod("Count", new [] { typeof(T) })
+                    //     );
+
+                    //     orderByBodyExp = QueryExpressions.CountExpression(
+                    //         (Expression<IEnumerable<ArtefactComment>>) commentsPropertyExp);
+
+                    //     break;
+
+                    case "imageCount":
+
+                        orderType = typeof(int);
+                        
+                        var imagePropertyExp = 
+                            QueryExpressions.ArtefactPropertyExpression<IEnumerable<ArtefactDocument>>(
+                                "Images",
+                                artefactParam
+                            );
+                        
+                        orderByBodyExp = QueryExpressions.CountExpression<ArtefactDocument>(imagePropertyExp);
+
+                        break;
+
+                    default:
+                        return BadRequest($"Invalid sort query '{sortBy}'");
+                }
+
+                // Set 'finalExpr' since 'OrderBy(..)' instance is 
+                // 'artefacts.Where(..)'.
+
+                if (sortOrder == "asc") 
+                {
+                    finalExpr = MakeOrderByExp(false);
+                }
+                else if (sortOrder == "desc")
+                {
+                    finalExpr = MakeOrderByExp(true);
+                }
+                else 
+                {
+                    return BadRequest($"Invalid sort query order '${sortOrder}'");
+                }
+
+                MethodCallExpression MakeOrderByExp(bool isDesc)
+                {
+                    MethodInfo GetOrderByExpression_MethInfo = 
+                        typeof(Artefactor.Shared.QueryExpressions)
+                        .GetMethod("GetOrderByExp");
+
+                    object orderByCallExpression = 
+                        GetOrderByExpression_MethInfo
+                        .MakeGenericMethod(typeof(Artefact), orderType)
+                        .Invoke(this, new object[] {
+                            whereCallExpression,
+                            orderByBodyExp,
+                            artefactParam,
+                            isDesc
+                        });
+
+                    T Cast<T>(object entity) where T : class
+                    {
+                        return entity as T;
+                    }
+
+                    return Cast<MethodCallExpression>(orderByCallExpression);
+                }
             }
 
             // finally, compile and return results
 
             IQueryable<Artefact> results =
-                artefacts.Provider.CreateQuery<Artefact>(whereCallExpression);
+                artefacts.Provider.CreateQuery<Artefact>(finalExpr);
 
             return new JsonResult(
-                (await results.ToListAsync()).Select(a => _artefactConverter.ToJson(a))
-            );
-
-
-            /// linq query expressions
-
-            // Returns a method call expression represented by 
-            //
-            // 'a => a.Title.ToLower().Contains(query.ToLower()) &&
-            //       a.Description.ToLower().Contains(query.ToLower()'
-            //
-            // Note description search parameterised by 'includeDesc'.
-            Expression ArtefactStrQueryExpression(string query, bool includeDesc,
-                ParameterExpression artefactParamExp)
-            {
-
-                // a.Title
-
-                var paramTitle = Expression.Property(
-                    artefactParamExp, typeof(Artefact).GetProperty("Title")
-                );
-
-                var paramTitleLowered = Expression.Call(
-                    paramTitle,
-                    typeof(string).GetMethod("ToLower", System.Type.EmptyTypes)
-                );
-
-                // query.ToLower()
-
-                var queryLowered = Expression.Call(
-                    paramTitle,
-                    typeof(string).GetMethod("ToLower", System.Type.EmptyTypes)
-                );
-
-                var paramTitleQueryExpr = 
-                    StrContainsQuery(paramTitleLowered, query);
-
-                if (includeDesc)
-                {
-                    Expression paramDescription = Expression.Property(
-                        artefactParamExp, 
-                        typeof(Artefact).GetProperty("Description")
-                    );
-
-                    Expression paramDescriptionLowered = Expression.Call(
-                        paramDescription,
-                        typeof(string).GetMethod("ToLower", System.Type.EmptyTypes)
-                    );
-                    var paramDescriptionQueryExpr = StrContainsQuery(paramDescriptionLowered, query);
-
-                    return Expression.And(
-                        paramTitleQueryExpr,
-                        paramDescriptionQueryExpr
-                    );
-                }
-                else 
-                {
-                    return paramTitleQueryExpr;
-                }
-
-                MethodCallExpression StrContainsQuery(Expression strExpression, string rawQuery)
-                {
-                    return Expression.Call(
-                            strExpression,
-                            typeof(string).
-                                GetMethod("Contains", new[] { typeof(string) }),
-                            Expression.Constant(query.ToLower(), typeof(string))
-                        );
-                }
-            }
-
-            // returns the raw query - authentication is assumed
-            Expression ArtefactVisQueryExpression(Visibility vis, 
-                ParameterExpression artefactParamExp)
-            {
-                var paramVis = Expression.Property(
-                    artefactParamExp, typeof(Artefact).GetProperty("Visibility")
-                );
-
-                return Expression.Equal(Expression.Constant(vis), paramVis);
-            }
-
-            // artefact => artefact.OwnerId == userId
-            Expression ArtefactUserQueryExpression(string userId, 
-                ParameterExpression artefactParamExp)
-            {
-                var paramOwnerId = Expression.Property(
-                    artefactParamExp, typeof(Artefact).GetProperty("OwnerId")
-                );
-
-                return Expression.Equal(Expression.Constant(userId), paramOwnerId);
-            }
-
-            Expression CategoryQueryExpression(string categoryName,
-                ParameterExpression artefactParamExp)
-            {
-                // a => a.CategoryJoin.Any(cj => cj.Category.Name == category)
-
-                var queryCategory = Expression.Constant(categoryName);
-
-                // cj.Category.Name
-                var cjExp = 
-                    Expression.Parameter(typeof(ArtefactCategory));
-                var cjCategoryNameExp = Expression.Property(
-                    Expression.Property(cjExp, "Category"), 
-                "Name");
-
-                // cj.Category.Name == category
-                var condition = Expression.Equal(queryCategory, cjCategoryNameExp);
-
-                // cj => cj.Category.Name == category
-                var predicate = Expression.Lambda<Func<ArtefactCategory, bool>>(
-                    condition,
-                    cjExp
-                );
-
-                // a.CategoryJoin
-                Expression paramCategoryJoin = Expression.Property(
-                    artefactParamExp, typeof(Artefact).GetProperty("CategoryJoin")
-                );
-
-                var expBody = Expression.Call(
-                    typeof(Enumerable),
-                    "Any",
-                    new Type[] { typeof(ArtefactCategory) },
-                    paramCategoryJoin,
-                    predicate
-                );
-
-                return expBody;
-            }
-
-            
-            // If 'isSince' true, the expression returned is represented by
-            // 'a => queryDate.CreatedAt.CompareTo(a.CreatedAt) <= 0'.
-            // Otherwise,
-            // 'a => queryDate.CreatedAt.CompareTo(a.CreatedAt) >= 0'
-            Expression ArtefactCreatedAtQueryExpression(
-                DateTime queryDate,
-                bool isSince,  // if false, then the filter will be 
-                ParameterExpression artefactParamExp)
-            {
-                var paramCreatedAt = Expression.Property(
-                    artefactParamExp, typeof(Artefact).GetProperty("CreatedAt")
-                );
-
-                // queryDate.CompareTo(artefact.CreatedAt)
-                var comparison = Expression.Call(
-                    typeof(DateTime).GetMethod("Compare"),
-                    Expression.Constant(queryDate),
-                    paramCreatedAt
-                );
-
-                if (isSince) 
-                {
-                    return Expression.LessThanOrEqual(
-                        comparison, 
-                        Expression.Constant(0)
-                    );
-                }
-                else
-                {
-                    return Expression.GreaterThanOrEqual(
-                        comparison, 
-                        Expression.Constant(0)
-                    );
-                }
-            }
-
-            /// helper methods
-
-            // convert a query value list of form "&query=item1,item2,..."
-            IList<string> QueryStringValueList(string queryStringListValue)
-            {
-                return queryStringListValue.Split(",");
-            }
-
-            // assumes 'vis != Visibility.Unspecified'
-            bool VisQueryIsAuthorised(
-                Visibility vis, 
-                // current app user
-                ApplicationUser curUser, 
-                // &user=
-                ApplicationUser queryUser)
-            {
-                switch (vis)
-                {
-                    case Visibility.Unspecified:
-                        throw new ArgumentException(
-                            "param. 'vis' cannot equal Visibility.Unspecified"
-                        );
-                    case Visibility.Public:
-                        return true;
-                    case Visibility.PrivateFamily:
-                        if (queryUser == null || curUser == null)
-                        {
-                            return false;
-                        }
-                        else
-                        {
-                            return _userService.UsersAreFamily(curUser, queryUser);
-                        }
-                    case Visibility.Private:
-                        if (queryUser == null || curUser == null)
-                        {
-                            return false;
-                        }
-                        else
-                        {
-                            return curUser.Id == queryUser.Id;
-                        }
-                    default:
-                        // this should never be reached, notify
-                        throw new InvalidOperationException("Unreachable code.");
-                }
-            }
-
-            // convert a visString to an enum, throwing a QueryException if
-            // string invalid
-            Visibility VisStringQueryToEnum(string visString)
-            {
-                Visibility visEnum;
-                if (Enum.TryParse(visString, true, out visEnum))
-                {
-                    if (visEnum == Visibility.Unspecified)
-                    {
-                        // user should not specify a 0 or null visibility value
-                        ThrowVisQueryConversionException();
-                        return Visibility.Unspecified;
-                    }
-                    else
-                    {
-                        return visEnum;
-                    }
-                }
-                else
-                {
-                    // user did not specify a valid visibility query
-                    ThrowVisQueryConversionException();
-                    return Visibility.Unspecified;
-                }
-
-                void ThrowVisQueryConversionException()
-                {
-                    throw new QueryException
-                    { 
-                        IsQuery = true, 
-                        Cause = 
-                            $"Invalid visibility query '{visString}'",
-                    };
-                }
-            }
-
-            // Fold a number of lambdas with return type bool, 
-            // using 'booleanBinOpExp'. 
-            //
-            // 'booleanBinOpExp' should evaluate to bool or things will break.
-            //
-            // It would be really cool if this was typed properly, but it's
-            // just not practical right now.
-            Expression FoldBoolLambdas(
-                Expression start, // should be bool
-                IEnumerable<Expression> boolLambdas,  // 
-                Func<Expression, Expression, BinaryExpression> booleanBinOpExp)
-            {
-                // why this no work?
-                // if (!(booleanBinOpExp.Conversion.ReturnType is bool))
-                // {
-                // }
-
-                return boolLambdas
-                    .Aggregate(
-                        start,
-                        (acc, whereLambda) => booleanBinOpExp(acc, whereLambda)
-                    );
-            }
-        }
-
-        public class QueryException : Exception
-        {
-            // the query is unauthorised
-            public bool IsAuth { get; set; } = false;
-            // the query is malformed in some manner
-            public bool IsQuery { get; set; } = false;
-            public string Cause { get; set; } = "";
-        }
-
-        /**
-         * Get artefacts owned by 'username' with visibility 'vis',
-         * or all visibilities if 'vis' not specified.
-         * 
-         * The requesting user must have the appropriate permissions.
-         */
-        [HttpGet("user/{username}")]
-        public async Task<ActionResult<IEnumerable<Artefact>>> GetUserArtefacts(string username, 
-            [FromQuery]
-            [JsonConverter(typeof(StringEnumConverter))]
-            Visibility vis)
-        {
-            bool curUserIsUsername = false;
-            bool curUserIsFamily = false;  // TODO once families implemented
-
-            ApplicationUser userWArtefacts = await _userManager.FindByNameAsync(username);
-
-            if (userWArtefacts == null)
-            {
-                return NotFound();
-            }
-
-            try
-            {
-                curUserIsUsername = await _userService.IsCurUser(null, username, HttpContext);
-            }
-            catch (Exception e)
-            {
-                if (e is ArgumentNullException)
-                {
-                    // 'username' was not found
-                    return NotFound();
-                }
-                else
-                {
-                    throw e;
-                }
-            }
-
-            IQueryable<Artefact> artefacts =
-                _context.Artefacts
-                        .Include(a => a.CategoryJoin)
-                            .ThenInclude(cj => cj.Category)
-                        .Where(a => a.OwnerId == userWArtefacts.Id);
-
-            // check permissions
-            if ((!curUserIsUsername && vis == Visibility.Private) ||
-                 !curUserIsFamily && vis == Visibility.PrivateFamily)
-            {
-                return Unauthorized("Insufficient permissions to " +
-                                    "view the requested recourse.");
-            }
-
-            // user has appropriate permissions, so return the filtered list
-            if ((curUserIsUsername && vis == Visibility.Private) ||
-                (curUserIsFamily && vis == Visibility.PrivateFamily) ||
-                (!curUserIsUsername && !curUserIsFamily && vis == Visibility.Public))
-            {
-                artefacts = artefacts.Where(a => a.Visibility == vis);
-            }
-
-            return new JsonResult(
-                (await artefacts.ToListAsync()).Select(a => _artefactConverter.ToJson(a))
+                (await results.ToListAsync())
+                .Select(a => _artefactConverter.ToJson(a))
             );
         }
-
 
         // GET: api/Artefacts/5
         [HttpGet("{id}")]

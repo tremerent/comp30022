@@ -189,7 +189,7 @@ export class CreateArtefactForm extends Component {
                 </div>
 
                 <div className="form-group">
-                    <CategorySelect categoryVals={this.state.artefact.categories} setCategoryVals={this.handleSelectValsChange("categories")} />
+                    <CategorySelect creatable={true} categoryVals={this.state.artefact.categories} setCategoryVals={this.handleSelectValsChange("categories")} />
                 </div>
             </div>
         );
