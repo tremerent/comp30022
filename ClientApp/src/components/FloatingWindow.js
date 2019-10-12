@@ -7,7 +7,7 @@ export default class FloatingWindow extends React.Component {
     render() {
         return (
             <div
-                    className={`modal fade ${this.props.className}`}
+                    className={`modal fade`}
                     id={this.props.id}
                     role="dialog"
                     aria-hidden="true"
