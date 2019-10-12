@@ -71,5 +71,11 @@ namespace Artefactor.Services
                 throw new ArgumentNullException("Supply a non-null user to compare against.");
             }
         }
+
+        public bool UsersAreFamily(ApplicationUser user1, ApplicationUser user2)
+        {
+            // just one big happy family
+            return true;
+        }
     }
 }
