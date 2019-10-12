@@ -36,14 +36,12 @@ namespace Artefactor.Controllers
                                 UserService userService,
                                 UploadService uploadService,
                                 IConverter<Artefact> artefactConverter)
-                                // ExpressionService expressionService)
         {
             _context = context;
             _userManager = userManager;
             _userService = userService;
             _uploadService = uploadService;
             _artefactConverter = artefactConverter;
-            // _expressionService = expressionService;
         }
 
         // GET: api/Artefacts/VisibilityOpts
@@ -68,6 +66,8 @@ namespace Artefactor.Controllers
 
         [HttpGet]
         public async Task<ActionResult> GetArtefacts(
+            [FromQuery] string id,
+
             [FromQuery] string user,
 
             [FromQuery] string q,  // query by string
@@ -112,8 +112,6 @@ namespace Artefactor.Controllers
             IList<Expression> orderByLambdas = new List<Expression>();
 
             /// Build queries
-
-            // visibility query - handles auth
             
             // first initialise curUser and queryUser - check for NotFound
             ApplicationUser curUser = await _userService.GetCurUser(HttpContext);
@@ -127,6 +125,31 @@ namespace Artefactor.Controllers
                 {
                     return NotFound("'user' does not exist.");
                 }
+            }
+
+            // visibility query - handles auth
+
+            if (id != null)
+            {
+                var artefact = await artefacts
+                    .SingleOrDefaultAsync(a => a.Id == id);
+
+                if (artefact == null)
+                {
+                    return NotFound();
+                }
+
+                // check auth
+
+                if (Queries.VisQueryIsAuthorised(
+                    artefact.Visibility,
+                    curUser, 
+                    artefact.Owner, 
+                    (curUser, queryUser) => curUser.Id == queryUser.Id,
+                    (curUser, queryUser) => true  // just one big happy family
+                ))
+
+                return new JsonResult(_artefactConverter.ToJson(artefact));
             }
 
             if (vis != null)
@@ -435,26 +458,6 @@ namespace Artefactor.Controllers
                 (await results.ToListAsync())
                 .Select(a => _artefactConverter.ToJson(a))
             );
-        }
-
-        // GET: api/Artefacts/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult> GetArtefact(string id)
-        {
-            // possibly a more performant way of doing this -
-            // https://stackoverflow.com/questions/40360512/findasync-and-include-linq-statements
-            var artefact = await _context.Artefacts
-                                         .Include(a => a.CategoryJoin)
-                                            .ThenInclude(cj => cj.Category)
-                                         .Include(a => a.Owner)
-                                         .SingleOrDefaultAsync(a => a.Id == id);
-
-            if (artefact == null)
-            {
-                return NotFound();
-            }
-
-            return new JsonResult(_artefactConverter.ToJson(artefact));
         }
 
         // POST: api/Artefacts
