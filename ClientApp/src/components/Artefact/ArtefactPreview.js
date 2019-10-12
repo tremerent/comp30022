@@ -18,11 +18,12 @@ export class ArtefactPreview extends Component {
         const a = this.props.artefact;
 
         const id = `af-artcard-desc-${a.id}`;
+        const carouselId = `af-artdoc-carousel-${this.props.artefact.id}`;
 
         return (
             <div className="af-artcard">
                 <ImageCarousel
-                    id={a.id}
+                    id={carouselId}
                     items={a.images}
                     getId={x => x.id}
                     activeId={

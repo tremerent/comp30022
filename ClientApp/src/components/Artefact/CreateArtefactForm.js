@@ -5,6 +5,7 @@ import Stepper from 'bs-stepper';
 import 'bs-stepper/dist/css/bs-stepper.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImages, faShareAltSquare, faTrophy } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 
 import CategorySelect from '../Category/CategorySelect.js';
 import ArtefactDocs from './ArtefactDocs.js';
@@ -24,6 +25,7 @@ export class CreateArtefactForm extends Component {
         super(props);
 
         this.initialArtefactState = {
+            id: `${Date.now()}`,
             title: "",
             description: "",
             categories: [],
@@ -60,7 +62,7 @@ export class CreateArtefactForm extends Component {
 
     render() {
         return (
-            <div className='af-createart'>
+            <div style={{ height: '100%' }}>
                 <div className="text-center">
                     <div className="spinner-border text-primary" role="status"
                         style={{
@@ -87,15 +89,12 @@ export class CreateArtefactForm extends Component {
 
     renderArtefactCreated = () => {
         return (
-            <div className="alert alert-success" role="alert">
-                <h4 className="alert-heading">Thanks for registering an artefact!</h4>
-                <hr/>
-                <div className="row justify-content-start">
-                    <a href={"/Artefacts/" + this.state.createdArtefactId} role="button" className="btn btn-secondary mx-2" style={{color: "#fff !important"}}>
-                        See your new artefact
-                    </a>
-                    <button className="btn btn-primary" onClick={this.resetArtefactCreation}> Create another artefact</button>
-                </div>
+            <div className='af-createart-success'>
+                <FontAwesomeIcon
+                    className='af-createart-success-icon' icon={faCheckCircle}
+                />
+                <h4>Success!</h4>
+                <button className='btn btn-primary' data-dismiss='modal'>Ok</button>
             </div>
         );
     }
@@ -307,10 +306,11 @@ export class CreateArtefactForm extends Component {
         });
 
         this.props.createArtefact(this.state.artefact)
-            .then(((...args) => {
+            .then((async (...args) => {
 
                 if (this.props.createdArtefact) {
-                    this.submitDocs(this.props.createdArtefact.id);
+                    const response =
+                        await this.submitDocs(this.props.createdArtefact.id);
                 }
 
                 // add created artefacts id so we have a link to it for the success
