@@ -25,6 +25,7 @@ export class CreateArtefactForm extends Component {
         super(props);
 
         this.initialArtefactState = {
+            id: `${Date.now()}`,
             title: "",
             description: "",
             categories: [],
