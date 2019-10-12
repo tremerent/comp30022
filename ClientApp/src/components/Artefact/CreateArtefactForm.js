@@ -307,10 +307,11 @@ export class CreateArtefactForm extends Component {
         });
 
         this.props.createArtefact(this.state.artefact)
-            .then(((...args) => {
+            .then((async (...args) => {
 
                 if (this.props.createdArtefact) {
-                    this.submitDocs(this.props.createdArtefact.id);
+                    const response =
+                        await this.submitDocs(this.props.createdArtefact.id);
                 }
 
                 // add created artefacts id so we have a link to it for the success
