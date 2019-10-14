@@ -1,21 +1,5 @@
-.af-filterered-browser {
+.af-filtered-browser {
     margin-top: 5%;
-}
-
-.af-artbrowser-filter-item {
-    margin-top: 1%;
-    margin-bottom: 1%;
-}
-
-.af-filter-row {
-    display: flex;
-    margin-bottom: 1%;
-    width: 100%;
-}
-
-.af-filter-spaced-item {
-    margin-left: 7%;
-    margin-right: 7%;
 }
 
 .af-filter-header {
@@ -25,53 +9,26 @@
     margin-bottom: 3%;
 }
 
-.af-filter-custom-row {
+.af-filter-row {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     margin-bottom: 2%;
 }
 
-.af-filter-row-bottom-margin {
-    margin-bottom: 2%;
-}
-
-.af-filter-custom-row-item {
+.af-filter-row-item {
     width: 80%;
     display: inline-block;
     margin-right: 4%;
 }
 
-.af-filter-row-item-thin {
-    width: 30% !important;
+.af-filter-bottom-margin {
+    margin-bottom: 2%;
 }
 
-.af-filter-outer-end {
-    display: flex;
-    justify-content: end;
-}
-
-.af-filter-query-type-dropdown {
-    margin-left: 10%;
-    width: 10%;
-}
-
-.af-filter-category-dropdown {
-    width: 10%;
-}
-
-.af-filter-row-main {
-    width:80%;
-}
-
-.af-filter-row-new-item {
+.af-filter-row-flex-item {
     margin-right: 2%;
     width: 30%;
-}
-
-.af-filter-row-custom-item {
-    margin-right: 2%;
-    width: 40%;
 }
 
 .af-filter-datepicker-outer {
@@ -82,4 +39,19 @@
 .af-filter-datepicker-inner {
     display: flex;
     flex-direction: column;
+}
+
+.af-filter-sort-outer {
+    width: 30%;
+}
+
+.af-filter-sort-select {
+    display: inline-block;
+    width: 79%;
+    margin-right: 1%;
+}
+
+.af-filter-sort-order-toggle {
+    width: 20%;
+    margin-bottom: 7px;
 }

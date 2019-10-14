@@ -212,7 +212,7 @@ export default class CategorySelect extends Component {
                         onFocus={this.setFocusPlaceholder}
                         onBlur={this.setBlurPlaceholder}
 
-                        maxMenuHeight={100}
+                        maxMenuHeight={130}
                         isSearchable
                         isMulti
                         closeMenuOnSelect={true}

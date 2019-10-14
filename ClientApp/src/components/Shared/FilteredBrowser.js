@@ -1,12 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { format } from 'date-fns';
 
 import CentreLoading from 'components/CentreLoading';
 import ArtefactScroller from 'components/Artefact/ArtefactScroller';
 import Filter from 'components/Shared/Filter';
 import { artefacts as artActions } from 'redux/actions'
+
+import "./Filter.css";
 
 class FilteredBrowser extends React.Component {
     constructor(props) {
@@ -23,7 +24,7 @@ class FilteredBrowser extends React.Component {
 
     render() {
         return (
-            <div className='af-filterered-browser'>
+            <div className='af-filtered-browser'>
                 <Filter 
                     submitFilter={this.submitFilter}
                 />

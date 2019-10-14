@@ -10,7 +10,7 @@ import CategorySelect from 'components/Category/CategorySelect';
 import 'components/Shared/Filter.css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faArrowUp, } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { Collapse, } from 'reactstrap';
 import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import Select from 'react-select';
@@ -87,7 +87,7 @@ function getFormattedQuery(filterDetails) {
                 newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:title`);
             }
             else if (filterDetails.searchQuery.type.name == "description") {
-                newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:description`);
+                newFilterQueryParams.q.push(`${filterDetails.ssearchQuery.text}:description`);
             }
         }
         else {
@@ -134,7 +134,7 @@ function getFormattedQuery(filterDetails) {
         ...newFilterQueryParams,
         ...removedFilterQueryParams
     }
-    console.log(queryDetails);
+
     return queryDetails;
 }
 
@@ -174,8 +174,8 @@ export default class Filter extends React.Component {
     render() {
         const filterInputs = (
             <div>
-                <div class="af-filter-custom-row">
-                    <div className="af-filter-custom-row-item">
+                <div class="af-filter-row">
+                    <div className="af-filter-row-item">
                         <div className="input-group mr-sm-2">
 
                             <div className="input-group-prepend">
@@ -234,8 +234,8 @@ export default class Filter extends React.Component {
                     </ButtonDropdown>
                 </div>
                 {/* category select */}
-                <div className="af-filter-custom-row">
-                    <div className="af-filter-custom-row-item">
+                <div className="af-filter-row">
+                    <div className="af-filter-row-item">
                         <CategorySelect 
                             blurPlaceholder={"Click to choose a category"}
                             focusPlaceholder={"Categories"}
@@ -279,8 +279,8 @@ export default class Filter extends React.Component {
                         </DropdownMenu>
                     </ButtonDropdown>
                 </div>
-                <div className="input-group mr-sm-2 af-filter-row-bottom-margin">
-                    <div className="af-filter-row-new-item">
+                <div className="input-group mr-sm-2 af-filter-bottom-margin">
+                    <div className="af-filter-row-flex-item">
                         <Select
                             menuIsOpen={false}
                             value={this.state.filterDetails.since 
@@ -295,7 +295,7 @@ export default class Filter extends React.Component {
                         />
                     </div>
                  
-                    <div className="af-filter-row-new-item">
+                    <div className="af-filter-row-flex-item">
                         <Select
                             menuIsOpen={false}
                             value={this.state.filterDetails.until 
@@ -341,29 +341,48 @@ export default class Filter extends React.Component {
                     </Collapse>
                 </div>
                 {/* sort and submit */}
-                <div className="af-filter-custom-row">
-                    <div className="af-filter-row-new-item">
-                        <Select
-                            onChange={(value) => 
-                                this.handleFilterChange("sortQuery")
-                                ({...this.state.sortQuery, ...value, order: "desc"})}  // TODO: sort query order
-                            value={this.state.sortQuery}
-                            options={sortOptions}
-                            placeholder="Sort by"
-                            menuPlacement="top"
-                            isClearable={true}
-                        />
-                    </div>
-                    {/* <div className="af-filter-row-new-item"> */}
+                <div className="af-filter-row">
+                    <div className="af-filter-sort-outer">
+                        <div className="af-filter-sort-select">
+                            <Select
+                                onChange={(value) => 
+                                    this.handleFilterChange("sortQuery")
+                                    ({...this.state.filterDetails.sortQuery, 
+                                        ...value, 
+                                        order: "desc"})}  // TODO: sort query order
+                                values={this.state.filterDetails.sortQuery}
+                                options={sortOptions}
+                                placeholder="Sort by"
+                                menuPlacement="top"
+                                isClearable={true}
+                            />
+                        </div>
                         <button 
-                            onClick={this.handleSubmit}
-                            className="btn btn-primary "
+                            onClick={this.toggleSortDir}
+                            className="btn af-filter-sort-order-toggle"
                         > 
-                            <FontAwesomeIcon icon={faSearch} />
-                            &nbsp; 
-                            Search
+                            {
+                                this.state.filterDetails.sortQuery.order === "asc"
+                                ?
+                                    <FontAwesomeIcon icon={
+                                        faArrowUp
+                                    } />
+                                :
+                                    <FontAwesomeIcon icon={
+                                        faArrowDown
+                                    } />
+                            }
+
                         </button>
-                    {/* </div> */}
+                    </div>      
+                    <button 
+                        onClick={this.handleSubmit}
+                        className="btn btn-primary "
+                    > 
+                        <FontAwesomeIcon icon={faSearch} />
+                        &nbsp; 
+                        Search
+                    </button>
                 </div>
             </div>
         );
@@ -401,19 +420,25 @@ export default class Filter extends React.Component {
         this.props.submitFilter(getFormattedQuery(this.state.filterDetails));
     }
 
-    setQueryType = (queryType) => {
-        this.setState({
-            ...this.state,
-            queryDetails: {
-                ...this.state.details,
-                queryType,
-            }
-            
+    toggleSortDir = () => {
+        let newOrder;
+        if (this.state.filterDetails.sortQuery.order == "desc") {
+            newOrder = "asc";
+        }
+        else if (this.state.filterDetails.sortQuery.order == "asc") {
+            newOrder = "desc";
+        }
+        else {
+            newOrder = "asc";
+        }
+        
+        this.handleFilterChange("sortQuery")({
+            ...this.state.filterDetails.sortQuery,
+            order: newOrder,
         });
     }
 
     toggle = (property) => {
-        console.log('in toggle func');
         const newState = {
             ...this.state,
         };
@@ -442,13 +467,6 @@ export default class Filter extends React.Component {
         });
     }
 
-    toggleShowDateRangePicker = () => {
-        this.setState({
-            ...this.state,
-            showDateRangePicker: !this.state.showDateRangePicker,
-        });
-    }
-
     handleFilterChange = (key) => (value) => {
         this.setState({
             ...this.state,
@@ -456,20 +474,6 @@ export default class Filter extends React.Component {
                 ...this.state.filterDetails,
                 [key]: value,
             },
-        });
-    }
-
-    handleCalenderChange = (stateName) => (date) => {
-        this.setState({
-            ...this.state,
-            stateName: date,
-        });
-    }
-
-    handleDateRangeChange = (range) => {
-        this.setState({
-            ...this.state,
-            dateRange: range,
         });
     }
 }
