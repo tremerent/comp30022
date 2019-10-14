@@ -28,7 +28,7 @@ export default class ArtefactDocs extends React.Component {
 
     currentCarouselItemId() {
         const e = document.querySelector(
-                '#af-artdoc-carousel-undefined'
+                this.CAROUSEL_SELECTOR
                     +   ' .carousel-item.active'
                     +   ' .af-artdoc-image-wrapper'
             );
@@ -43,8 +43,6 @@ export default class ArtefactDocs extends React.Component {
         let newItems = [ ...this.state[items] ];
         newItems.splice(n, 1);
 
-        console.log(`newItems: ${JSON.stringify(newItems)}`);
-
         // If item is an image currently displayed on the carousel, need to make
         // the carousel do sexy moves on delete, otherwise it does a super
         // un-sexy flickery thing.
@@ -56,25 +54,33 @@ export default class ArtefactDocs extends React.Component {
                 &&  this.state.image.length > 1
                 &&  item.id === this.currentCarouselItemId()
             ) {
-            console.log("deleted currently visible item");
-            console.assert(item.type === 'image');
-            // If this is the last item in the carousel, move backwards,
-            // otherwise move forwards. This is in preference to having it
-            // always go forwards and letting it wrap if last, because IMO
-            // wrapping is a weird thing to do as a non-user-initiated action,
-            // and hence should be avoided.
-            //  -- Sam
+
             let direction = n === this.state[items].length - 1 ? 'prev':'next';
 
-            $(this.CAROUSEL_SELECTOR).carousel(direction)
-                .on('slid.bs.carousel', e => {
-                    this.state.activeItemId = this.state[items][e.to].id;
-                    this.setState({
-                        ...this.state,
-                        [items]: newItems
-                    })
-                    this.onChange(item, 'delete', newItems);
-                });
+            // Loads of exhausting boilerplatey stuff because bootstrap, AFAICT
+            // (althought that isn't very far since there don't seem to be any
+            // frickin docs further than the single paragraph in their
+            // "Javascript" page) doesn't have a way to remove event listeners.
+            if (!this.hasSlidListener) {
+                this.hasSlidListener = true;
+                $(this.CAROUSEL_SELECTOR).on('slid.bs.carousel', e => {
+                        if (!this.deleting)
+                            return;
+                        this.state.activeItemId =
+                            this.state[this.deleting.from][e.to].id;
+                        this.setState({
+                            ...this.state,
+                            [this.deleting.from]: this.deleting.to,
+                        })
+                        this.onChange(
+                                this.deleting.item, 'delete', this.deleting.to
+                            );
+                        this.deleting = null;
+                    });
+            }
+
+            this.deleting = { item, from: items, to: newItems };
+            $(this.CAROUSEL_SELECTOR).carousel(direction);
         } else {
             this.setState({ ...this.state, [items]: newItems });
             this.onChange(item, 'delete', newItems);

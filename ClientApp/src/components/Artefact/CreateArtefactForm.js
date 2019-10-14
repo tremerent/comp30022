@@ -201,13 +201,17 @@ export class CreateArtefactForm extends Component {
     handleArtefactDocsChange = (doc, action) => {
         switch (action) {
         case 'delete':
-            console.assert(this.docs[doc.id]);
+            if (!this.docs[doc.id])
+                console.warn(`'${doc.id}' deleted but is not tracked`);
             delete this.docs[doc.id];
             break;
         case 'create':
             this.docs[doc.id] = doc;
             break;
         default:
+            console.log(
+                `handleArtefactDocsChange(): unrecognised action '${action}'`
+            );
             console.warn(
                 `handleArtefactDocsChange(): unrecognised action '${action}'`
             );
