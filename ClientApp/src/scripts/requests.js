@@ -156,28 +156,6 @@ async function getArtefacts(queryDetails) {
     return resp.data;
 }
 
-// /**
-//  * Get all artefacts owned by user with 'username',
-//  * or all artefacts if null.
-//  */
-// async function getArtefacts(username, queryDetails) {
-//     let resp;
-
-//     const visQuery = vis ? `?vis=${vis}` : ``;
-//     queryDetails.map(queryParam => makeUrlQuery(queryParam));
-
-//     if (username == null) {
-//         resp = await apiFetch(getToken())
-//             .get(`/artefacts`);
-//     }
-//     else {
-//         resp = await apiFetch(getToken())
-//             .get(`/Artefacts/user/${username}` + visQuery);
-//     }
-
-//     return resp.data;
-// }
-
 async function getUser(username) {
     const resp = await apiFetch()
         .get(`/User/${username}`);
