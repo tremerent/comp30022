@@ -170,8 +170,8 @@ export default class CategorySelect extends Component {
     constructor(props) {
         super(props);
 
-        this.blurPlaceholder = "Choose your artefact's categories";
-        this.focusPlaceholder = "Type to search for a category or create your own";
+        this.blurPlaceholder = this.props.blurPlaceholder;
+        this.focusPlaceholder = this.props.focusPlaceholder;
 
         this.state = {
             categoryOpts: [],
@@ -181,7 +181,7 @@ export default class CategorySelect extends Component {
 
     render() {
         return (
-            <div>
+            <>
                 {
                     this.props.creatable
                     ?
@@ -212,13 +212,14 @@ export default class CategorySelect extends Component {
                         onFocus={this.setFocusPlaceholder}
                         onBlur={this.setBlurPlaceholder}
 
+                        maxMenuHeight={130}
                         isSearchable
                         isMulti
                         closeMenuOnSelect={true}
+                        placeholder={this.state.placeholder}
                     />
                 }
-                
-            </div>
+            </>  
         );
     }
 

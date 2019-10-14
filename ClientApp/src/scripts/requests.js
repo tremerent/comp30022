@@ -110,23 +110,48 @@ async function getVisibilityOpts() {
     return resp.data;
 }
 
-/**
- * Get all artefacts owned by user with 'username',
- * or all artefacts if null.
- */
-async function getArtefacts(username, vis) {
+async function getArtefacts(queryDetails) {
     let resp;
 
-    const visQuery = vis ? `?vis=${vis}` : ``;
+    const queries = [];
+    Object.keys(queryDetails).map(function(key) {
+        const val = queryDetails[key];
 
-    if (username == null) {
-        resp = await apiFetch(getToken())
-            .get(`/Artefacts`);
+        if (val != null && val != "" && val.length) {
+
+            // handle lists
+            if (key === "category") {
+                queries.push(makeQueryFromArray(val, "category"))
+            }
+            else if (key === "q") {
+                queries.push(makeQueryFromArray(val, "q"))
+            }
+            else {
+                queries.push(
+                    makeQuery(key, queryDetails[key])
+                );
+            }
+        }
+    });
+
+    function makeQuery(k, v) {
+        return `&${k}=${v}`;
     }
-    else {
-        resp = await apiFetch(getToken())
-            .get(`/Artefacts/user/${username}` + visQuery);
+
+    // calls 'makeQuery' on each element then concats the result
+    function makeQueryFromArray(queryArray, queryName) {
+        return queryArray.map(q => makeQuery(queryName, q))
+                         .reduce((acc, cur) => acc + cur);
     }
+    
+
+    let url = `/artefacts`;
+    if (queries.length) {
+        url += '?' + queries.reduce((acc, cur) => acc + cur);
+    }
+    console.log(url);
+    resp = await apiFetch(getToken())
+            .get(url);
 
     return resp.data;
 }

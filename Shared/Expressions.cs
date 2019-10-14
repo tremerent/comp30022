@@ -31,59 +31,28 @@ namespace Artefactor.Shared
 
         /// linq query expressions
 
-        // Returns a method call expression represented by 
-        //
-        // 'a => a.Title.ToLower().Contains(query.ToLower()) &&
-        //       a.Description.ToLower().Contains(query.ToLower()'
-        //
-        // Note description search parameterised by 'includeDesc'.
-        public static Expression ArtefactStrQueryExpression(string query, bool includeDesc,
+        // Query property of artefact by 'query'.
+        public static Expression ArtefactStrQueryExpression(
+            string query, string property,
             ParameterExpression artefactParamExp)
         {
+            // a.property
 
-            // a.Title
-
-            var paramTitle = Expression.Property(
-                artefactParamExp, typeof(Artefact).GetProperty("Title")
+            var paramProperty = Expression.Property(
+                artefactParamExp, typeof(Artefact).GetProperty(property)
             );
 
-            var paramTitleLowered = Expression.Call(
-                paramTitle,
+            // a.property.ToLower()
+
+            var paramPropertyLowered = Expression.Call(
+                paramProperty,
                 typeof(string).GetMethod("ToLower", System.Type.EmptyTypes)
             );
 
-            // query.ToLower()
+            var paramPropertyQueryExpr = 
+                StrContainsQuery(paramPropertyLowered, query);
 
-            var queryLowered = Expression.Call(
-                paramTitle,
-                typeof(string).GetMethod("ToLower", System.Type.EmptyTypes)
-            );
-
-            var paramTitleQueryExpr = 
-                StrContainsQuery(paramTitleLowered, query);
-
-            if (includeDesc)
-            {
-                Expression paramDescription = Expression.Property(
-                    artefactParamExp, 
-                    typeof(Artefact).GetProperty("Description")
-                );
-
-                Expression paramDescriptionLowered = Expression.Call(
-                    paramDescription,
-                    typeof(string).GetMethod("ToLower", System.Type.EmptyTypes)
-                );
-                var paramDescriptionQueryExpr = StrContainsQuery(paramDescriptionLowered, query);
-
-                return Expression.And(
-                    paramTitleQueryExpr,
-                    paramDescriptionQueryExpr
-                );
-            }
-            else 
-            {
-                return paramTitleQueryExpr;
-            }
+            return paramPropertyQueryExpr;
 
             MethodCallExpression StrContainsQuery(Expression strExpression, string rawQuery)
             {
@@ -91,7 +60,7 @@ namespace Artefactor.Shared
                         strExpression,
                         typeof(string).
                             GetMethod("Contains", new[] { typeof(string) }),
-                        Expression.Constant(query.ToLower(), typeof(string))
+                        Expression.Constant(rawQuery.ToLower(), typeof(string))
                     );
             }
         }

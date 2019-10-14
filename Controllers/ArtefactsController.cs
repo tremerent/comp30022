@@ -70,7 +70,7 @@ namespace Artefactor.Controllers
 
             [FromQuery] string user,
 
-            [FromQuery] string q,  // query by string
+            [FromQuery] string[] q,  // query by string
             [FromQuery] bool? includeDesc,
 
             [FromQuery] string vis,  // eg. ...&vis=public,private&...
@@ -223,24 +223,79 @@ namespace Artefactor.Controllers
 
             // query string query
 
-            if (q != null)
+            if (q != null && q.Length > 0)
             {
-                if (includeDesc.HasValue)
+                try {
+                    for (int i = 0; i < q.Length; i++) ProcessQuery(q[i]);
+                }
+                catch (Exception e) {
+                    if (e is QueryException) {
+                        return BadRequest("Badly formatted query 'q'");
+                    }
+                    else if (e is ArgumentException) {
+                        return BadRequest("Badly formatted query 'q'");
+                    }
+                    else {
+                        throw;
+                    }
+                }
+
+                void ProcessQuery(string query)
                 {
+                    var (queryText, queryProperty) = SplitQuery(query);
+
+                    if (!IsValidQueryProperty(queryProperty)) {
+                        throw new QueryException { IsQuery = true };
+                    }
+
+                    var propertyName = 
+                        ApiQueryPropertyToPropertyName(queryProperty);
+
                     whereLambdas.Add(
                         QueryExpressions.ArtefactStrQueryExpression(
-                            q, includeDesc.Value, artefactParam
+                            queryText, propertyName, artefactParam
                         )
                     );
+
+                    bool IsValidQueryProperty(string queryProperty)
+                    {
+                        return (queryProperty != null) ||
+                               (queryProperty == "title") ||
+                               (queryProperty == "description");
+                    }
+
+                    string ApiQueryPropertyToPropertyName(string apiQueryProperty) {
+                        if (apiQueryProperty == "title") {
+                            return "Title";
+                        }
+                        else if (apiQueryProperty == "description") {
+                            return "Description";
+                        }
+                        else {
+                            throw new ArgumentException();
+                        }
+                    }
                 }
-                else
+
+                // (queryText, queryProperty)
+                (string, string) SplitQuery(string query)
                 {
-                    whereLambdas.Add(
-                        QueryExpressions.ArtefactStrQueryExpression(
-                            q, false, artefactParam
-                        )
-                    );
+                    var split = query.Split(':');
+
+                    var queryText = split[0];
+                    string queryProperty;  // Artefact property to be queried
+                    if (split.Length > 1) 
+                    {
+                        queryProperty = split[1];
+                    }
+                    else
+                    {
+                        queryProperty = null;
+                    }
+
+                    return (queryText, queryProperty);
                 }
+
             }
 
             // categories query
