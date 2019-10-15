@@ -124,6 +124,41 @@ const auth = {
     setRedir,
 }
 
+function reqGetBrowserArtefacts(queryDetails) {
+    return {
+        type: artefactTypes.REQ_GET_BROWSER_ARTEFACTS,
+        query: queryDetails,
+    }
+}
+
+function resGetBrowserArtefacts(browserArtefacts) {
+    return {
+        type: artefactTypes.RES_GET_BROWSER_ARTEFACTS,
+        browserArtefacts,
+    }
+}
+
+function errGetBrowserArtefacts() {
+    return {
+        type: artefactTypes.ERR_GET_BROWSER_ARTEFACTS,
+    }
+}
+
+function getBrowserArtefacts(queryKeyValues) {
+    return async function(dispatch) {
+        dispatch(reqGetBrowserArtefacts(queryKeyValues))
+
+        try {
+            const browserArtefacts = await getArtefacts(queryKeyValues);
+
+            dispatch(resGetBrowserArtefacts(browserArtefacts));
+        }
+        catch(e) {
+            dispatch(errGetBrowserArtefacts({ error: e }));
+        }
+    }   
+}
+
 function reqGetMyArtefacts() {
     return {
         type: artefactTypes.REQ_GET_MY_ARTEFACTS,
@@ -151,7 +186,9 @@ function getMyArtefacts() {
         dispatch(reqGetMyArtefacts());
 
         try {
-            const myArtefacts = await getArtefacts(curUserUsername);
+            const myArtefacts = await getArtefacts({
+                user: curUserUsername
+            });
             dispatch(resGetMyArtefacts(myArtefacts));
         }
         catch (e) {
@@ -264,6 +301,7 @@ function resCreateMyArtefact(createdArtefact) {
     }
 }
 
+// returns the created artefact
 function createMyArtefact(newArtefact) {
     return async function (dispatch, getState) {
         dispatch(reqCreateMyArtefact())
@@ -320,6 +358,7 @@ const artefacts = {
     addMyArtefactSync,
     getPublicArtefacts,
     getUserArtefacts,
+    getBrowserArtefacts,
 }
 
 function reqGetUser(username) {

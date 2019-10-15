@@ -192,7 +192,13 @@ export class CreateArtefactForm extends Component {
                 </div>
 
                 <div className="form-group">
-                    <CategorySelect categoryVals={this.state.artefact.categories} setCategoryVals={this.handleSelectValsChange("categories")} />
+                    <CategorySelect 
+                        creatable={true} 
+                        categoryVals={this.state.artefact.categories} 
+                        setCategoryVals={this.handleSelectValsChange("categories")} 
+                        blurPlaceholder={"Choose your artefact's categories"}
+                        focusPlaceholder={"Type to search for a category or create your own"}
+                    />
                 </div>
             </div>
         );

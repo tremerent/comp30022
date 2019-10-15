@@ -121,6 +121,32 @@ function art(state = getInitArtState(), action) {
                     },
                 },
             }
+        case artefactTypes.REQ_GET_BROWSER_ARTEFACTS:
+            return {
+                ...state,
+                browserArts: {
+                    ...state.browserArts,
+                    loading: true,
+                    query: action.query
+                },
+            }
+        case artefactTypes.RES_GET_BROWSER_ARTEFACTS:
+            return {
+                ...state,
+                browserArts: {
+                    ...state.browserArts,
+                    browserArtefacts: action.browserArtefacts,
+                    loading: false,
+                },
+            }
+        case artefactTypes.ERR_GET_BROWSER_ARTEFACTS:
+            return {
+                ...state,
+                browserArts: {
+                    ...state.browserArts,
+                    error: true,
+                },
+            }
         default:
             return state
     }
