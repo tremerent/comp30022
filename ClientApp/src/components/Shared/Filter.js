@@ -70,8 +70,8 @@ function apiFormatDate(date, defaultText) {
 function getFormattedQuery(filterDetails) {
     const newFilterQueryParams = {};
     // nullify 'filterDetails' params. we don't want in q string
-    const removedFilterQueryParams = {};  
-    
+    const removedFilterQueryParams = {};
+
     // search query - can't search for an empty string
     if (filterDetails.searchQuery && filterDetails.searchQuery.text != "") {
 
@@ -82,7 +82,7 @@ function getFormattedQuery(filterDetails) {
             if (filterDetails.searchQuery.type.name == "both") {
                 newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:title`);
                 newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:description`);
-            } 
+            }
             else if (filterDetails.searchQuery.type.name == "title") {
                 newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:title`);
             }
@@ -91,7 +91,7 @@ function getFormattedQuery(filterDetails) {
             }
         }
         else {
-            // default to just title 
+            // default to just title
             newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:title`);
         }
     }
@@ -106,7 +106,7 @@ function getFormattedQuery(filterDetails) {
 
     // sort query
     if (filterDetails.sortQuery != null) {
-        newFilterQueryParams.sort = 
+        newFilterQueryParams.sort =
             `${filterDetails.sortQuery.name}:${filterDetails.sortQuery.order}`;
 
         removedFilterQueryParams.sortQuery = null;
@@ -123,7 +123,7 @@ function getFormattedQuery(filterDetails) {
     }
     if (filterDetails.categories && filterDetails.categories.length > 0) {
         // query string expects only name of category
-        newFilterQueryParams.category = 
+        newFilterQueryParams.category =
             filterDetails.categories
                          .map(catOption => catOption.label);
     }
@@ -142,11 +142,11 @@ function getFormattedQuery(filterDetails) {
  * Parent passes 'props.submitFilter'.
  */
 export default class Filter extends React.Component {
-    
+
     constructor(props) {
         super(props);
 
-        
+
         this.state = {
             filterDetails: {
                 searchQuery: {
@@ -158,7 +158,7 @@ export default class Filter extends React.Component {
                 until: null,
                 sortQuery: {
                     ...sortOptions[1],
-                    order: "desc", 
+                    order: "desc",
                 },
                 catQueryType: catQueryTypes[1],
             },
@@ -183,21 +183,21 @@ export default class Filter extends React.Component {
                                     <FontAwesomeIcon icon={faSearch} />
                                 </div>
                             </div>
-                            <input 
-                                onChange={(e) => 
-                                    this.handleFilterChange("searchQuery")({ 
-                                        ...this.state.filterDetails.searchQuery, 
-                                        text: e.target.value 
+                            <input
+                                onChange={(e) =>
+                                    this.handleFilterChange("searchQuery")({
+                                        ...this.state.filterDetails.searchQuery,
+                                        text: e.target.value
                                     })
-                                } 
+                                }
                                 value={this.state.filterDetails.searchQuery.text}
                                 className={`form-control`}
                                 placeholder={this.state.filterDetails.searchQuery.type.label}
                             />
                         </div>
                     </div>
-                    <ButtonDropdown 
-                        isOpen={this.state.showQuerySearchDrop} 
+                    <ButtonDropdown
+                        isOpen={this.state.showQuerySearchDrop}
                         toggle={() => this.toggle("showQuerySearchDrop") }
                     >
                         <DropdownToggle caret>
@@ -211,13 +211,13 @@ export default class Filter extends React.Component {
                                         // not duplicated by lambda
                                         if (queryType.name != this.state.filterDetails.searchQuery.type.name) {
                                             return (
-                                                <DropdownItem 
-                                                    onClick={() => { 
-                                                        this.toggle("showQuerySearchDrop"); 
+                                                <DropdownItem
+                                                    onClick={() => {
+                                                        this.toggle("showQuerySearchDrop");
                                                         this.handleFilterChange("searchQuery")({
                                                             ...this.state.filterDetails.searchQuery,
                                                             type: queryTypes[i]
-                                                        }); 
+                                                        });
                                                     }}
                                                     toggle={false}  // override default
                                                 >
@@ -236,17 +236,17 @@ export default class Filter extends React.Component {
                 {/* category select */}
                 <div className="af-filter-row">
                     <div className="af-filter-row-item">
-                        <CategorySelect 
+                        <CategorySelect
                             blurPlaceholder={"Click to choose a category"}
                             focusPlaceholder={"Categories"}
-                            creatable={false} 
-                            categoryVals={this.state.filterDetails.categories} 
-                            setCategoryVals={this.handleFilterChange("categories")} 
+                            creatable={false}
+                            categoryVals={this.state.filterDetails.categories}
+                            setCategoryVals={this.handleFilterChange("categories")}
                         />
                     </div>
 
-                    <ButtonDropdown 
-                                isOpen={this.state.showCatQueryTypeDrop} 
+                    <ButtonDropdown
+                                isOpen={this.state.showCatQueryTypeDrop}
                                 toggle={() => this.toggle("showCatQueryTypeDrop") }
                         >
                         <DropdownToggle caret>
@@ -260,10 +260,10 @@ export default class Filter extends React.Component {
                                         // not duplicated by lambda
                                         if (catQueryType.name != this.state.filterDetails.catQueryType.name) {
                                             return (
-                                                <DropdownItem 
-                                                    onClick={() => { 
-                                                        this.toggle("showCatQueryTypeDrop"); 
-                                                        this.handleFilterChange("catQueryType")(catQueryTypes[i]); 
+                                                <DropdownItem
+                                                    onClick={() => {
+                                                        this.toggle("showCatQueryTypeDrop");
+                                                        this.handleFilterChange("catQueryType")(catQueryTypes[i]);
                                                     }}
                                                     toggle={false}
                                                 >
@@ -283,9 +283,9 @@ export default class Filter extends React.Component {
                     <div className="af-filter-row-flex-item">
                         <Select
                             menuIsOpen={false}
-                            value={this.state.filterDetails.since 
-                                ? { label: `After ${formatDateDisplay(this.state.filterDetails.since)}`, 
-                                    value: this.state.filterDetails.since} 
+                            value={this.state.filterDetails.since
+                                ? { label: `After ${formatDateDisplay(this.state.filterDetails.since)}`,
+                                    value: this.state.filterDetails.since}
                                 : null}
                             placeholder="After"
                             onFocus={() => {
@@ -294,13 +294,13 @@ export default class Filter extends React.Component {
                             onBlur={() => this.paramToggle("showSinceCalendar")(false)}
                         />
                     </div>
-                 
+
                     <div className="af-filter-row-flex-item">
                         <Select
                             menuIsOpen={false}
-                            value={this.state.filterDetails.until 
-                                    ? { label: `Before ${formatDateDisplay(this.state.filterDetails.until)}`, 
-                                        value: this.state.filterDetails.until} 
+                            value={this.state.filterDetails.until
+                                    ? { label: `Before ${formatDateDisplay(this.state.filterDetails.until)}`,
+                                        value: this.state.filterDetails.until}
                                     : null
                                   }
                             placeholder="Before"
@@ -326,7 +326,7 @@ export default class Filter extends React.Component {
                                     onChange={this.handleFilterChange("since")}
                             />
                         </div>
-                        
+
                     </Collapse>
                     <Collapse
                         isOpen={this.state.showUntilCalendar}
@@ -345,10 +345,10 @@ export default class Filter extends React.Component {
                     <div className="af-filter-sort-outer">
                         <div className="af-filter-sort-select">
                             <Select
-                                onChange={(value) => 
+                                onChange={(value) =>
                                     this.handleFilterChange("sortQuery")
-                                    ({...this.state.filterDetails.sortQuery, 
-                                        ...value, 
+                                    ({...this.state.filterDetails.sortQuery,
+                                        ...value,
                                         order: "desc"})}  // TODO: sort query order
                                 values={this.state.filterDetails.sortQuery}
                                 options={sortOptions}
@@ -357,10 +357,10 @@ export default class Filter extends React.Component {
                                 isClearable={true}
                             />
                         </div>
-                        <button 
+                        <button
                             onClick={this.toggleSortDir}
                             className="btn af-filter-sort-order-toggle"
-                        > 
+                        >
                             {
                                 this.state.filterDetails.sortQuery.order === "asc"
                                 ?
@@ -374,13 +374,13 @@ export default class Filter extends React.Component {
                             }
 
                         </button>
-                    </div>      
-                    <button 
+                    </div>
+                    <button
                         onClick={this.handleSubmit}
                         className="btn btn-primary "
-                    > 
+                    >
                         <FontAwesomeIcon icon={faSearch} />
-                        &nbsp; 
+                        &nbsp;
                         Search
                     </button>
                 </div>
@@ -390,7 +390,7 @@ export default class Filter extends React.Component {
         return (
             <>
                 <div className="af-filter-header">
-                    <button 
+                    <button
                         onClick={() => this.toggle("showFilter")}
                         className="btn btn-outline"
                     >
@@ -411,12 +411,12 @@ export default class Filter extends React.Component {
                     <div>
                         {filterInputs}
                     </div>
-                </Collapse> 
+                </Collapse>
             </>
         );
     }
 
-    handleSubmit = () => { 
+    handleSubmit = () => {
         this.props.submitFilter(getFormattedQuery(this.state.filterDetails));
     }
 
@@ -431,7 +431,7 @@ export default class Filter extends React.Component {
         else {
             newOrder = "asc";
         }
-        
+
         this.handleFilterChange("sortQuery")({
             ...this.state.filterDetails.sortQuery,
             order: newOrder,
@@ -457,8 +457,8 @@ export default class Filter extends React.Component {
     }
 
     toggleFilterShown = (toggle) => {
-        const newState = toggle 
-            ? toggle 
+        const newState = toggle
+            ? toggle
             : !this.state.filterShown;
 
         this.setState({

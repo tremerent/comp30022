@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import CentreLoading from 'components/CentreLoading';
+import CentreLoading from 'components/Shared/CentreLoading';
 import ArtefactScroller from 'components/Artefact/ArtefactScroller';
 import Filter from 'components/Shared/Filter';
 import { artefacts as artActions } from 'redux/actions'
@@ -25,7 +25,7 @@ class FilteredBrowser extends React.Component {
     render() {
         return (
             <div className='af-filtered-browser'>
-                <Filter 
+                <Filter
                     submitFilter={this.submitFilter}
                 />
                 <div>
@@ -41,10 +41,10 @@ class FilteredBrowser extends React.Component {
                         loading={this.props.loading}
                     />
                 }
-            
+
             </div>
         );
-        
+
     }
 
     submitFilter = (filterQuery) => {
