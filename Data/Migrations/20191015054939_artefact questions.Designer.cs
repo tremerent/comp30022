@@ -4,77 +4,62 @@ using Artefactor.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Artefactor.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191015054939_artefact questions")]
+    partial class artefactquestions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.0.0")
+                .HasAnnotation("ProductVersion", "3.0.0-preview6.19304.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Artefactor.Models.ApplicationUser", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("Id");
 
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
+                    b.Property<int>("AccessFailedCount");
 
-                    b.Property<string>("Bio")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Bio");
 
                     b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                        .IsConcurrencyToken();
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
+                    b.Property<bool>("EmailConfirmed");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("ImageUrl");
 
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
+                    b.Property<bool>("LockoutEnabled");
 
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTimeOffset?>("LockoutEnd");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
                     b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("PasswordHash");
 
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("PhoneNumber");
 
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
+                    b.Property<bool>("PhoneNumberConfirmed");
 
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("SecurityStamp");
 
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
+                    b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
@@ -94,23 +79,17 @@ namespace Artefactor.Data.Migrations
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)")
                         .HasDefaultValue("NEWID()");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTime>("CreatedAt");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Description");
 
-                    b.Property<string>("OwnerId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("OwnerId");
 
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Title");
 
-                    b.Property<int>("Visibility")
-                        .HasColumnType("int");
+                    b.Property<int>("Visibility");
 
                     b.HasKey("Id");
 
@@ -121,11 +100,9 @@ namespace Artefactor.Data.Migrations
 
             modelBuilder.Entity("Artefactor.Models.ArtefactCategory", b =>
                 {
-                    b.Property<string>("ArtefactId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("ArtefactId");
 
-                    b.Property<string>("CategoryId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("CategoryId");
 
                     b.HasKey("ArtefactId", "CategoryId");
 
@@ -138,24 +115,18 @@ namespace Artefactor.Data.Migrations
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)")
                         .HasDefaultValue("NEWID()");
 
-                    b.Property<string>("ArtefactId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("ArtefactId");
 
-                    b.Property<string>("AuthorId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("AuthorId");
 
-                    b.Property<string>("Body")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Body");
 
                     b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired();
 
-                    b.Property<string>("ParentCommentId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("ParentCommentId");
 
                     b.HasKey("Id");
 
@@ -174,20 +145,15 @@ namespace Artefactor.Data.Migrations
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)")
                         .HasDefaultValue("NEWID()");
 
-                    b.Property<string>("ArtefactId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("ArtefactId");
 
-                    b.Property<int>("DocType")
-                        .HasColumnType("int");
+                    b.Property<int>("DocType");
 
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Title");
 
-                    b.Property<string>("Url")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Url");
 
                     b.HasKey("Id");
 
@@ -200,11 +166,9 @@ namespace Artefactor.Data.Migrations
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)")
                         .HasDefaultValue("NEWID()");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Name");
 
                     b.HasKey("Id");
 
@@ -214,33 +178,26 @@ namespace Artefactor.Data.Migrations
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.DeviceFlowCodes", b =>
                 {
                     b.Property<string>("UserCode")
-                        .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
 
                     b.Property<string>("ClientId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
 
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTime>("CreationTime");
 
                     b.Property<string>("Data")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
                         .HasMaxLength(50000);
 
                     b.Property<string>("DeviceCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
 
                     b.Property<DateTime?>("Expiration")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
+                        .IsRequired();
 
                     b.Property<string>("SubjectId")
-                        .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
 
                     b.HasKey("UserCode");
@@ -254,32 +211,25 @@ namespace Artefactor.Data.Migrations
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.PersistedGrant", b =>
                 {
                     b.Property<string>("Key")
-                        .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
 
                     b.Property<string>("ClientId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
 
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTime>("CreationTime");
 
                     b.Property<string>("Data")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
                         .HasMaxLength(50000);
 
-                    b.Property<DateTime?>("Expiration")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTime?>("Expiration");
 
                     b.Property<string>("SubjectId")
-                        .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
                     b.HasKey("Key");
@@ -291,19 +241,15 @@ namespace Artefactor.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("Id");
 
                     b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                        .IsConcurrencyToken();
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
                     b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
@@ -320,18 +266,14 @@ namespace Artefactor.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("ClaimType");
 
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("ClaimValue");
 
                     b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -344,18 +286,14 @@ namespace Artefactor.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("ClaimType");
 
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("ClaimValue");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -366,18 +304,14 @@ namespace Artefactor.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("LoginProvider");
 
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("ProviderKey");
 
-                    b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("ProviderDisplayName");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .IsRequired();
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -388,11 +322,9 @@ namespace Artefactor.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("UserId");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("RoleId");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -403,17 +335,13 @@ namespace Artefactor.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("UserId");
 
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("LoginProvider");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("Name");
 
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Value");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
@@ -424,15 +352,11 @@ namespace Artefactor.Data.Migrations
                 {
                     b.HasBaseType("Artefactor.Models.ArtefactComment");
 
-                    b.Property<string>("AnswerCommentId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("AnswerCommentId");
 
-                    b.Property<bool>("IsAnswered")
-                        .HasColumnType("bit");
+                    b.Property<bool>("IsAnswered");
 
-                    b.HasIndex("AnswerCommentId")
-                        .IsUnique()
-                        .HasFilter("[AnswerCommentId] IS NOT NULL");
+                    b.HasIndex("AnswerCommentId");
 
                     b.HasDiscriminator().HasValue("ArtefactQuestion");
                 });
@@ -535,8 +459,8 @@ namespace Artefactor.Data.Migrations
             modelBuilder.Entity("Artefactor.Models.ArtefactQuestion", b =>
                 {
                     b.HasOne("Artefactor.Models.ArtefactComment", "AnswerComment")
-                        .WithOne()
-                        .HasForeignKey("Artefactor.Models.ArtefactQuestion", "AnswerCommentId");
+                        .WithMany()
+                        .HasForeignKey("AnswerCommentId");
                 });
 #pragma warning restore 612, 618
         }
