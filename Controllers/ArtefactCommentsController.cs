@@ -162,18 +162,34 @@ namespace Artefactor.Controllers
 
             return new JsonResult(createdQuestion);
         }
-        class MarkAnswerPost
+        public class MarkAnswer
         {
             public string QuestionId { get; set; }
             public string AnswerId { get; set; }
-            public bool IsAnswer { get; set; }  // allows answers to be toggled
 
+        }
+
+        
+        [HttpDelete("mark-answer")]
+        [Authorize]
+        public async Task<IActionResult> RemoveMarkedAnswer(
+            [FromBody] MarkAnswer markAnswer)
+        {
+            var curUserId = _userService.GetCurUserId(HttpContext);
+
+            var question = _context.ArtefactQuestions
+                .Where(q => q.Id == markAnswer.QuestionId);
+
+            if (question == null)
+            {
+                return NotFound($"Question '{markAnswer.QuestionId}' does not exist");
+            }
         }
 
         [HttpPost("mark-answer")]
         [Authorize]
-        public async Task<IActionResult> MarkAnswer(
-            [FromBody] MarkAnswerPost markAnswer)
+        public async Task<IActionResult> MarkAsAnswer(
+            [FromBody] MarkAnswer markAnswer)
         {
             var curUserId = _userService.GetCurUserId(HttpContext);
 
