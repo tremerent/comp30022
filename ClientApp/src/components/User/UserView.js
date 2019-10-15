@@ -27,7 +27,7 @@ class UserView extends React.Component {
                     user={this.props.user}
                     userArtefacts={this.props.userArtefacts}
                     numArtefactsReg={this.props.userArtefacts.length}
-                    updateUserDetails={this.props.updateCurUserDetails} 
+                    updateUserDetails={this.props.updateCurUserDetails}
                     updateUserProfilePic={this.props.updateCurUserProfilePic}
                     editable={this.props.isViewOfCurUser}
                   />
@@ -52,7 +52,7 @@ function mapStateToProps(state) {
     const username = getUsernameFromPath(state.router.location.pathname);
 
     // state.users.username may not exist yet
-    const user = 
+    const user =
         state.users.users[username] != null
             ? state.users.users[username]
             : {

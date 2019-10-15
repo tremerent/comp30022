@@ -13,8 +13,6 @@ import Signup from './components/Auth/Signup';
 import requireAuth from './components/Auth/requireAuth';
 import NotFound from './components/Shared/NotFound';
 
-import ArtefactDocsTest from './components/Testing/ArtefactDocsTest.js';
-
 import './App.css';
 
 function loginIfUnauthed(Component) {

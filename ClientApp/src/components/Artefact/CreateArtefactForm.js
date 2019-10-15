@@ -209,9 +209,6 @@ export class CreateArtefactForm extends Component {
             this.docs[doc.id] = doc;
             break;
         default:
-            console.log(
-                `handleArtefactDocsChange(): unrecognised action '${action}'`
-            );
             console.warn(
                 `handleArtefactDocsChange(): unrecognised action '${action}'`
             );
