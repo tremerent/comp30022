@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { ArtefactPreview } from './ArtefactPreview.js';
-import CentreLoading from '../CentreLoading.js';
+import CentreLoading from '../Shared/CentreLoading.js';
 
 import './ArtefactScroller.css';
 

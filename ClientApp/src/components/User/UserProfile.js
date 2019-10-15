@@ -1,10 +1,10 @@
 import React from 'react';
 
-import ArtefactScroller from './Artefact/ArtefactScroller.js';
-import FloatingWindow from './FloatingWindow.js';
-import CreateArtefacts from './Artefact/CreateMyArtefact.js';
+import ArtefactScroller from '../Artefact/ArtefactScroller.js';
+import FloatingWindow from '../Shared/FloatingWindow.js';
+import CreateArtefacts from '../Artefact/CreateMyArtefact.js';
 
-import { changeCurUserInfo } from '../scripts/requests.js';
+import { changeCurUserInfo } from '../../scripts/requests.js';
 
 import './UserProfile.css';
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 
-import ImageCarousel from  '../ImageCarousel.js';
+import ImageCarousel from  '../Shared/ImageCarousel.js';
 
 import './ArtefactPreview.css';
 

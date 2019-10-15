@@ -2,9 +2,9 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { users as usersActions, artefacts as artActions } from '../redux/actions';
+import { users as usersActions, artefacts as artActions } from '../../redux/actions';
 import UserProfile from './UserProfile';
-import CentreLoading from './CentreLoading';
+import CentreLoading from '../Shared/CentreLoading';
 
 class UserView extends React.Component {
     constructor(props) {
@@ -46,7 +46,7 @@ function mapStateToProps(state) {
     const username = getUsernameFromPath(state.router.location.pathname);
 
     // state.users.username may not exist yet
-    const user = 
+    const user =
         state.users.users[username] != null
             ? state.users.users[username]
             : {

@@ -1,7 +1,7 @@
 import React from 'react';
 import $ from 'jquery';
 
-import ImageCarousel from '../ImageCarousel.js';
+import ImageCarousel from '../Shared/ImageCarousel.js';
 
 import './ArtefactDocs.css';
 

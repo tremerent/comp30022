@@ -4,7 +4,7 @@ import Carousel from './Carousel.js';
 
 import './ImageCarousel.css';
 
-import NO_IMAGES from '../images/no-images.png';
+import NO_IMAGES from '../../images/no-images.png';
 
 function renderFrame(image, n) {
     return (

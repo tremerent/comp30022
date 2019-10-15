@@ -6,12 +6,12 @@ import { Layout } from './components/Layout';
 import MyArtefacts from './components/Artefact/MyArtefacts.js';
 import LandingPage from './components/LandingPage.js';
 import ArtefactBrowser from './components/Artefact/ArtefactBrowser.js';
-import UserView from './components/UserView.js';
+import UserView from './components/User/UserView.js';
 import TestingHome from './components/Testing/TestingHome.js';
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
 import requireAuth from './components/Auth/requireAuth';
-import NotFound from './components/NotFound';
+import NotFound from './components/Shared/NotFound';
 
 import './App.css';
 
