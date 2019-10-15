@@ -1,6 +1,12 @@
-div {
+.comment p {
     border : 1px solid #000000;
-    /*Some indescriptive lightish colour to make
+    /*Some indescriptive lightish       colour to make
     the common comments blend in.*/
     background-color: #F5F5DC;
+}
+
+.question p {
+    border : 1px solid #000000;
+    /*A dyanamic aqua to make the       questions stand out.*/
+    background-color:	#00FFFF;
 }
