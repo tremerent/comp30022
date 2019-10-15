@@ -23,12 +23,15 @@ namespace Artefactor.Services
 
         // Returns Uri of uploaded param. 'file'. If successful, Uri will be
         //  'GenerateFileName(fileName)'. Otherwise, returns null.
-        public async Task<Uri> UploadFileToBlobAsync(string fileName, IFormFile file)
-        {
+        public async Task<Uri> UploadFileToBlobAsync(
+            string fileName, 
+            IFormFile file)  
+        {  
             // byte[] fileData, string fileMimeType
-            try
-            {
-                var blobContainer = GetBlobContainer(this._accessKey,
+            try  
+            {  
+                // TODO: use artefact container
+                var blobContainer = GetBlobContainer(this._accessKey, 
                                             this._defaultContainerName);
 
                 var uniqueFileName = this.GenerateFileName(fileName);
