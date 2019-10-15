@@ -27,6 +27,29 @@ namespace Artefactor.Controllers
             _userService = userService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetArtefactComments(
+            [FromQuery] string artefactId
+        )
+        {
+            var artefact = 
+                await _context.Artefacts.SingleOrDefaultAsync(a => a.Id == artefactId);
+
+            if (artefact == null)
+            {
+                return NotFound();
+            }
+
+            var artComments = _context.ArtefactComments
+                .Include(ac => ac.ChildComments)
+                .Include(ac => ac.ParentComment)
+                .Where(ac => ac.ArtefactId == artefactId);
+
+            var rootComments = artComments.Where(ac => ac.ParentCommentId == null);
+
+            return new JsonResult(rootComments);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetComment(string id)
         {
@@ -45,7 +68,6 @@ namespace Artefactor.Controllers
             }
         }
 
-
         public class CommentPost
         {
             [JsonRequired]
@@ -59,15 +81,7 @@ namespace Artefactor.Controllers
         public async Task<IActionResult> AddComment(
             [FromBody] CommentPost newComment)
         {
-            // Artefact commentingOn = _context.Artefacts
-            //     .SingleOrDefault(a => a.Id == newComment.ArtefactId);
-
             var curUserId = _userService.GetCurUserId(HttpContext);
-
-            // if (commentingOn == null)
-            // {
-            //     return NotFound();
-            // }
 
             var createdComment = new ArtefactComment
             {
