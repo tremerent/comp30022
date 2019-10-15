@@ -58,12 +58,12 @@ const catQueryTypes = [
 
 function formatDateDisplay(date, defaultText) {
     if (!date) return defaultText;
-    return format(date, 'DD/MM/YYYY');
+    return format(date, 'dd/MM/yyyy');
 }
 
 function apiFormatDate(date, defaultText) {
     if (!date) return defaultText;
-    return format(date, 'MM.DD.YYYY');
+    return format(date, 'MM.dd.yyyy');
 }
 
 // Converts 'state.filterDetails' to proper key value query strings
