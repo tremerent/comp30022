@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { ShowComment } from './ShowComment.js';
-import './Question.css';
 import './Comment.css';
 
 export class Discussion extends Component {
@@ -31,13 +30,6 @@ export class Discussion extends Component {
 
      /*Displays the given comment as well as all its descendents */
      display_comments(c) {
-         var queryType;
-         if (c.type == "normal") {
-             queryType = "Comment";
-         }
-         else if (c.type == "question") {
-             queryType = "Question";
-         }
 
          const childrenList = c.children.map(child => {
          return(
@@ -46,7 +38,7 @@ export class Discussion extends Component {
          })
 
          return(
-             <div  className = {queryType}>
+             <div>
                  <ShowComment comment = {c}/>
                  <ul>{childrenList}</ul>
              </div>
