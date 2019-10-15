@@ -53,7 +53,10 @@ class Signup extends React.Component {
                           // passed down as prop
                       }
                       else {
-                          const nextDir = this.props.redir ? this.props.redir : '/my-artefacts';
+                          const nextDir = this.props.redir ?
+                                  this.props.redir
+                              :
+                                  `/user/${this.props.username}`;
                           this.props.push(nextDir);
                       }
                   }).bind(this));
@@ -76,6 +79,7 @@ Signup.propTypes = {
 
 const mapStateToProps = state => ({
     loading: state.auth.loading,
+    username: state.auth.user.username,
     redir: state.auth.redir,
     error: state.auth.error,
 });
