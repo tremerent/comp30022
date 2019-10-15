@@ -9,9 +9,17 @@ export class Discussion extends Component {
 
         this.state = {
             comments : props.comments,
-            comment_count : props.comments.length
+            comment_count : count_comments(props.comments)
         }
 
+     }
+
+     count_comments(comment_list) {
+         count = 0;
+         for (comment in comment_list) {
+             count = count + count_comments(comment.children) + 1;
+         }
+         return count;
      }
 
      /*When the comment box is typed in and entered,
