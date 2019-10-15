@@ -17,4 +17,15 @@ namespace Artefactor.Models
         public ArtefactComment ParentComment { get; set; }
         public IEnumerable<ArtefactComment> ChildComments { get; set; }
     }
+
+    // public enum CommentType
+    // {
+    //     Unspecified = 0,
+    //     [EnumMember(Value = "comment")]
+    //     Comment = 1,  // default to unspecified
+    //     [EnumMember(Value = "question")]
+    //     Question = 2
+    //     [EnumMember(Value = "answer")]
+    //     Answer = 3
+    // }
 }

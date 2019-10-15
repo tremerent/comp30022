@@ -13,6 +13,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Artefactor.Controllers
 {
+    public static class Constants
+    {
+        public static int fkConstraintCode = -2146232060;
+    }
+
     [Route("api/artefacts/comments")]
     [ApiController]
     public class ArtefactCommentsController : ControllerBase
@@ -95,16 +100,116 @@ namespace Artefactor.Controllers
                 await _context.AddAsync(createdComment);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch (DbUpdateException e)
             {
+                if (e.InnerException.HResult == Constants.fkConstraintCode)
+                {
+                    return NotFound(
+                        $"'ArtefactId' '{newComment.ArtefactId}' does not exist.");
+                }
+
                 throw e;
             }
 
-            IQueryable<ArtefactComment> artefactComments = _context.ArtefactComments;
-
-            var found = artefactComments.SingleOrDefault(comment => comment.Id == createdComment.Id);
-
             return new JsonResult(createdComment);
+        }
+
+        // to post an 'answer', POST to 'reply' (method ReplyToComment)
+        [HttpPost("question")]
+        [Authorize]
+        public async Task<IActionResult> AddQuestion(
+            [FromBody] CommentPost newQuestion)
+        {
+            var curUserId = _userService.GetCurUserId(HttpContext);
+
+            var art = await _context
+                .Artefacts
+                .SingleOrDefaultAsync(a => a.Id == newQuestion.ArtefactId);
+
+            if (art == null)
+            {
+                return NotFound();
+            }
+            if (art.OwnerId != curUserId)
+            {
+                return Unauthorized("Only the artefact owner can post a question.");
+            }
+
+            var createdQuestion = new ArtefactQuestion
+            {
+                ArtefactId = newQuestion.ArtefactId,
+                AuthorId = curUserId,
+                Body = newQuestion.Body,
+
+                IsAnswered = false,
+            };
+
+            try 
+            {
+                await _context.AddAsync(createdQuestion);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException e)
+            {
+                if (e.InnerException.HResult == Constants.fkConstraintCode)
+                {
+                    return NotFound(
+                        $"'ArtefactId' '{newQuestion.ArtefactId}' does not exist.");
+                }
+
+                throw e;
+            }
+
+            return new JsonResult(createdQuestion);
+        }
+        class MarkAnswerPost
+        {
+            public string QuestionId { get; set; }
+            public string AnswerId { get; set; }
+            public bool IsAnswer { get; set; }  // allows answers to be toggled
+
+        }
+
+        [HttpPost("mark-answer")]
+        [Authorize]
+        public async Task<IActionResult> MarkAnswer(
+            [FromBody] MarkAnswerPost markAnswer)
+        {
+            var curUserId = _userService.GetCurUserId(HttpContext);
+
+            var art = await _context
+                .Artefacts
+                .SingleOrDefaultAsync(a => a.Id == markAnswer.QuestionId);
+
+            var question = await _context.ArtefactQuestions
+                    .SingleOrDefaultAsync(q => q.Id == markAnswer.QuestionId);
+            if (question == null)
+            {
+                return NotFound($"Question '{markAnswer.QuestionId}' does not exist.");
+            }
+            if (question.AuthorId != curUserId)
+            {
+                return Unauthorized("Only question owner can mark the question as answered.");
+            }
+
+            question.AnswerCommentId = markAnswer.AnswerId;
+
+            try 
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException e)
+            {
+                if (e.InnerException.HResult == Constants.fkConstraintCode)
+                {
+                    return NotFound(
+                        $"Question answer '{markAnswer.AnswerId}' does not exist.");
+                }
+
+                throw e;
+            }
+
+            return new NoContentResult();
         }
 
         public class CommentReplyPost
