@@ -62,13 +62,14 @@ export class CreateArtefactForm extends Component {
 
     render() {
         return (
-            <div style={{ height: '100%' }}>
+            <div style={{ /*height: '100%'*/ }}>
                 <div className="text-center">
                     <div className="spinner-border text-primary" role="status"
                         style={{
                             display:
                                 this.state.artefactWasCreated ? "none" :
                                     this.state.loading ? null : "none",
+                                margin: '5em 5em',
                         }}>
                         <span className="sr-only">Loading...</span>
                     </div>
@@ -192,10 +193,10 @@ export class CreateArtefactForm extends Component {
                 </div>
 
                 <div className="form-group">
-                    <CategorySelect 
-                        creatable={true} 
-                        categoryVals={this.state.artefact.categories} 
-                        setCategoryVals={this.handleSelectValsChange("categories")} 
+                    <CategorySelect
+                        creatable={true}
+                        categoryVals={this.state.artefact.categories}
+                        setCategoryVals={this.handleSelectValsChange("categories")}
                         blurPlaceholder={"Choose your artefact's categories"}
                         focusPlaceholder={"Type to search for a category or create your own"}
                     />

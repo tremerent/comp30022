@@ -1,5 +1,8 @@
 .af-filtered-browser {
+    flex-grow: 1;
+    display: flex;
     margin-top: 5%;
+    flex-direction: column;
 }
 
 .af-filter-header {
