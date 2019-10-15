@@ -28,7 +28,7 @@ class CreateMyArtefact extends React.Component {
 
         this.setState({
             ...this.state,
-            createdArtefact: createdArtefact,
+            createdArtefact,
         });
     }
 }
@@ -44,6 +44,6 @@ const mapDispatchToProps = dispatch => {
 }
 
 export default connect(
-    mapStateToProps, 
+    mapStateToProps,
     mapDispatchToProps
 )(CreateMyArtefact);

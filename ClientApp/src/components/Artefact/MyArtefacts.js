@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import CreateMyArtefact from './CreateMyArtefact.js';
-import CentreLoading from '../CentreLoading.js';
+import CentreLoading from '../Shared/CentreLoading.js';
 import ArtefactScroller from './ArtefactScroller.js';
 import { artefacts as artActions } from '../../redux/actions';
 
@@ -49,6 +49,30 @@ class MyArtefacts extends React.Component {
                     <CreateMyArtefact className="col-xs-6" />
                 </div>
             );
+
+            return (
+<div className='af-profile-outer'>
+    <div className='af-profile-inner-placeholder'></div>
+    <div className='af-profile-inner'>
+        <div className='af-profile-card-wrapper'>
+            <div className='af-profile-card'>
+                <div className='af-profile-card-inner'>
+                    <CreateMyArtefact className="col-xs-6"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div className='af-profile-scroller'>
+        <hr/>
+        <h3>{this.props.user.username + "'s Artefacts"}</h3>
+        <hr/>
+        <ArtefactScroller
+            artefacts={this.props.userArtefacts}
+            placeholder={"Oh no! This user hasn't registered any artefacts yet."}
+        />
+    </div>
+</div>
+            );
         }
     }
 
@@ -74,7 +98,7 @@ const mapDispatchToProps = dispatch => {
 }
 
 export default connect(
-    mapStateToProps, 
+    mapStateToProps,
     mapDispatchToProps
 ) (MyArtefacts);
 

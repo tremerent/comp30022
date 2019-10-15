@@ -646,7 +646,7 @@ namespace Artefactor.Controllers
         [HttpPost("image")]
         [Authorize]
         public async Task<IActionResult> AddImage(
-            [FromQuery] string artefactId, 
+            [FromQuery] string artefactId,
             [FromForm] IFormFile file)
         {
             var dbArt = await _context
@@ -663,9 +663,9 @@ namespace Artefactor.Controllers
                 return Unauthorized();
             }
 
-            try 
+            try
             {
-                Uri uri = 
+                Uri uri =
                     await _uploadService.UploadFileToBlobAsync(file.FileName, file);
 
                 await _context.AddAsync(new ArtefactDocument
@@ -680,16 +680,18 @@ namespace Artefactor.Controllers
 
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return StatusCode(500);
+                return StatusCode(500, e.ToString());
             }
+
+            return Ok();
         }
 
         [HttpDelete("{artefactId}/image")]
         [Authorize]
         public async Task<IActionResult> RemoveImage(
-            [FromQuery] string artefactId, 
+            [FromQuery] string artefactId,
             [FromQuery] string img_url)
         {
             var dbArt = await _context
@@ -705,7 +707,7 @@ namespace Artefactor.Controllers
             {
                 return Unauthorized();
             }
-            
+
             try {
                 _context.Remove(
                     await _context
@@ -719,7 +721,7 @@ namespace Artefactor.Controllers
             {
                 return StatusCode(500);
             }
-        } 
+        }
 
         private bool ArtefactExists(string id)
         {
