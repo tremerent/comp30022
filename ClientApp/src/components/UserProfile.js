@@ -1,6 +1,8 @@
 import React from 'react';
 
 import ArtefactScroller from './Artefact/ArtefactScroller.js';
+import FloatingWindow from './FloatingWindow.js';
+import CreateArtefacts from './Artefact/CreateMyArtefact.js';
 
 import { changeCurUserInfo } from '../scripts/requests.js';
 
@@ -73,6 +75,7 @@ export default class UserProfile extends React.Component {
         super(props);
 
         this.state = {
+            creating: false,
             bio: props.user.bio
         };
 
@@ -90,9 +93,20 @@ export default class UserProfile extends React.Component {
         changeCurUserInfo(this.props.user, { bio: newBio });
     }
 
+    createArtefacts = () => {
+        this.setState({ ...this.state, creating: true });
+    }
+
+    closeCreateArtefacts = () => {
+        this.setState({ ...this.state, creating: false });
+    }
+
     render() {
         return (
             <div className='af-profile-outer'>
+                <FloatingWindow id="addart" className='af-register-modal' title='Register An Artefact'>
+                    <CreateArtefacts/>
+                </FloatingWindow>
                 <div className='af-profile-inner-placeholder'></div>
                 <div className='af-profile-inner'>
                     <div className='af-profile-card-wrapper'>
@@ -132,7 +146,12 @@ export default class UserProfile extends React.Component {
                 </div>
                 <div className='af-profile-scroller'>
                     <hr/>
-                    <h3>{this.props.user.username + "'s Artefacts"}</h3>
+                    <div className='af-profile-scroller-title'>
+                        <h3 style={{ display: 'inline' }}>{this.props.user.username + "'s Artefacts"}</h3>
+                        <button className='btn btn-primary af-profile-addbutton' data-target='#addart' data-toggle='modal'>
+                            Add
+                        </button>
+                    </div>
                     <hr/>
                     <ArtefactScroller
                         artefacts={this.props.userArtefacts}
