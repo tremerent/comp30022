@@ -38,11 +38,9 @@ export class ArtefactPreview extends Component {
                             <h5 className="af-artcard-title">{a.title}</h5>
                             {/*<p className="text-muted af-artcard-text">{a.description}</p>*/}
                             {/*<span className="af-artcard-separator"/>*/}
-                                        <a className='af-artcard-owner'
-                                            href={a.owner && a.owner.username ? `/user/${a.owner.username}` : ``}
-                                        >
-                                {a.owner ? a.owner.username : ""}
-                            </a>
+                            <Link className='af-artcard-owner'
+                                to={a.owner && a.owner.username ? `/user/${a.owner.username}` : ``}
+                            > {a.owner && a.owner.username ? a.owner.username : ''} </Link>
                         </div>
                         <div className="af-artcard-categories">
                             {this.categoryJoinsToCategories(a.categoryJoin).map(c =>

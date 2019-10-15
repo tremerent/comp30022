@@ -1,96 +1,21 @@
 import React from 'react';
-
-import ArtefactScroller from '../Artefact/ArtefactScroller.js';
 import FloatingWindow from '../Shared/FloatingWindow.js';
 import CreateArtefacts from '../Artefact/CreateMyArtefact.js';
 
-import { changeCurUserInfo } from '../../scripts/requests.js';
+import ArtefactScroller from '../Artefact/ArtefactScroller.js';
+import { editableTextArea } from 'components/Shared/editableTextArea';
+import ProfilePicture from './ProfilePicture';
 
 import './UserProfile.css';
-
-class SubmitTextArea extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            value: this.props.children || '',
-            name: this.props.name || 'textarea',
-        };
-
-        this.onChange = this.onChange.bind(this);
-    }
-
-    onChange(e) {
-        this.setState({
-            value: e.target.value,
-        });
-    }
-
-    getValue() {
-        return this.state.value;
-    }
-
-    submit = () => {
-        this.props.onSubmit(this.state.value);
-    }
-
-    render() {
-        return (
-            <>
-                {this.props.label && this.props.id &&
-                    <label htmlFor={this.props.id}>
-                        {this.props.label}
-                    </label>}
-                {this.props.id ?
-                    <textarea
-                        name={this.props.name}
-                            value={this.state.value}
-                            onChange={this.onChange}
-                            className="form-control"
-                            id={this.props.id}
-                        />
-                    :
-                    <textarea
-                            name={this.props.name}
-                            value={this.state.value}
-                            onChange={this.onChange}
-                            className="form-control"
-                        />}
-                <button class='btn btn-primary' onClick={this.submit}>{
-                    this.props.buttonText ?
-                        this.props.buttonText
-                    :
-                        'Submit'
-                }</button>
-            </>
-        );
-    }
-}
+import './UserProfileEditing.css';
 
 
 export default class UserProfile extends React.Component {
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            creating: false,
-            bio: props.user.bio
-        };
-
-        if (this.state.bio == null || this.state.bio.length === 0)
-            this.state.bio =
-                `Oh no! ${props.user.username} is yet to provide a bio.`;
-    }
-
     changeBio = (newBio) => {
-        console.log(`Set bio to "${newBio}"`);
-        this.setState({
-            ...this.state,
+        this.props.updateUserDetails({
             bio: newBio
         });
-        changeCurUserInfo(this.props.user, { bio: newBio });
     }
 
     createArtefacts = () => {
@@ -102,6 +27,24 @@ export default class UserProfile extends React.Component {
     }
 
     render() {
+
+        const BioText = (props) => {
+            const bioPlaceholderStr =
+                `Oh no! ${this.props.user.username} is yet to provide a bio.`;
+            return <div className='text-muted'>
+                    {
+                        props.value != null && props.value.length
+                        ? props.value
+                        : bioPlaceholderStr
+                    }
+                </div>;
+        }
+
+        let EditableBio;
+        if (this.props.editable) {
+            EditableBio = editableTextArea(BioText);
+        }
+
         return (
             <div className='af-profile-outer'>
                 <FloatingWindow id="addart" className='af-register-modal' title='Register An Artefact'>
@@ -112,14 +55,12 @@ export default class UserProfile extends React.Component {
                     <div className='af-profile-card-wrapper'>
                         <div className='af-profile-card'>
                             <div className='af-profile-card-inner'>
-                                <img
-                                    src={ this.props.user.image_url ?
-                                            this.props.user.image_url
-                                        :
-                                            '/img/profile-placeholder.png'
+                                <ProfilePicture
+                                    imageUrl={this.props.user.imageUrl}
+                                    updateProfilePic={this.props.
+                                        updateUserProfilePic
                                     }
-                                    className='af-profile-image'
-                                    alt={`${this.props.user.username}'s profile image`}
+                                    editable={this.props.editable}
                                 />
                                 <div className='af-profile-info'>
                                     <h2 className='af-profile-name'>{this.props.user.username}</h2>
@@ -131,14 +72,40 @@ export default class UserProfile extends React.Component {
                                         </span>
                                     </div>
                                     <hr/>
-                                                <div className='text-muted text-center'>{this.state.bio}</div>
+                                    {
+                                        this.props.editable
+                                        ?
+                                        <EditableBio
+                                            value={this.props.user.bio}
+                                            onValueSubmit={this.changeBio}
+                                        />
+                                        :
+                                        <BioText />
+                                    }
+
+                                    {/* <EditableTextArea
+                                        Text={bio}
+                                        value={this.state.bio}
+                                        onValueChange={this.changeBio}
+                                    /> */}
+                                    {/* <div>
+                                        <div className='text-muted'>{this.state.bio}</div>
+                                        {
+                                            this.props.editable
+                                                ? <button onClick={}>
+                                                    <FontAwesomeIcon icon={faImages} />
+                                                  </button>
+                                                :
+                                        }
+                                    </div>
+
                                                 <SubmitTextArea
                                                     id='af-edit-bio'
                                                     name='edit-bio'
                                                     onSubmit={this.changeBio}
                                                 >
                                                     Describe yourself
-                                                </SubmitTextArea>
+                                                </SubmitTextArea> */}
                                 </div>
                             </div>
                         </div>

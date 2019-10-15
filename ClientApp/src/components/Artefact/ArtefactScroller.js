@@ -14,11 +14,6 @@ export default class ArtefactScroller extends Component {
     }
 
     componentDidMount() {
-        //if (this.state.loading)
-        //    getArtefacts()
-        //        .then(artefacts => {
-        //            this.setState({ artefacts, loading: false });
-        //        });
     }
 
     render() {
