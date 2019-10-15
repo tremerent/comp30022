@@ -1,4 +1,5 @@
 ﻿import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 export default class CategoriesPreview extends Component {
     static displayName = CategoriesPreview.name;
@@ -11,9 +12,13 @@ export default class CategoriesPreview extends Component {
         function categoryBadge(category) {
             if (category.name && category.id) {
                 return (
-                    <a href={`/browse?category=${category.id}`} key={category.id} className="badge badge-decal-text mx-1">
+                    <Link
+                            to={`/browse?category=${category.id}`}
+                            key={category.id}
+                            className="badge badge-decal-text mx-1"
+                    >
                         {category.name}
-                    </a>
+                    </Link>
                 );
             }
             else {
@@ -23,25 +28,5 @@ export default class CategoriesPreview extends Component {
 
         return this.props.categories.map(category => categoryBadge(category));
     }
-
-    //this.props.categories.map(
-
-    //    (cj) => {
-    //        if (cj) {
-    //            return (
-    //                <div key={cj.categoryId + cj.artefactId}>
-    //                    <div className="badge badge-decal-text">
-    //                        cj
-    //                                </div>
-    //                </div>
-    //            );
-    //        }
-    //        else {
-    //            return (
-    //                <div> </div>
-    //            );
-    //        }
-    //    }
-
-    //);
 }
+
