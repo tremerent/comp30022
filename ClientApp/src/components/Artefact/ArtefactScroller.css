@@ -42,3 +42,25 @@
     height: 100%;
 }
 
+/*Creates something to look at while waiting for artefacts to load.*/
+.af-artefact-scroller-loader {
+    border-radius: 50%;
+    border-top: 16px solid #FFF8DC;
+    border-right: 16px solid #D2B48C;
+    border-bottom: 16px solid #FFDEAD;
+    border-left: 16px solid #DEB887; 
+    width: 60px;
+    height: 60px;
+    -webkit-animation: spin 2s linear infinite; 
+    animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
