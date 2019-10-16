@@ -56,7 +56,7 @@ export default class ArtefactScroller extends Component {
         more artefacts to be loaded- The loading cirlce wouldn't be seen.*/
         var maybe_loading;
         if (this.state.artefactsToScroll.length != this.props.artefacts.length) {
-            maybe_loading = (<div className="loader"></div>);
+            maybe_loading = (<div className="af-artefact-scroller-loader"></div>);
         }
         else {
             maybe_loading = (<div></div>);
