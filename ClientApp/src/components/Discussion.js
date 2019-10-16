@@ -2,21 +2,21 @@ import React, { Component } from 'react';
 import { ShowComment } from './ShowComment.js';
 import './Comment.css';
 
-export class Discussion extends Component {
+export default class Discussion extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             comments : props.comments,
-            comment_count : count_comments(props.comments)
+            comment_count : this.count_comments(props.comments)
         }
 
      }
 
      count_comments(comment_list) {
-         count = 0;
-         for (comment in comment_list) {
-             count = count + count_comments(comment.children) + 1;
+         let count = 0;
+         for (let comment in comment_list) {
+             count += 1 + this.count_comments(comment.replies);
          }
          return count;
      }
@@ -24,14 +24,12 @@ export class Discussion extends Component {
      /*When the comment box is typed in and entered,
      add a comment.*/
      add_comment(e) {
-
-         comment_count = comment_count + 1;
+         this.state.comment_count += 1;
      }
 
      /*Displays the given comment as well as all its descendents */
      display_comments(c) {
-
-         const childrenList = c.children.map(child => {
+         const childrenList = c.replies.map(child => {
          return(
              <li key={child.id}>{this.display_comments(child)}</li>
          )
@@ -48,7 +46,8 @@ export class Discussion extends Component {
     render() {
         return(
         <div>
-             {this.display_comments(this.state.comments)}
+            {this.state.comments.map(c =>
+                this.display_comments(c))}
         </div>
         );
     }
