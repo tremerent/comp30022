@@ -28,6 +28,16 @@ export default class ArtefactScroller extends Component {
             this.state.artefactsToScroll.push(this.props.artefacts[i])
         }
     }
+    
+    handleScroll = (e) => {
+        /*If the area seen by the client is the same as the total area minus how much as been shaved off,
+        we have reached the bottom.*/
+        const bottom = e.target.scrollHeight - e.target.scrollTop ===
+                       e.target.clientHeight;
+        if (bottom) {
+             this.update_artefacts_to_scroll();
+        }
+    }
 
     componentDidMount() {
     }
@@ -37,12 +47,26 @@ export default class ArtefactScroller extends Component {
             return (
                 <CentreLoading />
             );
+                
+        /*Case 1: The bottom of the scroller hasn't been reached-It does not matter 
+        if there is a loading cirle on the bottom or not as you can't see it.
+        Case 2: The bottom of the scroller has been reached and there are still
+        more artefacts to be loaded- The loading circle will be seen.
+        Case 3: The bottom of the scroller has been reached and there are no
+        more artefacts to be loaded- The loading cirlce wouldn't be seen.*/
+        var maybe_loading;
+        if (this.state.artefactsToScroll.length != this.props.artefacts.length) {
+            maybe_loading = (<div className="loader"></div>);
+        }
+        else {
+            maybe_loading = (<div></div>);
+        }        
 
         return (
             //<div className={this.props.className + ' af-artefact-scroller-wrapper'}>
             //    <div className='af-artefact-scroller'>
             //        <div className='af-artefact-scroller-inner'>
-            <div className='af-artefact-scroller-container'>
+            <div className='af-artefact-scroller-container' onScroll={this.handleScroll}>
                 {
                     this.state.artefactsToScroll.length
                         ? this.state.artefactsToScroll.map(a => {
@@ -78,7 +102,9 @@ export default class ArtefactScroller extends Component {
         //            //            return <ArtefactPreview key={a.id} artefact={a} />;
         //            //        }
         //            //    })
+                
                 }
+                {maybe_loading}
             </div>
             //        </div>
             //    </div>
