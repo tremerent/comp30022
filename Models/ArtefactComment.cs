@@ -16,5 +16,8 @@ namespace Artefactor.Models
         public string ParentCommentId { get; set; }
         public ArtefactComment ParentComment { get; set; }
         public IEnumerable<ArtefactComment> ChildComments { get; set; }
+
+        public string CommentType { get; set; }
+        public System.DateTime CreatedAt { get; set; }
     }
 }
