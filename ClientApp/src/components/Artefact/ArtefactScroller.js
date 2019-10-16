@@ -11,6 +11,21 @@ import PLACEHOLDER_IMAGE_03 from '../../images/filler/artefact-03.jpg';
 export default class ArtefactScroller extends Component {
     constructor(props) {
         super(props);
+        
+        this.state = {
+            /*The maximum number of artefacts that are loaded at once*/
+            load_limit : 10,
+            artefactsToScroll: []
+        }
+    }
+    
+    /*Adds new artefacts to artefactsToScroll. i counts how many artefacts have been loaded*/
+    update_artefacts_to_scroll() {
+        var j = 0;
+        for (var i = this.state.artefactsToScroll.length; 
+             i < this.props.artefacts.length && j < this.state.load_limit; i++, j++) {
+            this.state.artefactsToScroll.push(this.props.artefacts[i])
+        }
     }
 
     componentDidMount() {
@@ -22,19 +37,14 @@ export default class ArtefactScroller extends Component {
                 <CentreLoading />
             );
 
-        const artefactsToScroll =
-            this.props.artefacts != null
-                ? this.props.artefacts
-                : [];
-
         return (
             //<div className={this.props.className + ' af-artefact-scroller-wrapper'}>
             //    <div className='af-artefact-scroller'>
             //        <div className='af-artefact-scroller-inner'>
             <div className='af-artefact-scroller-container'>
                 {
-                    artefactsToScroll.length
-                        ? artefactsToScroll.map(a => {
+                    this.state.artefactsToScroll.length
+                        ? this.state.artefactsToScroll.map(a => {
                             if (a) {
                                 return <ArtefactPreview key={a.id} artefact={a} />;
                             }
