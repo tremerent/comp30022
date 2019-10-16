@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Artefactor.Data.Migrations
+namespace Artefactor.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -150,9 +150,12 @@ namespace Artefactor.Data.Migrations
                     b.Property<string>("Body")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
+                    b.Property<string>("CommentType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ParentCommentId")
                         .HasColumnType("nvarchar(450)");
@@ -167,7 +170,7 @@ namespace Artefactor.Data.Migrations
 
                     b.ToTable("ArtefactComments");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("ArtefactComment");
+                    b.HasDiscriminator<string>("CommentType").HasValue("ArtefactComment");
                 });
 
             modelBuilder.Entity("Artefactor.Models.ArtefactDocument", b =>
@@ -430,9 +433,7 @@ namespace Artefactor.Data.Migrations
                     b.Property<bool>("IsAnswered")
                         .HasColumnType("bit");
 
-                    b.HasIndex("AnswerCommentId")
-                        .IsUnique()
-                        .HasFilter("[AnswerCommentId] IS NOT NULL");
+                    b.HasIndex("AnswerCommentId");
 
                     b.HasDiscriminator().HasValue("ArtefactQuestion");
                 });
@@ -535,8 +536,8 @@ namespace Artefactor.Data.Migrations
             modelBuilder.Entity("Artefactor.Models.ArtefactQuestion", b =>
                 {
                     b.HasOne("Artefactor.Models.ArtefactComment", "AnswerComment")
-                        .WithOne()
-                        .HasForeignKey("Artefactor.Models.ArtefactQuestion", "AnswerCommentId");
+                        .WithMany()
+                        .HasForeignKey("AnswerCommentId");
                 });
 #pragma warning restore 612, 618
         }

@@ -68,9 +68,8 @@ namespace Artefactor.Data
                 .HasMany(a => a.Comments)
                 .WithOne(ac => ac.Artefact);
 
-            // modelBuilder.Entity<ArtefactQuestion>()
-            //     .HasOne(aq => aq.AnswerComment)
-            //     .WithOne();
+            modelBuilder.Entity<ArtefactComment>()
+                .HasDiscriminator<string>("CommentType");
         }
     }
 }

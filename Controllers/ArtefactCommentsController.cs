@@ -45,6 +45,9 @@ namespace Artefactor.Controllers
                 return NotFound();
             }
 
+            // Load all comments with their children. We recursively
+            // attach the next levels, starting at the artefact's root comments. 
+
             var artComments = await _context
                 .ArtefactComments
                 .Where(ac => ac.ArtefactId == artefactId)
@@ -66,7 +69,8 @@ namespace Artefactor.Controllers
             {
                 List<ArtefactComment> children;
 
-                // check for 0 in case 'parent' is a rootComment
+                // if 'parent' is an element of 'rootComments', no need to attach
+                // children, since they will already be attached from '.Include'
                 if (parent.ChildComments == null || 
                     parent.ChildComments.Count() == 0) 
                 {
@@ -123,6 +127,7 @@ namespace Artefactor.Controllers
                 ArtefactId = newComment.ArtefactId,
                 AuthorId = curUserId,
                 Body = newComment.Body,
+                CreatedAt = new System.DateTime(),
             };
 
             try 
@@ -173,6 +178,7 @@ namespace Artefactor.Controllers
                 ArtefactId = replyingTo.ArtefactId,
                 AuthorId = curUserId,
                 ParentCommentId = replyingTo.Id,
+                CreatedAt = new System.DateTime(),
             };
 
             // no need to catch the fk error - already checked for 404
@@ -209,6 +215,7 @@ namespace Artefactor.Controllers
                 ArtefactId = newQuestion.ArtefactId,
                 AuthorId = curUserId,
                 Body = newQuestion.Body,
+                CreatedAt = new System.DateTime(),
 
                 IsAnswered = false,
             };

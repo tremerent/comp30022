@@ -28,6 +28,8 @@ namespace Artefactor.Services.Converters
                     ChildComments = childJson ?? new List<object>(),
                     ((ArtefactQuestion) c).AnswerCommentId,  // 'c.AnswerComment' will be in ChildComments 
                     ((ArtefactQuestion) c).IsAnswered,
+                    c.CommentType,
+                    c.CreatedAt,
                 };
             }
 
