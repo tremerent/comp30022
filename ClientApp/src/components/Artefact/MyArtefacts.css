@@ -17,4 +17,10 @@
     flex-direction: column;
     justify-content: center;
 
+    text-align: center;
 }
+
+.card {
+    border: none;
+}
+

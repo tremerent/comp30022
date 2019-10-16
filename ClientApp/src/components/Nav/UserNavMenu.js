@@ -26,7 +26,7 @@ class UserNavMenu extends React.Component {
         return (
             <>
                 <StyledNavLink
-                    to={profilePath}
+                    to={`/user/${this.props.user.username}`}
                     label="Profile"
                     curPath={this.props.curPath}
                 />

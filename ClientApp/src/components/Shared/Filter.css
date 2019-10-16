@@ -1,0 +1,57 @@
+.af-filtered-browser {
+    margin-top: 5%;
+}
+
+.af-filter-header {
+    display: flex;
+    justify-content: end;
+
+    margin-bottom: 3%;
+}
+
+.af-filter-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 2%;
+}
+
+.af-filter-row-item {
+    width: 80%;
+    display: inline-block;
+    margin-right: 4%;
+}
+
+.af-filter-bottom-margin {
+    margin-bottom: 2%;
+}
+
+.af-filter-row-flex-item {
+    margin-right: 2%;
+    width: 30%;
+}
+
+.af-filter-datepicker-outer {
+    display: flex;
+    flex-direction: row;
+}
+
+.af-filter-datepicker-inner {
+    display: flex;
+    flex-direction: column;
+}
+
+.af-filter-sort-outer {
+    width: 30%;
+}
+
+.af-filter-sort-select {
+    display: inline-block;
+    width: 79%;
+    margin-right: 1%;
+}
+
+.af-filter-sort-order-toggle {
+    width: 20%;
+    margin-bottom: 7px;
+}

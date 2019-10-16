@@ -53,21 +53,6 @@ namespace TokenAuth
                         IdentityServerConstants.StandardScopes.Address,
                         "artefactorapi",
                     }
-
-                    //ClientId = "artefactor.react",
-                    //AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-
-                    //ClientSecrets =
-                    //{
-                    //    new Secret("secret".Sha256())
-                    //},
-                    //AllowedScopes = {
-                    //    IdentityServerConstants.StandardScopes.OpenId,
-                    //    IdentityServerConstants.StandardScopes.Profile,
-                    //    IdentityServerConstants.StandardScopes.Email,
-                    //    IdentityServerConstants.StandardScopes.Address,
-                    //    "api1"
-                    //}
                 }
             };
         }

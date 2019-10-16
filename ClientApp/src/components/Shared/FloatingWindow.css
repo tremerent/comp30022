@@ -1,0 +1,24 @@
+
+.card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-title {
+    font-weight: bold;
+}
+
+.modal-header {
+    padding: 0.5rem 1rem;
+}
+
+.modal-header .close {
+    padding: 0.5rem 1rem;
+    padding-top: 1.1rem;
+}
+
+.modal-content {
+    margin-bottom: 1.75rem;
+}
+

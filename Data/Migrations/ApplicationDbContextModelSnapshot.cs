@@ -35,6 +35,8 @@ namespace Artefactor.Data.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
+                    b.Property<string>("ImageUrl");
+
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
@@ -77,6 +79,8 @@ namespace Artefactor.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue("NEWID()");
 
+                    b.Property<DateTime>("CreatedAt");
+
                     b.Property<string>("Description");
 
                     b.Property<string>("OwnerId");
@@ -103,6 +107,27 @@ namespace Artefactor.Data.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("ArtefactCategory");
+                });
+
+            modelBuilder.Entity("Artefactor.Models.ArtefactDocument", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("NEWID()");
+
+                    b.Property<string>("ArtefactId");
+
+                    b.Property<int>("DocType");
+
+                    b.Property<string>("Title");
+
+                    b.Property<string>("Url");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArtefactId");
+
+                    b.ToTable("ArtefactDocuments");
                 });
 
             modelBuilder.Entity("Artefactor.Models.Category", b =>
@@ -311,6 +336,13 @@ namespace Artefactor.Data.Migrations
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Artefactor.Models.ArtefactDocument", b =>
+                {
+                    b.HasOne("Artefactor.Models.Artefact", "Artefact")
+                        .WithMany("Images")
+                        .HasForeignKey("ArtefactId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

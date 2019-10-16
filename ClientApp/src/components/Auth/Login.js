@@ -19,8 +19,6 @@ class Login extends React.Component {
     }
 
     loginForm = () => {
-        console.log(this);
-        console.log(this.props);
         return (
             <>
                 <h3>Log in</h3>

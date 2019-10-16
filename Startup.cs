@@ -3,24 +3,28 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
-using Artefactor.Data;
-using Artefactor.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
+
+using Artefactor.Data;
+using Artefactor.Models;
+using Artefactor.Services;
+using Artefactor.Services.Converters;
 
 namespace Artefactor
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -50,7 +54,7 @@ namespace Artefactor
                 .AddJwtBearer(options =>
                 {
                     // base-address of your identityserver
-                    options.Authority = "https://localhost:44377";
+                    options.Authority = "https://localhost:5001";
 
                     // name of the API resource
                     options.Audience = "artefactorapi";
@@ -65,6 +69,10 @@ namespace Artefactor
                     {
                         options.SerializerSettings.ReferenceLoopHandling =
                             Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+
+                        options.SerializerSettings.Converters = new List<Newtonsoft.Json.JsonConverter> {
+                            new Newtonsoft.Json.Converters.StringEnumConverter()
+                        };
                     });
 
             // In production, the React files will be served from this directory
@@ -72,6 +80,15 @@ namespace Artefactor
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            // Domain layer services
+            services.AddSingleton(Configuration);
+            services.AddScoped<UploadService>();
+            services.AddScoped<UserService>();
+
+            // models -> json
+            services.AddTransient<IConverter<Artefact>, ArtefactConverter>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -99,6 +116,9 @@ namespace Artefactor
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
+                    name: "userArtefacts",
+                    template: "Artefacts/user/{username}");
+                routes.MapRoute(
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");
             });
@@ -115,3 +135,5 @@ namespace Artefactor
         }
     }
 }
+
+

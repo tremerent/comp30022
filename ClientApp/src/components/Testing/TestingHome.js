@@ -12,7 +12,6 @@ export default class TestingHome extends Component {
             <div className="row">
                 <div className="col-xs-6">
                     <Scratch />
-                    <AuthTest />
                 </div>
                 <div className="col-xs-6">
                     <ComponentTests />

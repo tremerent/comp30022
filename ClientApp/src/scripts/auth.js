@@ -8,10 +8,8 @@ const identityConnectDetails = {
 
 function getCurUser() {
     const authDetails = JSON.parse(
-        localStorage.getItem("authDetails")
+        localStorage.getItem("userAuth")
     );
-
-    console.log(authDetails);
 
     if (authDetails && authDetails.user) {
         return authDetails.user;
@@ -34,7 +32,7 @@ async function setUser(loginDetails) {
             },
         };
 
-        localStorage.setItem("authDetails", JSON.stringify(authDetails));
+        localStorage.setItem("userAuth", JSON.stringify(authDetails));
     }
     catch (e) {
         console.error(e);
@@ -44,7 +42,7 @@ async function setUser(loginDetails) {
 }
 
 function logoutUser() {
-    localStorage.removeItem("authDetails");
+    localStorage.removeItem("userAuth");
 }
 
 async function postTokenReq(loginDetails) {
@@ -63,8 +61,21 @@ async function postTokenReq(loginDetails) {
     return await resp.json();
 }
 
+function getToken() {
+    const curUserAuth = JSON.parse(
+        localStorage.getItem("userAuth")
+    );
+
+    if (curUserAuth) {
+        return curUserAuth.token;
+    }
+
+    return null;
+}
+
 export {
     getCurUser,
     setUser,
     logoutUser,
+    getToken
 }

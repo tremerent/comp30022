@@ -3,13 +3,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { CreateArtefact } from './CreateArtefact.js';
+import CreateMyArtefact from './CreateMyArtefact.js';
+import CentreLoading from '../Shared/CentreLoading.js';
 import ArtefactScroller from './ArtefactScroller.js';
 import { artefacts as artActions } from '../../redux/actions';
-
-import PLACEHOLDER_IMAGE_01 from '../../images/filler/artefact-01.jpg';
-import PLACEHOLDER_IMAGE_02 from '../../images/filler/artefact-02.jpg';
-import PLACEHOLDER_IMAGE_03 from '../../images/filler/artefact-03.jpg';
 
 import './MyArtefacts.css';
 
@@ -25,78 +22,83 @@ class MyArtefacts extends React.Component {
     }
 
     componentDidMount() {
-
         (async () => {
             await this.props.getMyArtefacts();
         })();
-
-
-        //getArtefacts()
-        //    .then(artefacts => {
-        //        for (let a of artefacts)
-        //            a.images = [
-        //                        PLACEHOLDER_IMAGE_01,
-        //                        PLACEHOLDER_IMAGE_02,
-        //                        PLACEHOLDER_IMAGE_03,
-        //                    ];
-        //        this.setState({ artefacts, loading: false });
-        //    });
     }
 
     render() {
-        const myArtefacts =
-            this.props.myArtefacts.length
-                ? <ArtefactScroller artefacts={this.props.myArtefacts} />
-                : this.noArtefactsView();
-                    /* Key hac ^^^
-                        This is a hack. Changing the key forces React to
-                        construct a new ArtefactScroller, which it was
-                        previously optimising away. We should definitely
-                        learn how react actually works instead of just doing
-                        this.
-                            -- Sam
-                    */
-                    // <ArtefactScroller key={this.state.artefacts.length} artefacts={this.state.artefacts}/>
+        if (this.props.myArtefactsLoading) {
+            return <CentreLoading />;
+        }
+        else {
+            const myArtefacts =
+                this.props.myArtefacts.length
+                    ? <ArtefactScroller
+                        key={this.props.myArtefacts.length}
+                        artefacts={this.props.myArtefacts}
+                        loading={this.props.loading}
+                    />
+                    : this.noArtefactsView();
 
-        return (
-            <div className='af-myart'>
-                <div className='af-myart-scroller'>
-                    {myArtefacts}
+            return (
+                <div className='af-myart'>
+                    <div className='af-myart-scroller'>
+                        {myArtefacts}
+                    </div>
+                    <CreateMyArtefact className="col-xs-6" />
                 </div>
-                <CreateArtefact addArtefact={this.addArtefact} className="col-xs-6" />
+            );
+
+            return (
+<div className='af-profile-outer'>
+    <div className='af-profile-inner-placeholder'></div>
+    <div className='af-profile-inner'>
+        <div className='af-profile-card-wrapper'>
+            <div className='af-profile-card'>
+                <div className='af-profile-card-inner'>
+                    <CreateMyArtefact className="col-xs-6"/>
+                </div>
             </div>
-        );
+        </div>
+    </div>
+    <div className='af-profile-scroller'>
+        <hr/>
+        <h3>{this.props.user.username + "'s Artefacts"}</h3>
+        <hr/>
+        <ArtefactScroller
+            artefacts={this.props.userArtefacts}
+            placeholder={"Oh no! This user hasn't registered any artefacts yet."}
+        />
+    </div>
+</div>
+            );
+        }
     }
 
     noArtefactsView = () => {
         return (
             <div className='af-myart-noarts'>
-                <h5 className='text-light'> Oh no! Looks like you haven't registered any artefacts yet! </h5>
+                <h5 className='text-faded'> Oh no! Looks like you haven't registered any artefacts yet! </h5>
             </div>
         );
-    }
-
-    addArtefact = (artefact) => {
-        let artefacts = [ artefact, ...this.state.artefacts ];
-
-        this.setState({
-            ...this.state,
-            artefacts,
-        });
     }
 }
 
 const mapStateToProps = state => ({
-    loading: state.art.loading,
-    myArtefacts: state.art.myArtefacts,
+    myArtefactsLoading: state.art.myArts.loading,
+    myArtefacts: state.art.myArts.myArtefacts,
 });
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ getMyArtefacts: artActions.getMyArtefacts, }, dispatch);
+    return bindActionCreators({
+        getMyArtefacts: artActions.getMyArtefacts,
+        addMyArtefact: artActions.addMyArtefact,
+    }, dispatch);
 }
 
 export default connect(
-    mapStateToProps, 
+    mapStateToProps,
     mapDispatchToProps
 ) (MyArtefacts);
 
