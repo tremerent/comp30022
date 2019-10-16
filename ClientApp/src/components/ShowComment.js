@@ -1,5 +1,6 @@
 import React from 'react';
 
+/*Takes in a comment object and displays it.*/
 function ShowComment(props) {
     var type;
     type = props.comment.type;
