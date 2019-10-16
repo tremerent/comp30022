@@ -19,7 +19,8 @@ export default class ArtefactScroller extends Component {
         }
     }
     
-    /*Adds new artefacts to artefactsToScroll. i counts how many artefacts have been loaded*/
+    /*Adds new artefacts to artefactsToScroll. i counts how many artefacts have been loaded total 
+    while j counts how many artefacts have been loaded in this instance.*/
     update_artefacts_to_scroll() {
         var j = 0;
         for (var i = this.state.artefactsToScroll.length; 
