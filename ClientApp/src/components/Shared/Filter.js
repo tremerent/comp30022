@@ -10,11 +10,12 @@ import CategorySelect from 'components/Category/CategorySelect';
 import 'components/Shared/Filter.css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faArrowUp, faSortUp, faSortDown, faTimes, } from '@fortawesome/free-solid-svg-icons';
 import { Collapse, } from 'reactstrap';
 import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import Select from 'react-select';
 
+// text query types
 const queryTypes = [
     {
         name: "title",
@@ -66,8 +67,15 @@ function apiFormatDate(date, defaultText) {
     return format(date, 'MM.DD.YYYY');
 }
 
-// Converts 'state.filterDetails' to proper key value query strings
-function getFormattedQuery(filterDetails) {
+/**
+ * 'this.props.submitFilter' expects an object that can be converted directly
+ * to a query string (denoted 'queryDetails'). The following functions convert
+ * between a 'queryDetails' object and a 'Filter.state.filterDetails' object.
+ */ 
+
+// Converts 'state.filterDetails' to key/value query parameters, ready for
+// 'this.props.submitFilter'.
+function getQueryDetails(filterDetails) {
     const newFilterQueryParams = {};
     // nullify 'filterDetails' params. we don't want in q string
     const removedFilterQueryParams = {};  
@@ -121,13 +129,12 @@ function getFormattedQuery(filterDetails) {
             newFilterQueryParams.matchAll = "false";
         }
     }
-    if (filterDetails.categories && filterDetails.categories.length > 0) {
+    if (filterDetails.category && filterDetails.category.length > 0) {
         // query string expects only name of category
         newFilterQueryParams.category = 
-            filterDetails.categories
+            filterDetails.category
                          .map(catOption => catOption.label);
     }
-    removedFilterQueryParams.categories = null;
 
     const queryDetails = {
         ...filterDetails,
@@ -138,6 +145,52 @@ function getFormattedQuery(filterDetails) {
     return queryDetails;
 }
 
+// inverse of 'getQueryDetails' - that is, it maps a 'queryDetails' object 
+// (formatted for 'submitFilter') to a format for 'this.state.filterDetails'.
+function getFilterDetails(queryDetails) {
+    const filterDetails = {};
+
+    // CategorySelect expects a select options list
+    const cat = queryDetails.category;
+
+    if (queryDetails.category != null) {
+    
+        let categories;
+        if (!Array.isArray(cat)) {
+            categories = [queryDetails.category];
+        }
+        else {
+            categories = queryDetails.category;
+        }
+
+        filterDetails.category = categories.map(cat => asSelectOpt(cat));
+
+        function asSelectOpt(val) {
+            return {
+                label: val,
+                name: val,
+            };
+        }
+    }
+
+    return filterDetails;
+}
+
+const initStateFilterDetails = {
+    searchQuery: {
+        text: "",
+        type: queryTypes[0],
+    },
+    category: [],
+    since: null,
+    until: null,
+    sortQuery: {
+        ...sortOptions[1],
+        order: "desc", 
+    },
+    catQueryType: catQueryTypes[1],
+}
+
 /**
  * Parent passes 'props.submitFilter'.
  */
@@ -146,21 +199,12 @@ export default class Filter extends React.Component {
     constructor(props) {
         super(props);
 
+        const filterDetailsProp = getFilterDetails(this.props.queryFilter);
         
         this.state = {
             filterDetails: {
-                searchQuery: {
-                    text: "",
-                    type: queryTypes[0],
-                },
-                categories: [],
-                since: null,
-                until: null,
-                sortQuery: {
-                    ...sortOptions[1],
-                    order: "desc", 
-                },
-                catQueryType: catQueryTypes[1],
+                ...initStateFilterDetails,
+                ...filterDetailsProp,
             },
             showUntilCalendar: false,
             showSinceCalendar: false,
@@ -240,8 +284,8 @@ export default class Filter extends React.Component {
                             blurPlaceholder={"Click to choose a category"}
                             focusPlaceholder={"Categories"}
                             creatable={false} 
-                            categoryVals={this.state.filterDetails.categories} 
-                            setCategoryVals={this.handleFilterChange("categories")} 
+                            categoryVals={this.state.filterDetails.category} 
+                            setCategoryVals={this.handleFilterChange("category")} 
                         />
                     </div>
 
@@ -365,24 +409,34 @@ export default class Filter extends React.Component {
                                 this.state.filterDetails.sortQuery.order === "asc"
                                 ?
                                     <FontAwesomeIcon icon={
-                                        faArrowUp
+                                        faSortUp
                                     } />
                                 :
                                     <FontAwesomeIcon icon={
-                                        faArrowDown
+                                        faSortDown
                                     } />
                             }
 
                         </button>
-                    </div>      
-                    <button 
-                        onClick={this.handleSubmit}
-                        className="btn btn-primary "
-                    > 
-                        <FontAwesomeIcon icon={faSearch} />
-                        &nbsp; 
-                        Search
-                    </button>
+                    </div>
+                    <div className="af-filter-controls">
+                        <button 
+                            onClick={this.clearFilter}
+                            className="btn btn-outline-warning af-filter-control"
+                        > 
+                            <FontAwesomeIcon icon={faTimes} color="#ccae57"/>
+                            &nbsp; 
+                            Clear
+                        </button>
+                        <button 
+                            onClick={this.handleSubmit}
+                            className="btn btn-primary "
+                        > 
+                            <FontAwesomeIcon icon={faSearch} />
+                            &nbsp; 
+                            Search
+                        </button>
+                    </div>
                 </div>
             </div>
         );
@@ -417,7 +471,14 @@ export default class Filter extends React.Component {
     }
 
     handleSubmit = () => { 
-        this.props.submitFilter(getFormattedQuery(this.state.filterDetails));
+        this.props.submitFilter(getQueryDetails(this.state.filterDetails));
+    }
+
+    clearFilter = () => {
+        this.setState({
+            ...this.state,
+            filterDetails: initStateFilterDetails,
+        }, this.handleSubmit);
     }
 
     toggleSortDir = () => {
