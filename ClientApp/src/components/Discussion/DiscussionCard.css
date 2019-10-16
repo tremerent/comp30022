@@ -1,0 +1,57 @@
+
+.af-discuss-card {
+    margin-top: 1em;
+    box-shadow: .1rem .1rem .4rem rgba(0, 0, 0, 0.15);
+    padding: 0.5rem 0.8rem;
+    width: 100%;
+}
+
+.af-discuss-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 0.3rem;
+}
+
+.af-discuss-avatar {
+    height: 2em;
+    width: 2em;
+    background-color: green;
+    border-radius: 1em;
+}
+
+.af-discuss-author {
+    margin-left: .5em;
+    font-weight: bold;
+    flex-grow: 1;
+}
+
+.af-discuss-ts {
+    font-style: italic;
+    font-size: 0.9em;
+    text-align: right;
+    flex-grow: 1;
+}
+
+.af-discuss-card hr {
+    margin: 0;
+}
+
+.af-discuss-body {
+    padding: .4rem .4rem;
+}
+
+.af-discuss-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    margin-top: 0.3rem;
+}
+
+.af-discuss-action {
+    font-size: 0.9em;
+    padding: 0 1rem;
+}
+

@@ -1,0 +1,22 @@
+
+.af-discuss-item {
+}
+
+.af-discuss-children {
+    display: flex;
+    flex-direction: row;
+}
+
+.af-discuss-replies {
+    flex-grow: 1;
+}
+
+.af-discuss-vline {
+    height: auto;
+    border-style: solid;
+    border-color: #f0f0f0;
+    border-left: 1px;
+    margin: 0 2rem;
+    margin-top: 0;
+}
+
