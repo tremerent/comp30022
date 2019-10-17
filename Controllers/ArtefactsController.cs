@@ -668,24 +668,30 @@ namespace Artefactor.Controllers
                 Uri uri =
                     await _uploadService.UploadFileToBlobAsync(file.FileName, file);
 
-                await _context.AddAsync(new ArtefactDocument
+                var artDoc = new ArtefactDocument
                 {
                     Title = file.FileName,
                     Url = uri.AbsoluteUri,
                     ArtefactId = artefactId,
                     DocType = DocType.Image,
-                });
+                };
+
+                await _context.AddAsync(artDoc);
 
                 await _context.SaveChangesAsync();
 
-                return NoContent();
+                // todo - use converter
+                return new JsonResult(new {
+                    id      = img.Id,
+                    title   = img.Title,
+                    url     = img.Url,
+                    type    = img.DocType,
+                });
             }
             catch (Exception e)
             {
                 return StatusCode(500, e.ToString());
             }
-
-            return Ok();
         }
 
         [HttpDelete("{artefactId}/image")]

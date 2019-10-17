@@ -12,7 +12,7 @@ class CreateMyArtefact extends React.Component {
 
         this.state = {
             createdArtefact: null,
-        }
+        };
     }
 
     render() {
@@ -23,8 +23,8 @@ class CreateMyArtefact extends React.Component {
         />;
     }
 
-    createMyArtefact = async (artefact) => {
-        const createdArtefact = await this.props.createMyArtefact(artefact);
+    createMyArtefact = async (artefact, docs) => {
+        const createdArtefact = await this.props.createMyArtefact(artefact, docs);
 
         this.setState({
             ...this.state,
