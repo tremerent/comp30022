@@ -524,7 +524,7 @@ namespace Artefactor.Controllers
             // may need owner username
             var curUser = await _userService.GetCurUser(HttpContext);
 
-            _context.Attach(artefact);
+            _context.Add(artefact);
 
             artefact.CreatedAt = DateTime.UtcNow;
             // OwnerId is shadow property

@@ -50,6 +50,7 @@ function getUsernameFromPath(pathname) {
 
 function mapStateToProps(state) {
     const username = getUsernameFromPath(state.router.location.pathname);
+    const isViewOfCurUser = username == state.auth.user.username;
 
     // state.users.username may not exist yet
     const user =
@@ -61,14 +62,21 @@ function mapStateToProps(state) {
 
     let userArtefacts = [];
     let userArtsLoading = true;
-    // check key exists
-    if (state.art.userArts[username] != null) {
-        userArtefacts = state.art.userArts[username].artefacts;
-        userArtsLoading = state.art.userArts[username].loading;
+
+    if (isViewOfCurUser) {
+        userArtefacts = state.art.myArts.myArtefacts;
+        userArtsLoading = state.art.myArts.loading;
+    }
+    else {
+        // check key exists
+        if (state.art.userArts[username] != null) {
+            userArtefacts = state.art.userArts[username].artefacts;
+            userArtsLoading = state.art.userArts[username].loading;
+        }
     }
 
     return {
-        isViewOfCurUser: username == state.auth.user.username,
+        isViewOfCurUser,
         username,
         userArtefacts,
         user: user,
@@ -79,7 +87,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         getUser: usersActions.getUser,
-        getUserArtefacts: artActions.getUserArtefacts,
+        getUserArtefacts: artActions.getUserOrMyArtefacts,
         updateCurUserDetails: usersActions.updateCurUserDetails,
         updateCurUserProfilePic: usersActions.updateCurUserProfilePic,
     }, dispatch);

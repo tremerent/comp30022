@@ -23,7 +23,7 @@ async function postRegister(registerDetails) {
 async function getArtefact(artefactId) {
     const resp = await apiFetch(getToken())
         // XXX not sure if this is sanitised -- Sam
-        .get(`/Artefacts/${artefactId}`);
+        .get(`/Artefacts?id=${artefactId}`);
 
     return resp.data;
 }
