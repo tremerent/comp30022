@@ -30,7 +30,10 @@ export default class UserProfile extends React.Component {
 
         const BioText = (props) => {
             const bioPlaceholderStr =
-                `Oh no! ${this.props.user.username} is yet to provide a bio.`;
+                this.props.isCurUser
+                    ? `Oh no! You haven't provided a bio!`
+                    : `Oh no! ${this.props.user.username} is yet to provide a bio.`;
+
             return <div className='text-muted'>
                     {
                         props.value != null && props.value.length
@@ -42,21 +45,25 @@ export default class UserProfile extends React.Component {
 
         let EditableBio;
         let addArtefact;
+        let addArtefactModal;
         if (this.props.editable) {
             EditableBio = editableTextArea(BioText);
+
+            const addArtefactModal = 
+                <FloatingWindow id="addart" className='af-register-modal' title='Register An Artefact'>
+                    <CreateArtefacts/>
+                </FloatingWindow>
 
             addArtefact = (
                 <button className='btn btn-primary af-profile-addbutton' data-target='#addart' data-toggle='modal'>
                     Add
-                    <FloatingWindow id="addart" className='af-register-modal' title='Register An Artefact'>
-                        <CreateArtefacts/>
-                    </FloatingWindow>
                 </button>
             );
         }
 
         return (
             <div className='af-profile-outer'>
+                {addArtefactModal}
                 <div className='af-profile-inner-placeholder'></div>
                 <div className='af-profile-inner'>
                     <div className='af-profile-card-wrapper'>
@@ -89,30 +96,6 @@ export default class UserProfile extends React.Component {
                                         :
                                         <BioText value={this.props.user.bio}/>
                                     }
-
-                                    {/* <EditableTextArea
-                                        Text={bio}
-                                        value={this.state.bio}
-                                        onValueChange={this.changeBio}
-                                    /> */}
-                                    {/* <div>
-                                        <div className='text-muted'>{this.state.bio}</div>
-                                        {
-                                            this.props.editable
-                                                ? <button onClick={}>
-                                                    <FontAwesomeIcon icon={faImages} />
-                                                  </button>
-                                                :
-                                        }
-                                    </div>
-
-                                                <SubmitTextArea
-                                                    id='af-edit-bio'
-                                                    name='edit-bio'
-                                                    onSubmit={this.changeBio}
-                                                >
-                                                    Describe yourself
-                                                </SubmitTextArea> */}
                                 </div>
                             </div>
                         </div>
@@ -131,7 +114,14 @@ export default class UserProfile extends React.Component {
                     <hr/>
                     <ArtefactScroller
                         artefacts={this.props.userArtefacts}
-                        placeholder={"Oh no! This user hasn't registered any artefacts yet."}
+                        placeholder={
+                            this.props.isCurUser
+                            ?
+                            `Oh no! You don't have any artefacts yet. 
+                            Click the "Add" button to register an artefact.`
+                            :
+                            "Oh no! This user hasn't registered any artefacts"
+                        }
                     />
                 </div>
             </div>
