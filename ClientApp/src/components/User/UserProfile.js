@@ -49,7 +49,7 @@ export default class UserProfile extends React.Component {
         if (this.props.editable) {
             EditableBio = editableTextArea(BioText);
 
-            const addArtefactModal = 
+            addArtefactModal =
                 <FloatingWindow id="addart" className='af-register-modal' title='Register An Artefact'>
                     <CreateArtefacts/>
                 </FloatingWindow>
@@ -117,7 +117,7 @@ export default class UserProfile extends React.Component {
                         placeholder={
                             this.props.isCurUser
                             ?
-                            `Oh no! You don't have any artefacts yet. 
+                            `Oh no! You don't have any artefacts yet.
                             Click the "Add" button to register an artefact.`
                             :
                             "Oh no! This user hasn't registered any artefacts"
