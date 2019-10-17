@@ -352,6 +352,24 @@ function getUserArtefacts(username, vis) {
     }
 }
 
+function isCurUser(username) {
+    return function (dispatch, getState) {
+        return getState().auth.user.username == username;
+    }
+}
+
+// gets user artefacts or myartefacts, depending on login state
+function getUserOrMyArtefacts(username, vis) {
+    return async function (dispatch) {
+        if (dispatch(isCurUser(username))) {
+            return dispatch(getMyArtefacts());
+        }
+        else {
+            return dispatch(getUserArtefacts(username, "public"));
+        }
+    }
+}
+
 const artefacts = {
     createMyArtefact,
     getMyArtefacts,
@@ -359,6 +377,7 @@ const artefacts = {
     getPublicArtefacts,
     getUserArtefacts,
     getBrowserArtefacts,
+    getUserOrMyArtefacts,
 }
 
 function reqGetUser(username) {

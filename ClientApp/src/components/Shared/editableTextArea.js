@@ -43,16 +43,17 @@ function editableTextArea(TextArea) {
             return (
                 <div className="editable-text-area">
                     {content}
-                    <button 
-                        onClick={() => this.toggleEditor(true)}
-                        className="btn"
-                    >
-                        <FontAwesomeIcon icon={faPen} />
-                    </button>
+                    <div className="submit-text-area-toggle">
+                        <button 
+                            onClick={() => this.toggleEditor(true)}
+                            className="btn"
+                        >
+                            <FontAwesomeIcon icon={faPen} />
+                        </button>
+                    </div>
                 </div>
                 
-            )
-    
+            );
         }
 
         toggleEditor = () => {

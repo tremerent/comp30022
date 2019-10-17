@@ -37,19 +37,26 @@ export default class UserProfile extends React.Component {
                         ? props.value
                         : bioPlaceholderStr
                     }
-                </div>;
+                   </div>;
         }
 
         let EditableBio;
+        let addArtefact;
         if (this.props.editable) {
             EditableBio = editableTextArea(BioText);
+
+            addArtefact = (
+                <button className='btn btn-primary af-profile-addbutton' data-target='#addart' data-toggle='modal'>
+                    Add
+                    <FloatingWindow id="addart" className='af-register-modal' title='Register An Artefact'>
+                        <CreateArtefacts/>
+                    </FloatingWindow>
+                </button>
+            );
         }
 
         return (
             <div className='af-profile-outer'>
-                <FloatingWindow id="addart" className='af-register-modal' title='Register An Artefact'>
-                    <CreateArtefacts/>
-                </FloatingWindow>
                 <div className='af-profile-inner-placeholder'></div>
                 <div className='af-profile-inner'>
                     <div className='af-profile-card-wrapper'>
@@ -80,7 +87,7 @@ export default class UserProfile extends React.Component {
                                             onValueSubmit={this.changeBio}
                                         />
                                         :
-                                        <BioText />
+                                        <BioText value={this.props.user.bio}/>
                                     }
 
                                     {/* <EditableTextArea
@@ -115,9 +122,11 @@ export default class UserProfile extends React.Component {
                     <hr/>
                     <div className='af-profile-scroller-title'>
                         <h3 style={{ display: 'inline' }}>{this.props.user.username + "'s Artefacts"}</h3>
-                        <button className='btn btn-primary af-profile-addbutton' data-target='#addart' data-toggle='modal'>
-                            Add
-                        </button>
+                        {
+                            this.props.editable
+                            ? addArtefact
+                            : null
+                        }
                     </div>
                     <hr/>
                     <ArtefactScroller
