@@ -47,9 +47,10 @@ export default class UserProfile extends React.Component {
         let addArtefact;
         let addArtefactModal;
         if (this.props.editable) {
+            
             EditableBio = editableTextArea(BioText);
 
-            const addArtefactModal = 
+            addArtefactModal = 
                 <FloatingWindow id="addart" className='af-register-modal' title='Register An Artefact'>
                     <CreateArtefacts/>
                 </FloatingWindow>

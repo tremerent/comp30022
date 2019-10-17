@@ -91,30 +91,54 @@ namespace Artefactor.Controllers
             // Similar expressions are built for calls to '.OrderBy'.
 
             IQueryable<Artefact> artefacts = _context.Artefacts;
+            ApplicationUser curUser = await _userService.GetCurUser(HttpContext);
 
-            // '.Load()' calls are made since can't '.Include(a => a.Images)'.
-            // See - https://github.com/aspnet/EntityFrameworkCore/issues/16061
+            // if querying for a single artefact, simply return that artefact
+            if (id != null)
+            {
+                var artefact = await artefacts
+                    .Include(a => a.CategoryJoin)
+                        .ThenInclude(cj => cj.Category)
+                    .Include(a => a.Owner)
+                    .Include(a => a.Images)
+                    .SingleOrDefaultAsync(a => a.Id == id);
+
+                if (artefact == null)
+                {
+                    return NotFound();
+                }
+
+                // check auth
+
+                if (Queries.QueryIsAuthorised(
+                    artefact.Visibility,
+                    curUser, 
+                    artefact.Owner, 
+                    (curUser, queryUser) => curUser.Id == queryUser.Id,
+                    (curUser, queryUser) => true  // just one big happy family
+                ))
+
+                return new JsonResult(_artefactConverter.ToJson(artefact));
+            }
 
             artefacts
                 .Include(a => a.CategoryJoin)
                     .ThenInclude(cj => cj.Category)
                 .Include(a => a.Owner)
-                .Where(a =>
-                    a.Visibility == Visibility.Public
-                ).Load();
+                .Include(a => a.Images);
 
-            artefacts.Include(a => a.Images).Load();
+            /// All artefacts loaded, now build dynamic linq queries using 
+            /// expression trees. See -
+            /// https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/expression-trees/how-to-use-expression-trees-to-build-dynamic-queries
 
             ParameterExpression artefactParam = 
                 Expression.Parameter(typeof(Artefact), "artefact");
 
             IList<Expression> whereLambdas = new List<Expression>();
             IList<Expression> orderByLambdas = new List<Expression>();
-
-            /// Build queries
             
-            // first initialise curUser and queryUser - check for NotFound
-            ApplicationUser curUser = await _userService.GetCurUser(HttpContext);
+            // first initialise queryUser - check for NotFound
+
             ApplicationUser queryUser = null;  // query 'user'
             if (user != null)
             {
@@ -125,31 +149,6 @@ namespace Artefactor.Controllers
                 {
                     return NotFound("'user' does not exist.");
                 }
-            }
-
-            // visibility query - handles auth
-
-            if (id != null)
-            {
-                var artefact = await artefacts
-                    .SingleOrDefaultAsync(a => a.Id == id);
-
-                if (artefact == null)
-                {
-                    return NotFound();
-                }
-
-                // check auth
-
-                if (Queries.VisQueryIsAuthorised(
-                    artefact.Visibility,
-                    curUser, 
-                    artefact.Owner, 
-                    (curUser, queryUser) => curUser.Id == queryUser.Id,
-                    (curUser, queryUser) => true  // just one big happy family
-                ))
-
-                return new JsonResult(_artefactConverter.ToJson(artefact));
             }
 
             if (vis != null)
@@ -166,7 +165,7 @@ namespace Artefactor.Controllers
                     return BadRequest("Badly formatted query 'vis'");
                 }
 
-                if (visQueryEnums.Any(visQuery => !Queries.VisQueryIsAuthorised(
+                if (visQueryEnums.Any(visQuery => !Queries.QueryIsAuthorised(
                         visQuery, 
                         curUser, 
                         queryUser,
@@ -186,6 +185,15 @@ namespace Artefactor.Controllers
                     }
 
                 }
+            }
+            else
+            {
+                // no vis query has been specified, so just return public 
+                // artefacts and consider other queries
+                whereLambdas.Add(
+                    QueryExpressions.ArtefactVisQueryExpression(
+                        Visibility.Public, artefactParam)
+                );
             }
 
             // user query
@@ -668,24 +676,30 @@ namespace Artefactor.Controllers
                 Uri uri =
                     await _uploadService.UploadFileToBlobAsync(file.FileName, file);
 
-                await _context.AddAsync(new ArtefactDocument
+                var artDoc = new ArtefactDocument
                 {
                     Title = file.FileName,
                     Url = uri.AbsoluteUri,
                     ArtefactId = artefactId,
                     DocType = DocType.Image,
-                });
+                };
+
+                await _context.AddAsync(artDoc);
 
                 await _context.SaveChangesAsync();
 
-                return NoContent();
+                // todo - use converter
+                return new JsonResult(new {
+                    id      = artDoc.Id,
+                    title   = artDoc.Title,
+                    url     = artDoc.Url,
+                    type    = artDoc.DocType,
+                });
             }
             catch (Exception e)
             {
                 return StatusCode(500, e.ToString());
             }
-
-            return Ok();
         }
 
         [HttpDelete("{artefactId}/image")]
