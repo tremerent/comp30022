@@ -30,6 +30,7 @@ class UserView extends React.Component {
                     updateUserDetails={this.props.updateCurUserDetails}
                     updateUserProfilePic={this.props.updateCurUserProfilePic}
                     editable={this.props.isViewOfCurUser}
+                    isCurUser={this.props.isViewOfCurUser}
                   />
         );
     }
