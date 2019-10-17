@@ -22,7 +22,7 @@ namespace Artefactor.Services.Converters
             object categoryJoin = null;
             if (a.CategoryJoin != null)
             {
-                categoryJoin = 
+                categoryJoin =
                     a.CategoryJoin
                     .Select(cj => RestrictedObjCategoryJoinView(cj));
             }
@@ -31,7 +31,12 @@ namespace Artefactor.Services.Converters
             if (a.Images != null)
             {
                 images = a.Images
-                    .Select(img => img.Url);
+                    .Select(img => new {
+                        id      = img.Id,
+                        title   = img.Title,
+                        url     = img.Url,
+                        type    = img.DocType,
+                    });
             }
 
             return new

@@ -54,7 +54,7 @@ export class ArtefactPreview extends Component {
                         </div>
                         <span className="af-artcard-actions">
                             <a
-                                href="#null"
+                                href="#"
                                 className="af-artcard-action"
                                 data-toggle="collapse"
                                 data-target={`#${id}`}
