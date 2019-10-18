@@ -352,6 +352,13 @@ function getUserArtefacts(username, vis) {
     }
 }
 
+const setFilter = (filterDetails) => {
+    return {
+        type: artefactTypes.SET_FILTER,
+        filterDetails,
+    };
+}
+
 const artefacts = {
     createMyArtefact,
     getMyArtefacts,
@@ -359,6 +366,7 @@ const artefacts = {
     getPublicArtefacts,
     getUserArtefacts,
     getBrowserArtefacts,
+    setFilter,
 }
 
 function reqGetUser(username) {

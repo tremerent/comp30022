@@ -6,7 +6,6 @@ import 'react-date-range/dist/theme/default.css';
 import { format } from 'date-fns';
 import CategorySelect from 'components/Category/CategorySelect';
 
-
 import 'components/Shared/Filter.css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -62,149 +61,34 @@ function formatDateDisplay(date, defaultText) {
     return format(date, 'DD/MM/YYYY');
 }
 
-function apiFormatDate(date, defaultText) {
-    if (!date) return defaultText;
-    return format(date, 'MM.DD.YYYY');
-}
-
 /**
- * 'this.props.submitFilter' expects an object that can be converted directly
- * to a query string (denoted 'queryDetails'). The following functions convert
- * between a 'queryDetails' object and a 'Filter.state.filterDetails' object.
- */ 
-
-// Converts 'state.filterDetails' to key/value query parameters, ready for
-// 'this.props.submitFilter'.
-function getQueryDetails(filterDetails) {
-    const newFilterQueryParams = {};
-    // nullify 'filterDetails' params. we don't want in q string
-    const removedFilterQueryParams = {};  
-    
-    // search query - can't search for an empty string
-    if (filterDetails.searchQuery && filterDetails.searchQuery.text != "") {
-
-        newFilterQueryParams.q = [];
-        removedFilterQueryParams.searchQuery = null;
-
-        if (filterDetails.searchQuery.type) {
-            if (filterDetails.searchQuery.type.name == "both") {
-                newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:title`);
-                newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:description`);
-            } 
-            else if (filterDetails.searchQuery.type.name == "title") {
-                newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:title`);
-            }
-            else if (filterDetails.searchQuery.type.name == "description") {
-                newFilterQueryParams.q.push(`${filterDetails.ssearchQuery.text}:description`);
-            }
-        }
-        else {
-            // default to just title 
-            newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:title`);
-        }
-    }
-
-    // date queries
-    if (filterDetails.since) {
-        newFilterQueryParams.since = apiFormatDate(filterDetails.since)
-    }
-    if (filterDetails.until) {
-        newFilterQueryParams.until = apiFormatDate(filterDetails.until)
-    }
-
-    // sort query
-    if (filterDetails.sortQuery != null) {
-        newFilterQueryParams.sort = 
-            `${filterDetails.sortQuery.name}:${filterDetails.sortQuery.order}`;
-
-        removedFilterQueryParams.sortQuery = null;
-    }
-
-    // category queries
-    if (filterDetails.catQueryType != null) {
-        if (filterDetails.catQueryType.name == "matchAll") {
-            newFilterQueryParams.matchAll = "true";
-        }
-        else if (filterDetails.catQueryType.name == "matchAny") {
-            newFilterQueryParams.matchAll = "false";
-        }
-    }
-    if (filterDetails.category && filterDetails.category.length > 0) {
-        // query string expects only name of category
-        newFilterQueryParams.category = 
-            filterDetails.category
-                         .map(catOption => catOption.label);
-    }
-
-    const queryDetails = {
-        ...filterDetails,
-        ...newFilterQueryParams,
-        ...removedFilterQueryParams
-    }
-
-    return queryDetails;
-}
-
-// inverse of 'getQueryDetails' - that is, it maps a 'queryDetails' object 
-// (formatted for 'submitFilter') to a format for 'this.state.filterDetails'.
-function getFilterDetails(queryDetails) {
-    const filterDetails = {};
-
-    // CategorySelect expects a select options list
-    const cat = queryDetails.category;
-
-    if (queryDetails.category != null) {
-    
-        let categories;
-        if (!Array.isArray(cat)) {
-            categories = [queryDetails.category];
-        }
-        else {
-            categories = queryDetails.category;
-        }
-
-        filterDetails.category = categories.map(cat => asSelectOpt(cat));
-
-        function asSelectOpt(val) {
-            return {
-                label: val,
-                name: val,
-            };
-        }
-    }
-
-    return filterDetails;
-}
-
-const initStateFilterDetails = {
-    searchQuery: {
-        text: "",
-        type: queryTypes[0],
-    },
-    category: [],
-    since: null,
-    until: null,
-    sortQuery: {
-        ...sortOptions[1],
-        order: "desc", 
-    },
-    catQueryType: catQueryTypes[1],
-}
-
-/**
- * Parent passes 'props.submitFilter'.
+ * Browser filter presentation component.
  */
 export default class Filter extends React.Component {
     
     constructor(props) {
         super(props);
 
-        const filterDetailsProp = getFilterDetails(this.props.queryFilter);
+        this.initStateFilterDetails = {
+            searchQuery: {
+                text: "",
+                type: queryTypes[0],
+            },
+            category: [],
+            since: null,
+            until: null,
+            sortQuery: {
+                ...sortOptions[1],
+                order: "desc", 
+            },
+            catQueryType: catQueryTypes[1],
+        }
         
         this.state = {
+            // prop filter details overrides default
             filterDetails: {
-                ...initStateFilterDetails,
-                ...filterDetailsProp,
+                ...this.initStateFilterDetails,
+                ...this.props.filterDetails,
             },
             showUntilCalendar: false,
             showSinceCalendar: false,
@@ -471,13 +355,13 @@ export default class Filter extends React.Component {
     }
 
     handleSubmit = () => { 
-        this.props.submitFilter(getQueryDetails(this.state.filterDetails));
+        this.props.submitFilter(this.state.filterDetails);
     }
 
     clearFilter = () => {
         this.setState({
             ...this.state,
-            filterDetails: initStateFilterDetails,
+            filterDetails: this.initStateFilterDetails,
         }, this.handleSubmit);
     }
 
@@ -535,6 +419,8 @@ export default class Filter extends React.Component {
                 ...this.state.filterDetails,
                 [key]: value,
             },
+        }, () => {
+            this.props.onFilterChange(this.state.filterDetails);
         });
     }
 }

@@ -158,8 +158,6 @@ async function getUser(username) {
 // This is a total hack. Will fix to be proper reduxy given more time.
 // -- Sam
 async function patchUserInfo(username, newInfo) {
-    console.log('------- new info ----------');
-    console.log(newInfo);
     const resp = await apiFetch(getToken())
         .patch(`/user/${username}`, newInfo);
 

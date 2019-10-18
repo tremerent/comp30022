@@ -147,6 +147,14 @@ function art(state = getInitArtState(), action) {
                     error: true,
                 },
             }
+        case artefactTypes.SET_FILTER:
+            return {
+                ...state,
+                browserArts: {
+                    ...state.browserArts,
+                    filterDetails: action.filterDetails,
+                },
+            }
         default:
             return state
     }
