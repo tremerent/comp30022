@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Artefactor.Data;
 using Artefactor.Models;
 using Artefactor.Services;
+using Artefactor.Services.Converters;
 
 namespace Artefactor
 {
@@ -55,10 +56,6 @@ namespace Artefactor
                     // base-address of your identityserver
                     options.Authority = "https://localhost:5001";
 
-
-
-
-
                     // name of the API resource
                     options.Audience = "artefactorapi";
 
@@ -88,6 +85,10 @@ namespace Artefactor
             services.AddSingleton(Configuration);
             services.AddScoped<UploadService>();
             services.AddScoped<UserService>();
+
+            // models -> json
+            services.AddTransient<IConverter<Artefact>, ArtefactConverter>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

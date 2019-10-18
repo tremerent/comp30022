@@ -5,9 +5,12 @@ import Stepper from 'bs-stepper';
 import 'bs-stepper/dist/css/bs-stepper.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImages, faShareAltSquare, faTrophy } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 
 import CategorySelect from '../Category/CategorySelect.js';
-import { UploadArtefactDocs } from './UploadArtefactDocs.js';
+import ArtefactDocs from './ArtefactDocs.js';
+
+import { addArtefactImage } from '../../scripts/requests.js';
 
 import './CreateArtefactForm.css';
 
@@ -22,11 +25,14 @@ export class CreateArtefactForm extends Component {
         super(props);
 
         this.initialArtefactState = {
+            id: `${Date.now()}`,
             title: "",
             description: "",
             categories: [],
             visibility: null,
         };
+
+        this.docs = { };
 
         this.state = {
             artefact: { ...this.initialArtefactState },
@@ -56,13 +62,14 @@ export class CreateArtefactForm extends Component {
 
     render() {
         return (
-            <div className='af-createart'>
+            <div style={{ /*height: '100%'*/ }}>
                 <div className="text-center">
                     <div className="spinner-border text-primary" role="status"
                         style={{
-                            display: 
+                            display:
                                 this.state.artefactWasCreated ? "none" :
                                     this.state.loading ? null : "none",
+                                margin: '5em 5em',
                         }}>
                         <span className="sr-only">Loading...</span>
                     </div>
@@ -83,15 +90,12 @@ export class CreateArtefactForm extends Component {
 
     renderArtefactCreated = () => {
         return (
-            <div className="alert alert-success" role="alert">
-                <h4 className="alert-heading">Thanks for registering an artefact!</h4>
-                <hr/>
-                <div className="row justify-content-start">
-                    <a href={"/Artefacts/" + this.state.createdArtefactId} role="button" className="btn btn-secondary mx-2" style={{color: "#fff !important"}}>
-                        See your new artefact
-                    </a>
-                    <button className="btn btn-primary" onClick={this.resetArtefactCreation}> Create another artefact</button>
-                </div>
+            <div className='af-createart-success'>
+                <FontAwesomeIcon
+                    className='af-createart-success-icon' icon={faCheckCircle}
+                />
+                <h4>Success!</h4>
+                <button className='btn btn-primary' data-dismiss='modal'>Ok</button>
             </div>
         );
     }
@@ -189,17 +193,41 @@ export class CreateArtefactForm extends Component {
                 </div>
 
                 <div className="form-group">
-                    <CategorySelect categoryVals={this.state.artefact.categories} setCategoryVals={this.handleSelectValsChange("categories")} />
+                    <CategorySelect
+                        creatable={true}
+                        categoryVals={this.state.artefact.categories}
+                        setCategoryVals={this.handleSelectValsChange("categories")}
+                        blurPlaceholder={"Choose your artefact's categories"}
+                        focusPlaceholder={"Type to search for a category or create your own"}
+                    />
                 </div>
             </div>
         );
     }
 
+    handleArtefactDocsChange = (doc, action) => {
+        switch (action) {
+        case 'delete':
+            if (!this.docs[doc.id])
+                console.warn(`'${doc.id}' deleted but is not tracked`);
+            delete this.docs[doc.id];
+            break;
+        case 'create':
+            this.docs[doc.id] = doc;
+            break;
+        default:
+            console.warn(
+                `handleArtefactDocsChange(): unrecognised action '${action}'`
+            );
+        }
+    }
+
     renderSecondFormPage = () => {
         return (
-            <div>
-                <UploadArtefactDocs />
-            </div>
+            <ArtefactDocs
+                artefact={this.state.artefact}
+                onChange={this.handleArtefactDocsChange}
+            />
         );
     }
 
@@ -264,6 +292,17 @@ export class CreateArtefactForm extends Component {
         );
     }
 
+    async submitDocs(id) {
+        let promises = [];
+
+        for (let doc of Object.values(this.docs)) {
+            promises.push(addArtefactImage(id, doc.blob));
+            console.log(`POST ${id} :: ${doc.filename}`);
+        }
+
+        await Promise.all(promises);
+    }
+
     handleSubmit = (e) => {
         if (e) {
             e.preventDefault();
@@ -275,7 +314,13 @@ export class CreateArtefactForm extends Component {
         });
 
         this.props.createArtefact(this.state.artefact)
-            .then((() => {
+            .then((async (...args) => {
+
+                if (this.props.createdArtefact) {
+                    const response =
+                        await this.submitDocs(this.props.createdArtefact.id);
+                }
+
                 // add created artefacts id so we have a link to it for the success
                 // message
                 this.setState({
@@ -289,7 +334,7 @@ export class CreateArtefactForm extends Component {
 
     // null check created artefact's id
     getCreatedArtefactId = () => {
-        return this.props.createdArtefact 
+        return this.props.createdArtefact
                 ? this.props.createdArtefact.id
                 : null;
     }

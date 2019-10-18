@@ -30,11 +30,6 @@ class UserNavMenu extends React.Component {
                     label="Profile"
                     curPath={this.props.curPath}
                 />
-                <StyledNavLink
-                    to={myArtefactsPath}
-                    label="My Artefacts"
-                    curPath={this.props.curPath}
-                />
                 <NavItem>
                     <button onClick={(e) => { e.preventDefault(); this.props.logout("/browse"); }} className="text-dark btn nav-link">
                         Logout

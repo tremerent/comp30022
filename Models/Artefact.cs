@@ -35,5 +35,5 @@ namespace Artefactor.Models
         [EnumMember(Value = "public")]
         Public = 3,
     }
-    
+
 }

@@ -24,11 +24,11 @@ class CreateMyArtefact extends React.Component {
     }
 
     createMyArtefact = async (artefact) => {
-        await this.props.createMyArtefact(artefact);
+        const createdArtefact = await this.props.createMyArtefact(artefact);
 
         this.setState({
             ...this.state,
-            createdArtefact: this.props.createdArtefact,
+            createdArtefact,
         });
     }
 }
@@ -44,6 +44,6 @@ const mapDispatchToProps = dispatch => {
 }
 
 export default connect(
-    mapStateToProps, 
+    mapStateToProps,
     mapDispatchToProps
 )(CreateMyArtefact);

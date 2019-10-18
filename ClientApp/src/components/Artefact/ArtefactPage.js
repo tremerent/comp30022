@@ -1,7 +1,7 @@
 import React from 'react';
 
 import ArtefactPreview from './ArtefactPreview.js';
-import '../UserProfile.css';
+import '../User/UserProfile.css';
 import './ArtefactPage.css';
 
 import DiscussionTest from '../Testing/components/DiscussionTest.js';

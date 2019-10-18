@@ -61,7 +61,7 @@ class Login extends React.Component {
                     const nextDir =
                         component.props.redirAddr
                             ? component.props.redirAddr
-                            : '/my-artefacts';
+                            : `/user/${this.props.username}`;
 
                     this.props.push(nextDir);
                 }
@@ -80,6 +80,7 @@ Login.propTypes = {
 
 const mapStateToProps = state => ({
     loading: state.auth.loading,
+    username: state.auth.user.username,
     redir: state.auth.redir,
     isLoggedIn: state.auth.isLoggedIn,
 });
