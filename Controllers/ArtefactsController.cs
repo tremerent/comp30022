@@ -73,7 +73,7 @@ namespace Artefactor.Controllers
             [FromQuery] string[] q,  // query by string
             [FromQuery] bool? includeDesc,
 
-            [FromQuery] string vis,  // eg. ...&vis=public,private&...
+            [FromQuery] Visibility[] vis,  // eg. ...&vis=public,private&...
 
             [FromQuery] string[] category,
             [FromQuery] bool? matchAll,
@@ -145,21 +145,9 @@ namespace Artefactor.Controllers
                 }
             }
 
-            if (vis != null)
+            if (vis != null && vis.Length > 0)
             {
-                IList<string> visQueryStrings = Queries.QueryStringValueList(vis);
-                IEnumerable<Visibility> visQueryEnums;
-                try 
-                {
-                    visQueryEnums = visQueryStrings
-                        .Select(visString => Queries.VisStringQueryToEnum(visString));
-                }
-                catch (QueryException)
-                {
-                    return BadRequest("Badly formatted query 'vis'");
-                }
-
-                if (visQueryEnums.Any(visQuery => !Queries.QueryIsAuthorised(
+                if (vis.Any(visQuery => !Queries.QueryIsAuthorised(
                         visQuery, 
                         curUser, 
                         queryUser,
@@ -171,13 +159,25 @@ namespace Artefactor.Controllers
                 }
                 else
                 {
-                    foreach(Visibility visQuery in visQueryEnums)
+                    var visLambdas = new List<Expression>(
+                        Enum.GetValues(typeof(Visibility)).Length
+                    );
+
+                    foreach(Visibility visQuery in vis)
                     {
-                        whereLambdas.Add(
+                        visLambdas.Add(
                             QueryExpressions.ArtefactVisQueryExpression(visQuery, artefactParam)
                         );
                     }
 
+                    // OR visibilities since artefact can belong to any of the
+                    // queried visibilities
+                    whereLambdas.Add(
+                        QueryExpressions.FoldBoolLambdas(
+                            Expression.Constant(false), 
+                            visLambdas, 
+                            (lamb1, lamb2) => Expression.OrElse(lamb1, lamb2))
+                    );
                 }
             }
             else

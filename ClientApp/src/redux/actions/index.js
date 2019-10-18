@@ -189,7 +189,8 @@ function getMyArtefacts() {
 
         try {
             const myArtefacts = await getArtefacts({
-                user: curUserUsername
+                user: curUserUsername,
+                vis: ["public", "private",], //"family"
             });
             dispatch(resGetMyArtefacts(myArtefacts));
         }
