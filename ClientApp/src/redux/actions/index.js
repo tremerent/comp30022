@@ -158,7 +158,7 @@ function getBrowserArtefacts(queryKeyValues) {
         catch(e) {
             dispatch(errGetBrowserArtefacts({ error: e }));
         }
-    }   
+    }
 }
 
 function reqGetMyArtefacts() {
@@ -361,7 +361,7 @@ function getUserArtefacts(username, vis) {
         dispatch(reqUserArtefacts(username));
 
         try {
-            const userArtefacts = await getArtefacts(username, vis);
+            const userArtefacts = await getArtefacts({ user: username, vis: vis });
             dispatch(resUserArtefacts(username, userArtefacts));
         }
         catch (e) {
@@ -485,7 +485,7 @@ function updateCurUserProfilePic(file) {
         try {
             const respData = await setProfileImage(file);
 
-            dispatch(resPatchUserDetails(curUserName, { 
+            dispatch(resPatchUserDetails(curUserName, {
                 imageUrl: respData.url,
             }));
         }
