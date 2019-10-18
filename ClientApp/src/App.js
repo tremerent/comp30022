@@ -14,6 +14,7 @@ import requireAuth from './components/Auth/requireAuth';
 import NotFound from './components/NotFound';
 
 import DiscussionTest from './components/Testing/components/DiscussionTest.js';
+import ArtefactPageTest from './components/Testing/components/ArtefactPageTest.js';
 
 import './App.css';
 
@@ -46,6 +47,7 @@ export default class App extends Component {
 
                             <Route path='/tests' component={TestingHome} />
                             <Route path='/discussion' component={DiscussionTest}/>
+                            <Route path='/artefact' component={ArtefactPageTest}/>
 
                             <Route component={NotFound} />
                         </Switch>

@@ -53,7 +53,7 @@ function ArtefactCarousel(props) {
     );
 }
 
-export class ArtefactPreview extends Component {
+export default class ArtefactPreview extends Component {
 
     constructor(props) {
         super(props);
@@ -140,4 +140,6 @@ export class ArtefactPreview extends Component {
         }).filter(cat => cat !== null);
     }
 }
+
+export { ArtefactPreview };
 

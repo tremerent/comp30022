@@ -1,22 +1,13 @@
 
-.af-discuss-item {
+.af-discuss-header {
+    position: sticky;
+    top: 3.5rem;
+    padding-top: 1rem;
+    padding-bottom: .2rem;
+    background-color: white;
 }
 
-.af-discuss-children {
-    display: flex;
-    flex-direction: row;
-}
-
-.af-discuss-replies {
-    flex-grow: 1;
-}
-
-.af-discuss-vline {
-    height: auto;
-    border-style: solid;
-    border-color: #f0f0f0;
-    border-left: 1px;
-    margin: 0 2rem;
-    margin-top: 0;
+.af-discuss-title {
+    font-weight: bold;
 }
 
