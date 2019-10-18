@@ -90,17 +90,18 @@ namespace Artefactor.Controllers
             //
             // Similar expressions are built for calls to '.OrderBy'.
 
-            IQueryable<Artefact> artefacts = _context.Artefacts;
+            IQueryable<Artefact> artefacts = 
+                _context.Artefacts
+                        .Include(a => a.CategoryJoin)
+                            .ThenInclude(cj => cj.Category)
+                        .Include(a => a.Owner)
+                        .Include(a => a.Images);
             ApplicationUser curUser = await _userService.GetCurUser(HttpContext);
 
             // if querying for a single artefact, simply return that artefact
             if (id != null)
             {
                 var artefact = await artefacts
-                    .Include(a => a.CategoryJoin)
-                        .ThenInclude(cj => cj.Category)
-                    .Include(a => a.Owner)
-                    .Include(a => a.Images)
                     .SingleOrDefaultAsync(a => a.Id == id);
 
                 if (artefact == null)
@@ -121,14 +122,7 @@ namespace Artefactor.Controllers
                 return new JsonResult(_artefactConverter.ToJson(artefact));
             }
 
-            artefacts
-                .Include(a => a.CategoryJoin)
-                    .ThenInclude(cj => cj.Category)
-                .Include(a => a.Owner)
-                .Include(a => a.Images);
-
-            /// All artefacts loaded, now build dynamic linq queries using 
-            /// expression trees. See -
+            /// Build dynamic linq queries using expression trees. See -
             /// https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/expression-trees/how-to-use-expression-trees-to-build-dynamic-queries
 
             ParameterExpression artefactParam = 
