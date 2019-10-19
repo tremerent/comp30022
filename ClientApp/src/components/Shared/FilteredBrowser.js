@@ -1,13 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { format } from 'date-fns';
+import { format, startOfDay } from 'date-fns';
 
 import CentreLoading from 'components/Shared/CentreLoading';
 import ArtefactScroller from 'components/Artefact/ArtefactScroller';
 import Filter from 'components/Shared/Filter';
 import { artefacts as artActions } from 'redux/actions'
-import { sortOptions, } from './filterData';
+import { 
+    setDetectiveFilter as setDetFilterImp, 
+    setInterestingFilter as setInterFilterImp,
+} from './filterUtils';
 
 import "./Filter.css";
 
@@ -194,7 +197,7 @@ class FilteredBrowser extends React.Component {
                 <div className='af-filtered-browser-actions'>
                     <div className='af-filtered-browser-action'>
                         <button onClick={this.setDetectiveFilter} className='btn btn-primary'>
-                            Spread your knowledge
+                            Find questions to answer
                         </button>
                     </div>
                     <div className='af-filtered-browser-action'>
@@ -208,6 +211,7 @@ class FilteredBrowser extends React.Component {
                     submitFilter={this.submitFilter}
                     filterDetails={filterDetails}
                     onFilterChange={this.onFilterChange}
+                    clearFilter={this.clearFilter}
                 />
                 {
                     this.props.loading
@@ -226,23 +230,11 @@ class FilteredBrowser extends React.Component {
     }
 
     setDetectiveFilter = () => {
-        this.props.setFilter({
-            ...this.props.filterDetails,
-            sortQuery: {
-                ...sortOptions.filter(sortOpt => sortOpt.name == 'questionCount')[0],
-                order: 'desc',
-            },
-        });
+        setDetFilterImp(this.props.setFilter, this.props.filterDetails)
     }
 
     setInterestingFilter = () => {
-        this.props.setFilter({
-            ...this.props.filterDetails,
-            sortQuery: {
-                ...sortOptions.filter(sortOpt => sortOpt.name == 'commentCount')[0],
-                order: 'desc',
-            },
-        });
+        setInterFilterImp(this.props.setFilter, this.props.filterDetails)
     }
 
     onFilterChange = (filterDetails) => {

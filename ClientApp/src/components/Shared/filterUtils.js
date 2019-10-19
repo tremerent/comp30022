@@ -47,3 +47,25 @@ export const catQueryTypes = [
         label: "Any",
     },
 ];
+
+// Set filter for the "detective" persona - a user using Artefactor to share
+// their wealth of artefact knowledge.
+export const setDetectiveFilter = (setFilter, filterDetails) => {
+    setFilter({
+        ...filterDetails,
+        sortQuery: {
+            ...sortOptions.filter(sortOpt => sortOpt.name == 'questionCount')[0],
+            order: 'desc',
+        },
+    });
+}
+
+export const setInterestingFilter = (setFilter, filterDetails) => {
+    setFilter({
+        ...filterDetails,
+        sortQuery: {
+            ...sortOptions.filter(sortOpt => sortOpt.name == 'commentCount')[0],
+            order: 'desc',
+        },
+    });
+}

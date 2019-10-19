@@ -11,12 +11,13 @@ import { Link,  } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ReactSVG from 'react-svg';
 
+
 import StyledNavLink from './StyledNavLink.js';
 import UserNavMenu from './UserNavMenu.js';
 
 import './NavMenu.css';
 import ARTEFACTOR_BRAND from 'images/artefactor-brand.png';
-import ARTEFACT_ICON from 'images/amphora.svg';
+import { ReactComponent as ArtefactIcon } from 'images/amphora.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrophy } from '@fortawesome/free-solid-svg-icons';
 
@@ -28,6 +29,7 @@ class NavMenu extends React.Component {
         this.state = {
             collapsed: true,
             authenticated: false,
+            browseNavItemColor: "#000000",
         }
 
         this.toggleNav = this.toggleNav.bind(this);
@@ -37,29 +39,43 @@ class NavMenu extends React.Component {
         this.setState({ collapsed: !this.state.collapsed });
     }
 
-    render() {
-        // const artefactIcon = 
-        //     <div className='af-icon'>
-        //         <object type='image/svg+xml' contenteditable="true" data={ARTEFACT_ICON}>
-        //         </object>
-        //     </div>;
+    componentDidMount() {
+        // get color of browse icon
+        if (this.browseEle) {
+            this.setState({
+                ...this.state,
+                browseNavItemColor: window.getComputedStyle(this.browseEle).color,
+            });
+        }
+    }
 
+    componentDidUpdate() {
+        // get color of browse icon
+        const browseNavItemColor = 
+            window.getComputedStyle(this.browseEle).color;
+
+        if (this.browseEle && 
+            this.state.browseNavItemColor != browseNavItemColor) {
+            this.setState({
+                ...this.state,
+                browseNavItemColor,
+            });
+        }
+    }
+
+    render() {
         const artefactIcon = 
-            // <div className='af-icon'>
-                <ReactSVG
-                    src={ARTEFACT_ICON}
-               
-                    className="af-icon"
-                />
-                // beforeInjection={svg => {
-                //     svg.setAttribute('style', 'fill: #F81200')
-                // }}
-            // </div>
+            <ArtefactIcon 
+                fill={
+                    this.state.browseNavItemColor
+                }
+                className="af-icon"
+            />
 
         return (
             <header>
                 <div className='af-navmenu'>
-                    <Navbar light className="navbar-expand-sm ng-white box-shadow">
+                    <Navbar light className="navbar-expand-lg ng-white box-shadow af-bs-nav">
                         <Container>
                             <NavbarBrand tag={Link} to="/">
                                 <img src={ARTEFACTOR_BRAND} className='af-navmenu-brand' alt='Artefactor logo'/>
@@ -74,7 +90,9 @@ class NavMenu extends React.Component {
                                         to="/browse"
                                         label={
                                             <>
-                                                <span> Browse </span>&nbsp;
+                                                <span ref={(browseEle) => this.browseEle = browseEle}
+                                                    className="af-navmenu"
+                                                    > Browse </span>&nbsp;
                                                 {artefactIcon}
                                                 {/* <svg src={ARTEFACT_ICON} className="af-icon-custom">
                                                 </svg> */}

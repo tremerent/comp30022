@@ -38,7 +38,15 @@ export default function LandingPage(props) {
                             </h4>
                         </div>
                         <div className='af-lp-action-outer'>
-                            <Link to="/browse" className="af-lp-action">
+                            {/* triggers a filter option on the 'browse' page */}
+                            <Link 
+                                to={{
+                                    pathname: "/browse", 
+                                    state: { 
+                                        prevPath: props.location.pathname, 
+                                        action: "detectiveBrowse",
+                                }}} 
+                                className="af-lp-action">
                                 <button className="btn btn-primary mv-3">
                                     <span >Become an <br/> artefact detective</span>
                                 </button>

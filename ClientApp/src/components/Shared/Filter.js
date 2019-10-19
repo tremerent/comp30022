@@ -13,7 +13,7 @@ import { Collapse, } from 'reactstrap';
 import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import Select from 'react-select';
 
-import { queryTypes, sortOptions, catQueryTypes } from './filterData';
+import { queryTypes, sortOptions, catQueryTypes } from './filterUtils';
 
 function formatDateDisplay(date, defaultText) {
     if (!date) return defaultText;
@@ -80,13 +80,13 @@ export default class Filter extends React.Component {
                             <input
                                 onChange={(e) =>
                                     this.handleFilterChange("searchQuery")({
-                                        ...this.state.filterDetails.searchQuery,
+                                        ...filterDetails.searchQuery,
                                         text: e.target.value
                                     })
                                 }
-                                value={this.state.filterDetails.searchQuery.text}
+                                value={filterDetails.searchQuery.text}
                                 className={`form-control`}
-                                placeholder={this.state.filterDetails.searchQuery.type.label}
+                                placeholder={filterDetails.searchQuery.type.label}
                             />
                         </div>
                     </div>
@@ -95,7 +95,7 @@ export default class Filter extends React.Component {
                         toggle={() => this.toggle("showQuerySearchDrop") }
                     >
                         <DropdownToggle caret>
-                            {this.state.filterDetails.searchQuery.type.label}&nbsp;
+                            {filterDetails.searchQuery.type.label}&nbsp;
                         </DropdownToggle>
                         <DropdownMenu>
                             {
@@ -103,13 +103,13 @@ export default class Filter extends React.Component {
                                     .map((queryType, i) => {
                                         // pass array ele. by index so ref
                                         // not duplicated by lambda
-                                        if (queryType.name != this.state.filterDetails.searchQuery.type.name) {
+                                        if (queryType.name != filterDetails.searchQuery.type.name) {
                                             return (
                                                 <DropdownItem
                                                     onClick={() => {
                                                         this.toggle("showQuerySearchDrop");
                                                         this.handleFilterChange("searchQuery")({
-                                                            ...this.state.filterDetails.searchQuery,
+                                                            ...filterDetails.searchQuery,
                                                             type: queryTypes[i]
                                                         });
                                                     }}
@@ -134,7 +134,7 @@ export default class Filter extends React.Component {
                             blurPlaceholder={"Click to choose a category"}
                             focusPlaceholder={"Categories"}
                             creatable={false} 
-                            categoryVals={this.state.filterDetails.category} 
+                            categoryVals={filterDetails.category} 
                             setCategoryVals={this.handleFilterChange("category")} 
                         />
                     </div>
@@ -144,7 +144,7 @@ export default class Filter extends React.Component {
                                 toggle={() => this.toggle("showCatQueryTypeDrop") }
                         >
                         <DropdownToggle caret>
-                            {this.state.filterDetails.catQueryType.label}&nbsp;
+                            {filterDetails.catQueryType.label}&nbsp;
                         </DropdownToggle>
                         <DropdownMenu>
                             {
@@ -152,7 +152,7 @@ export default class Filter extends React.Component {
                                     .map((catQueryType, i) => {
                                         // pass array ele. by index so ref
                                         // not duplicated by lambda
-                                        if (catQueryType.name != this.state.filterDetails.catQueryType.name) {
+                                        if (catQueryType.name != filterDetails.catQueryType.name) {
                                             return (
                                                 <DropdownItem
                                                     onClick={() => {
@@ -177,9 +177,9 @@ export default class Filter extends React.Component {
                     <div className="af-filter-row-flex-item">
                         <Select
                             menuIsOpen={false}
-                            value={this.state.filterDetails.since
-                                ? { label: `After ${formatDateDisplay(this.state.filterDetails.since)}`,
-                                    value: this.state.filterDetails.since}
+                            value={filterDetails.since
+                                ? { label: `After ${formatDateDisplay(filterDetails.since)}`,
+                                    value: filterDetails.since}
                                 : null}
                             placeholder="After"
                             onFocus={() => {
@@ -192,9 +192,9 @@ export default class Filter extends React.Component {
                     <div className="af-filter-row-flex-item">
                         <Select
                             menuIsOpen={false}
-                            value={this.state.filterDetails.until
-                                    ? { label: `Before ${formatDateDisplay(this.state.filterDetails.until)}`,
-                                        value: this.state.filterDetails.until}
+                            value={filterDetails.until
+                                    ? { label: `Before ${formatDateDisplay(filterDetails.until)}`,
+                                        value: filterDetails.until}
                                     : null
                                   }
                             placeholder="Before"
@@ -216,7 +216,7 @@ export default class Filter extends React.Component {
                         <div className="af-filter-datepicker-inner">
                             <p className="text-dark text-center"> Show artefacts created after: </p>
                             <Calendar
-                                    date={this.state.filterDetails.since}
+                                    date={filterDetails.since}
                                     onChange={this.handleFilterChange("since")}
                             />
                         </div>
@@ -228,7 +228,7 @@ export default class Filter extends React.Component {
                         <div className="af-filter-datepicker-inner">
                             <p className="text-dark"> Show artefacts created before: </p>
                             <Calendar
-                                    date={this.state.filterDetails.until}
+                                    date={filterDetails.until}
                                     onChange={this.handleFilterChange("until")}
                             />
                         </div>
@@ -241,10 +241,10 @@ export default class Filter extends React.Component {
                             <Select
                                 onChange={(value) =>
                                     this.handleFilterChange("sortQuery")
-                                    ({...this.state.filterDetails.sortQuery,
+                                    ({...filterDetails.sortQuery,
                                         ...value,
                                         order: "desc"})}  // TODO: sort query order
-                                values={this.state.filterDetails.sortQuery}
+                                value={filterDetails.sortQuery}
                                 options={sortOptions}
                                 placeholder="Sort by"
                                 menuPlacement="top"
@@ -256,7 +256,7 @@ export default class Filter extends React.Component {
                             className="btn af-filter-sort-order-toggle"
                         >
                             {
-                                this.state.filterDetails.sortQuery.order === "asc"
+                                filterDetails.sortQuery.order === "asc"
                                 ?
                                     <FontAwesomeIcon icon={
                                         faSortUp
@@ -335,15 +335,18 @@ export default class Filter extends React.Component {
         );
     }
 
-    handleSubmit = () => { 
-        this.props.submitFilter(this.state.filterDetails);
+    handleSubmit = (filterDetails) => { 
+        this.props.submitFilter(filterDetails);
     }
 
     clearFilter = () => {
         this.setState({
             ...this.state,
             filterDetails: this.initStateFilterDetails,
-        }, this.handleSubmit);
+        }, () => {
+            this.props.handleFilterChange(this.state.filterDetails);
+            this.handleSubmit();
+        });
     }
 
     toggleSortDir = () => {

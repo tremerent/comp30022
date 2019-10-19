@@ -82,14 +82,14 @@ UserNavMenu.propTypes = {
             username: PropTypes.string,
     }).isRequired,
     logout: PropTypes.func.isRequired,
-}
+};
 
 const mapStateToProps = (state) => {
     return {
         ...state.auth,
         curPath: state.router.location.pathname,
-    }
-}
+    };
+};
 
 const mapDispatchToProps = (dispatch) => {
     //return bindActionCreators({ logout: auth.logout }, dispatch);
@@ -98,7 +98,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(auth.logout(redirTo));
         }
     };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps) (UserNavMenu)
 
