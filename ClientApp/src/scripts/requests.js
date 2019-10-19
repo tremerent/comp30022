@@ -118,13 +118,27 @@ async function getArtefacts(queryDetails) {
         const val = queryDetails[key];
 
         if (val != null && val != "" && val.length) {
+<<<<<<< HEAD
 
             console.log(val);
             queries.push(
                 makeQuery(key, val)
+=======
+            queries.push(
+                makeQuery(key, queryDetails[key])
+>>>>>>> jonah-WIP-filter
             );
         }
     });
+
+    let url = `/artefacts`;
+    if (queries.length) {
+        url += '?' + queries.reduce((acc, cur) => acc + cur);
+    }
+    resp = await apiFetch(getToken())
+            .get(url);
+
+    return resp.data;
 
     function makeQuery(k, v) {
         if (Array.isArray(v)) {
@@ -139,6 +153,7 @@ async function getArtefacts(queryDetails) {
         return queryArray.map(q => makeQuery(queryName, q))
                          .reduce((acc, cur) => acc + cur);
     }
+<<<<<<< HEAD
     
 
     let url = `/artefacts`;
@@ -149,6 +164,8 @@ async function getArtefacts(queryDetails) {
             .get(url);
 
     return resp.data;
+=======
+>>>>>>> jonah-WIP-filter
 }
 
 async function getUser(username) {
@@ -161,8 +178,6 @@ async function getUser(username) {
 // This is a total hack. Will fix to be proper reduxy given more time.
 // -- Sam
 async function patchUserInfo(username, newInfo) {
-    console.log('------- new info ----------');
-    console.log(newInfo);
     const resp = await apiFetch(getToken())
         .patch(`/user/${username}`, newInfo);
 
