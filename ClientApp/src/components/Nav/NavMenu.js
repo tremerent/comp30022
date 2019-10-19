@@ -56,11 +56,6 @@ class NavMenu extends React.Component {
                                         label="Browse"
                                         curPath={this.props.curPath}
                                     />
-                                    <StyledNavLink
-                                        to="/tests"
-                                        label="Tests"
-                                        curPath={this.props.curPath}
-                                    />
                                     {
                                         !/*XXX*/this.state.authenticated ? (
                                             <>

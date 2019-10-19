@@ -6,15 +6,15 @@ import 'react-date-range/dist/theme/default.css';
 import { format } from 'date-fns';
 import CategorySelect from 'components/Category/CategorySelect';
 
-
 import 'components/Shared/Filter.css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faArrowUp, faSortUp, faSortDown, faTimes, } from '@fortawesome/free-solid-svg-icons';
 import { Collapse, } from 'reactstrap';
 import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import Select from 'react-select';
 
+// text query types
 const queryTypes = [
     {
         name: "title",
@@ -61,106 +61,34 @@ function formatDateDisplay(date, defaultText) {
     return format(date, 'DD/MM/YYYY');
 }
 
-function apiFormatDate(date, defaultText) {
-    if (!date) return defaultText;
-    return format(date, 'MM.DD.YYYY');
-}
-
-// Converts 'state.filterDetails' to proper key value query strings
-function getFormattedQuery(filterDetails) {
-    const newFilterQueryParams = {};
-    // nullify 'filterDetails' params. we don't want in q string
-    const removedFilterQueryParams = {};  
-    
-    // search query - can't search for an empty string
-    if (filterDetails.searchQuery && filterDetails.searchQuery.text != "") {
-
-        newFilterQueryParams.q = [];
-        removedFilterQueryParams.searchQuery = null;
-
-        if (filterDetails.searchQuery.type) {
-            if (filterDetails.searchQuery.type.name == "both") {
-                newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:title`);
-                newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:description`);
-            } 
-            else if (filterDetails.searchQuery.type.name == "title") {
-                newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:title`);
-            }
-            else if (filterDetails.searchQuery.type.name == "description") {
-                newFilterQueryParams.q.push(`${filterDetails.ssearchQuery.text}:description`);
-            }
-        }
-        else {
-            // default to just title 
-            newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:title`);
-        }
-    }
-
-    // date queries
-    if (filterDetails.since) {
-        newFilterQueryParams.since = apiFormatDate(filterDetails.since)
-    }
-    if (filterDetails.until) {
-        newFilterQueryParams.until = apiFormatDate(filterDetails.until)
-    }
-
-    // sort query
-    if (filterDetails.sortQuery != null) {
-        newFilterQueryParams.sort = 
-            `${filterDetails.sortQuery.name}:${filterDetails.sortQuery.order}`;
-
-        removedFilterQueryParams.sortQuery = null;
-    }
-
-    // category queries
-    if (filterDetails.catQueryType != null) {
-        if (filterDetails.catQueryType.name == "matchAll") {
-            newFilterQueryParams.matchAll = "true";
-        }
-        else if (filterDetails.catQueryType.name == "matchAny") {
-            newFilterQueryParams.matchAll = "false";
-        }
-    }
-    if (filterDetails.categories && filterDetails.categories.length > 0) {
-        // query string expects only name of category
-        newFilterQueryParams.category = 
-            filterDetails.categories
-                         .map(catOption => catOption.label);
-    }
-    removedFilterQueryParams.categories = null;
-
-    const queryDetails = {
-        ...filterDetails,
-        ...newFilterQueryParams,
-        ...removedFilterQueryParams
-    }
-
-    return queryDetails;
-}
-
 /**
- * Parent passes 'props.submitFilter'.
+ * Browser filter presentation component.
  */
 export default class Filter extends React.Component {
     
     constructor(props) {
         super(props);
 
+        this.initStateFilterDetails = {
+            searchQuery: {
+                text: "",
+                type: queryTypes[0],
+            },
+            category: [],
+            since: null,
+            until: null,
+            sortQuery: {
+                ...sortOptions[1],
+                order: "desc", 
+            },
+            catQueryType: catQueryTypes[1],
+        }
         
         this.state = {
+            // prop filter details overrides default
             filterDetails: {
-                searchQuery: {
-                    text: "",
-                    type: queryTypes[0],
-                },
-                categories: [],
-                since: null,
-                until: null,
-                sortQuery: {
-                    ...sortOptions[1],
-                    order: "desc", 
-                },
-                catQueryType: catQueryTypes[1],
+                ...this.initStateFilterDetails,
+                ...this.props.filterDetails,
             },
             showUntilCalendar: false,
             showSinceCalendar: false,
@@ -240,8 +168,8 @@ export default class Filter extends React.Component {
                             blurPlaceholder={"Click to choose a category"}
                             focusPlaceholder={"Categories"}
                             creatable={false} 
-                            categoryVals={this.state.filterDetails.categories} 
-                            setCategoryVals={this.handleFilterChange("categories")} 
+                            categoryVals={this.state.filterDetails.category} 
+                            setCategoryVals={this.handleFilterChange("category")} 
                         />
                     </div>
 
@@ -365,24 +293,34 @@ export default class Filter extends React.Component {
                                 this.state.filterDetails.sortQuery.order === "asc"
                                 ?
                                     <FontAwesomeIcon icon={
-                                        faArrowUp
+                                        faSortUp
                                     } />
                                 :
                                     <FontAwesomeIcon icon={
-                                        faArrowDown
+                                        faSortDown
                                     } />
                             }
 
                         </button>
-                    </div>      
-                    <button 
-                        onClick={this.handleSubmit}
-                        className="btn btn-primary "
-                    > 
-                        <FontAwesomeIcon icon={faSearch} />
-                        &nbsp; 
-                        Search
-                    </button>
+                    </div>
+                    <div className="af-filter-controls">
+                        <button 
+                            onClick={this.clearFilter}
+                            className="btn btn-outline-warning af-filter-control"
+                        > 
+                            <FontAwesomeIcon icon={faTimes} color="#ccae57"/>
+                            &nbsp; 
+                            Clear
+                        </button>
+                        <button 
+                            onClick={this.handleSubmit}
+                            className="btn btn-primary "
+                        > 
+                            <FontAwesomeIcon icon={faSearch} />
+                            &nbsp; 
+                            Search
+                        </button>
+                    </div>
                 </div>
             </div>
         );
@@ -417,7 +355,14 @@ export default class Filter extends React.Component {
     }
 
     handleSubmit = () => { 
-        this.props.submitFilter(getFormattedQuery(this.state.filterDetails));
+        this.props.submitFilter(this.state.filterDetails);
+    }
+
+    clearFilter = () => {
+        this.setState({
+            ...this.state,
+            filterDetails: this.initStateFilterDetails,
+        }, this.handleSubmit);
     }
 
     toggleSortDir = () => {
@@ -474,6 +419,8 @@ export default class Filter extends React.Component {
                 ...this.state.filterDetails,
                 [key]: value,
             },
+        }, () => {
+            this.props.onFilterChange(this.state.filterDetails);
         });
     }
 }

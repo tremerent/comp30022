@@ -24,7 +24,7 @@
             browserArtefacts: [],
             loading: true,
             error: null,
-            query: {},
+            filterDetails: {},
         },
     }
 

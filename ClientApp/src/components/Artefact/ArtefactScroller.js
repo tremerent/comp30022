@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { ArtefactPreview } from './ArtefactPreview.js';
-import CentreLoading from '../CentreLoading.js';
+import CentreLoading from '../Shared/CentreLoading.js';
 
 import './ArtefactScroller.css';
 
@@ -14,11 +14,6 @@ export default class ArtefactScroller extends Component {
     }
 
     componentDidMount() {
-        //if (this.state.loading)
-        //    getArtefacts()
-        //        .then(artefacts => {
-        //            this.setState({ artefacts, loading: false });
-        //        });
     }
 
     render() {
@@ -41,11 +36,6 @@ export default class ArtefactScroller extends Component {
                     artefactsToScroll.length
                         ? artefactsToScroll.map(a => {
                             if (a) {
-                                a.images = [
-                                    PLACEHOLDER_IMAGE_01,
-                                    PLACEHOLDER_IMAGE_02,
-                                    PLACEHOLDER_IMAGE_03,
-                                ];
                                 return <ArtefactPreview key={a.id} artefact={a} />;
                             }
                           })

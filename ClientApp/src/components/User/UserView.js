@@ -2,9 +2,11 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { users as usersActions, artefacts as artActions } from '../redux/actions';
+import { users as usersActions, artefacts as artActions } from '../../redux/actions';
 import UserProfile from './UserProfile';
-import CentreLoading from './CentreLoading';
+import CentreLoading from 'components/Shared/CentreLoading';
+
+// Container component for 'UserProfile'.
 
 class UserView extends React.Component {
     constructor(props) {
@@ -24,7 +26,11 @@ class UserView extends React.Component {
                 : <UserProfile
                     user={this.props.user}
                     userArtefacts={this.props.userArtefacts}
-                    numArtefactsReg={this.props.userArtefacts.length} />
+                    numArtefactsReg={this.props.userArtefacts.length}
+                    updateUserDetails={this.props.updateCurUserDetails}
+                    updateUserProfilePic={this.props.updateCurUserProfilePic}
+                    editable={this.props.isViewOfCurUser}
+                  />
         );
     }
 }
@@ -46,7 +52,7 @@ function mapStateToProps(state) {
     const username = getUsernameFromPath(state.router.location.pathname);
 
     // state.users.username may not exist yet
-    const user = 
+    const user =
         state.users.users[username] != null
             ? state.users.users[username]
             : {
@@ -62,6 +68,7 @@ function mapStateToProps(state) {
     }
 
     return {
+        isViewOfCurUser: username == state.auth.user.username,
         username,
         userArtefacts,
         user: user,
@@ -73,6 +80,8 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         getUser: usersActions.getUser,
         getUserArtefacts: artActions.getUserArtefacts,
+        updateCurUserDetails: usersActions.updateCurUserDetails,
+        updateCurUserProfilePic: usersActions.updateCurUserProfilePic,
     }, dispatch);
 }
 

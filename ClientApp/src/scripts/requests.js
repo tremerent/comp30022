@@ -118,23 +118,26 @@ async function getArtefacts(queryDetails) {
         const val = queryDetails[key];
 
         if (val != null && val != "" && val.length) {
-
-            // handle lists
-            if (key === "category") {
-                queries.push(makeQueryFromArray(val, "category"))
-            }
-            else if (key === "q") {
-                queries.push(makeQueryFromArray(val, "q"))
-            }
-            else {
-                queries.push(
-                    makeQuery(key, queryDetails[key])
-                );
-            }
+            queries.push(
+                makeQuery(key, queryDetails[key])
+            );
         }
     });
 
+    let url = `/artefacts`;
+    if (queries.length) {
+        url += '?' + queries.reduce((acc, cur) => acc + cur);
+    }
+    resp = await apiFetch(getToken())
+            .get(url);
+
+    return resp.data;
+
     function makeQuery(k, v) {
+        if (Array.isArray(v)) {
+            return makeQueryFromArray(v, k);
+        }
+
         return `&${k}=${v}`;
     }
 
@@ -143,31 +146,20 @@ async function getArtefacts(queryDetails) {
         return queryArray.map(q => makeQuery(queryName, q))
                          .reduce((acc, cur) => acc + cur);
     }
-    
-
-    let url = `/artefacts`;
-    if (queries.length) {
-        url += '?' + queries.reduce((acc, cur) => acc + cur);
-    }
-    console.log(url);
-    resp = await apiFetch(getToken())
-            .get(url);
-
-    return resp.data;
 }
 
 async function getUser(username) {
     const resp = await apiFetch()
-        .get(`/User/${username}`);
+        .get(`/user/${username}`);
 
     return resp.data;
 }
 
 // This is a total hack. Will fix to be proper reduxy given more time.
 // -- Sam
-async function changeCurUserInfo(user, newInfo) {
+async function patchUserInfo(username, newInfo) {
     const resp = await apiFetch(getToken())
-        .post(`/user/${user.username}`, newInfo);
+        .patch(`/user/${username}`, newInfo);
 
     return resp.data;
 }
@@ -178,7 +170,7 @@ async function setProfileImage(file) {
     data.append("file", file);
 
     const resp = await apiFetch(getToken())
-        .post(`/profile/set-profile-image`, data)
+        .post(`/user/display-picture`, data)
 
     return resp.data;
 }
@@ -201,6 +193,6 @@ export {
     postRegister,
 
     getUser,
-    changeCurUserInfo,
+    patchUserInfo,
     setProfileImage,
 }

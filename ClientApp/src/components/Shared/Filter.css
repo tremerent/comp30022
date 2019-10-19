@@ -55,3 +55,11 @@
     width: 20%;
     margin-bottom: 7px;
 }
+
+.af-filter-controls {
+    display: inline-block;
+}
+
+.af-filter-control {
+    margin-right: 10px;
+}
