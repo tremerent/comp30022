@@ -9,6 +9,8 @@ import {
     getUser as fetchUser,
     patchUserInfo,
     setProfileImage,
+    getArtefact,
+    addArtefactImage,
 } from '../../scripts/requests';
 
 function setRedir(to) {
@@ -187,7 +189,8 @@ function getMyArtefacts() {
 
         try {
             const myArtefacts = await getArtefacts({
-                user: curUserUsername
+                user: curUserUsername,
+                vis: ["public", "private",], //"family"
             });
             dispatch(resGetMyArtefacts(myArtefacts));
         }
@@ -246,8 +249,8 @@ function addMyArtefact(newArtefact) {
     }
 }
 
-// addMyArtefact, but synchronise 'state.auth.browse' and 'user' if
-// newArtefact is public
+// addMyArtefact, but synchronise 'state.art.browserArts' and 
+// 'state.art.userArts' if newArtefact is public
 function addMyArtefactSync(newArtefact) {
     return async function (dispatch, getState) {
 
@@ -302,17 +305,33 @@ function resCreateMyArtefact(createdArtefact) {
 }
 
 // returns the created artefact
-function createMyArtefact(newArtefact) {
+function createMyArtefact(newArtefact, docs) {
     return async function (dispatch, getState) {
         dispatch(reqCreateMyArtefact())
 
         const postedArtefact = await postArtefactAndCategories(newArtefact);
+        const postedDocs = await submitDocs(postedArtefact.id, docs);
+
+        console.log('here are the posted docs!!!!');
+        console.log(postedDocs);
+
+        postedArtefact.images = postedDocs;
 
         dispatch(addMyArtefactSync(postedArtefact));
         dispatch(resCreateMyArtefact(postedArtefact));
 
         return getState().art.myArts.create.createdArtefact;
     }
+}
+
+async function submitDocs(artefactId, docs) {
+    let promises = [];
+
+    for (let doc of Object.values(docs)) {
+        promises.push(addArtefactImage(artefactId, doc.blob));
+    }
+
+    return await Promise.all(promises);
 }
 
 function reqUserArtefacts(username) {

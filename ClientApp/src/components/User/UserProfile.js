@@ -47,6 +47,7 @@ export default class UserProfile extends React.Component {
         let addArtefact;
         let addArtefactModal;
         if (this.props.editable) {
+            
             EditableBio = editableTextArea(BioText);
 
             addArtefactModal =

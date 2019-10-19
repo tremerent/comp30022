@@ -10,8 +10,6 @@ import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 import CategorySelect from '../Category/CategorySelect.js';
 import ArtefactDocs from './ArtefactDocs.js';
 
-import { addArtefactImage } from '../../scripts/requests.js';
-
 import './CreateArtefactForm.css';
 
 const visbilityOptLabels = {
@@ -32,6 +30,7 @@ export class CreateArtefactForm extends Component {
             visibility: null,
         };
 
+        // this doesn't participate in 
         this.docs = { };
 
         this.state = {
@@ -292,17 +291,6 @@ export class CreateArtefactForm extends Component {
         );
     }
 
-    async submitDocs(id) {
-        let promises = [];
-
-        for (let doc of Object.values(this.docs)) {
-            promises.push(addArtefactImage(id, doc.blob));
-            console.log(`POST ${id} :: ${doc.filename}`);
-        }
-
-        await Promise.all(promises);
-    }
-
     handleSubmit = (e) => {
         if (e) {
             e.preventDefault();
@@ -313,13 +301,15 @@ export class CreateArtefactForm extends Component {
             loading: true,
         });
 
-        this.props.createArtefact(this.state.artefact)
-            .then((async (...args) => {
+        this.props.createArtefact(this.state.artefact, this.docs)
+            .then((() => {
 
-                if (this.props.createdArtefact) {
-                    const response =
-                        await this.submitDocs(this.props.createdArtefact.id);
-                }
+                // if (this.props.createdArtefact) {
+                //     console.log("CREATED ARTEFACTS");
+                //     console.log(this.props.createdArtefact);
+                //     const response =
+                //         await this.submitDocs(this.props.createdArtefact.id);
+                // }
 
                 // add created artefacts id so we have a link to it for the success
                 // message

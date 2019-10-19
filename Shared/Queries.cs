@@ -62,7 +62,7 @@ namespace Artefactor.Shared
         }
 
         // assumes 'vis != Visibility.Unspecified'
-        public static bool VisQueryIsAuthorised(
+        public static bool QueryIsAuthorised(
             Visibility vis, 
             // current app user
             ApplicationUser curUser, 
