@@ -20,7 +20,7 @@
         userArts: {
 
         },
-        artById: { },
+        artIdCache: { },
     }
 
     return initArtState;
