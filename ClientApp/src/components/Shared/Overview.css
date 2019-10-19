@@ -7,17 +7,12 @@
 }
 
 .af-ov-static {
-    width: 50%;
     height: 100vh;
     flex-grow: 1;
-    background-color: #66000022;
 }
 
 .af-ov-scroll {
-    width: 50%;
     position: relative;
-    left: 50%;
-    background-color: #00880022;
 }
 
 .af-ov-navbar-placeholder {
