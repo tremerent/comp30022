@@ -1,7 +1,8 @@
 ﻿import { artefactTypes } from '../actions/types';
 import getInitArtState from './initArtState'
+import { flatCombineReducers } from '../util.js';
 
-function art(state = getInitArtState(), action) {
+function artMain(state = getInitArtState(), action) {
     switch (action.type) {
         case artefactTypes.REQ_GET_MY_ARTEFACTS:
             return {
@@ -179,7 +180,5 @@ function updateArtIdCache(state = getInitArtState(), action) {
     }
 }
 
-export {
-    art,
-    updateArtIdCache,
-}
+export const art = flatCombineReducers(artMain, updateArtIdCache);
+
