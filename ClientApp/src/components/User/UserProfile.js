@@ -1,18 +1,14 @@
 import React from 'react';
 import FloatingWindow from '../Shared/FloatingWindow.js';
 import CreateArtefacts from '../Artefact/CreateMyArtefact.js';
+import Overview from '../Shared/Overview.js';
 
 import ArtefactScroller from '../Artefact/ArtefactScroller.js';
 import { editableTextArea } from 'components/Shared/editableTextArea';
 import ProfilePicture from './ProfilePicture';
 
-import NavMenu from '../Nav/NavMenu.js';
-
 import './UserProfile.css';
 import './UserProfileEditing.css';
-import '../Nav/NavMenu.css';
-
-import Overview from '../Shared/Overview.js';
 
 class UserInfo extends React.Component {
 
