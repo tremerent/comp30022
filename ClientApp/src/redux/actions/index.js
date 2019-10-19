@@ -9,7 +9,7 @@ import {
     getUser as fetchUser,
     patchUserInfo,
     setProfileImage,
-    getArtefact,
+    getArtefact as apiGetArtefact,
     addArtefactImage,
 } from '../../scripts/requests';
 
@@ -201,6 +201,46 @@ function getMyArtefacts() {
     }
 }
 
+function reqGetArtefact(id) {
+    return {
+        type: artefactTypes.REQ_GET_ARTEFACT,
+        id,
+    };
+}
+
+function resGetArtefact(artefact) {
+    return {
+        type: artefactTypes.RES_GET_ARTEFACT,
+        artefact,
+    };
+}
+
+function errGetArtefact(id, error) {
+    return {
+        type: artefactTypes.ERR_GET_ARTEFACT,
+        id,
+        error,
+    };
+}
+
+function getArtefact(id) {
+    return async function (dispatch, getState) {
+        dispatch(reqGetArtefact(id));
+
+        if (getState().artIdCache[id] !== null) {
+            dispatch(resGetArtefact(getState().artIdCache[id]));
+            return;
+        }
+
+        try {
+            const art = await apiGetArtefact(id);
+            dispatch(resGetArtefact(art));
+        } catch (e) {
+            dispatch(errGetArtefact(id, e));
+        }
+    }
+}
+
 function setPublicArtefacts(publicArts) {
     return {
         type: artefactTypes.RES_GET_PUBLIC_ARTEFACTS,
@@ -249,7 +289,7 @@ function addMyArtefact(newArtefact) {
     }
 }
 
-// addMyArtefact, but synchronise 'state.art.browserArts' and 
+// addMyArtefact, but synchronise 'state.art.browserArts' and
 // 'state.art.userArts' if newArtefact is public
 function addMyArtefactSync(newArtefact) {
     return async function (dispatch, getState) {
@@ -397,6 +437,7 @@ const artefacts = {
     getUserArtefacts,
     getBrowserArtefacts,
     getUserOrMyArtefacts,
+    getArtefact,
 }
 
 function reqGetUser(username) {

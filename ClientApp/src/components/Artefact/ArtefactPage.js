@@ -1,23 +1,45 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { artefacts as artActions } from '../../redux/actions';
 
 import Overview from '../Shared/Overview.js';
 import ArtefactPreview from './ArtefactPreview.js';
+import CentreLoading from 'components/Shared/CentreLoading';
 import '../User/UserProfile.css';
 import './ArtefactPage.css';
 
 import Discussion from '../Discussion/Discussion.js';
 
+const UUID_REGEX = '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}';
 
-export default class ArtefactPage extends React.Component {
+function getArtefactIdFromRoute(route) {
+    const matches = route.match(`/artefact/(${UUID_REGEX})`);
+
+    if (matches !== null)
+        return matches[1];
+    return null;
+}
+
+
+class ArtefactPage extends React.Component {
 
     constructor(props) {
         super(props);
 
-        this.state = { };
+        this.state = {
+        };
+    }
+
+    componentDidMount() {
+        this.props.getArtefact(this.props.artefactId);
     }
 
     render() {
+        if (this.props.loading)
+            return <CentreLoading/>;
         return (
+            <>
             <Overview sizeStatic='50%' sizeScroll='46%'>
                 <ArtefactPreview artefact={this.props.artefact}/>
                 <Discussion items={[
@@ -160,9 +182,27 @@ export default class ArtefactPage extends React.Component {
                     }
                 ]}/>
             </Overview>
+            </>
         );
     }
 
 }
 
+function mapStateToProps(state) {
+    const artefactId = getArtefactIdFromRoute(state.router.location.pathname);
+    return {
+        artefactId,
+        artefact: state.art.artIdCache[artefactId],
+        loading: !state.art.artIdCache[artefactId],
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    console.log(`artActions.getArtefact: ${artActions.getArtefact}`);
+    return bindActionCreators({
+        getArtefact: artActions.getArtefact,
+    }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ArtefactPage);
 

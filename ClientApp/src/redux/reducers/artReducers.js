@@ -156,6 +156,15 @@ function artMain(state = getInitArtState(), action) {
 function updateArtIdCache(state = getInitArtState(), action) {
     switch (action.type) {
 
+    case artefactTypes.RES_GET_ARTEFACT:
+        return {
+            ...state,
+            artIdCache: {
+                ...state.artIdCache,
+                [action.artefact.id]: action.artefact,
+            },
+        };
+
     case artefactTypes.RES_GET_MY_ARTEFACTS:
         return {
             ...state,
