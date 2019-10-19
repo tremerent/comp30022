@@ -126,6 +126,60 @@ function art(state = getInitArtState(), action) {
     }
 }
 
+function updateArtIdCache(state = getInitArtState(), action) {
+    switch (action.type) {
+
+    case artefactTypes.RES_GET_MY_ARTEFACTS:
+        return {
+            ...state,
+            artIdCache: {
+                ... state.artIdCache,
+                ... action.myArtefacts.reduce(
+                        (cache, value) => ({ ...cache, [value.id]: value }),
+                        { }
+                    ),
+            }
+        };
+
+    case artefactTypes.ADD_MY_ARTEFACTS:
+        return {
+            ...state,
+            artIdCache: {
+                ...state.artIdCache,
+                [action.newArtefact.id]: action.newArtefact,
+            }
+        };
+
+    case artefactTypes.RES_GET_PUBLIC_ARTEFACTS:
+        return {
+            ...state,
+            artIdCache: {
+                ... state.artIdCache,
+                ... action.artefacts.reduce(
+                        (cache, value) => ({ ...cache, [value.id]: value }),
+                        { }
+                    ),
+            },
+        };
+
+    case artefactTypes.RES_GET_USER_ARTEFACTS:
+        return {
+            ...state,
+            artIdCache: {
+                ... state.artIdCache,
+                ... action.userArtefacts.reduce(
+                        (cache, value) => ({ ...cache, [value.id]: value }),
+                        { }
+                    ),
+            },
+        };
+
+    default:
+        return state;
+    }
+}
+
 export {
     art,
+    updateArtIdCache,
 }
