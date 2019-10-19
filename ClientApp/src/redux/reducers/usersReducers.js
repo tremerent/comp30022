@@ -48,6 +48,45 @@ function users(state = getInitUsersState(), action) {
                 ...state,
                 users: stateUsers, 
             }
+        case usersTypes.REQ_PATCH_USER_DETAILS:
+            stateUsers = state.users;
+            ensureObjHasAttrib(action.username, stateUsers);
+
+            stateUsers[action.username] = {
+                ...stateUsers[action.username],
+                loading: true,
+            }
+
+            return {
+                ...state,
+                users: stateUsers,
+            }
+        case usersTypes.RES_PATCH_USER_DETAILS:
+            
+            stateUsers = state.users;
+            ensureObjHasAttrib(action.username, stateUsers);
+
+            stateUsers[action.username] = {
+                ...stateUsers[action.username],
+                ...action.patchedDetails,
+                loading: false,
+            }
+
+            return {
+                ...state,
+                users: stateUsers,
+            }
+        case usersTypes.ERR_PATCH_USER_DETAILS:
+
+            stateUsers = state.users;
+            ensureObjHasAttrib(action.username, stateUsers);
+
+            stateUsers[action.username].error = true;
+
+            return {
+                ...state,
+                users: stateUsers, 
+            }
         default:
             return state
     }

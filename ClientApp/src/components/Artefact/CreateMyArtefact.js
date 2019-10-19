@@ -12,7 +12,7 @@ class CreateMyArtefact extends React.Component {
 
         this.state = {
             createdArtefact: null,
-        }
+        };
     }
 
     render() {
@@ -23,12 +23,12 @@ class CreateMyArtefact extends React.Component {
         />;
     }
 
-    createMyArtefact = async (artefact) => {
-        await this.props.createMyArtefact(artefact);
+    createMyArtefact = async (artefact, docs) => {
+        const createdArtefact = await this.props.createMyArtefact(artefact, docs);
 
         this.setState({
             ...this.state,
-            createdArtefact: this.props.createdArtefact,
+            createdArtefact,
         });
     }
 }
@@ -44,6 +44,6 @@ const mapDispatchToProps = dispatch => {
 }
 
 export default connect(
-    mapStateToProps, 
+    mapStateToProps,
     mapDispatchToProps
 )(CreateMyArtefact);

@@ -23,7 +23,7 @@ async function postRegister(registerDetails) {
 async function getArtefact(artefactId) {
     const resp = await apiFetch(getToken())
         // XXX not sure if this is sanitised -- Sam
-        .get(`/Artefacts/${artefactId}`);
+        .get(`/Artefacts?id=${artefactId}`);
 
     return resp.data;
 }
@@ -110,39 +110,61 @@ async function getVisibilityOpts() {
     return resp.data;
 }
 
-/**
- * Get all artefacts owned by user with 'username',
- * or all artefacts if null.
- */
-async function getArtefacts(username, vis) {
+async function getArtefacts(queryDetails) {
     let resp;
 
-    const visQuery = vis ? `?vis=${vis}` : ``;
+    const queries = [];
+    Object.keys(queryDetails).map(function(key) {
+        const val = queryDetails[key];
 
-    if (username == null) {
-        resp = await apiFetch(getToken())
-            .get(`/Artefacts`);
+        if (val != null && val != "" && val.length) {
+
+            console.log(val);
+            queries.push(
+                makeQuery(key, val)
+            );
+        }
+    });
+
+    function makeQuery(k, v) {
+        if (Array.isArray(v)) {
+            return makeQueryFromArray(v, k);
+        }
+
+        return `&${k}=${v}`;
     }
-    else {
-        resp = await apiFetch(getToken())
-            .get(`/Artefacts/user/${username}` + visQuery);
+
+    // calls 'makeQuery' on each element then concats the result
+    function makeQueryFromArray(queryArray, queryName) {
+        return queryArray.map(q => makeQuery(queryName, q))
+                         .reduce((acc, cur) => acc + cur);
     }
+
+
+    let url = `/artefacts`;
+    if (queries.length) {
+        url += '?' + queries.reduce((acc, cur) => acc + cur);
+    }
+    resp = await apiFetch(getToken())
+            .get(url);
 
     return resp.data;
 }
 
 async function getUser(username) {
     const resp = await apiFetch()
-        .get(`/User/${username}`);
+        .get(`/user/${username}`);
 
     return resp.data;
 }
 
 // This is a total hack. Will fix to be proper reduxy given more time.
 // -- Sam
-async function changeCurUserInfo(user, newInfo) {
+async function patchUserInfo(username, newInfo) {
+    console.log('------- new info ----------');
+    console.log(newInfo);
     const resp = await apiFetch(getToken())
-        .post(`/user/${user.username}`, newInfo);
+        .patch(`/user/${username}`, newInfo);
 
     return resp.data;
 }
@@ -183,7 +205,7 @@ export {
     postRegister,
 
     getUser,
-    changeCurUserInfo,
+    patchUserInfo,
     setProfileImage,
 
     getComment,

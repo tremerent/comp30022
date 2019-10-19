@@ -15,6 +15,8 @@ import UserNavMenu from './UserNavMenu.js';
 
 import './NavMenu.css';
 import ARTEFACTOR_BRAND from '../../images/artefactor-brand.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrophy } from '@fortawesome/free-solid-svg-icons';
 
 class NavMenu extends React.Component {
 
@@ -34,9 +36,6 @@ class NavMenu extends React.Component {
     }
 
     render() {
-        //<NavLink tag={Link} to="/browse" activeClassName="af-active-nav-link"> Browse</NavLink>
-
-
         return (
             <header>
                 <div className='af-navmenu'>
@@ -53,12 +52,12 @@ class NavMenu extends React.Component {
                                 <ul className="navbar-nav">
                                     <StyledNavLink
                                         to="/browse"
-                                        label="Browse"
-                                        curPath={this.props.curPath}
-                                    />
-                                    <StyledNavLink
-                                        to="/tests"
-                                        label="Tests"
+                                        label={
+                                            <>
+                                                <span> Browse </span>&nbsp;
+                                                <FontAwesomeIcon icon={faTrophy}/> 
+                                            </>
+                                        }
                                         curPath={this.props.curPath}
                                     />
                                     {

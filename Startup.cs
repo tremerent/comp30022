@@ -56,10 +56,6 @@ namespace Artefactor
                     // base-address of your identityserver
                     options.Authority = "https://localhost:5001";
 
-
-
-
-
                     // name of the API resource
                     options.Audience = "artefactorapi";
 

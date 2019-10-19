@@ -7,6 +7,10 @@ import {
     postRegister,
     getArtefacts,
     getUser as fetchUser,
+    patchUserInfo,
+    setProfileImage,
+    getArtefact,
+    addArtefactImage,
 } from '../../scripts/requests';
 
 function setRedir(to) {
@@ -122,6 +126,41 @@ const auth = {
     setRedir,
 }
 
+function reqGetBrowserArtefacts(queryDetails) {
+    return {
+        type: artefactTypes.REQ_GET_BROWSER_ARTEFACTS,
+        query: queryDetails,
+    }
+}
+
+function resGetBrowserArtefacts(browserArtefacts) {
+    return {
+        type: artefactTypes.RES_GET_BROWSER_ARTEFACTS,
+        browserArtefacts,
+    }
+}
+
+function errGetBrowserArtefacts() {
+    return {
+        type: artefactTypes.ERR_GET_BROWSER_ARTEFACTS,
+    }
+}
+
+function getBrowserArtefacts(queryKeyValues) {
+    return async function(dispatch) {
+        dispatch(reqGetBrowserArtefacts(queryKeyValues))
+
+        try {
+            const browserArtefacts = await getArtefacts(queryKeyValues);
+
+            dispatch(resGetBrowserArtefacts(browserArtefacts));
+        }
+        catch(e) {
+            dispatch(errGetBrowserArtefacts({ error: e }));
+        }
+    }
+}
+
 function reqGetMyArtefacts() {
     return {
         type: artefactTypes.REQ_GET_MY_ARTEFACTS,
@@ -149,7 +188,10 @@ function getMyArtefacts() {
         dispatch(reqGetMyArtefacts());
 
         try {
-            const myArtefacts = await getArtefacts(curUserUsername);
+            const myArtefacts = await getArtefacts({
+                user: curUserUsername,
+                vis: ["public", "private",], //"family"
+            });
             dispatch(resGetMyArtefacts(myArtefacts));
         }
         catch (e) {
@@ -207,8 +249,8 @@ function addMyArtefact(newArtefact) {
     }
 }
 
-// addMyArtefact, but synchronise 'state.auth.browse' and 'user' if
-// newArtefact is public
+// addMyArtefact, but synchronise 'state.art.browserArts' and 
+// 'state.art.userArts' if newArtefact is public
 function addMyArtefactSync(newArtefact) {
     return async function (dispatch, getState) {
 
@@ -262,15 +304,34 @@ function resCreateMyArtefact(createdArtefact) {
     }
 }
 
-function createMyArtefact(newArtefact) {
-    return async function (dispatch) {
+// returns the created artefact
+function createMyArtefact(newArtefact, docs) {
+    return async function (dispatch, getState) {
         dispatch(reqCreateMyArtefact())
 
         const postedArtefact = await postArtefactAndCategories(newArtefact);
+        const postedDocs = await submitDocs(postedArtefact.id, docs);
+
+        console.log('here are the posted docs!!!!');
+        console.log(postedDocs);
+
+        postedArtefact.images = postedDocs;
 
         dispatch(addMyArtefactSync(postedArtefact));
         dispatch(resCreateMyArtefact(postedArtefact));
+
+        return getState().art.myArts.create.createdArtefact;
     }
+}
+
+async function submitDocs(artefactId, docs) {
+    let promises = [];
+
+    for (let doc of Object.values(docs)) {
+        promises.push(addArtefactImage(artefactId, doc.blob));
+    }
+
+    return await Promise.all(promises);
 }
 
 function reqUserArtefacts(username) {
@@ -300,12 +361,30 @@ function getUserArtefacts(username, vis) {
         dispatch(reqUserArtefacts(username));
 
         try {
-            const userArtefacts = await getArtefacts(username, vis);
+            const userArtefacts = await getArtefacts({ user: username, vis: vis });
             dispatch(resUserArtefacts(username, userArtefacts));
         }
         catch (e) {
             // TODO
             dispatch(errGetUserArtefacts());
+        }
+    }
+}
+
+function isCurUser(username) {
+    return function (dispatch, getState) {
+        return getState().auth.user.username == username;
+    }
+}
+
+// gets user artefacts or myartefacts, depending on login state
+function getUserOrMyArtefacts(username, vis) {
+    return async function (dispatch) {
+        if (dispatch(isCurUser(username))) {
+            return dispatch(getMyArtefacts());
+        }
+        else {
+            return dispatch(getUserArtefacts(username, "public"));
         }
     }
 }
@@ -316,6 +395,8 @@ const artefacts = {
     addMyArtefactSync,
     getPublicArtefacts,
     getUserArtefacts,
+    getBrowserArtefacts,
+    getUserOrMyArtefacts,
 }
 
 function reqGetUser(username) {
@@ -355,11 +436,73 @@ function getUser(username) {
     }
 }
 
+function reqPatchUserDetails(username) {
+    return {
+        type: usersTypes.REQ_PATCH_USER_DETAILS,
+        username,
+    }
+}
+
+function resPatchUserDetails(username, patchedDetails) {
+    return {
+        type: usersTypes.RES_PATCH_USER_DETAILS,
+        username,
+        patchedDetails,
+    }
+}
+
+function errPatchUserDetails(username) {
+    return {
+        type: usersTypes.ERR_PATCH_USER_DETAILS,
+        username,
+    }
+}
+
+function updateCurUserDetails(newDetails) {
+    return async function(dispatch, getState) {
+        const curUserName = getState().auth.user.username;
+
+        dispatch(reqPatchUserDetails(curUserName));
+
+        try {
+            await patchUserInfo(curUserName, newDetails);
+
+            dispatch(resPatchUserDetails(curUserName, newDetails));
+        }
+        catch (e) {
+            // unauthed or other?
+            dispatch(errPatchUserDetails(curUserName));
+        }
+    }
+}
+
+function updateCurUserProfilePic(file) {
+    return async function(dispatch, getState) {
+        const curUserName = getState().auth.user.username;
+
+        dispatch(reqPatchUserDetails(curUserName));
+
+        try {
+            const respData = await setProfileImage(file);
+
+            dispatch(resPatchUserDetails(curUserName, {
+                imageUrl: respData.url,
+            }));
+        }
+        catch (e) {
+            // unauthed or other?
+            dispatch(errPatchUserDetails(curUserName));
+        }
+    }
+}
+
 const users = {
     reqGetUser,
     resGetUser,
     errGetUser,
     getUser,
+    updateCurUserDetails,
+    updateCurUserProfilePic,
 }
 
 export {

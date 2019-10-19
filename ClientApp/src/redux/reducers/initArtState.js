@@ -21,6 +21,12 @@
 
         },
         artIdCache: { },
+        browserArts: {
+            browserArtefacts: [],
+            loading: true,
+            error: null,
+            query: {},
+        },
     }
 
     return initArtState;
