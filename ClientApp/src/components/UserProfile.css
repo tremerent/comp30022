@@ -1,15 +1,12 @@
 
-* {
-}
+/* I want this CSS engraved on my tombstone. It is my greatest achievment. */
 
 .af-profile-outer {
-    position: relative;
     display: flex;
     flex-direction: row;
     align-items: top;
     height: 100%;
-    width: 100%;
-    justify-content: space-between;
+    background-color: #000044;
 }
 
 .af-profile-scroller {
@@ -21,17 +18,17 @@
     position: fixed;
     width: 40%;
     top: 0em;
-    margin-right: 0em;
+    margin-right: 5em;
     flex-basis: 60%;
     height: 100%;
 
 }
 
 .af-profile-inner-placeholder {
-    flex-shrink: 0;
-    width: 40%;
+    width: 100%;
     margin-top: 4em;
     margin-right: 5em;
+    flex-basis: 60%;
 }
 
 .af-profile-info {
@@ -46,6 +43,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.af-profile-image {
+    display: block;
+    height: auto;
+    width: 50%;
+    border-radius: 60%;
 }
 
 .af-profile-name {
@@ -64,14 +68,6 @@
     background-color: rgb(97, 64, 44) !important;
 }
 
-.af-profile-scroller-title {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-}
-
 .af-profile-scroller h3 {
     font-weight: bold;
     text-align: center;
@@ -88,6 +84,7 @@
     .af-profile-card-wrapper {
         height: 100%;
         width: 100%;
+        position: relative;
         overflow-x: hidden;
     }
 
@@ -114,16 +111,5 @@
         width: 70%;
     }
 
-}
-
-.bs-stepper-content {
-    padding: 20px;
-}
-
-.af-profile-addbutton {
-    font-size: 0.8em;
-    margin: 0 4em;
-    flex-grow: 1;
-    max-width: 40%;
 }
 
