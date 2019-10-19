@@ -165,7 +165,8 @@ export default class Filter extends React.Component {
             showUntilCalendar: false,
             showSinceCalendar: false,
             showQuerySearchDrop: false,
-            // maintain two for the collapse
+            // maintain two for the collapse - 'showFilter' toggled during 
+            // transition, 'filterShown' toggled when complete
             showFilter: true,
             filterShown: true,
         };
@@ -389,7 +390,18 @@ export default class Filter extends React.Component {
 
         return (
             <>
-                <div className="af-filter-header">
+                <div className={ "af-filter-header " +
+                    (this.state.showFilter
+                    ? "af-flex-between"
+                    : "af-flex-end")
+                }>
+                    {   
+                        this.state.showFilter
+                        ?
+                        this.props.filterTitle
+                        :
+                        null
+                    }
                     <button
                         onClick={() => this.toggle("showFilter")}
                         className="btn btn-outline"
@@ -399,7 +411,11 @@ export default class Filter extends React.Component {
                             ?
                                 <FontAwesomeIcon icon={faArrowUp} />
                             :
-                                <FontAwesomeIcon icon={faSearch} />
+                                <>
+                                    <FontAwesomeIcon icon={faSearch} />
+                                    &nbsp;
+                                    Refine
+                                </>
                         }
                     </button>
                 </div>

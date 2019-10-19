@@ -1,3 +1,14 @@
+/* inspected font awesome icons to get styles */
+/* this should be applied to a div, and the inner svg */
+/* should have width/height:100%; */
+.af-icon {
+    display: inline-block;
+    font-size: inherit;
+    height: 1em;
+    vertical-align: -0.125em;
+    width: 1em;
+    color: inherit;
+}
 
 /* Provide sufficient contrast against white background */
 a {

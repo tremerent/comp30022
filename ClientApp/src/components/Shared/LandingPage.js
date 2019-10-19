@@ -25,14 +25,52 @@ export default function LandingPage(props) {
     return (
         <BgImage image={BACKGROUND_IMAGE} className='af-billboard'>
             <div className='af-billboard'>
-                <h1 className='af-billboard-text'>
-                    Discover, record, and share your family's legacy.
-                </h1>
-                <Link to="/auth/signup">
-                    <button className="btn btn-primary mt-3">
-                        Get Started
-                    </button>
-                </Link>
+                <div className="af-billboard-header">
+                    <h1 className='af-billboard-text af-billboard-header-text'>
+                        Discover, record, and share your family's legacy.
+                    </h1>
+                </div>
+                <div className="af-lp-actions">
+                    <div className="af-lp-action-card">
+                        <div className="af-lp-action-card-header">
+                            <h4 className='af-billboard-text af-billboard-action-text'>
+                                Share your knowledge by answering questions
+                            </h4>
+                        </div>
+                        <div className='af-lp-action-outer'>
+                            <Link to="/browse" className="af-lp-action">
+                                <button className="btn btn-primary mv-3">
+                                    <span >Become an <br/> artefact detective</span>
+                                </button>
+                            </Link>
+                        </div>
+                    </div>
+                    <div className="af-lp-action-card">
+                        <div className="af-lp-action-card-header">
+                            <h4 className='af-billboard-text af-billboard-action-text'>
+                                Archive your artefacts
+                            </h4>
+                        </div>
+                        <div className='af-lp-action-outer'>
+                            <Link to="/auth/signup" className="af-lp-action">
+                                <button className="btn btn-primary mv-3">
+                                    <span >Start your repository</span>
+                                </button>
+                            </Link>
+                        </div>
+                    </div>
+                    
+                    {/* <Link to="/browse" className="af-lp-action">
+                        <button className="btn btn-primary mt-3">
+                            Browse artefacts
+                        </button>
+                    </Link>
+                    <Link to="/auth/signup" className="af-lp-action">
+                        <button className="btn btn-primary mt-3">
+                            Signup
+                        </button>
+                    </Link> */}
+                </div>
             </div>
         </BgImage>
     );

@@ -1,3 +1,30 @@
+.af-lp-actions {
+    display: flex;
+    justify-content: space-around;
+
+    margin-top: 10%;
+}
+
+.af-lp-action-outer {
+    margin: 5%;
+    text-align: center;
+}
+
+.af-lp-action {
+    margin: 5%;
+}
+
+.af-lp-action-card {
+    margin-left: 10%;
+    margin-right: 10%;
+
+    border-radius: 3%;
+    background: #F2DCD0;
+}
+
+.af-billboard-header {
+    margin-top: 10%;
+}
 
 .af-lp-background {
     /* Keep background centered. */
@@ -26,17 +53,24 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
 }
 
 .af-billboard-text {
     text-align: center;
-    color: #dddddd;
+}
+
+.af-billboard-action-text {
+    color: #727272;
+}
+
+.af-billboard-header-text {
     font-size: 1.8rem;
+    color: #dddddd;
 }
 
 @media (min-width: 400px) {
-    .af-billboard-text {
+    .af-billboard-header-text {
         font-size: 2.5rem;
     }
 }

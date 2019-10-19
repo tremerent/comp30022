@@ -6,10 +6,17 @@
 }
 
 .af-filter-header {
+    margin-bottom: 3%;
+}
+
+.af-flex-end {
     display: flex;
     justify-content: end;
+}
 
-    margin-bottom: 3%;
+.af-flex-between {
+    display: flex;
+    justify-content: space-between;
 }
 
 .af-filter-row {

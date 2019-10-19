@@ -26,10 +26,9 @@ class FilteredBrowser extends React.Component {
         return (
             <div className='af-filtered-browser'>
                 <Filter
+                    filterTitle={<h3> Search </h3>}
                     submitFilter={this.submitFilter}
                 />
-                <div>
-                </div>
                 {
                     this.props.loading
                     ?
