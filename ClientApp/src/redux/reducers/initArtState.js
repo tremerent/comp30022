@@ -20,6 +20,7 @@
         userArts: {
 
         },
+        artIdCache: { },
         browserArts: {
             browserArtefacts: [],
             loading: true,

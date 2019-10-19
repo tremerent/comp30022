@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 
 import { auth } from '../../redux/actions';
 import StyledNavLink from './StyledNavLink';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHome, faSignOutAlt, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 
 const loginPath = '/auth/login';
 const signupPath = '/auth/signup'
@@ -27,12 +29,18 @@ class UserNavMenu extends React.Component {
             <>
                 <StyledNavLink
                     to={`/user/${this.props.user.username}`}
-                    label="Profile"
+                    label={
+                        <>
+                            <span> Home </span>&nbsp;
+                            <FontAwesomeIcon icon={faHome}/> 
+                        </>
+                    }
                     curPath={this.props.curPath}
                 />
                 <NavItem>
                     <button onClick={(e) => { e.preventDefault(); this.props.logout("/browse"); }} className="text-dark btn nav-link">
-                        Logout
+                        <span>Logout </span>&nbsp;
+                        <FontAwesomeIcon icon={faSignOutAlt}/> 
                     </button>
                 </NavItem>
             </>
@@ -43,14 +51,23 @@ class UserNavMenu extends React.Component {
         return (
             <>
                 <StyledNavLink
-                    to={signupPath}
-                    label="Signup"
+                    to={loginPath}
+                    label={
+                        <>
+                            <span> Login </span>
+                            <FontAwesomeIcon icon={faSignInAlt}/> 
+                        </>
+                    }
                     curPath={this.props.curPath}
                     className="af-inactive-nav-link"
                 />
                 <StyledNavLink
-                    to={loginPath}
-                    label="Login"
+                    to={signupPath}
+                    label={
+                        <>
+                            <span> Signup </span>
+                        </>
+                    }
                     curPath={this.props.curPath}
                     className="af-inactive-nav-link"
                 />

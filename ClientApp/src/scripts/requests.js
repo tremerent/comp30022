@@ -119,22 +119,18 @@ async function getArtefacts(queryDetails) {
 
         if (val != null && val != "" && val.length) {
 
-            // handle lists
-            if (key === "category") {
-                queries.push(makeQueryFromArray(val, "category"))
-            }
-            else if (key === "q") {
-                queries.push(makeQueryFromArray(val, "q"))
-            }
-            else {
-                queries.push(
-                    makeQuery(key, queryDetails[key])
-                );
-            }
+            console.log(val);
+            queries.push(
+                makeQuery(key, val)
+            );
         }
     });
 
     function makeQuery(k, v) {
+        if (Array.isArray(v)) {
+            return makeQueryFromArray(v, k);
+        }
+
         return `&${k}=${v}`;
     }
 
@@ -149,7 +145,6 @@ async function getArtefacts(queryDetails) {
     if (queries.length) {
         url += '?' + queries.reduce((acc, cur) => acc + cur);
     }
-    console.log(url);
     resp = await apiFetch(getToken())
             .get(url);
 

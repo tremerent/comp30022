@@ -31,6 +31,7 @@ namespace Artefactor.Services.Converters
             if (a.Images != null)
             {
                 images = a.Images
+                    // TODO - use converter
                     .Select(img => new {
                         id      = img.Id,
                         title   = img.Title,

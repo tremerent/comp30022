@@ -33,6 +33,7 @@ class UserInfo extends React.Component {
 
         let EditableBio;
         if (this.props.editable) {
+            
             EditableBio = editableTextArea(BioText);
         }
 

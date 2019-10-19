@@ -18,6 +18,8 @@ namespace Artefactor.Data
         public DbSet<Artefact> Artefacts { get; set; }
         public DbSet<ArtefactDocument> ArtefactDocuments { get; set; }
         public DbSet<ArtefactComment> ArtefactComments { get; set; }
+        public DbSet<ArtefactQuestion> ArtefactQuestions { get; set; }
+        
         public DbSet<Artefactor.Models.Category> Category { get; set; }
         public DbSet<Artefactor.Models.ArtefactCategory> ArtefactCategory { get; set; }
 
@@ -65,6 +67,9 @@ namespace Artefactor.Data
             modelBuilder.Entity<Artefact>()
                 .HasMany(a => a.Comments)
                 .WithOne(ac => ac.Artefact);
+
+            modelBuilder.Entity<ArtefactComment>()
+                .HasDiscriminator<string>("CommentType");
         }
     }
 }

@@ -95,7 +95,7 @@ namespace Artefactor
 
             // models -> json
             services.AddTransient<IConverter<Artefact>, ArtefactConverter>();
-
+            services.AddTransient<IConverter<ArtefactComment>, ArtefactCommentConverter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
