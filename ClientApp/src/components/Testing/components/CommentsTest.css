@@ -1,0 +1,40 @@
+.af-comment-box {
+    border: 1px solid red;
+
+    padding-left: 10%;
+
+    display: box;
+    /* justify-content: left; */
+}
+
+
+.af-comment {
+    border-radius: 25px;
+    border: 0.5px solid rgb(38, 71, 109);
+    background: rgb(133, 177, 226);
+    display: flex;
+    flex-direction: column
+}
+
+.af-comment-text {
+    margin-left: 5px;
+}
+
+.af-comment-subtext {
+    color: rgb(85, 67, 109)
+}
+
+.af-comment-inner {
+    width: 100%;
+    margin-bottom: 20px
+}
+
+.af-comment-children-box {
+    padding-left: 20%;
+}
+
+.af-comment-content {
+    border-radius: 25px;
+    border: 0.5px solid rgb(38, 71, 109);
+    background: rgb(189, 216, 247);
+}

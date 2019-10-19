@@ -7,6 +7,7 @@ import CentreLoading from 'components/Shared/CentreLoading';
 import ArtefactScroller from 'components/Artefact/ArtefactScroller';
 import Filter from 'components/Shared/Filter';
 import { artefacts as artActions } from 'redux/actions'
+import { sortOptions, } from './filterData';
 
 import "./Filter.css";
 
@@ -25,7 +26,7 @@ function queryStringToObj(queryString) {
         const queryParams = new URLSearchParams(queryString);
 
         queryParams.forEach(function(value, key) {
-            if (supportedFilterTypes.includes(key)) {
+            if (supportedUrlFilterTypes.includes(key)) {
 
                 // if a key is encountered again, then we have a query string
                 // of form '?..&key=val1&key=val2' - need to create a list
@@ -178,9 +179,6 @@ class FilteredBrowser extends React.Component {
             ...this.props.filterDetails,
         };
 
-
-
-
         this.props
             .getFilteredArtefacts(filterDetails);
     }
@@ -193,13 +191,17 @@ class FilteredBrowser extends React.Component {
 
         return (
             <div className='af-filtered-browser'>
-                <div>
-                    <button>
-                        Share your knowledge
-                    </button>
-                    <button>
-                            Interest
-                    </button>
+                <div className='af-filtered-browser-actions'>
+                    <div className='af-filtered-browser-action'>
+                        <button onClick={this.setDetectiveFilter} className='btn btn-primary'>
+                            Spread your knowledge
+                        </button>
+                    </div>
+                    <div className='af-filtered-browser-action'>
+                        <button onClick={this.setInterestingFilter} className='btn btn-primary'>
+                            Discover incredible artefacts
+                        </button>
+                    </div>
                 </div>
                 <Filter 
                     filterTitle={<h3> Search </h3>}
@@ -221,6 +223,26 @@ class FilteredBrowser extends React.Component {
             </div>
         );
 
+    }
+
+    setDetectiveFilter = () => {
+        this.props.setFilter({
+            ...this.props.filterDetails,
+            sortQuery: {
+                ...sortOptions.filter(sortOpt => sortOpt.name == 'questionCount')[0],
+                order: 'desc',
+            },
+        });
+    }
+
+    setInterestingFilter = () => {
+        this.props.setFilter({
+            ...this.props.filterDetails,
+            sortQuery: {
+                ...sortOptions.filter(sortOpt => sortOpt.name == 'commentCount')[0],
+                order: 'desc',
+            },
+        });
     }
 
     onFilterChange = (filterDetails) => {

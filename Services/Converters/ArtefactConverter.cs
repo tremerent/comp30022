@@ -22,7 +22,7 @@ namespace Artefactor.Services.Converters
             object categoryJoin = null;
             if (a.CategoryJoin != null)
             {
-                categoryJoin =
+                categoryJoin = 
                     a.CategoryJoin
                     .Select(cj => RestrictedObjCategoryJoinView(cj));
             }

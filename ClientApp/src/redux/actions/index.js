@@ -387,6 +387,8 @@ function getUserOrMyArtefacts(username, vis) {
             return dispatch(getUserArtefacts(username, "public"));
         }
     }
+}
+
 const setFilter = (filterDetails) => {
     return {
         type: artefactTypes.SET_FILTER,
@@ -403,7 +405,7 @@ const artefacts = {
     getBrowserArtefacts,
     getUserOrMyArtefacts,
     setFilter,
-}
+};
 
 function reqGetUser(username) {
     return {
@@ -509,10 +511,10 @@ const users = {
     getUser,
     updateCurUserDetails,
     updateCurUserProfilePic,
-}
+};
 
 export {
     auth,
     artefacts,
     users,
-}
+};

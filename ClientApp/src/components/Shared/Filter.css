@@ -73,3 +73,12 @@
 .af-filter-control {
     margin-right: 10px;
 }
+
+.af-filtered-browser-actions {
+    display: flex;
+    justify-content: space-around;
+}
+
+.af-filtered-browser-action {
+    
+}

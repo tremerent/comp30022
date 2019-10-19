@@ -55,7 +55,7 @@ namespace Artefactor.Controllers
                 new List<Visibility>((Visibility[])Enum.GetValues(typeof(Visibility)));
 
             var visValsEnumMemberAttribs = visVals
-                .Select(eVal => EnumHelper.GetAttributeOfType<EnumMemberAttribute>(eVal))
+                .Select(eVal => Helpers.GetAttributeOfType<EnumMemberAttribute>(eVal))
                 .Where(enumMemberAttrib => enumMemberAttrib != null)
                 .Select(enumMemberAttrib => enumMemberAttrib.Value)
                 .ToList();
@@ -413,39 +413,46 @@ namespace Artefactor.Controllers
                             "CreatedAt", artefactParam);
                         break;
 
-                    // TODO(jonah) test after merge
+                    // TODO(jonah) 
 
-                    // case "questionCount":
+                    case "questionCount":
+                        orderType = typeof(int);
                         
-                    //     var questionsPropertyExp = 
-                    //         QueryExpressions.ArtefactPropertyExpression<IEnumerable<ArtefactComment>>(
-                    //             "Comments",
-                    //             artefactParam
-                    //         );
+                        var commentsPropertyExpQ = 
+                            QueryExpressions.ArtefactPropertyExpression<IEnumerable<ArtefactComment>>(
+                                "Comments",
+                                artefactParam
+                            );
 
-                    //     orderByBodyExp = QueryExpressions.CountExpression(
-                    //         (Expression<IEnumerable<ArtefactComment>>) questionsPropertyExp);
+                        var ofTypeMethod = 
+                            typeof(Enumerable)
+                            .GetMethods()
+                            .Single(method => method.Name == "OfType" && 
+                                    method.IsStatic && 
+                                    method.GetParameters().Length == 1);
 
-                    //     break;
+                        var questionsExp = Expression.Call(
+                            ofTypeMethod.MakeGenericMethod(typeof(ArtefactQuestion)),
+                            commentsPropertyExpQ
+                        );
 
-                    // case "commentCount":
+                        orderByBodyExp = QueryExpressions
+                            .CountExpression<ArtefactQuestion>(questionsExp);
 
-                    //     var questionsPropertyExp = 
-                    //         QueryExpressions.ArtefactPropertyExpression<IEnumerable<ArtefactComment>>(
-                    //             "Comments",
-                    //             artefactParam
-                    //         );
+                        break;
 
-                    //     var commentsExp = Expression.Call(
-                    //         toCountExp,
-                    //         typeof(Enumerable)
-                    //             .GetMethod("Count", new [] { typeof(T) })
-                    //     );
+                    case "commentCount":
+                        orderType = typeof(int);
 
-                    //     orderByBodyExp = QueryExpressions.CountExpression(
-                    //         (Expression<IEnumerable<ArtefactComment>>) commentsPropertyExp);
+                        var commentsPropertyExp = QueryExpressions
+                            .ArtefactPropertyExpression<IEnumerable<ArtefactComment>>(
+                                "Comments",
+                                artefactParam
+                            );
 
-                    //     break;
+                        orderByBodyExp = QueryExpressions
+                            .CountExpression<ArtefactComment>(commentsPropertyExp);
+                        break;
 
                     case "imageCount":
 

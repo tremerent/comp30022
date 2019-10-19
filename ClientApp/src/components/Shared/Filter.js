@@ -7,54 +7,13 @@ import { format } from 'date-fns';
 import CategorySelect from 'components/Category/CategorySelect';
 
 import 'components/Shared/Filter.css';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faArrowUp, faSortUp, faSortDown, faTimes, } from '@fortawesome/free-solid-svg-icons';
 import { Collapse, } from 'reactstrap';
 import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import Select from 'react-select';
 
-// text query types
-const queryTypes = [
-    {
-        name: "title",
-        label: "Title",
-    },
-    {
-        name: "description",
-        label: "Description",
-    },
-    {
-        name: "both",
-        label: "Title + Description",
-    }
-];
-
-const sortOptions = [
-    {
-        name: "title",
-        label: "Title",
-    },
-    {
-        name: "createdAt",
-        label: "Upload date",
-    },
-    {
-        name: "imageCount",
-        label: "Images"
-    }
-];
-
-const catQueryTypes = [
-    {
-        name: "matchAll",
-        label: "All",
-    },
-    {
-        name: "matchAny",
-        label: "Any",
-    },
-];
+import { queryTypes, sortOptions, catQueryTypes } from './filterData';
 
 function formatDateDisplay(date, defaultText) {
     if (!date) return defaultText;
@@ -100,7 +59,13 @@ export default class Filter extends React.Component {
         };
     }
 
+
     render() {
+        const filterDetails = {
+            ...this.state.filterDetails,
+            ...this.props.filterDetails,
+        }
+
         const filterInputs = (
             <div>
                 <div class="af-filter-row">

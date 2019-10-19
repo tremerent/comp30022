@@ -31,7 +31,7 @@ class UserNavMenu extends React.Component {
                     to={`/user/${this.props.user.username}`}
                     label={
                         <>
-                            <span> My Repository </span>&nbsp;
+                            <span> My Collection </span>&nbsp;
                             <FontAwesomeIcon icon={faHome}/> 
                         </>
                     }

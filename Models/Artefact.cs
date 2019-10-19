@@ -13,12 +13,14 @@ namespace Artefactor.Models
         [JsonConverter(typeof(StringEnumConverter))]
         [JsonRequired]
         public Visibility Visibility { get; set; }
-
         [JsonRequired]
         public string Description { get; set; }
         public System.DateTime CreatedAt { get; set; }
+
         public IEnumerable<ArtefactCategory> CategoryJoin { get; set; }
         public IEnumerable<ArtefactDocument> Images { get; set; }
+        public IEnumerable<ArtefactComment> Comments { get; set; }
+
         public string OwnerId { get; set; }
         public ApplicationUser Owner { get; set; }
     }
