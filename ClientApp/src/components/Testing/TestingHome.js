@@ -9,14 +9,16 @@ export default class TestingHome extends Component {
 
     render() {
         return (
-            <div className="row">
-                <div className="col-xs-6">
-                    <Scratch />
-                </div>
-                <div className="col-xs-6">
-                    <ComponentTests />
-                </div>
-            </div>
+            // <div className="row">
+            //     <div className="col-xs-6">
+            //         <Scratch />
+            //     </div>
+            //     <div className="col-xs-6">
+            //         <ComponentTests />
+            //     </div>
+            // </div>
+            <ComponentTests />
+
         );
     }
 }

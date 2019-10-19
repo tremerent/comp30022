@@ -139,7 +139,7 @@ async function getArtefacts(queryDetails) {
         return queryArray.map(q => makeQuery(queryName, q))
                          .reduce((acc, cur) => acc + cur);
     }
-    
+
 
     let url = `/artefacts`;
     if (queries.length) {
@@ -175,7 +175,14 @@ async function setProfileImage(file) {
     data.append("file", file);
 
     const resp = await apiFetch(getToken())
-        .post(`/user/display-picture`, data)
+        .post(`/profile/set-profile-image`, data);
+
+    return resp.data;
+}
+
+async function getComment(id) {
+    const resp = await apiFetch(getToken())
+        .get(`/artefacts/comments/${id}`);
 
     return resp.data;
 }
@@ -200,4 +207,6 @@ export {
     getUser,
     patchUserInfo,
     setProfileImage,
+
+    getComment,
 }

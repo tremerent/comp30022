@@ -17,6 +17,9 @@ namespace Artefactor.Data
 
         public DbSet<Artefact> Artefacts { get; set; }
         public DbSet<ArtefactDocument> ArtefactDocuments { get; set; }
+        public DbSet<ArtefactComment> ArtefactComments { get; set; }
+        public DbSet<ArtefactQuestion> ArtefactQuestions { get; set; }
+        
         public DbSet<Artefactor.Models.Category> Category { get; set; }
         public DbSet<Artefactor.Models.ArtefactCategory> ArtefactCategory { get; set; }
 
@@ -38,6 +41,10 @@ namespace Artefactor.Data
                 .Property(c => c.Id)
                 .HasDefaultValue("NEWID()");
 
+            modelBuilder.Entity<ArtefactComment>()
+                .Property(c => c.Id)
+                .HasDefaultValue("NEWID()");
+
             // Artefact - category many-many
 
             modelBuilder.Entity<ArtefactCategory>()
@@ -53,8 +60,16 @@ namespace Artefactor.Data
 
             // artefact - artefact documents
             modelBuilder.Entity<Artefact>()
-            .HasMany(a => a.Images)
-            .WithOne(ad => ad.Artefact);
+                .HasMany(a => a.Images)
+                .WithOne(ad => ad.Artefact);
+
+            // artefact - artefact comments
+            modelBuilder.Entity<Artefact>()
+                .HasMany(a => a.Comments)
+                .WithOne(ac => ac.Artefact);
+
+            modelBuilder.Entity<ArtefactComment>()
+                .HasDiscriminator<string>("CommentType");
         }
     }
 }

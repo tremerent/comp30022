@@ -55,7 +55,7 @@ namespace Artefactor.Controllers
                 new List<Visibility>((Visibility[])Enum.GetValues(typeof(Visibility)));
 
             var visValsEnumMemberAttribs = visVals
-                .Select(eVal => EnumHelper.GetAttributeOfType<EnumMemberAttribute>(eVal))
+                .Select(eVal => Helpers.GetAttributeOfType<EnumMemberAttribute>(eVal))
                 .Where(enumMemberAttrib => enumMemberAttrib != null)
                 .Select(enumMemberAttrib => enumMemberAttrib.Value)
                 .ToList();
