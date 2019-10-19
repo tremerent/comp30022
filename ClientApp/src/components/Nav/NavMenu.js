@@ -9,6 +9,7 @@ import {
 } from 'reactstrap';
 import { Link,  } from 'react-router-dom';
 import { connect } from 'react-redux';
+import ReactSVG from 'react-svg';
 
 import StyledNavLink from './StyledNavLink.js';
 import UserNavMenu from './UserNavMenu.js';
@@ -18,85 +19,6 @@ import ARTEFACTOR_BRAND from 'images/artefactor-brand.png';
 import ARTEFACT_ICON from 'images/amphora.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrophy } from '@fortawesome/free-solid-svg-icons';
-
-
-// WIP
-// function iconsInheritParentColor() {
-
-//     var icons = document.getElementsByClassName("af-icon");
-
-//     var vsgs = document.getElementsByName("svg");
-//     console.log(vsgs);
-
-// //     var url="https://openclipart.org/people/StudioFibonacci/kitchen-blender.svg";
-// // fetch('https://cors-anywhere.herokuapp.com/'+url)
-// // 	.then(r=>r.blob())
-// //   .then(b=>{
-// // 	  svg_image_id.addEventListener('load', e => URL.revokeObjectURL(svg_image_id.data));
-// //   	svg_image_id.data = URL.createObjectURL(b);
-// //   });
-
-// // svg_image_id.onload = e =>{
-// // 	svg_image_id.contentDocument.getElementById("path241").style.fill="red"
-// // }
-
-//     console.log(icons);
-
-//     // icon should be of form <div class='af-custom-icon'> <object/> </div>
-//     for (const icon of icons) {
-//         const objectEle = icon.children[0];
-
-
-//         if (objectEle && objectEle.nodeName === "OBJECT") {
-            
-//             // style="fill:#AB7C94;"
-//             console.log(objectEle);
-            
-//             const svgDoc = objectEle.contentDocument;
-//             console.log(svgDoc);
-//             console.log(objectEle.contentWindow);
-
-//             objectEle.addEventListener("load", () => {
-//                 console.log('loaded!');
-//                 console.log(svgDoc);
-//             });
-
-//             // const styleElement = svgDoc.createElementNS("http://www.w3.org/2000/svg", "style");
-//             // styleElement.textDocument = ".st0 { fill:#AB7C94; }"
-
-//             // console.log('applying style');
-//             // svgDoc.documentElement.appendChild(styleElement);
-//         }
-//         else {
-//             console.error(`'.af-icon' must have inner node '<object />'`);
-//         }
-
-
-//     }
-
-//     // foreach (const iconDoc in iconDocs) {
-//     //     var svgDoc = a.contentDocument;
-
-//     //     var styleElement = svgDoc.createElementNS("http://www.w3.org/2000/svg", "style");
-//     //     styleElement.textContent = ".st0 { fill: #000 }";
-//     //     svgDoc.getElementById("object").appendChild(styleElement);
-
-//     //     appendColorToSvg(svgDoc);
-//     // }
-
-//     // function appendColorToSvg(svgDoc) {
-
-//     // }
-
-//     // var a = document.getElementById("object");
-//     // var svgDoc = a.contentDocument;
-
-
-//     // foreach (const iconSvg in iconSvgElts) {
-//     //     iconSvgElts
-//     // }
-
-// }
 
 class NavMenu extends React.Component {
 
@@ -115,20 +37,24 @@ class NavMenu extends React.Component {
         this.setState({ collapsed: !this.state.collapsed });
     }
 
-    componentDidMount() {
-        // iconsInheritParentColor();
-    }
-
-    componentDidRender() {
-        // iconsInheritParentColor();
-    }
-
     render() {
+        // const artefactIcon = 
+        //     <div className='af-icon'>
+        //         <object type='image/svg+xml' contenteditable="true" data={ARTEFACT_ICON}>
+        //         </object>
+        //     </div>;
+
         const artefactIcon = 
-            <div className='af-icon'>
-                <object type='image/svg+xml' contenteditable="true" data={ARTEFACT_ICON}>
-                </object>
-            </div>;
+            // <div className='af-icon'>
+                <ReactSVG
+                    src={ARTEFACT_ICON}
+               
+                    className="af-icon"
+                />
+                // beforeInjection={svg => {
+                //     svg.setAttribute('style', 'fill: #F81200')
+                // }}
+            // </div>
 
         return (
             <header>
