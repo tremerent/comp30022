@@ -25,6 +25,14 @@ class FilteredBrowser extends React.Component {
     render() {
         return (
             <div className='af-filtered-browser'>
+                <div>
+                    <button>
+                        Share your knowledge
+                    </button>
+                    <button>
+                        Interest
+                    </button>
+                </div>
                 <Filter
                     filterTitle={<h3> Search </h3>}
                     submitFilter={this.submitFilter}
