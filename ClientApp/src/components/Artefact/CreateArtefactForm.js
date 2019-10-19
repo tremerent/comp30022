@@ -30,7 +30,7 @@ export class CreateArtefactForm extends Component {
             visibility: null,
         };
 
-        // this doesn't participate in 
+        // this doesn't participate in
         this.docs = { };
 
         this.state = {
@@ -301,6 +301,13 @@ export class CreateArtefactForm extends Component {
             loading: true,
         });
 
+        // At this point the artefact object has a temporary ID (a timestamp).
+        // We need to remove that before the object is sent to the server, or
+        // else EF and whoever actually put the temporary id in the database.
+        // FIXME is to stop that happening, since it's not great that anyone
+        // with an account can insert objects with arbitrary string IDs into
+        // our database.
+        this.state.artefact.id = undefined;
         this.props.createArtefact(this.state.artefact, this.docs)
             .then((() => {
 
