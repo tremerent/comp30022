@@ -1,6 +1,7 @@
 ﻿import { authTypes, artefactTypes, usersTypes } from './types';
 import { setUser, logoutUser, } from '../../scripts/auth';
 import { push } from 'connected-react-router';
+import * as discuss from './discussActions.js';
 
 import {
     postArtefactAndCategories,
@@ -548,4 +549,5 @@ export {
     auth,
     artefacts,
     users,
+    discuss,
 }

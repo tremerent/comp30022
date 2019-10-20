@@ -48,9 +48,16 @@ const usersTypes = {
     ERR_PATCH_USER_DETAILS: 'ERR_PATCH_USER_DETAILS',
 };
 
+const discussTypes = {
+    REQ_GET_DISCUSSION: 'REQ_GET_DISCUSSION',
+    RES_GET_DISCUSSION: 'RES_GET_DISCUSSION',
+    ERR_GET_DISCUSSION: 'ERR_GET_DISCUSSION',
+};
+
 export {
     authTypes,
     artefactTypes,
     usersTypes,
+    discussTypes,
 }
 

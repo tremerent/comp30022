@@ -182,6 +182,15 @@ async function getComment(id) {
     return resp.data;
 }
 
+export async function getDiscussion(artefactId) {
+    return (
+            await apiFetch(getToken())
+                .get(`/artefacts/comments?artefactId=${artefactId}`)
+        ).data;
+}
+
+
+
 export {
     postArtefact,
     postArtefactAndCategories,
