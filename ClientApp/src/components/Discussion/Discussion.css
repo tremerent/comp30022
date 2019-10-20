@@ -1,5 +1,5 @@
 
-.af-discuss-header {
+.af-dh {
     position: sticky;
     top: 3.5rem;
     padding-top: 1rem;
@@ -7,7 +7,32 @@
     background-color: white;
 }
 
-.af-discuss-title {
+.af-dh-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.af-dh-heading {
     font-weight: bold;
+}
+
+.af-dh-title button {
+    font-size: 0.8em;
+    padding: 0.2em 0.2em;
+    width: 2em;
+    height: 2em;
+}
+
+.af-dh-create-actions button {
+    margin-top: 0.5em;
+    font-size: 0.8em;
+    padding: 0.1em 0.5em;
+}
+
+.af-dh-create-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 

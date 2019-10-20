@@ -46,9 +46,10 @@
 .af-dcard-actions {
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: space-between;
     flex-wrap: wrap;
     margin-top: 0.3rem;
+    align-items: center;
 }
 
 .af-dcard-action {
@@ -71,5 +72,17 @@
     margin-top: 0.5em;
     font-size: 0.8em;
     padding: 0.1em 0.5em;
+}
+
+.af-dcard-loading {
+    height: 1rem;
+    width: 1rem;
+    border-width: 1px;
+}
+
+.af-dcard-error {
+    font-size: 1em;
+    font-weight: 10000;
+    cursor: default;
 }
 

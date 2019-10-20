@@ -1,5 +1,6 @@
-import { getDiscussion as apiGetDiscussion } from '../../scripts/requests.js';
+import { getDiscussion as apiGetDiscussion, postDiscussion as apiPostDiscussion } from '../../scripts/requests.js';
 import { discussTypes } from './types.js';
+
 
 const reqGetDiscussion = (artefactId) => ({
     type: discussTypes.REQ_GET_DISCUSSION,
@@ -13,7 +14,7 @@ const resGetDiscussion = (artefactId, tree) => ({
 });
 
 const errGetDiscussion = (artefactId, error) => ({
-    type: discussTypes.RES_ERR_DISCUSSION,
+    type: discussTypes.ERR_GET_DISCUSSION,
     artefactId,
     error,
 });
@@ -34,5 +35,36 @@ export function getDiscussion(artefactId) {
             dispatch(errGetDiscussion(artefactId, e));
         }
     }
+}
+
+
+const reqPostDiscussion = (item) => ({
+    type: discussTypes.REQ_POST_DISCUSSION,
+    item,
+});
+
+const resPostDiscussion = (item, newItem) => ({
+    type: discussTypes.RES_POST_DISCUSSION,
+    item,
+    newItem,
+});
+
+const errPostDiscussion = (item, error) => ({
+    type: discussTypes.ERR_POST_DISCUSSION,
+    item,
+    error,
+});
+
+export function postDiscussion(item) {
+    return async (dispatch, getState) => {
+        dispatch(reqPostDiscussion(item));
+
+        try {
+            const response = await apiPostDiscussion(item);
+            dispatch(resPostDiscussion(item, response));
+        } catch (e) {
+            dispatch(errPostDiscussion(item, `${e}`));
+        }
+    };
 }
 
