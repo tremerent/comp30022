@@ -17,29 +17,27 @@ namespace Artefactor.Services.Converters
 
             if (c is ArtefactQuestion)
             {
-                // probably easier than using an ExpandoObject - TODO if this 
+                // probably easier than using an ExpandoObject - TODO if this
                 // method grows
                 return new {
                     c.Id,
                     c.Body,
-                    c.AuthorId,
-                    c.ArtefactId,
-                    c.ParentCommentId,
-                    ChildComments = childJson ?? new List<object>(),
-                    ((ArtefactQuestion) c).AnswerCommentId,  // 'c.AnswerComment' will be in ChildComments 
-                    ((ArtefactQuestion) c).IsAnswered,
-                    c.CommentType,
-                    c.CreatedAt,
+                    author = c.Author.UserName,
+                    artefact = c.ArtefactId,
+                    replies = childJson ?? new List<object>(),
+                    type = "question",
+                    ts = c.CreatedAt,
                 };
             }
 
             return new {
                 c.Id,
                 c.Body,
-                c.AuthorId,
-                c.ArtefactId,
-                c.ParentCommentId,
-                ChildComments = childJson ?? new List<object>(),
+                author = c.Author.UserName,
+                artefact = c.ArtefactId,
+                replies = childJson ?? new List<object>(),
+                type = "comment",
+                ts = c.CreatedAt,
             };
         }
     }
