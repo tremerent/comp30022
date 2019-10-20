@@ -112,7 +112,7 @@
 }
 
 .af-detective-img {
-    width: 50%;
+    width: 40%;
 }
 
 @media (min-width: 400px) {
@@ -126,5 +126,21 @@
     flex-direction: column;
     justify-content: center;
     
+}
+
+.af-action-card-new {
+    width: 20vw;
+    height: 20vw;
+
+    padding-bottom: 3vw;
+
+    text-justify: center;
+    border-radius: 50%;
+    background: #F2DCD0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
 

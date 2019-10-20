@@ -3,7 +3,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import BACKGROUND_IMAGE from 'images/landing-page.jpg';
-import DETECTIVE_IMAGE from 'images/red-vase-coloured.png';
+import SIGNUP_IMAGE from 'images/red-vase-coloured.png';
+import DETECTIVE_IMAGE from 'images/wise-book.png';
 
 import './LandingPage.css';
 
@@ -32,7 +33,7 @@ export default function LandingPage(props) {
                     </h1>
                 </div>
                 <div className="af-lp-actions">
-                    <div className="af-lp-action-card">
+                    {/* <div className="af-lp-action-card">
                         <div className="af-lp-action-card-header-vert">
                             <div className="af-lp-action-card-header-vert-text">
                                 <h4 className='af-billboard-text af-billboard-action-text af-billboard-vert-text'>
@@ -42,7 +43,7 @@ export default function LandingPage(props) {
                             <img src={DETECTIVE_IMAGE} className="af-detective-img"/>
                         </div>
                         <div className='af-lp-action-outer'>
-                            {/* triggers a filter option on the 'browse' page */}
+                            triggers a filter option on the 'browse' page
                             <Link 
                                 to={{
                                     pathname: "/browse", 
@@ -56,8 +57,50 @@ export default function LandingPage(props) {
                                 </button>
                             </Link>
                         </div>
+                    </div> */}
+                    <div className="af-action-card-new">
+                        <img src={DETECTIVE_IMAGE} className="af-detective-img"/>
+                        <h4 className>
+                            Share your knowledge
+                        </h4>
+                            {/* </div> */}
+                        <div>
+                            <Link 
+                                to={{
+                                    pathname: "/browse", 
+                                    state: { 
+                                        prevPath: props.location.pathname, 
+                                        action: "detectiveBrowse",
+                                }}}
+                            >
+                                <button className="btn btn-primary mv-3">
+                                    <span >Become an <br/> artefact detective</span>
+                                </button>
+                            </Link>
+                        </div>
                     </div>
-                    <div className="af-lp-action-card af-lp-action-card-long">
+                    <div className="af-action-card-new">
+                        <img src={SIGNUP_IMAGE} className="af-detective-img"/>
+                        <h4 className>
+                            Archive your artefacts
+                        </h4>
+                            {/* </div> */}
+                        <div>
+                            <Link 
+                                to={{
+                                    pathname: "/browse", 
+                                    state: { 
+                                        prevPath: props.location.pathname, 
+                                        action: "detectiveBrowse",
+                                }}}
+                            >
+                                <button className="btn btn-primary mv-3">
+                                    <span >Start your repository</span>
+                                </button>
+                            </Link>
+                        </div>
+                    </div>
+                    {/* <div className="af-lp-action-card af-lp-action-card-long">
                         <div className="af-lp-action-card-header af-lp-action-card-header-horiz">
                             <h4 className='af-billboard-text af-billboard-action-text'>
                                 Archive your artefacts
@@ -73,7 +116,7 @@ export default function LandingPage(props) {
                                 </button>
                             </Link>
                         </div>
-                    </div>
+                    </div> */}
                     
                     {/* <Link to="/browse" className="af-lp-action">
                         <button className="btn btn-primary mt-3">
