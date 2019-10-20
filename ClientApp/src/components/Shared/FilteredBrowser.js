@@ -174,6 +174,17 @@ function getFilterDetails(queryDetails) {
 class FilteredBrowser extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            detectiveActionActive: 
+                this.props.detectiveActionActive 
+                ? this.props.detectiveActionActive 
+                : false,
+            interestingActionActive:
+                this.props.interestingActionActive 
+                ? this.props.interestingActionActive 
+                : false,
+        }
     }
 
     componentDidMount() {
@@ -181,6 +192,10 @@ class FilteredBrowser extends React.Component {
             ...this.props.urlQueryFilter,
             ...this.props.filterDetails,
         };
+
+        if (this.props.detectiveActionActive) {
+            this.applyDetectiveAction();
+        }
 
         this.props
             .getFilteredArtefacts(filterDetails);
@@ -194,18 +209,42 @@ class FilteredBrowser extends React.Component {
 
         return (
             <div className='af-filtered-browser'>
-                <div className='af-filtered-browser-actions'>
-                    <div className='af-filtered-browser-action'>
-                        <button onClick={this.setDetectiveFilter} className='btn btn-primary'>
-                            Find questions to answer
-                        </button>
+                <div className='af-filter-header'>
+                    <div className='af-filter-header-title'>
+                        <h2> What are you  looking for? </h2>
                     </div>
-                    <div className='af-filtered-browser-action'>
-                        <button onClick={this.setInterestingFilter} className='btn btn-primary'>
-                            Discover incredible artefacts
-                        </button>
+                    <div className='af-filtered-browser-actions'>
+                        <div className='af-filtered-browser-action'>
+                            <button 
+                                onClick={this.applyDetectiveAction} 
+                                className={'btn ' + 
+                                    (this.state.detectiveActionActive
+                                    ?
+                                    'btn-outline-danger'
+                                    :
+                                    'btn-primary')
+                                }
+                            >
+                                Help others
+                            </button>
+                        </div>
+                        <div className='af-filtered-browser-action'>
+                            <button 
+                                onClick={this.applyInterestingAction} 
+                                className={'btn ' + 
+                                    (this.state.interestingActionActive
+                                    ?
+                                    'btn-outline-danger'
+                                    :
+                                    'btn-primary')
+                                }
+                            >
+                                Discover incredible artefacts
+                            </button>
+                        </div>
                     </div>
                 </div>
+                
                 <Filter 
                     filterTitle={<h3> Search </h3>}
                     submitFilter={this.submitFilter}
@@ -229,12 +268,38 @@ class FilteredBrowser extends React.Component {
 
     }
 
-    setDetectiveFilter = () => {
-        setDetFilterImp(this.props.setFilter, this.props.filterDetails)
+    applyDetectiveAction = () => {
+        this.setState({
+            ...this.state,
+            detectiveActionActive: true,
+            interestingActionActive: false,
+        });
+
+        this.applyDetectiveFilter();
     }
 
-    setInterestingFilter = () => {
-        setInterFilterImp(this.props.setFilter, this.props.filterDetails)
+    applyInterestingAction = () => {
+        this.setState({
+            ...this.state,
+            detectiveActionActive: false,
+            interestingActionActive: true,
+        });
+
+        this.applyInterestingFilter();
+    }
+
+    applyDetectiveFilter = () => {
+        setDetFilterImp(this.props.setFilter, this.props.filterDetails);
+        this.submitFilter({
+            ...this.props.filterDetails, 
+        });
+    }
+
+    applyInterestingFilter = () => {
+        setInterFilterImp(this.props.setFilter, this.props.filterDetails);
+        this.submitFilter({
+            ...this.props.filterDetails,
+        });
     }
 
     onFilterChange = (filterDetails) => {

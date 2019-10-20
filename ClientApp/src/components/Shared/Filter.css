@@ -11,7 +11,7 @@
 
 .af-flex-end {
     display: flex;
-    justify-content: end;
+    justify-content: end !important;
 }
 
 .af-flex-between {
@@ -66,7 +66,8 @@
     margin-bottom: 7px;
 }
 
-.af-filter-controls {
+.af-filter-controls
+ {
     display: inline-block;
 }
 
@@ -77,10 +78,20 @@
 .af-filtered-browser-actions {
     display: flex;
     justify-content: space-around;
-
-    margin-bottom: 5%;
+    align-content: center;
 }
 
 .af-filtered-browser-action {
-    
+    margin-left: 5%;
+}
+
+.af-filter-header-title {
+    text-justify: left;
+    width: 30%;
+}
+
+.af-filter-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5%;
 }

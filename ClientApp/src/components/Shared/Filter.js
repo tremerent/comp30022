@@ -54,8 +54,8 @@ export default class Filter extends React.Component {
             showQuerySearchDrop: false,
             // maintain two for the collapse - 'showFilter' toggled during 
             // transition, 'filterShown' toggled when complete
-            showFilter: true,
-            filterShown: true,
+            showFilter: false,
+            filterShown: false,
         };
     }
 
@@ -307,7 +307,7 @@ export default class Filter extends React.Component {
                     }
                     <button
                         onClick={() => this.toggle("showFilter")}
-                        className="btn btn-outline"
+                        className="btn btn-outline-dark"
                     >
                         {
                             this.state.filterShown
@@ -317,7 +317,7 @@ export default class Filter extends React.Component {
                                 <>
                                     <FontAwesomeIcon icon={faSearch} />
                                     &nbsp;
-                                    Refine
+                                    Wanting to get specific?
                                 </>
                         }
                     </button>
