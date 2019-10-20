@@ -226,9 +226,10 @@ function errGetArtefact(id, error) {
 function getArtefact(id) {
     return async function (dispatch, getState) {
         dispatch(reqGetArtefact(id));
+        const artIdCache = getState().art.artIdCache;
 
-        if (getState().artIdCache[id] !== null) {
-            dispatch(resGetArtefact(getState().artIdCache[id]));
+        if (artIdCache[id] !== undefined) {
+            dispatch(resGetArtefact(artIdCache[id]));
             return;
         }
 
