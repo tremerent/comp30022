@@ -47,16 +47,16 @@ class ArtefactImageUploadTest extends React.Component {
 
                     <input type="text" name="userId" />
 
-                    <hr class="my-2" />
-                    <label for="file" class="mr-2"> <strong> Upload image: </strong> </label>
+                    <hr className="my-2" />
+                    <label for="file" className="mr-2"> <strong> Upload image: </strong> </label>
 
-                    <label class="btn mt-2 btn-outline-info">
+                    <label className="btn mt-2 btn-outline-info">
                         Browse
                         <input type="file" name="file" style={{ display: "none" }} onChange={this.onChangeHandler}/>
 
                     </label>
 
-                    <button type="submit" class="btn btn-primary"> Submit </button>
+                    <button type="submit" className="btn btn-primary"> Submit </button>
                 </form>
             </>
         }

@@ -116,13 +116,13 @@ async function getArtefacts(queryDetails) {
     Object.keys(queryDetails).map(function(key) {
         const val = queryDetails[key];
 
-        if (val != null && val != "" && val.length) {
-
-            console.log(val);
+        if (val !== null && val !== "" && val.length) {
             queries.push(
                 makeQuery(key, val)
             );
         }
+
+        return null;
     });
 
     function makeQuery(k, v) {
@@ -157,11 +157,7 @@ async function getUser(username) {
     return resp.data;
 }
 
-// This is a total hack. Will fix to be proper reduxy given more time.
-// -- Sam
 async function patchUserInfo(username, newInfo) {
-    console.log('------- new info ----------');
-    console.log(newInfo);
     const resp = await apiFetch(getToken())
         .patch(`/user/${username}`, newInfo);
 

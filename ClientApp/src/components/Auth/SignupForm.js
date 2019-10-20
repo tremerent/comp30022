@@ -1,5 +1,4 @@
 ﻿import React from 'react';
-import PropTypes from 'prop-types';
 
 class SignupForm extends React.Component {
 
@@ -29,10 +28,6 @@ class SignupForm extends React.Component {
     }
 
     render() {
-        if (this.props.duplicateUsername) {
-            console.log("duplicate username");
-        }
-
         const dupUsernameClass = this.props.duplicateUsername
                 ? "is-invalid"
                 : "";
@@ -45,12 +40,12 @@ class SignupForm extends React.Component {
                 <form onSubmit={this.handleSubmit}>
                     <div className="text-danger"></div>
                     <div className="form-group">
-                        <label for='username' >Username</label>
+                        <label htmlFor='username' >Username</label>
                         <input id='username'
                             onChange={this.handleChange}
                             value={this.state.username}
                             name='username'
-                            className={"form-control" + " " + dupUsernameClass}
+                            className={"form-control " + dupUsernameClass}
                         />
                         <div className="invalid-feedback">
                             {this.props.duplicateUsername
@@ -60,7 +55,7 @@ class SignupForm extends React.Component {
                     </div>
 
                     <div className="form-group">
-                        <label for='password'>Password</label>
+                        <label htmlFor='password'>Password</label>
                         <input id='password'
                             onChange={this.handleChange}
                             value={this.state.password}
@@ -71,7 +66,7 @@ class SignupForm extends React.Component {
                         />
                     </div>
                     <div className="form-group">
-                        <label for='confirmpassword'>Confirm password</label>
+                        <label htmlFor='confirmpassword'>Confirm password</label>
                         <input id='confirmpassword'
                             onChange={this.handleChange}
                             value={this.state.confirmpassword}
@@ -153,6 +148,7 @@ class SignupForm extends React.Component {
     }
 
     noUsernameEntered = () => {
+        /* eslint react/no-direct-mutation-state:0 */
         this.state.usernameInvalidText = this.noUNameEnteredText;
 
         this.formUsername.classList.add("is-invalid");
@@ -196,16 +192,6 @@ class SignupForm extends React.Component {
         this.formPw.classList.remove("is-invalid");
         this.formPw.classList.add("is-valid");
     }
-}
-
-SignupForm.propTypes = {
-    signup: PropTypes.func.isRequired,
-    formVals: {
-        username: PropTypes.string,
-        password: PropTypes.string,
-        confirmpassword: PropTypes.string,
-    },
-    duplicateUsername: PropTypes.bool,
 }
 
 export default SignupForm;

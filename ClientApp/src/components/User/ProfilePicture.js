@@ -4,19 +4,16 @@ import './ProfilePicture.css';
 
 export default class ProfilePicture extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
-            <div class="profile-pic">
+            <div className="profile-pic">
                 <img
                     src={ this.props.imageUrl ?
                           this.props.imageUrl
                         :
                             '/img/profile-placeholder.png'
                     }
+                    alt={`${this.props.username}'s profile`}
                     className='profile-pic-img'
                 />
                 {

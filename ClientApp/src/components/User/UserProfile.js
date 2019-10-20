@@ -33,7 +33,7 @@ class UserInfo extends React.Component {
 
         let EditableBio;
         if (this.props.editable) {
-            
+
             EditableBio = editableTextArea(BioText);
         }
 
@@ -41,9 +41,8 @@ class UserInfo extends React.Component {
             <div className='af-profile-info'>
                 <ProfilePicture
                     imageUrl={this.props.user.imageUrl}
-                    updateProfilePic={this.props.
-                        updateUserProfilePic
-                    }
+                    username={this.props.user.username}
+                    updateProfilePic={this.props.updateUserProfilePic}
                     editable={this.props.editable}
                 />
                 <h2 className='af-profile-name'>{this.props.user.username}</h2>

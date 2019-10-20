@@ -50,7 +50,7 @@ export default class CommentsTest extends React.Component {
                 </div>;
 
             return (
-                <div class="af-comment-box">
+                <div className="af-comment-box">
                     {commentContent}
                     {
                         comment.childComments

@@ -46,7 +46,8 @@ export default class ArtefactPreview extends Component {
                             {this.categoryJoinsToCategories(a.categoryJoin).map(c =>
                                 <Link
                                         to={`/browse?category=${c.id}`}
-                                        key={c.id} className="badge badge-decal-text mx-1"
+                                        key={c.id}
+                                        className="badge badge-decal-text mx-1"
                                 >
                                     {c.name}
                                 </Link>
@@ -54,7 +55,7 @@ export default class ArtefactPreview extends Component {
                         </div>
                         <span className="af-artcard-actions">
                             <a
-                                href="#"
+                                href={`#${id}`}
                                 className="af-artcard-action"
                                 data-toggle="collapse"
                                 data-target={`#${id}`}
@@ -92,7 +93,7 @@ export default class ArtefactPreview extends Component {
         return categoryJoins.map((cj) => {
             if (cj.categoryId && cj.category) {
                 return {
-                    id: cj.category.id,
+                    id: cj.categoryId,
                     name: cj.category.name,
                 };
             }

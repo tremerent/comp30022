@@ -9,9 +9,6 @@ import CentreLoading from 'components/Shared/CentreLoading';
 // Container component for 'UserProfile'.
 
 class UserView extends React.Component {
-    constructor(props) {
-        super(props);
-    }
 
     componentDidMount() {
         this.props.getUser(this.props.username);
@@ -51,11 +48,11 @@ function getUsernameFromPath(pathname) {
 
 function mapStateToProps(state) {
     const username = getUsernameFromPath(state.router.location.pathname);
-    const isViewOfCurUser = username == state.auth.user.username;
+    const isViewOfCurUser = username === state.auth.user.username;
 
     // state.users.username may not exist yet
     const user =
-        state.users.users[username] != null
+        state.users.users[username] !== undefined
             ? state.users.users[username]
             : {
                 loading: true,

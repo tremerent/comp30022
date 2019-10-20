@@ -18,7 +18,7 @@ export default function Carousel({ id, items, activeFrame, activeId, renderFrame
                 {items.map((item, n) => {
                     const id = getId ? getId(item) : n;
                     let className = '';
-                    if (getId && activeId && id === activeId || activeFrame !== null && n === activeFrame)
+                    if ((getId && activeId && id === activeId) || (activeFrame !== null && n === activeFrame))
                         className = 'active';
                     return (
                         <li
@@ -36,8 +36,8 @@ export default function Carousel({ id, items, activeFrame, activeId, renderFrame
                 const id = getId ? getId(item) : n;
                 let className = 'carousel-item';
                 if  (
-                        getId && activeId !== null && id === activeId
-                    ||  activeFrame !== null && n === activeFrame
+                        (getId && activeId !== null && id === activeId)
+                    ||  (activeFrame !== null && n === activeFrame)
                     )
                     className = className + ' active';
                 return (

@@ -30,8 +30,6 @@ export default class Overview extends React.Component {
             this.sizeStatic = '50%';
             this.sizeScroll = '50%';
         }
-
-        console.log(`sizeStatic: ${this.sizeStatic}, sizeScroll: ${this.sizeScroll}`);
     }
 
     render() {

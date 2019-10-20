@@ -10,9 +10,6 @@ import { artefacts as artActions } from 'redux/actions'
 import "./Filter.css";
 
 class FilteredBrowser extends React.Component {
-    constructor(props) {
-        super(props);
-    }
 
     componentDidMount() {
         const initFilterDetails = {};

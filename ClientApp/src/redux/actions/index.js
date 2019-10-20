@@ -297,7 +297,7 @@ function addMyArtefactSync(newArtefact) {
 
         dispatch(addMyArtefact(newArtefact));
 
-        if (newArtefact.vis == "public") {
+        if (newArtefact.vis === "public") {
 
             updatePublicArts();
             updateUserArts();
@@ -352,9 +352,6 @@ function createMyArtefact(newArtefact, docs) {
 
         const postedArtefact = await postArtefactAndCategories(newArtefact);
         const postedDocs = await submitDocs(postedArtefact.id, docs);
-
-        console.log('here are the posted docs!!!!');
-        console.log(postedDocs);
 
         postedArtefact.images = postedDocs;
 
@@ -414,7 +411,7 @@ function getUserArtefacts(username, vis) {
 
 function isCurUser(username) {
     return function (dispatch, getState) {
-        return getState().auth.user.username == username;
+        return getState().auth.user.username === username;
     }
 }
 

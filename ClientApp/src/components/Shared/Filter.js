@@ -73,20 +73,20 @@ function getFormattedQuery(filterDetails) {
     const removedFilterQueryParams = {};
 
     // search query - can't search for an empty string
-    if (filterDetails.searchQuery && filterDetails.searchQuery.text != "") {
+    if (filterDetails.searchQuery && filterDetails.searchQuery.text !== "") {
 
         newFilterQueryParams.q = [];
         removedFilterQueryParams.searchQuery = null;
 
         if (filterDetails.searchQuery.type) {
-            if (filterDetails.searchQuery.type.name == "both") {
+            if (filterDetails.searchQuery.type.name === "both") {
                 newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:title`);
                 newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:description`);
             }
-            else if (filterDetails.searchQuery.type.name == "title") {
+            else if (filterDetails.searchQuery.type.name === "title") {
                 newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:title`);
             }
-            else if (filterDetails.searchQuery.type.name == "description") {
+            else if (filterDetails.searchQuery.type.name === "description") {
                 newFilterQueryParams.q.push(`${filterDetails.ssearchQuery.text}:description`);
             }
         }
@@ -114,10 +114,10 @@ function getFormattedQuery(filterDetails) {
 
     // category queries
     if (filterDetails.catQueryType != null) {
-        if (filterDetails.catQueryType.name == "matchAll") {
+        if (filterDetails.catQueryType.name === "matchAll") {
             newFilterQueryParams.matchAll = "true";
         }
-        else if (filterDetails.catQueryType.name == "matchAny") {
+        else if (filterDetails.catQueryType.name === "matchAny") {
             newFilterQueryParams.matchAll = "false";
         }
     }
@@ -174,7 +174,7 @@ export default class Filter extends React.Component {
     render() {
         const filterInputs = (
             <div>
-                <div class="af-filter-row">
+                <div className="af-filter-row">
                     <div className="af-filter-row-item">
                         <div className="input-group mr-sm-2">
 
@@ -209,9 +209,11 @@ export default class Filter extends React.Component {
                                     .map((queryType, i) => {
                                         // pass array ele. by index so ref
                                         // not duplicated by lambda
-                                        if (queryType.name != this.state.filterDetails.searchQuery.type.name) {
+                                            // ??? -- Sam
+                                        if (queryType.name !== this.state.filterDetails.searchQuery.type.name) {
                                             return (
                                                 <DropdownItem
+                                                    key={queryType.name}
                                                     onClick={() => {
                                                         this.toggle("showQuerySearchDrop");
                                                         this.handleFilterChange("searchQuery")({
@@ -258,9 +260,10 @@ export default class Filter extends React.Component {
                                     .map((catQueryType, i) => {
                                         // pass array ele. by index so ref
                                         // not duplicated by lambda
-                                        if (catQueryType.name != this.state.filterDetails.catQueryType.name) {
+                                        if (catQueryType.name !== this.state.filterDetails.catQueryType.name) {
                                             return (
                                                 <DropdownItem
+                                                    key={catQueryType.name}
                                                     onClick={() => {
                                                         this.toggle("showCatQueryTypeDrop");
                                                         this.handleFilterChange("catQueryType")(catQueryTypes[i]);
@@ -345,11 +348,14 @@ export default class Filter extends React.Component {
                     <div className="af-filter-sort-outer">
                         <div className="af-filter-sort-select">
                             <Select
+                                // TODO: sort query order
                                 onChange={(value) =>
-                                    this.handleFilterChange("sortQuery")
-                                    ({...this.state.filterDetails.sortQuery,
+                                    this.handleFilterChange("sortQuery")({
+                                        ...this.state.filterDetails.sortQuery,
                                         ...value,
-                                        order: "desc"})}  // TODO: sort query order
+                                        order: "desc"
+                                    })
+                                }
                                 values={this.state.filterDetails.sortQuery}
                                 options={sortOptions}
                                 placeholder="Sort by"
@@ -422,10 +428,10 @@ export default class Filter extends React.Component {
 
     toggleSortDir = () => {
         let newOrder;
-        if (this.state.filterDetails.sortQuery.order == "desc") {
+        if (this.state.filterDetails.sortQuery.order === "desc") {
             newOrder = "asc";
         }
-        else if (this.state.filterDetails.sortQuery.order == "asc") {
+        else if (this.state.filterDetails.sortQuery.order === "asc") {
             newOrder = "desc";
         }
         else {

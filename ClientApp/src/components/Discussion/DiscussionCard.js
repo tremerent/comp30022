@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { Link } from 'react-router-dom';
-
 import './DiscussionCard.css';
 
 export default class DiscussionCard extends React.Component {
@@ -44,12 +42,12 @@ export default class DiscussionCard extends React.Component {
                 <div className='af-dcard-actions'>
                     {
                         this.props.questionId &&
-                            <a href='#' className='af-dcard-action'>
+                            <a href='#mark-answered' className='af-dcard-action'>
                                 Mark Answered
                             </a>
                     }
                     <a
-                        href='#'
+                        href='#reply'
                         className='af-dcard-action'
                         data-target={`#reply-${item.id}`}
                         data-toggle='collapse'
