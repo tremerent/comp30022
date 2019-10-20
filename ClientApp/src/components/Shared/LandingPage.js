@@ -60,9 +60,11 @@ export default function LandingPage(props) {
                     </div> */}
                     <div className="af-action-card-new">
                         <img src={DETECTIVE_IMAGE} className="af-detective-img"/>
-                        <h4 className>
-                            Share your knowledge
-                        </h4>
+                        <div className="af-lp-action-text-outer">
+                            <h4 className="af-lp-action-text af-lp-action-title">
+                                Share your knowledge
+                            </h4>
+                        </div>
                             {/* </div> */}
                         <div>
                             <Link 
@@ -74,16 +76,20 @@ export default function LandingPage(props) {
                                 }}}
                             >
                                 <button className="btn btn-primary mv-3">
-                                    <span >Become an <br/> artefact detective</span>
+                                    <span className="af-lp-action-button-text">
+                                        Become an <br/> artefact detective</span>
                                 </button>
                             </Link>
                         </div>
                     </div>
                     <div className="af-action-card-new">
                         <img src={SIGNUP_IMAGE} className="af-detective-img"/>
-                        <h4 className>
-                            Archive your artefacts
-                        </h4>
+
+                        <div className="af-lp-action-text-outer">
+                            <h4 className="af-lp-action-text af-lp-action-title">
+                                Archive your artefacts
+                            </h4>
+                        </div>
                             {/* </div> */}
                         <div>
                             <Link 
@@ -95,7 +101,8 @@ export default function LandingPage(props) {
                                 }}}
                             >
                                 <button className="btn btn-primary mv-3">
-                                    <span >Start your repository</span>
+                                    <span className="af-lp-action-button-text">
+                                        Start your repository</span>
                                 </button>
                             </Link>
                         </div>

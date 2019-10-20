@@ -75,6 +75,18 @@
     margin-right: 10px;
 }
 
+@media (max-width: 1000px) {
+    .af-filtered-browser-actions {
+        flex-direction: column !important;
+    }
+
+    .af-filtered-browser-action {
+        display: flex;
+        justify-content: center;
+        justify-content: center;
+    }
+}
+
 .af-filtered-browser-actions {
     display: flex;
     justify-content: space-around;
