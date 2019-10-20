@@ -1,8 +1,26 @@
 .af-lp-actions {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
 
-    margin-top: 10%;
+    width: 100%;
+    margin-top: 8vh;
+}
+
+@media (max-width: 1000px) {
+    .af-lp-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .af-lp-action-card {
+        margin-left: 0%;
+        margin-right: 0%;
+        margin-bottom: 10vh;
+    }
+
+    .af-billboard {
+        width: 90% !important;
+    }
 }
 
 .af-lp-action-outer {
@@ -15,15 +33,12 @@
 }
 
 .af-lp-action-card {
-    margin-left: 10%;
-    margin-right: 10%;
-
-    border-radius: 3%;
+    border-radius: 50%;
     background: #F2DCD0;
 }
 
 .af-billboard-header {
-    margin-top: 10%;
+    margin-top: 5%;
 }
 
 .af-lp-background {
@@ -69,9 +84,47 @@
     color: #dddddd;
 }
 
+.af-lp-action-card-header-vert {
+    display: flex;
+    justify-content: space-between;
+
+    padding-left: 20%;
+    padding-top: 7%;
+    padding-right: 3%;
+}
+
+.af-lp-action-card-header-horiz {
+    padding-right: 3%;
+    padding-left: 3%;
+    padding-top: 7%;
+}
+
+.af-lp-action-card-header-vert-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.af-billboard-vert-text {
+    width: 40%;
+    text-align: left;
+    vertical-align: center !important;
+}
+
+.af-detective-img {
+    width: 50%;
+}
+
 @media (min-width: 400px) {
     .af-billboard-header-text {
         font-size: 2.5rem;
     }
+}
+
+.af-lp-action-card-long {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
 }
 

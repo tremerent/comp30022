@@ -9,8 +9,6 @@ import {
 } from 'reactstrap';
 import { Link,  } from 'react-router-dom';
 import { connect } from 'react-redux';
-import ReactSVG from 'react-svg';
-
 
 import StyledNavLink from './StyledNavLink.js';
 import UserNavMenu from './UserNavMenu.js';
@@ -18,9 +16,6 @@ import UserNavMenu from './UserNavMenu.js';
 import './NavMenu.css';
 import ARTEFACTOR_BRAND from 'images/artefactor-brand.png';
 import { ReactComponent as ArtefactIcon } from 'images/amphora.svg';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrophy } from '@fortawesome/free-solid-svg-icons';
-
 class NavMenu extends React.Component {
 
     constructor(props) {
@@ -75,7 +70,7 @@ class NavMenu extends React.Component {
         return (
             <header>
                 <div className='af-navmenu'>
-                    <Navbar light className="navbar-expand-lg ng-white box-shadow af-bs-nav">
+                    <Navbar light className="navbar-expand-lg ng-white box-shadow af-navmenu">
                         <Container>
                             <NavbarBrand tag={Link} to="/">
                                 <img src={ARTEFACTOR_BRAND} className='af-navmenu-brand' alt='Artefactor logo'/>
@@ -85,21 +80,18 @@ class NavMenu extends React.Component {
                                 className="d-sm-inline-flex flex-sm-row-reverse"
                                 isOpen={!this.state.collapsed} navbar
                             >
-                                <ul className="navbar-nav">
+                                <ul className="navbar-nav af-nav-link">
                                     <StyledNavLink
                                         to="/browse"
                                         label={
                                             <>
                                                 <span ref={(browseEle) => this.browseEle = browseEle}
-                                                    className="af-navmenu"
                                                     > Browse </span>&nbsp;
                                                 {artefactIcon}
-                                                {/* <svg src={ARTEFACT_ICON} className="af-icon-custom">
-                                                </svg> */}
-                                                     {/* <img src={ARTEFACT_ICON} className="af-icon-custom"/> */}
                                             </>
                                         }
                                         curPath={this.props.curPath}
+                                        className="af-nav-link-inherit"
                                     />
                                     {
                                         !/*XXX*/this.state.authenticated ? (

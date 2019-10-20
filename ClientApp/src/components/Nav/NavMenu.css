@@ -30,7 +30,7 @@ html {
     z-index: 32;
     position: fixed;
     width: 100%;
-    height: 15%;
+    height: 10vh;
     /*background-image: linear-gradient(to top right, #947562, white);*/
     background-color: #ccad9b;
 }
@@ -38,7 +38,7 @@ html {
 .af-navmenu-placeholder {
     /* XXX this needs to be kept in sync with whatever the navmenu's height
        is. */
-    height: 3.5rem;
+    height: 10vh;
 }
 
 .box-shadow {
@@ -49,7 +49,7 @@ html {
 
 .af-navmenu-brand {
     /* sam: *makes his sexy logo as large as possible* */
-    height: 1.8rem;
+    height: 2.5rem;
     padding-bottom: 0.2rem;
 }
 
@@ -57,3 +57,14 @@ html {
     font-weight: bold;
 }
 
+.af-nav-link {
+    font-size: 1.3rem;
+    margin-left: 0.4rem !important;
+    margin-right: 0.4rem !important;
+}
+
+.af-nav-link-inherit {
+    /* force inheritance of '.af-nav-link' */
+    margin-left: inherit;
+    margin-right: inherit;
+}

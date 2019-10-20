@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import BACKGROUND_IMAGE from 'images/landing-page.jpg';
+import DETECTIVE_IMAGE from 'images/red-vase-coloured.png';
 
 import './LandingPage.css';
 
@@ -32,10 +33,13 @@ export default function LandingPage(props) {
                 </div>
                 <div className="af-lp-actions">
                     <div className="af-lp-action-card">
-                        <div className="af-lp-action-card-header">
-                            <h4 className='af-billboard-text af-billboard-action-text'>
-                                Share your knowledge by answering questions
-                            </h4>
+                        <div className="af-lp-action-card-header-vert">
+                            <div className="af-lp-action-card-header-vert-text">
+                                <h4 className='af-billboard-text af-billboard-action-text af-billboard-vert-text'>
+                                    Share your knowledge
+                                </h4>
+                            </div>
+                            <img src={DETECTIVE_IMAGE} className="af-detective-img"/>
                         </div>
                         <div className='af-lp-action-outer'>
                             {/* triggers a filter option on the 'browse' page */}
@@ -53,13 +57,16 @@ export default function LandingPage(props) {
                             </Link>
                         </div>
                     </div>
-                    <div className="af-lp-action-card">
-                        <div className="af-lp-action-card-header">
+                    <div className="af-lp-action-card af-lp-action-card-long">
+                        <div className="af-lp-action-card-header af-lp-action-card-header-horiz">
                             <h4 className='af-billboard-text af-billboard-action-text'>
                                 Archive your artefacts
                             </h4>
                         </div>
                         <div className='af-lp-action-outer'>
+                            <div>
+
+                            </div>
                             <Link to="/auth/signup" className="af-lp-action">
                                 <button className="btn btn-primary mv-3">
                                     <span >Start your repository</span>

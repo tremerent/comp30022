@@ -36,6 +36,7 @@ class UserNavMenu extends React.Component {
                         </>
                     }
                     curPath={this.props.curPath}
+                    className="af-nav-link-inherit"
                 />
                 <NavItem>
                     <button onClick={(e) => { e.preventDefault(); this.props.logout("/browse"); }} className="text-dark btn nav-link">
@@ -59,7 +60,7 @@ class UserNavMenu extends React.Component {
                         </>
                     }
                     curPath={this.props.curPath}
-                    className="af-inactive-nav-link"
+                    className="af-inactive-nav-link af-nav-link-inherit"
                 />
                 <StyledNavLink
                     to={signupPath}
@@ -69,7 +70,7 @@ class UserNavMenu extends React.Component {
                         </>
                     }
                     curPath={this.props.curPath}
-                    className="af-inactive-nav-link"
+                    className="af-inactive-nav-link af-nav-link-inherit"
                 />
             </>
         );
