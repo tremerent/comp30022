@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { artefacts as artActions } from '../../redux/actions';
+import { discuss as discussActions, artefacts as artActions } from '../../redux/actions';
 
 import Overview from '../Shared/Overview.js';
 import ArtefactPreview from './ArtefactPreview.js';
@@ -172,6 +172,7 @@ class ArtefactPage extends React.Component {
 
     componentDidMount() {
         this.props.getArtefact(this.props.artefactId);
+        this.props.getDiscussion(this.props.artefactId);
     }
 
     render() {
@@ -180,7 +181,13 @@ class ArtefactPage extends React.Component {
         return (
             <Overview sizeStatic='50%' sizeScroll='46%'>
                 <ArtefactPreview artefact={this.props.artefact}/>
-                <Discussion items={DISCUSSION}/>
+                {
+                    this.props.discussion.loading ? (
+                        <CentreLoading/>
+                    ) : (
+                        <Discussion items={this.props.discussion.tree}/>
+                    )
+                }
             </Overview>
         );
     }
@@ -193,12 +200,17 @@ function mapStateToProps(state) {
         artefactId,
         artefact: state.art.artIdCache[artefactId],
         loading: state.art.artIdCache[artefactId] === undefined,
+        discussion: {
+            tree: state.discuss[artefactId],
+            loading: !state.discuss[artefactId],
+        },
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         getArtefact: artActions.getArtefact,
+        getDiscussion: discussActions.getDiscussion,
     }, dispatch);
 }
 
