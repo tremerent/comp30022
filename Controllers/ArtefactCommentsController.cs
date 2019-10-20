@@ -129,7 +129,7 @@ namespace Artefactor.Controllers
                 AuthorId = curUser.Id,
                 Author = curUser,
                 Body = newComment.Body,
-                CreatedAt = new System.DateTime(),
+                CreatedAt = System.DateTime.UtcNow,
             };
 
             try
@@ -180,7 +180,7 @@ namespace Artefactor.Controllers
                 ArtefactId = replyingTo.ArtefactId,
                 AuthorId = curUserId,
                 ParentCommentId = replyingTo.Id,
-                CreatedAt = new System.DateTime(),
+                CreatedAt = System.DateTime.UtcNow,
             };
 
             // no need to catch the fk error - already checked for 404
@@ -218,7 +218,7 @@ namespace Artefactor.Controllers
                 AuthorId = curUser.Id,
                 Author = curUser,
                 Body = newQuestion.Body,
-                CreatedAt = new System.DateTime(),
+                CreatedAt = System.DateTime.UtcNow,
                 IsAnswered = false,
                 AnswerCommentId = null,
             };
