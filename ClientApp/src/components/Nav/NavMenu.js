@@ -6,6 +6,9 @@ import {
     Navbar,
     NavbarBrand,
     NavbarToggler,
+    NavItem,
+    Nav,
+    NavLink,
 } from 'reactstrap';
 import { Link,  } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -69,52 +72,29 @@ class NavMenu extends React.Component {
 
         return (
             <header>
-                <div className='af-navmenu'>
-                    <Navbar light className="navbar-expand-lg ng-white box-shadow af-navmenu">
-                        <Container>
-                            <NavbarBrand tag={Link} to="/">
-                                <img src={ARTEFACTOR_BRAND} className='af-navmenu-brand' alt='Artefactor logo'/>
-                            </NavbarBrand>
-                            <NavbarToggler onClick={this.toggleNav}/>
-                            <Collapse
-                                className="d-sm-inline-flex flex-sm-row-reverse"
-                                isOpen={!this.state.collapsed} navbar
-                            >
-                                <ul className="navbar-nav af-nav-link">
-                                    <StyledNavLink
-                                        to="/browse"
-                                        label={
-                                            <>
-                                                <span ref={(browseEle) => this.browseEle = browseEle}
-                                                    > Browse </span>&nbsp;
-                                                {artefactIcon}
-                                            </>
-                                        }
-                                        curPath={this.props.curPath}
-                                        className="af-nav-link-inherit"
-                                    />
-                                    {
-                                        !/*XXX*/this.state.authenticated ? (
-                                            <>
-                                            {/*<NavLink tag={Link} to="/family">My Family</NavLink>*/}
-                                            {/*<NavLink tag={Link} to="/profile">Profile</NavLink>*/}
-                                            {/*<NavLink tag={Link} to="/my-artefacts">My Artefacts</NavLink>*/}
-                                            {/*<NavLink tag={Link} to="/logout">Log Out</NavLink>*/}
-                                            </>
-                                        ) : (
-                                            <>
-                                            {/*<NavLink tag={Link} to="/login">Log In</NavLink>*/}
-                                            {/*<NavLink tag={Link} to="/signup">Sign Up</NavLink>*/}
-                                            </>
-                                        )
-                                    }
-                                    <UserNavMenu/>
-                                </ul>
-                            </Collapse>
-                        </Container>
-                    </Navbar>
-                </div>
-                <div className='af-navmenu-placeholder'></div>
+                <Navbar color="#ccad9b" light expand="md" className='af-navmenu'>
+                    <NavbarBrand tag={Link} to="/">
+                        <img src={ARTEFACTOR_BRAND} className='af-navmenu-brand' alt='Artefactor logo'/>
+                    </NavbarBrand>
+                    <NavbarToggler onClick={this.toggleNav} />
+                    <Collapse isOpen={this.state.collapsed} navbar>
+                        <Nav className="ml-auto af=nav-link" navbar>
+                            <StyledNavLink
+                                to="/browse"
+                                label={
+                                    <>
+                                        <span ref={(browseEle) => this.browseEle = browseEle}
+                                            > Browse </span>&nbsp;
+                                        {artefactIcon}
+                                    </>
+                                }
+                                curPath={this.props.curPath}
+                                className="af-nav-link-inherit"
+                            />
+                            <UserNavMenu/>
+                        </Nav>
+                    </Collapse>
+                </Navbar>
             </header>
         );
     }

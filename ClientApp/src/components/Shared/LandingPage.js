@@ -29,7 +29,7 @@ export default function LandingPage(props) {
             <div className='af-billboard'>
                 <div className="af-billboard-header">
                     <h1 className='af-billboard-text af-billboard-header-text'>
-                        Discover artefacts. Record and share your collection.
+                        Make discoveries. Record and share your collection.
                     </h1>
                 </div>
                 <div className="af-lp-actions">

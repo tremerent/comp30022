@@ -38,12 +38,24 @@ class UserNavMenu extends React.Component {
                     curPath={this.props.curPath}
                     className="af-nav-link-inherit"
                 />
-                <NavItem>
+                <StyledNavLink
+                    to={`/`}
+                    label={
+                        <>
+                           <span>Logout </span>&nbsp;
+                            <FontAwesomeIcon icon={faSignOutAlt}/> 
+                        </>
+                    }
+                    curPath={this.props.curPath}
+                    className="af-nav-link-inherit"
+                    onClick={this.props.logout}
+                />
+                {/* <NavItem>
                     <button onClick={(e) => { e.preventDefault(); this.props.logout("/browse"); }} className="text-dark btn nav-link">
                         <span>Logout </span>&nbsp;
                         <FontAwesomeIcon icon={faSignOutAlt}/> 
                     </button>
-                </NavItem>
+                </NavItem> */}
             </>
         );
     }
