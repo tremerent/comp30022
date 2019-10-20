@@ -210,7 +210,8 @@ class FilteredBrowser extends React.Component {
         return (
             <div className='af-filtered-browser'>
                 <div className='af-filter-header'>
-                    <div className='af-filter-header-title'>
+                    {this.props.filterHeader}
+                    {/* <div className='af-filter-header-title'>
                         <h2> What are you  looking for? </h2>
                     </div>
                     <div className='af-filtered-browser-actions'>
@@ -242,15 +243,13 @@ class FilteredBrowser extends React.Component {
                                 Discover incredible artefacts
                             </button>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
-                
                 <Filter 
-                    filterTitle={<h3> Search </h3>}
+                    filterTitle={<h3> Refine your <em> Search </em> </h3>}
                     submitFilter={this.submitFilter}
                     filterDetails={filterDetails}
                     onFilterChange={this.onFilterChange}
-                    clearFilter={this.clearFilter}
                 />
                 {
                     this.props.loading

@@ -29,7 +29,7 @@ export default function LandingPage(props) {
             <div className='af-billboard'>
                 <div className="af-billboard-header">
                     <h1 className='af-billboard-text af-billboard-header-text'>
-                        Discover, record, and share your family's legacy.
+                        Discover artefacts. Record and share your collection.
                     </h1>
                 </div>
                 <div className="af-lp-actions">
@@ -94,7 +94,7 @@ export default function LandingPage(props) {
                         <div>
                             <Link 
                                 to={{
-                                    pathname: "/browse", 
+                                    pathname: "/auth/signup", 
                                     state: { 
                                         prevPath: props.location.pathname, 
                                         action: "detectiveBrowse",

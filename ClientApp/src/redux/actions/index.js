@@ -1,4 +1,4 @@
-﻿import { authTypes, artefactTypes, usersTypes } from './types';
+﻿import { authTypes, artefactTypes, usersTypes, tuteTypes, } from './types';
 import { setUser, logoutUser, } from '../../scripts/auth';
 import { push } from 'connected-react-router';
 
@@ -513,8 +513,48 @@ const users = {
     updateCurUserProfilePic,
 };
 
+function browserTuteRunState() {
+    return function(dispatch, getState) {
+        const bTuteState = getState().tute.browserTute;
+
+        const tuteAtInitState = 
+            !bTuteState.answerQuestion.toolTipOpen &&
+            !bTuteState.sortArts.toolTipOpen &&
+            !bTuteState.findInter.toolTipOpen &&
+            !bTuteState.filterCats.toolTipOpen;
+
+        // open current tooltip, close previous
+
+        if (tuteAtInitState && !bTuteState.complete) {
+            dispatch({ type: tuteTypes.TOGGLE_ANSWER_Q_TT });
+        }
+        else if (bTuteState.answerQuestion.toolTipOpen) {
+            dispatch({ type: tuteTypes.TOGGLE_ANSWER_Q_TT });
+            dispatch({ type: tuteTypes.TOGGLE_SORT_ARTS_TT });
+        }
+        else if (bTuteState.sortArts.toolTipOpen) {
+            dispatch({ type: tuteTypes.TOGGLE_SORT_ARTS_TT });
+            dispatch({ type: tuteTypes.TOGGLE_FIND_INTER_ARTS_TT });
+        }
+        else if (bTuteState.findInter.toolTipOpen) {
+            dispatch({ type: tuteTypes.TOGGLE_FIND_INTER_ARTS_TT });
+            dispatch({ type: tuteTypes.TOGGLE_FILTER_CATS_TT });
+        }
+        else if (bTuteState.filterCats.toolTipOpen) {
+            dispatch({ type: tuteTypes.TOGGLE_FILTER_CATS_TT });
+            // flag so tuteAtInitState not satisfied
+            dispatch({ type: tuteTypes.BROWSER_TUTE_COMPLETE });
+        }
+    }
+}
+
+const tute = {
+    browserTuteRunState,
+};
+
 export {
     auth,
     artefacts,
     users,
+    tute,
 };

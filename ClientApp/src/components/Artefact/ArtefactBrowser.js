@@ -5,6 +5,8 @@ import { bindActionCreators } from 'redux';
 import FilteredBrowser from 'components/Shared/FilteredBrowser';
 import { artefacts as artActions } from 'redux/actions';
 
+import ArtefactBrowserTute from './ArtefactBrowserTute';
+
 import './ArtefactBrowser.css';
 
 class ArtefactBrowser extends React.Component {
@@ -31,6 +33,7 @@ class ArtefactBrowser extends React.Component {
                 <FilteredBrowser 
                     key={this.props.queryString}
                     detectiveActionActive={shouldApplyDetectiveAction}
+                    filterHeader={<ArtefactBrowserTute />}
                 />
             </div>
         );

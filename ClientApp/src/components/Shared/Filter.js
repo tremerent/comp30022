@@ -1,4 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import { tute as tuteActions } from 'redux/actions';
+
 // date range
 import { Calendar } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
@@ -10,7 +15,7 @@ import 'components/Shared/Filter.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faArrowUp, faSortUp, faSortDown, faTimes, } from '@fortawesome/free-solid-svg-icons';
 import { Collapse, } from 'reactstrap';
-import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Tooltip, } from 'reactstrap';
 import Select from 'react-select';
 
 import { queryTypes, sortOptions, catQueryTypes } from './filterUtils';
@@ -23,7 +28,7 @@ function formatDateDisplay(date, defaultText) {
 /**
  * Browser filter presentation component.
  */
-export default class Filter extends React.Component {
+class Filter extends React.Component {
 
     constructor(props) {
         super(props);
@@ -54,8 +59,8 @@ export default class Filter extends React.Component {
             showQuerySearchDrop: false,
             // maintain two for the collapse - 'showFilter' toggled during 
             // transition, 'filterShown' toggled when complete
-            showFilter: false,
-            filterShown: false,
+            showFilter: true,
+            filterShown: true,
         };
     }
 
@@ -130,13 +135,25 @@ export default class Filter extends React.Component {
                 {/* category select */}
                 <div className="af-filter-row">
                     <div className="af-filter-row-item">
-                        <CategorySelect
-                            blurPlaceholder={"Click to choose a category"}
-                            focusPlaceholder={"Categories"}
-                            creatable={false} 
-                            categoryVals={filterDetails.category} 
-                            setCategoryVals={this.handleFilterChange("category")} 
-                        />
+                        <div id={"Tooltip-" + this.props.filterCatsTt.id}>
+                            <CategorySelect
+                                blurPlaceholder={"Click to choose a category"}
+                                focusPlaceholder={"Categories"}
+                                creatable={false} 
+                                categoryVals={filterDetails.category} 
+                                setCategoryVals={this.handleFilterChange("category")} 
+                            />
+                        </div>
+                        <Tooltip         
+                                placement="right"
+                                isOpen={this.props.filterCatsTt.toolTipOpen}
+                                target={"Tooltip-" + this.props.filterCatsTt.id}
+                                autohide={false}
+                                className="af-tooltip"
+                                toggle={this.props.browserTuteRunState}
+                            >
+                                What are you interested in?
+                        </Tooltip>
                     </div>
 
                     <ButtonDropdown
@@ -249,7 +266,20 @@ export default class Filter extends React.Component {
                                 placeholder="Sort by"
                                 menuPlacement="top"
                                 isClearable={true}
+
+                                id={"Tooltip-" + this.props.sortArtsTt.id}
                             />
+
+                            <Tooltip         
+                                placement="right"
+                                isOpen={this.props.sortArtsTt.toolTipOpen}
+                                target={"Tooltip-" + this.props.sortArtsTt.id}
+                                autohide={false}
+                                className="af-tooltip"
+                                toggle={this.props.browserTuteRunState}
+                            >
+                                You can sort the artefacts that appear here
+                        </Tooltip>
                         </div>
                         <button
                             onClick={this.toggleSortDir}
@@ -272,9 +302,9 @@ export default class Filter extends React.Component {
                     <div className="af-filter-controls">
                         <button 
                             onClick={this.clearFilter}
-                            className="btn btn-outline-warning af-filter-control"
+                            className="btn btn-outline-secondary af-filter-control"
                         > 
-                            <FontAwesomeIcon icon={faTimes} color="#ccae57"/>
+                            <FontAwesomeIcon icon={faTimes} color="#417dba"/>
                             &nbsp; 
                             Clear
                         </button>
@@ -312,7 +342,11 @@ export default class Filter extends React.Component {
                         {
                             this.state.filterShown
                             ?
-                                <FontAwesomeIcon icon={faArrowUp} />
+                                <>
+                                    <FontAwesomeIcon icon={faArrowUp} />
+                                    &nbsp;
+                                    Hide
+                                </>
                             :
                                 <>
                                     <FontAwesomeIcon icon={faSearch} />
@@ -344,7 +378,7 @@ export default class Filter extends React.Component {
             ...this.state,
             filterDetails: this.initStateFilterDetails,
         }, () => {
-            this.props.handleFilterChange(this.state.filterDetails);
+            this.props.onFilterChange(this.state.filterDetails);
             this.handleSubmit();
         });
     }
@@ -408,3 +442,19 @@ export default class Filter extends React.Component {
         });
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        // browser tute
+        sortArtsTt: state.tute.browserTute.sortArts,
+        filterCatsTt: state.tute.browserTute.filterCats,
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators({
+        browserTuteRunState: tuteActions.browserTuteRunState,
+    }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps) (Filter);

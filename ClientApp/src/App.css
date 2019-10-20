@@ -7,7 +7,6 @@
     width: 1em;
 }
 
-
 /* Provide sufficient contrast against white background */
 a {
   color: #0366d6;
@@ -28,8 +27,9 @@ code {
 
 .btn-primary {
   color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+  /* background-color: #1b6ec2; */
+  background-color: #417dba;
+  border-color: #417dba;
 }
 
 .error {
@@ -97,4 +97,28 @@ code {
 
 .container {
     height: 100%;
+}
+
+
+
+/* tool tips */
+.af-tooltip .tooltip-inner {
+    background-color: #fcd308 ;
+    color: #000000;
+}
+  
+.af-tooltip .bs-tooltip-auto[x-placement^="bottom"] .arrow::before, .bs-tooltip-bottom .arrow::before{
+    border-bottom-color: #fcd308;
+}
+
+.af-tooltip .bs-tooltip-auto[x-placement^="top"] .arrow::before, .bs-tooltip-top .arrow::before{
+    border-top-color:#fcd308 ;
+}
+
+.af-tooltip .bs-tooltip-auto[x-placement^="left"] .arrow::before, .bs-tooltip-left .arrow::before{
+    border-left-color: #fcd308;
+}
+
+.af-tooltip .bs-tooltip-auto[x-placement^="right"] .arrow::before, .bs-tooltip-right .arrow::before{
+    border-right-color: #fcd308;
 }
