@@ -1,7 +1,6 @@
 import { push } from 'connected-react-router';
-import { authTypes, artefactTypes, usersTypes } from './types';
+import { authTypes, artefactTypes, usersTypes, tuteTypes } from './types';
 import { setUser, logoutUser, } from '../../scripts/auth';
-import { push } from 'connected-react-router';
 import * as discuss from './discussActions.js';
 
 import {
@@ -742,5 +741,6 @@ export {
     artefacts,
     users,
     tute,
+    discuss,
 };
 

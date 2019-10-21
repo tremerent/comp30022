@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router-dom';
 
 import FilteredBrowser from 'components/Shared/FilteredBrowser';
 import { artefacts as artActions } from 'redux/actions';
@@ -49,5 +50,7 @@ const mapDispatchToProps = (dispatch) => {
     }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps) (ArtefactBrowser);
+export default connect(mapStateToProps, mapDispatchToProps)(
+    withRouter(props => <ArtefactBrowser {...props}/>)
+);
 
