@@ -172,13 +172,14 @@ namespace Artefactor.Controllers
                 return NotFound();
             }
 
-            var curUserId = _userService.GetCurUserId(HttpContext);
+            var curUser = await _userService.GetCurUser(HttpContext);
 
             var newCommentReply = new ArtefactComment
             {
                 Body = reply.Body,
                 ArtefactId = replyingTo.ArtefactId,
-                AuthorId = curUserId,
+                AuthorId = curUser.Id,
+                Author = curUser,
                 ParentCommentId = replyingTo.Id,
                 CreatedAt = System.DateTime.UtcNow,
             };
