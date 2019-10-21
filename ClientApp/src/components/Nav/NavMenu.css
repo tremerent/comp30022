@@ -1,62 +1,67 @@
 
 a.navbar-brand {
-    white-space: normal;
-    text-align: center;
-    word-break: break-all;
-  }
-  
-  html {
-    font-size: 14px;
-  }
-  @media (min-width: 768px) {
-    html {
-      font-size: 16px;
-    }
-  }
-  
-  .af-active-nav-link {
-      color: #F2DCD0 !important;
-      fill: #F2DCD0 !important;
-  }
+white-space: normal;
+text-align: center;
+word-break: break-all;
+}
 
-  .af-inactive-nav-link {
-    color: rgba(0, 0, 0, 0.5);
-    fill: rgba(0, 0, 0, 0.5);
-  }   
-  
-  .af-login-signup-nav-link {
-      color: #89624B !important;
-      fill: #89624B !important;
-  }
-  
-  .af-navmenu {
-      /* Render above everything else. */
-      z-index: 32;
-      position: fixed;
-      width: 100%;
-      /*background-image: linear-gradient(to top right, #947562, white);*/
-      background-color: #ccad9b;
-  }
-  
-  .af-navmenu-placeholder {
-      /* XXX this needs to be kept in sync with whatever the navmenu's height
-         is. */
-      height: 3.5rem;
-  }
-  
-  .box-shadow {
-      box-shadow: 0 .15rem .85rem rgba(0, 0, 0, .35);
-      /* Render above everything else. */
-      z-index: 32;
-  }
-  
-  .af-navmenu-brand {
-      /* sam: *makes his sexy logo as large as possible* */
-      height: 1.8rem;
-      padding-bottom: 0.2rem;
-  }
-  
-  .navbar-nav .nav-link {
-      font-weight: bold;
-  }
-  
+html {
+font-size: 14px;
+}
+@media (min-width: 768px) {
+html {
+    font-size: 16px;
+}
+}
+
+.navbar-nav .nav-link {
+font-weight: bold;
+}
+
+.nav-link:hover {
+color: rgba(0, 0, 0, 0.7);
+fill: rgba(0, 0, 0, 0.7);
+}
+
+.af-active-nav-link {
+    color: #F2DCD0 !important;
+    fill: #F2DCD0 !important;
+}
+
+.af-inactive-nav-link {
+color: rgba(0, 0, 0, 0.5);
+fill: rgba(0, 0, 0, 0.5);
+}   
+
+.af-login-signup-nav-link {
+    color: #89624B !important;
+    fill: #89624B !important;
+}
+
+.af-navmenu {
+    /* Render above everything else. */
+    z-index: 32;
+    position: fixed;
+    width: 100%;
+    /*background-image: linear-gradient(to top right, #947562, white);*/
+    background-color: #ccad9b;
+}
+
+.af-navmenu-placeholder {
+    /* XXX this needs to be kept in sync with whatever the navmenu's height
+        is. */
+    height: 3.5rem;
+}
+
+.box-shadow {
+    box-shadow: 0 .15rem .85rem rgba(0, 0, 0, .35);
+    /* Render above everything else. */
+    z-index: 32;
+}
+
+.af-navmenu-brand {
+    /* sam: *makes his sexy logo as large as possible* */
+    height: 1.8rem;
+    padding-bottom: 0.2rem;
+}
+
