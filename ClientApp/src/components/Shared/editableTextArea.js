@@ -13,13 +13,10 @@ function editableTextArea(TextArea) {
                 editing: this.props.editing ? this.props.editing : false,
             }
         }
-    
+
         render() {
-            const {
-                value,
-                onValueSubmit,
-                ...otherProps } = this.props;
-    
+            const { value, } = this.props;
+
             let content;
 
             if (!this.state.editing) {
@@ -32,7 +29,7 @@ function editableTextArea(TextArea) {
             else {
                 content = (
                     <div className="editable-text-area-content">
-                        <SubmitTextArea 
+                        <SubmitTextArea
                             onSubmit={this.onTextAreaSubmit}
                             value={value}
                             />
@@ -44,7 +41,7 @@ function editableTextArea(TextArea) {
                 <div className="editable-text-area">
                     {content}
                     <div className="submit-text-area-toggle">
-                        <button 
+                        <button
                             onClick={() => this.toggleEditor(true)}
                             className="btn"
                         >
@@ -52,7 +49,7 @@ function editableTextArea(TextArea) {
                         </button>
                     </div>
                 </div>
-                
+
             );
         }
 
@@ -120,7 +117,7 @@ class SubmitTextArea extends React.Component {
                             className="form-control"
                         />}
                 <div className="submit-text-area-submit-box">
-                    <button class='btn btn-primary' onClick={this.submit}>{
+                    <button className='btn btn-primary' onClick={this.submit}>{
                         this.props.buttonText ?
                             this.props.buttonText
                         :

@@ -30,7 +30,7 @@ export class CreateArtefactForm extends Component {
             visibility: null,
         };
 
-        // this doesn't participate in 
+        // this doesn't participate in
         this.docs = { };
 
         this.state = {
@@ -61,29 +61,29 @@ export class CreateArtefactForm extends Component {
 
     render() {
         return (
-            <div style={{ /*height: '100%'*/ }}>
-                <div className="text-center">
-                    <div className="spinner-border text-primary" role="status"
-                        style={{
-                            display:
-                                this.state.artefactWasCreated ? "none" :
-                                    this.state.loading ? null : "none",
-                                margin: '5em 5em',
-                        }}>
-                        <span className="sr-only">Loading...</span>
-                    </div>
-                </div>
-                <div className="card"
+            <>
+            <div className="text-center">
+                <div className="spinner-border text-primary" role="status"
                     style={{
-                        display: this.state.artefactWasCreated ? "none" :
-                                    this.state.loading ? "none" : null,
+                        display:
+                            this.state.artefactWasCreated ? "none" :
+                                this.state.loading ? null : "none",
+                            margin: '5em 5em',
                     }}>
-                    {this.renderArtefactForm()}
-                </div>
-                <div style={{ display: this.state.artefactWasCreated ? null : "none" }}>
-                    {this.renderArtefactCreated()}
+                    <span className="sr-only">Loading...</span>
                 </div>
             </div>
+            <div className="card"
+                style={{
+                    display: this.state.artefactWasCreated ? "none" :
+                                this.state.loading ? "none" : null,
+                }}>
+                {this.renderArtefactForm()}
+            </div>
+            <div style={{ display: this.state.artefactWasCreated ? null : "none" }}>
+                {this.renderArtefactCreated()}
+            </div>
+            </>
         );
     }
 
@@ -245,23 +245,20 @@ export class CreateArtefactForm extends Component {
             }
 
             return (
-                <div>
-                    <div key={visOpt} className="form-check">
-                        { invalidFeedback }
-                        <input
-                            className="form-check-input"
-                            type="radio"
-                            name="visibility"
-                            id="visibility"
-                            value={visOpt}
-                            onChange={this.handleFormChange}
-                            required
-                        />
-                        <label className="form-check-label">
-                            {visbilityOptLabels[visOpt]}
-                        </label>
-
-                    </div>
+                <div key={visOpt} className="form-check">
+                    { invalidFeedback }
+                    <input
+                        className="form-check-input"
+                        type="radio"
+                        name="visibility"
+                        id="visibility"
+                        value={visOpt}
+                        onChange={this.handleFormChange}
+                        required
+                    />
+                    <label className="form-check-label">
+                        {visbilityOptLabels[visOpt]}
+                    </label>
                 </div>
             );
         });
@@ -301,15 +298,16 @@ export class CreateArtefactForm extends Component {
             loading: true,
         });
 
-        this.props.createArtefact(this.state.artefact, this.docs)
-            .then((() => {
-
-                // if (this.props.createdArtefact) {
-                //     console.log("CREATED ARTEFACTS");
-                //     console.log(this.props.createdArtefact);
-                //     const response =
-                //         await this.submitDocs(this.props.createdArtefact.id);
-                // }
+        // At this point the artefact object has a temporary ID (a timestamp).
+        // We need to remove that before the object is sent to the server, or
+        // else EF and whoever actually put the temporary id in the database.
+        // FIXME is to stop that happening, since it's not great that anyone
+        // with an account can insert objects with arbitrary string IDs into
+        // our database.
+        let artefact = this.state.artefact;
+        artefact.id = undefined;
+        this.props.createArtefact(artefact, this.docs)
+            .then(() => {
 
                 // add created artefacts id so we have a link to it for the success
                 // message
@@ -319,7 +317,7 @@ export class CreateArtefactForm extends Component {
                     artefactWasCreated: true,
                     createdArtefactId: this.getCreatedArtefactId(),
                 });
-            }).bind(this));
+            });
     }
 
     // null check created artefact's id

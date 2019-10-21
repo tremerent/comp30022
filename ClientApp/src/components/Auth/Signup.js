@@ -30,7 +30,7 @@ class Signup extends React.Component {
                 component={SignupForm}
                 componentProps={{
                     duplicateUsername: this.props.error
-                        ? this.props.error.code == "DuplicateUserName"
+                        ? this.props.error.code === "DuplicateUserName"
                         : false,
                     signup: this.signup,
                     formVals: {
@@ -47,7 +47,7 @@ class Signup extends React.Component {
     signup = (signupData) => {
 
         this.props.register(signupData)
-                  .then((() => {
+                  .then(() => {
                       // TODO: handle username already taken
                       if (this.props.error) {
                           // passed down as prop
@@ -59,7 +59,7 @@ class Signup extends React.Component {
                                   `/user/${this.props.username}`;
                           this.props.push(nextDir);
                       }
-                  }).bind(this));
+                  });
 
         // horrible hackyness so SignupForm doesn't have username etc. equal to ""
         // when initialised - todo: redux when more time
@@ -70,11 +70,8 @@ class Signup extends React.Component {
 
 Signup.propTypes = {
     register: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired,
+    loading: PropTypes.bool,
     redir: PropTypes.string,
-    error: {
-        errorCode: PropTypes.string,
-    }
 }
 
 const mapStateToProps = state => ({

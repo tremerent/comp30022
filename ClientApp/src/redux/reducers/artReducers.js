@@ -112,7 +112,7 @@ function artMain(state = getInitArtState(), action) {
                     },
                 },
             }
-        case artefactTypes.ERR_GET_PUBLIC_ARTEFACTS:
+        case artefactTypes.ERR_GET_USER_ARTEFACTS:
             return {
                 ...state,
                 userArts: {
@@ -172,12 +172,21 @@ function artMain(state = getInitArtState(), action) {
 function updateArtIdCache(state = getInitArtState(), action) {
     switch (action.type) {
 
+    case artefactTypes.RES_GET_ARTEFACT:
+        return {
+            ...state,
+            artIdCache: {
+                ...state.artIdCache,
+                [action.artefact.id]: action.artefact,
+            },
+        };
+
     case artefactTypes.RES_GET_MY_ARTEFACTS:
         return {
             ...state,
             artIdCache: {
-                ... state.artIdCache,
-                ... action.myArtefacts.reduce(
+                ...state.artIdCache,
+                ...action.myArtefacts.reduce(
                         (cache, value) => ({ ...cache, [value.id]: value }),
                         { }
                     ),
@@ -197,8 +206,8 @@ function updateArtIdCache(state = getInitArtState(), action) {
         return {
             ...state,
             artIdCache: {
-                ... state.artIdCache,
-                ... action.artefacts.reduce(
+                ...state.artIdCache,
+                ...action.artefacts.reduce(
                         (cache, value) => ({ ...cache, [value.id]: value }),
                         { }
                     ),
@@ -209,8 +218,8 @@ function updateArtIdCache(state = getInitArtState(), action) {
         return {
             ...state,
             artIdCache: {
-                ... state.artIdCache,
-                ... action.userArtefacts.reduce(
+                ...state.artIdCache,
+                ...action.userArtefacts.reduce(
                         (cache, value) => ({ ...cache, [value.id]: value }),
                         { }
                     ),

@@ -1,0 +1,57 @@
+
+.af-discuss-section {
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.af-dh-outer {
+    position: sticky;
+    top: 3.5rem;
+    width: 100%;
+}
+
+.af-dh-inner {
+    padding: 0.2em 1em;
+    padding-top: .9em;
+    width: 120%;
+    height: 100%;
+    box-shadow: 0 .15rem .35rem rgba(0, 0, 0, .25);
+    background-color: white;
+    position: relative;
+    left: -7%;
+}
+
+.af-dh-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.af-dh-heading {
+    font-weight: bold;
+}
+
+.af-dh-title button {
+    font-size: 0.8em;
+    padding: 0.2em 0.2em;
+    width: 2em;
+    height: 2em;
+}
+
+.af-dh-create-actions button {
+    margin-top: 0.5em;
+    font-size: 0.8em;
+    padding: 0.1em 0.5em;
+}
+
+.af-dh-create-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.af-discussion {
+    display: flex;
+    flex-direction: column-reverse;
+}
+

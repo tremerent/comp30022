@@ -1,0 +1,23 @@
+
+.scrollbox {
+    margin: 0 auto;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.scrollbox-wrapper {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 200%;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.scrollbox-inner {
+    width: 50%;
+    height: auto;
+}
+

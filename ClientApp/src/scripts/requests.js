@@ -22,7 +22,6 @@ async function postRegister(registerDetails) {
 
 async function getArtefact(artefactId) {
     const resp = await apiFetch(getToken())
-        // XXX not sure if this is sanitised -- Sam
         .get(`/Artefacts?id=${artefactId}`);
 
     return resp.data;
@@ -117,11 +116,13 @@ async function getArtefacts(queryDetails) {
     Object.keys(queryDetails).map(function(key) {
         const val = queryDetails[key];
 
-        if (val != null && val != "" && val.length) {
+        if (val !== null && val !== "" && val.length) {
             queries.push(
                 makeQuery(key, val)
             );
         }
+
+        return null;
     });
 
     let url = `/artefacts`;
@@ -155,8 +156,6 @@ async function getUser(username) {
     return resp.data;
 }
 
-// This is a total hack. Will fix to be proper reduxy given more time.
-// -- Sam
 async function patchUserInfo(username, newInfo) {
     const resp = await apiFetch(getToken())
         .patch(`/user/${username}`, newInfo);
@@ -181,6 +180,57 @@ async function getComment(id) {
 
     return resp.data;
 }
+
+// Adds a reference to each item in a discussion tree pointing to that item's
+// parent item (or null at the top level).
+// Possibly this causes memory leaks; I don't know anything about JS garbage
+// collection.
+// -- Sam
+function addParentRefsToDiscussionTree(tree) {
+    (function recurse(parent, tree) {
+        for (let child of tree) {
+            child.parent = parent;
+            child.parentId = child.parent && child.parent.id;
+            recurse(child, child.replies);
+        }
+    })(null, tree);
+    return tree;
+}
+
+export async function getDiscussion(artefactId) {
+    return addParentRefsToDiscussionTree((
+            await apiFetch(getToken())
+                .get(`/artefacts/comments?artefactId=${artefactId}`)
+        ).data);
+}
+
+export async function postDiscussion(item) {
+    let args;
+    if (item.parent) {
+        args = [
+            '/artefacts/comments/reply',
+            { Body: item.body, ParentCommentId: item.parent.id },
+        ];
+    } else if (item.type === 'question') {
+        args = [
+            '/artefacts/comments/question',
+            { Body: item.body, ArtefactId: item.artefact },
+        ];
+    } else  {
+        args = [
+            '/artefacts/comments',
+            { Body: item.body, ArtefactId: item.artefact },
+        ];
+    }
+
+    let data = (
+            await apiFetch(getToken())
+                .post(...args)
+        ).data;
+    data.parent = item.parent;
+    return data;
+}
+
 
 export {
     postArtefact,

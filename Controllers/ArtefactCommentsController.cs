@@ -46,12 +46,13 @@ namespace Artefactor.Controllers
             }
 
             // Load all comments with their children. We recursively
-            // attach the next levels, starting at the artefact's root comments. 
+            // attach the next levels, starting at the artefact's root comments.
 
             var artComments = await _context
                 .ArtefactComments
                 .Where(ac => ac.ArtefactId == artefactId)
                 .Include(ac => ac.ChildComments)
+                .Include(ac => ac.Author)
                 .ToListAsync();
 
             var rootComments = artComments
@@ -65,14 +66,14 @@ namespace Artefactor.Controllers
             return new JsonResult(rootComments.Select(c => _converter.ToJson(c)));
 
             // recursively attach children
-            void AttachChildren(ArtefactComment parent) 
+            void AttachChildren(ArtefactComment parent)
             {
                 List<ArtefactComment> children;
 
                 // if 'parent' is an element of 'rootComments', no need to attach
                 // children, since they will already be attached from '.Include'
-                if (parent.ChildComments == null || 
-                    parent.ChildComments.Count() == 0) 
+                if (parent.ChildComments == null ||
+                    parent.ChildComments.Count() == 0)
                 {
                     children = artComments
                         .Where(ac => ac.ParentCommentId == parent.Id)
@@ -81,7 +82,7 @@ namespace Artefactor.Controllers
                     parent.ChildComments = children;
                 }
 
-                foreach (var child in parent.ChildComments) 
+                foreach (var child in parent.ChildComments)
                 {
                     AttachChildren(child);
                 }
@@ -120,17 +121,18 @@ namespace Artefactor.Controllers
         public async Task<IActionResult> AddComment(
             [FromBody] CommentPost newComment)
         {
-            var curUserId = _userService.GetCurUserId(HttpContext);
+            var curUser = await _userService.GetCurUser(HttpContext);
 
             var createdComment = new ArtefactComment
             {
                 ArtefactId = newComment.ArtefactId,
-                AuthorId = curUserId,
+                AuthorId = curUser.Id,
+                Author = curUser,
                 Body = newComment.Body,
-                CreatedAt = new System.DateTime(),
+                CreatedAt = System.DateTime.UtcNow,
             };
 
-            try 
+            try
             {
                 await _context.AddAsync(createdComment);
                 await _context.SaveChangesAsync();
@@ -141,8 +143,8 @@ namespace Artefactor.Controllers
                 switch (sqlError.Number) {
                     case 547: // fk violation
                         return NotFound($"Artefact '{newComment.ArtefactId}' does not exist.");
-                    default: 
-                        throw;      
+                    default:
+                        throw;
                 }
             }
 
@@ -170,15 +172,16 @@ namespace Artefactor.Controllers
                 return NotFound();
             }
 
-            var curUserId = _userService.GetCurUserId(HttpContext);
+            var curUser = await _userService.GetCurUser(HttpContext);
 
             var newCommentReply = new ArtefactComment
             {
                 Body = reply.Body,
                 ArtefactId = replyingTo.ArtefactId,
-                AuthorId = curUserId,
+                AuthorId = curUser.Id,
+                Author = curUser,
                 ParentCommentId = replyingTo.Id,
-                CreatedAt = new System.DateTime(),
+                CreatedAt = System.DateTime.UtcNow,
             };
 
             // no need to catch the fk error - already checked for 404
@@ -195,7 +198,7 @@ namespace Artefactor.Controllers
         public async Task<IActionResult> AddQuestion(
             [FromBody] CommentPost newQuestion)
         {
-            var curUserId = _userService.GetCurUserId(HttpContext);
+            var curUser = await _userService.GetCurUser(HttpContext);
 
             // veryify answer
             var art = await _context
@@ -205,7 +208,7 @@ namespace Artefactor.Controllers
             {
                 return NotFound($"'ArtefactId' '{newQuestion.ArtefactId}' does not exist.");
             }
-            if (art.OwnerId != curUserId)
+            if (art.OwnerId != curUser.Id)
             {
                 return Unauthorized("Only the artefact owner can post a question.");
             }
@@ -213,11 +216,12 @@ namespace Artefactor.Controllers
             var createdQuestion = new ArtefactQuestion
             {
                 ArtefactId = newQuestion.ArtefactId,
-                AuthorId = curUserId,
+                AuthorId = curUser.Id,
+                Author = curUser,
                 Body = newQuestion.Body,
-                CreatedAt = new System.DateTime(),
-
+                CreatedAt = System.DateTime.UtcNow,
                 IsAnswered = false,
+                AnswerCommentId = null,
             };
 
             // no need to catch the fk error - already checked for 404
@@ -242,7 +246,7 @@ namespace Artefactor.Controllers
             [FromBody] MarkAnswer markAnswer)
         {
             var curUserId = _userService.GetCurUserId(HttpContext);
-            
+
             // verify question
             var question = await _context.ArtefactQuestions
                     .SingleOrDefaultAsync(q => q.Id == markAnswer.QuestionId);
@@ -276,7 +280,7 @@ namespace Artefactor.Controllers
 
             return new NoContentResult();
         }
-        
+
         [HttpDelete("mark-answer")]
         [Authorize]
         public async Task<IActionResult> RemoveMarkedAnswer(

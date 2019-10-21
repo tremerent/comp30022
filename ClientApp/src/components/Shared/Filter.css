@@ -11,7 +11,7 @@
 
 .af-flex-end {
     display: flex;
-    justify-content: end !important;
+    justify-content: flex-end !important;
 }
 
 .af-flex-between {
