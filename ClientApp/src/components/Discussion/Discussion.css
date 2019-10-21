@@ -1,11 +1,11 @@
 
 .af-discuss-section {
-    min-width: 320px;
+    min-width: 240px;
 }
 
 .af-dh-outer {
     position: sticky;
-    top: 3.45rem;
+    top: 4rem;
     width: 100%;
 }
 
@@ -46,7 +46,7 @@
 }
 
 .af-dh-heading {
-    font-weight: bold;
+    font-weight: 300;
 }
 
 .af-dh-title button {

@@ -93,7 +93,15 @@ class DiscussionCard extends React.Component {
         return (
             <div className='af-dcard-card' style={style}>
                 <div className='af-dcard-title'>
-                    <div className='af-dcard-avatar'/>
+                    <img
+                            src={
+                                item.authorImageUrl ?
+                                    item.authorImageUrl
+                                :
+                                    '/img/profile-placeholder.png'
+                            }
+                            className='af-dcard-avatar'
+                    />
                     <div className='af-dcard-author'>{item.author}</div>
                     {postStatus}
                 </div>

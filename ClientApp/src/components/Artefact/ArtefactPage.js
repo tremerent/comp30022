@@ -2,10 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { discuss as discussActions, artefacts as artActions } from '../../redux/actions';
+import { faEye } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from 'react-router-dom';
 
 import Overview from '../Shared/Overview.js';
 import ArtefactPreview from './ArtefactPreview.js';
 import CentreLoading from 'components/Shared/CentreLoading';
+import ArtefactInfo from './ArtefactInfo.js';
 import '../User/UserProfile.css';
 import './ArtefactPage.css';
 
@@ -19,7 +23,6 @@ function getArtefactIdFromRoute(route) {
     console.warn("Failed to get artefact ID from route.");
     return null;
 }
-
 
 class ArtefactPage extends React.Component {
 
@@ -40,7 +43,7 @@ class ArtefactPage extends React.Component {
             return <CentreLoading/>;
         return (
             <Overview>
-                <ArtefactPreview artefact={this.props.artefact}/>
+                <ArtefactInfo artefact={this.props.artefact} auth={this.props.auth}/>
                 {
                     (this.props.discussion.loading) ? (
                         <CentreLoading/>
@@ -59,9 +62,15 @@ class ArtefactPage extends React.Component {
 
 }
 
+
 function mapStateToProps(state) {
     const artefactId = getArtefactIdFromRoute(state.router.location.pathname);
-    return {
+    const artefact = state.art.artIdCache[artefactId];
+    let props = {
+        auth: {
+            loggedIn: state.auth.isLoggedIn,
+            isOwner: false,
+        },
         artefactId,
         artefact: state.art.artIdCache[artefactId],
         loading: state.art.artIdCache[artefactId] === undefined,
@@ -71,6 +80,12 @@ function mapStateToProps(state) {
             error: state.discuss[artefactId] && state.discuss[artefactId].error,
         },
     };
+    if (props.auth.loggedIn) {
+        props.username = state.auth.user.username;
+        if (artefact)
+            props.auth.isOwner = props.username === artefact.owner.username;
+    }
+    return props;
 }
 
 function mapDispatchToProps(dispatch) {
