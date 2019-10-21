@@ -22,3 +22,10 @@
     margin-bottom: 1.75rem;
 }
 
+.modal-vert-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}
+

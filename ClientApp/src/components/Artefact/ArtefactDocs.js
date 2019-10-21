@@ -38,8 +38,6 @@ export default class ArtefactDocs extends React.Component {
     deleteItem(items, n) {
         const item = this.state[items][n];
 
-        // TODO(sam): Somehow add nice transition on delete last carousel item.
-
         let newItems = [ ...this.state[items] ];
         newItems.splice(n, 1);
 

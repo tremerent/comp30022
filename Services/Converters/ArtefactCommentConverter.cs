@@ -34,6 +34,7 @@ namespace Artefactor.Services.Converters
                 c.Id,
                 c.Body,
                 author = c.Author.UserName,
+                authorImageUrl = c.Author.ImageUrl,
                 artefact = c.ArtefactId,
                 replies = childJson ?? new List<object>(),
                 type = "comment",

@@ -15,8 +15,6 @@ import { ReactComponent as ArtefactIcon } from 'images/amphora.svg';
 
 import './NavMenu.css';
 import ARTEFACTOR_BRAND from '../../images/artefactor-brand.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrophy } from '@fortawesome/free-solid-svg-icons';
 
 class NavMenu extends React.Component {
 
@@ -47,7 +45,7 @@ class NavMenu extends React.Component {
         return (
             <header>
                 <div className='af-navmenu'>
-                    <Navbar light className="navbar-expand-sm ng-white box-shadow">
+                    <Navbar light className="navbar-expand-md ng-white box-shadow">
                         <Container>
                             <NavbarBrand tag={Link} to="/">
                                 <img src={ARTEFACTOR_BRAND} className='af-navmenu-brand' alt='Artefactor logo'/>

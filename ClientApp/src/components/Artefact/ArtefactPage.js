@@ -39,7 +39,7 @@ class ArtefactPage extends React.Component {
         if (this.props.loading)
             return <CentreLoading/>;
         return (
-            <Overview sizeStatic='50%' sizeScroll='46%'>
+            <Overview>
                 <ArtefactPreview artefact={this.props.artefact}/>
                 {
                     (this.props.discussion.loading) ? (

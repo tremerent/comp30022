@@ -1,5 +1,7 @@
 ﻿import React from 'react';
 
+import './SignupForm.css';
+
 class SignupForm extends React.Component {
 
     constructor(props) {
@@ -33,7 +35,7 @@ class SignupForm extends React.Component {
                 : "";
 
         return (
-            <div>
+            <div className='signup-box'>
                 <h5>Signup</h5>
                 <h6> Connect with family and register your artefacts. </h6>
                 <hr />
@@ -78,6 +80,9 @@ class SignupForm extends React.Component {
                         <div className="invalid-feedback">
                             Sorry! Passwords did not match.
                         </div>
+                    </div>
+                    <div className='signup-error'>
+                        {this.props.error && this.props.error.errors[0].description}
                     </div>
                     <button type="submit" className="btn btn-primary">Sign up</button>
                 </form>

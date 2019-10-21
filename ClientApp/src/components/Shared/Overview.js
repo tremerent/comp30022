@@ -15,41 +15,27 @@ export default class Overview extends React.Component {
                 +   `has been given ${this.props.children.length}.`
             );
 
-        const { sizeStatic, sizeScroll } = props;
-
-        if (sizeStatic !== undefined) {
-            this.sizeStatic = sizeStatic;
-            if (sizeScroll === undefined)
-                this.sizeScroll = `calc(100% - ${sizeStatic})`;
-            else
-                this.sizeScroll = sizeScroll;
-        } else if (sizeScroll !== undefined) {
-            this.sizeStatic = `calc(100% - ${sizeScroll})`;
-            this.sizeScroll = sizeScroll;
-        } else {
-            this.sizeStatic = '50%';
-            this.sizeScroll = '50%';
-        }
     }
 
     render() {
 
         return (
-            <>
-            <div className='af-ov-frame'>
-                <div className='container'>
-                    <div className='af-ov-static' style={{ width: this.sizeStatic }}>
-                        <ScrollBox>
-                            <div className='af-ov-navbar-placeholder'/>
-                            {this.props.children[0]}
-                        </ScrollBox>
+            <div className='af-ov'>
+                <div className='af-ov-frame'>
+                    <div className='container'>
+                        <div className='af-ov-static'>
+                            <ScrollBox>
+                                <div className='af-ov-navbar-placeholder'/>
+                                {this.props.children[0]}
+                            </ScrollBox>
+                        </div>
                     </div>
                 </div>
+                <div className='af-ov-static'/>
+                <div className='af-ov-scroll'>
+                    {this.props.children[1]}
+                </div>
             </div>
-            <div className='af-ov-scroll' style={{ left: `calc(100% - ${this.sizeScroll})`, width: this.sizeScroll }}>
-                {this.props.children[1]}
-            </div>
-            </>
         );
     }
 }

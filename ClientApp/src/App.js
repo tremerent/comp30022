@@ -22,7 +22,6 @@ function loginIfUnauthed(Component) {
 export default class App extends Component {
 
     render() {
-        const AuthedUser = loginIfUnauthed(UserView);
         return (
             <Layout>
                 <Switch>
@@ -35,7 +34,9 @@ export default class App extends Component {
                     </Route>
 
                     <Route path='/auth/signup'>
-                        <Signup/>
+                        <Container>
+                            <Signup/>
+                        </Container>
                     </Route>
 
                     <Route path='/browse'>
@@ -47,7 +48,6 @@ export default class App extends Component {
                     <Route path='/user'>
                         <Container>
                             <UserView />
-                            {/* <AuthedUser/> */}
                         </Container>
                     </Route>
 

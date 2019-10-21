@@ -1,4 +1,6 @@
 
+@media (min-width: 576px) {
+
 .scrollbox {
     margin: 0 auto;
     position: relative;
@@ -19,5 +21,8 @@
 .scrollbox-inner {
     width: 50%;
     height: auto;
+}
+
+
 }
 
