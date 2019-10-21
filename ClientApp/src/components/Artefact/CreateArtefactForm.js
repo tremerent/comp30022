@@ -89,15 +89,32 @@ export class CreateArtefactForm extends Component {
 
     renderArtefactCreated = () => {
         return (
-            <div className='af-createart-success'>
-                <FontAwesomeIcon
-                    className='af-createart-success-icon' icon={faCheckCircle}
-                />
-                <h4>Success!</h4>
-                <button className='btn btn-primary' data-dismiss='modal'>Ok</button>
+            <div className="alert alert-success create-art-succ" role="alert">
+                <h4 className="alert-heading">Thanks for registering an artefact!</h4>
+                <hr/>
+                <div className="row justify-content-start">
+                    <Link to={`/artefact/${this.state.createdArtefactId}`}>
+                        <button className="btn btn-secondary mx-2" style={{color: "#fff !important"}}>
+                            See your artefact
+                        </button> 
+                    </Link>
+                    <button className="btn btn-primary" onClick={this.resetArtefactCreation}> Create another artefact</button>
+                </div>
             </div>
         );
     }
+
+    // renderArtefactCreated = () => {
+    //     return (
+    //         <div className='af-createart-success'>
+    //             <FontAwesomeIcon
+    //                 className='af-createart-success-icon' icon={faCheckCircle}
+    //             />
+    //             <h4>Success!</h4>
+    //             <button className='btn btn-primary' data-dismiss='modal'>Ok</button>
+    //         </div>
+    //     );
+    // }
 
     renderArtefactForm = () => {
         return (
@@ -342,7 +359,9 @@ export class CreateArtefactForm extends Component {
             artefactWasCreated: false,
             createdArtefactId: this.getCreatedArtefactId(),
             artefact: { ...this.initialArtefactState },
-        })
+        });
+
+        this.props.createArtReset();
     }
 
     resetFormValidation = () => {

@@ -94,7 +94,7 @@ class FilteredBrowser extends React.Component {
                     {this.props.filterHeader}
                 </div>
                 <Filter
-                    filterTitle={<h3> Refine your <em> Search </em> </h3>}
+                    filterTitle={<h3> Refine <em>your</em> Search  </h3>}
                     submitFilter={this.submitFilter}
                     filterDetails={filterDetails}
                     onFilterChange={this.onFilterChange}
