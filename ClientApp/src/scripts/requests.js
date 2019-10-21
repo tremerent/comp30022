@@ -254,13 +254,23 @@ async function getComment(id) {
 // collection.
 // -- Sam
 function addParentRefsToDiscussionTree(tree) {
-    (function recurse(parent, tree) {
+    (function recurse(parent, tree, question, answerId) {
         for (let child of tree) {
+            let nextQuestion = null;
+            let nextAnswerId = null;
+            if (!question) {
+                if (child.type === 'question' && child.isAnswered) {
+                    nextQuestion = child;
+                    nextAnswerId = child.answerComment;
+                }
+            } else if (child.id === answerId) {
+                child.isAnswer = true;
+            }
             child.parent = parent;
             child.parentId = child.parent && child.parent.id;
-            recurse(child, child.replies);
+            recurse(child, child.replies, nextQuestion, nextAnswerId);
         }
-    })(null, tree);
+    })(null, tree, null, null);
     return tree;
 }
 
@@ -296,6 +306,11 @@ export async function postDiscussion(item) {
         ).data;
     data.parent = item.parent;
     return data;
+}
+
+export async function markAnswer(question, answer) {
+    const resp = await apiFetch(getToken())
+        .patch(`/artefacts/comments/mark-answer`, { QuestionId: question.id, AnswerId: answer.id });
 }
 
 

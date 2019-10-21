@@ -36,7 +36,7 @@ function placeAtNode(node, oldId, child) {
     for (let reply of node.replies) {
         if (reply.id === oldId) {
             // Mumble mumble garbage collection mumble mumble.
-            reply.parent = null;
+            //reply.parent = null;
             child.parent = newNode;
             newNode.replies.push(child);
             replaced = true;
@@ -143,6 +143,65 @@ export function discuss(state = getInitDiscussState(), action) {
                             }
                         ),
             },
+        };
+
+    case discussTypes.REQ_MARK_ANSWER:
+        console.log(`PARENT: ${action.answer.parent}`);
+        console.log(`idh: ${JSON.stringify({ ...action.question, parent: "<parent>", replies: [] })}`);
+        const intermediateTree = placeInTree(
+                                    state[action.question.artefact].tree,
+                                    action.answer.id,
+                                    {
+                                        ...action.answer,
+                                        isAnswer: true,
+                                        loading: true,
+                                    }
+                                );
+        action.question.answer = true;
+        return {
+            ...state,
+            [action.question.artefact]: {
+                tree:   placeInTree(
+                            intermediateTree,
+                            action.question.id,
+                            action.question
+                        ),
+            },
+        };
+
+    case discussTypes.RES_MARK_ANSWER:
+        console.log(`PARENT: ${action.answer.parent}`);
+        console.log(`action.question.answer: ${action.question.answer}`);
+        return {
+            ...state,
+            [action.question.artefact]: {
+                tree:   placeInTree(
+                            state[action.question.artefact].tree,
+                            action.answer.id,
+                            {
+                                ...action.answer,
+                                isAnswer: true,
+                                loading: undefined,
+                            }
+                        ),
+            }
+        };
+
+    case discussTypes.ERR_MARK_ANSWER:
+        return {
+            ...state,
+            [action.question.artefact]: {
+                tree:   placeInTree(
+                            state[action.question.artefact].tree,
+                            action.answer.id,
+                            {
+                                ...action.answer,
+                                isAnswer: false,
+                                loading: undefined,
+                                error: `${action.error}`
+                            },
+                        ),
+            }
         };
 
     default:
