@@ -29,6 +29,7 @@ class Signup extends React.Component {
             <AuthLayout
                 component={SignupForm}
                 componentProps={{
+                    error: this.props.error,
                     duplicateUsername: this.props.error
                         ? this.props.error.code === "DuplicateUserName"
                         : false,
@@ -44,13 +45,14 @@ class Signup extends React.Component {
         );
     }
 
-    signup = (signupData) => {
+    signup = async (signupData) => {
 
+        await this.props.register(signupData)
         this.props.register(signupData)
                   .then(() => {
                       // TODO: handle username already taken
                       if (this.props.error) {
-                          // passed down as prop
+                            console.log(`HERE, this.props.error: ${JSON.stringify(this.props.error)})`);
                       }
                       else {
                           const nextDir = this.props.redir ?

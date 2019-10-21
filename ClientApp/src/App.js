@@ -35,7 +35,9 @@ export default class App extends Component {
                     </Route>
 
                     <Route path='/auth/signup'>
-                        <Signup/>
+                        <Container>
+                            <Signup/>
+                        </Container>
                     </Route>
 
                     <Route path='/browse'>
