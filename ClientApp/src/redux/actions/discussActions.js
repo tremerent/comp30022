@@ -1,4 +1,8 @@
-import { getDiscussion as apiGetDiscussion, postDiscussion as apiPostDiscussion } from '../../scripts/requests.js';
+import {
+    getDiscussion as apiGetDiscussion,
+    postDiscussion as apiPostDiscussion,
+    markAnswer as apiMarkAnswer,
+} from '../../scripts/requests.js';
 import { discussTypes } from './types.js';
 
 
@@ -64,6 +68,46 @@ export function postDiscussion(item) {
             dispatch(resPostDiscussion(item, response));
         } catch (e) {
             dispatch(errPostDiscussion(item, `${e}`));
+        }
+    };
+}
+
+const reqMarkAnswer = (question, answer) => ({
+    type: discussTypes.REQ_MARK_ANSWER,
+    question,
+    answer,
+});
+
+const resMarkAnswer = (question, answer, response) => ({
+    type: discussTypes.RES_MARK_ANSWER,
+    question,
+    answer,
+    response,
+});
+
+const errMarkAnswer = (question, answer, error) => ({
+    type: discussTypes.ERR_MARK_ANSWER,
+    question,
+    answer,
+    error,
+});
+
+export function markAnswer(question, answer) {
+    //const question = { ..._question };
+    //const answer = { ..._answer };
+    return async (dispatch, getState) => {
+        console.log(`1 answer.parent: ${answer.parent}`);
+        dispatch(reqMarkAnswer(question, answer));
+        console.log(`2 answer.parent: ${answer.parent}`);
+
+        try {
+            console.log(`3 answer.parent: ${answer.parent}`);
+            const response = await apiMarkAnswer(question, answer);
+            console.log(`4 answer.parent: ${answer.parent}`);
+            dispatch(resMarkAnswer(question, answer, response));
+            return;
+        } catch (e) {
+            dispatch(errMarkAnswer(question, answer, e));
         }
     };
 }

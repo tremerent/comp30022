@@ -232,6 +232,12 @@ export async function postDiscussion(item) {
     return data;
 }
 
+export async function markAnswer(question, answer) {
+    console.log(`answer.parent: ${answer.parent}`);
+    const resp = await apiFetch(getToken())
+        .patch(`/artefacts/comments/mark-answer`, { QuestionId: question.id, AnswerId: answer.id });
+}
+
 
 export {
     postArtefact,
