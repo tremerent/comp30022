@@ -34,8 +34,7 @@
 
 .af-profile-scroller-title {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
@@ -45,15 +44,46 @@
     text-align: center;
 }
 
-
 .bs-stepper-content {
     padding: 20px;
 }
 
+.btn-circle {
+    width: 45px;
+    height: 45px;
+    line-height: 45px;
+    text-align: center;
+    padding: 0;
+    border-radius: 50%;
+}
+
+.btn-circle-lg {
+    width: 55px;
+    height: 55px;
+    line-height: 55px;
+    font-size: 1.1rem;
+}
+
+.btn-circle {
+    width: 45px;
+    height: 45px;
+    line-height: 45px;
+    text-align: center;
+    padding: 0;
+    border-radius: 50%;
+}
+
 .af-profile-addbutton {
-    font-size: 0.8em;
-    margin: 0 4em;
-    flex-grow: 1;
-    max-width: 40%;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+
+    /* margin-top: 0.5em;
+    
+    padding: 20px;
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%; */
 }
 

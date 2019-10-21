@@ -9,6 +9,8 @@ import ProfilePicture from './ProfilePicture';
 
 import './UserProfile.css';
 import './UserProfileEditing.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 class UserInfo extends React.Component {
 
@@ -80,19 +82,56 @@ class UserInfo extends React.Component {
 
 class UserScroller extends React.Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            showCreateArtHeader: true,
+        };
+    }
+
     render() {
+        const scrollerTitle = 
+            this.props.isCurUser
+            ? `Your Artefacts`
+            : `${this.props.user.username}'s Artefacts`;
+
+        const addArtButton = 
+            this.props.isCurUser
+            ? <button className='btn btn-primary btn-circle btn-circle-lg' data-target='#addart' data-toggle='modal'>
+                 <FontAwesomeIcon icon={faPlus}/>
+              </button>
+            : null
+            // Add
         return (
             <>
-            <FloatingWindow id="addart" className='af-register-modal' title='Register An Artefact'>
-                <CreateArtefacts/>
+            <FloatingWindow 
+                id="addart" 
+                className='af-register-modal' 
+                title='Register An Artefact'
+                showHeader={this.state.showCreateArtHeader}
+            >
+                <CreateArtefacts 
+                    artCreated={() => 
+                        this.setState({
+                            ...this.state,
+                            showCreateArtHeader: false,
+                        })}
+                    createArtReset={() =>
+                        this.setState({
+                            ...this.state,
+                            showCreateArtHeader: true,
+                        })
+                    }
+                />
             </FloatingWindow>
             <div className='af-profile-scroller'>
                 <hr/>
                 <div className='af-profile-scroller-title'>
-                    <h3 style={{ display: 'inline' }}>{this.props.user.username + "'s Artefacts"}</h3>
-                    <button className='btn btn-primary af-profile-addbutton' data-target='#addart' data-toggle='modal'>
-                        Add
-                    </button>
+                    <h3>
+                        {scrollerTitle}
+                    </h3>
+                    {addArtButton}
                 </div>
                 <hr/>
                 <ArtefactScroller
