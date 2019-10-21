@@ -1,24 +1,42 @@
 
 .af-discuss-section {
-    padding-left: 1.5rem;
-    margin-bottom: 1.5rem;
+    min-width: 320px;
 }
 
 .af-dh-outer {
     position: sticky;
-    top: 3.5rem;
+    top: 3.45rem;
     width: 100%;
 }
 
+.af-dh-blocker {
+    height: 1.05rem;
+    position: relative;
+    background-color: white;
+}
+
 .af-dh-inner {
+    z-index: 10;
     padding: 0.2em 1em;
     padding-top: .9em;
-    width: 120%;
     height: 100%;
     box-shadow: 0 .15rem .35rem rgba(0, 0, 0, .25);
     background-color: white;
     position: relative;
-    left: -7%;
+}
+
+.af-discuss-scroller {
+    margin: 0 6% ;
+}
+
+
+@media (max-width: 576px) {
+    .af-dh-blocker, .af-dh-inner {
+        margin: 0 0;
+    }
+    .af-discuss-scroller {
+        margin: 0 5% ;
+    }
 }
 
 .af-dh-title {

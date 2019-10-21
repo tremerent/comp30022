@@ -16,14 +16,20 @@ export default class CommentBox extends React.Component {
         this.setState({ ...this.state, body: event.target.value });
     }
 
-    onCancel = () => {
+    clearInput() {
         this.setState({ ...this.state, body: '' });
+    }
+
+    onCancel = e => {
+        e.preventDefault();
+        this.clearInput();
         this.props.onCancel && this.props.onCancel();
     }
 
     onSubmit = e => {
         e.preventDefault();
         this.props.onSubmit(this.state.body);
+        this.clearInput();
     }
 
     render() {

@@ -82,23 +82,17 @@ function register(registerData) {
     return async function (dispatch) {
         dispatch(reqRegister());
 
-        const responseData = await postRegister(registerData);
-
-        if (responseData.isOk) {
+        try {
+            const responseData = await postRegister(registerData);
             await dispatch(login(registerData));
-
             return responseData;
+        } catch (e) {
+            if (e.response)
+                dispatch(errRegister(e.response.data.value));
+            else
+                dispatch(errRegister({ errors: [ 'Unspecified Error' ] }));
+            return null;
         }
-        else {
-            if (responseData.errorCode) {
-                dispatch(errRegister(responseData.errorCode));
-            }
-            else {
-                dispatch(errRegister("NO ERROR CODE"));
-            }
-        }
-
-
     }
 }
 

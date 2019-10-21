@@ -18,7 +18,7 @@ namespace Artefactor.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public AuthController(SignInManager<ApplicationUser> signInManager, 
+        public AuthController(SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager)
         {
             _signInManager = signInManager;
@@ -102,10 +102,10 @@ namespace Artefactor.Controllers
             }
         }
 
-        
+
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register(RegisterRequest registerReq, 
+        public async Task<IActionResult> Register(RegisterRequest registerReq,
             string returnUrl = null)
         {
             if (true)  // validate
@@ -134,31 +134,13 @@ namespace Artefactor.Controllers
                 {
                     JsonResult resp;
 
-                    // cherry pick error codes handled by client
+                    resp = new JsonResult(new {
+                        IsOk = false,
+                        errorCode = "error",
+                        errors = result.Errors.ToList(),
+                    });
 
-                    var dupUsernameError = result
-                        .Errors
-                        .SingleOrDefault(e => e.Code == "DuplicateUserName");
-
-                    if (dupUsernameError != null)
-                    {
-                        resp = new JsonResult(new
-                        {
-                            IsOk = false,
-                            errorCode = dupUsernameError.Code,
-                        });
-                    }
-                    else
-                    {
-                        // TODO
-                        resp = new JsonResult(new
-                        {
-                            IsOk = false,
-                            errorCode = "Other",
-                        });
-                    }
-
-                    return resp;
+                    return StatusCode(400, resp);
                 }
             }
             else
@@ -186,7 +168,7 @@ namespace Artefactor.Controllers
         //       is broken for now - the JsonResult casts (or something)
         //       to an IActionResult, and the response is formatted as:
         //       { statusCode, ..., value: jsonObj }
-        private IActionResult JsonRespIfNoRedir(Object jsonObj, 
+        private IActionResult JsonRespIfNoRedir(Object jsonObj,
             string returnUrl = null)
         {
             if (returnUrl != null)

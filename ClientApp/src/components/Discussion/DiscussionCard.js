@@ -1,4 +1,5 @@
 import React from 'react';
+import $ from 'jquery';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -13,9 +14,16 @@ class DiscussionCard extends React.Component {
     constructor(props) {
         super(props);
 
+        this.COMMENTBOX_ID = `af-dh-create-${this.props.item.id}`;
+        this.COMMENTBOX_SELECTOR = `#${this.COMMENTBOX_ID}`;
+
         this.state = {
             replying: false,
         };
+    }
+
+    closeCommentBox = () => {
+        $(this.COMMENTBOX_SELECTOR).collapse('hide');
     }
 
     reply = e => {
@@ -33,9 +41,10 @@ class DiscussionCard extends React.Component {
             body,
         };
 
+        this.closeCommentBox();
+
         this.props.postItem(item);
     }
-
 
     render() {
         const item = this.props.item;
@@ -103,15 +112,19 @@ class DiscussionCard extends React.Component {
                     <a
                         href='#reply'
                         className='af-dcard-action'
-                        data-target={`#reply-${item.id}`}
+                        data-target={this.COMMENTBOX_SELECTOR}
                         data-toggle='collapse'
                     >
                         {/* TODO: style this 'active' when replying */}
                         Reply
                     </a>
                 </div>
-                <div id={`reply-${item.id}`} className='collapse af-dcard-reply'>
-                    <CommentBox type={item.type} onSubmit={body => this.postReply(body)}/>
+                <div id={this.COMMENTBOX_ID} className='collapse af-dcard-reply'>
+                    <CommentBox
+                            type={item.type}
+                            onSubmit={this.postReply}
+                            onCancel={this.closeCommentBox}
+                    />
                 </div>
             </div>
         );

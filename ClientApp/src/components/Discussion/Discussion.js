@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import $ from 'jquery';
 
 import CommentBox from './CommentBox.js';
 import DiscussionNode from './DiscussionNode.js';
@@ -11,8 +12,18 @@ import './Discussion.css';
 
 class DiscussSection extends React.Component {
 
+    constructor(props) {
+        super(props);
 
-    postItem(body, parent) {
+        this.COMMENTBOX_ID = `af-dh-create-${this.props.type}`;
+        this.COMMENTBOX_SELECTOR = `#${this.COMMENTBOX_ID}`;
+    }
+
+    closeCommentBox = () => {
+        $(this.COMMENTBOX_SELECTOR).collapse('hide');
+    }
+
+    onSubmitTopLevel = (body) => {
         const item = {
             id: `${Date.now()}`,
             artefact: this.props.artefactId,
@@ -21,8 +32,16 @@ class DiscussSection extends React.Component {
             body,
         };
 
+        this.closeCommentBox();
+
         this.props.postItem(item);
     }
+
+    onCancelTopLevel = () => {
+        this.closeCommentBox();
+    }
+
+
 
     render() {
         const items = this.props.items.filter(x => { console.assert(x.type); return x.type === this.props.type; });
@@ -30,33 +49,46 @@ class DiscussSection extends React.Component {
         return (
             <div className='af-discuss-section'>
                 <div className='af-dh-outer'>
+                    <div className='af-dh-blocker'/>
                     <div className='af-dh-inner'>
                         <div className='af-dh-title'>
                             <h4 className='af-dh-heading'>
                                 {this.props.title || this.props.type}
                             </h4>
-                            <button
-                                    className='btn btn-secondary'
-                                    data-target={`#af-dh-create-${this.props.type}`}
-                                    data-toggle='collapse'
-                            >
-                                +
-                            </button>
+                            {
+                                this.props.editable &&
+                                <button
+                                        className='btn btn-secondary'
+                                        data-target={this.COMMENTBOX_SELECTOR}
+                                        data-toggle='collapse'
+                                >
+                                    +
+                                </button>
+                            }
                         </div>
-                        <div className='collapse' id={`af-dh-create-${this.props.type}`}>
-                            <CommentBox type={this.props.type} onSubmit={body => this.postItem(body, null)}/>
-                        </div>
+                        {
+                            this.props.editable &&
+                            <div className='collapse' id={this.COMMENTBOX_ID}>
+                                <CommentBox
+                                        type={this.props.type}
+                                        onSubmit={this.onSubmitTopLevel}
+                                        onCancel={this.onCancelTopLevel}
+                                />
+                            </div>
+                        }
                     </div>
                 </div>
+                <div className='af-discuss-scroller'>
                 {
                     items.length ? (
                         items.map(
-                                item => <DiscussionNode key={item.id} item={item}/>
+                                item => <DiscussionNode key={item.id} item={item} auth={this.props.auth}/>
                             )
                     ) : (
                         <span className='text-muted'>Nope sorry nothing here.</span>
                     )
                 }
+                </div>
             </div>
         );
     }
@@ -81,20 +113,41 @@ function Discussion(props) {
                 type='comment'
                 title="Comments"
                 {...props}
+                editable={props.auth.loggedIn}
             />
             <DiscussSection
                 type='question'
                 title="Questions"
                 {...props}
+                editable={props.auth.isOwner}
             />
         </div>
     );
 }
 
-function mapStateToProps(state) {
-    return {
-        username: state.auth.user.username,
+function mapStateToProps(state, ownProps) {
+    const artefact = state.art.artIdCache[ownProps.artefactId];
+
+    let props = {
+        auth: {
+            loggedIn: state.auth.isLoggedIn,
+            isOwner: false,
+        },
     };
+
+    if (props.auth.loggedIn) {
+        props.username = state.auth.user.username;
+        if (artefact)
+            props.auth.isOwner = props.username === artefact.owner.username;
+        else
+            console.warn(`Failed to get artefact with id ${ownProps.artefactId}`);
+
+        if (!props.auth.isOwner) {
+            console.log(`You are not the owner, because ${props.username} !== ${artefact.owner.username}`);
+        }
+    }
+
+    return props;
 }
 
 function mapDispatchToProps(dispatch) {
