@@ -592,8 +592,15 @@ function toggleBrowserTuteApplyAnswerQ() {
     return function (dispatch, getState) {
         const browserTute = () => getState().tute.browserTute;
 
-        const findInterLessonActive = browserTute().findInter.lessonActive;
+        // if user just completed the lesson's action, just run the tute
+        // and return early
+        const answerQTtOpen = browserTute().answerQuestion.toolTipOpen;
+        if (answerQTtOpen) {
+            dispatch(browserTuteRunState());
+            return;
+        }
 
+        const findInterLessonActive = browserTute().findInter.lessonActive;
         // toggle other lesson type off 
         if (findInterLessonActive) {
             dispatch({ type: tuteTypes.TOGGLE_FIND_INTER_LESSON_ACTIVE});
@@ -610,12 +617,21 @@ function toggleBrowserTuteApplyAnswerQ() {
 function toggleBrowserTuteApplyFindInter() {
     return function (dispatch, getState) {
         const browserTute = () => getState().tute.browserTute;
-        const answerQLessonActive = browserTute().answerQuestion.lessonActive;
+        
+        // if user just completed the lesson's action, just run the tute
+        // and return early
+        const findInterTtOpen = browserTute().findInter.toolTipOpen;
+        if (findInterTtOpen) {
+            dispatch(browserTuteRunState());
+            return;
+        }
 
+        const answerQLessonActive = browserTute().answerQuestion.lessonActive;
         // toggle other lesson type off 
         if (answerQLessonActive) {
             dispatch({ type: tuteTypes.TOGGLE_ANSWER_Q_LESSON_ACTIVE});
         }
+
 
         // toggle this lesson type on and apply effects
         dispatch({ type: tuteTypes.TOGGLE_FIND_INTER_LESSON_ACTIVE});

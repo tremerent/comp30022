@@ -1,12 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes, } from '@fortawesome/free-solid-svg-icons';
 
 import { tute as tuteActions } from 'redux/actions';
+import TuteTooltip from 'components/Shared/TuteTooltip';
 
 import 'components/Shared/Filter.css';
 
-import { Tooltip, Button } from 'reactstrap';
+import { Button } from 'reactstrap';
 
 
 // Tutorial for component 'ArtefactBrowser'
@@ -41,16 +44,13 @@ class ArtefactBrowserTute extends React.Component {
                                 >
                                     Help others
                                 </Button>
-                                <Tooltip         
+                                <TuteTooltip         
                                     placement="left"
                                     isOpen={this.props.answerQLesson.toolTipOpen}
                                     target={this.props.answerQLesson.id}
-                                    autohide={false}
-                                    className="af-tooltip"
-                                    toggle={this.props.browserTuteRunState}
-                                >
-                                    Click on an artefact <br /> to <em>answer</em> a question
-                                </Tooltip>
+                                    onClick={this.props.browserTuteRunState}
+                                    content={<>Click on an artefact &nbsp;&nbsp;<FontAwesomeIcon icon={faTimes} size="xs"/> <br /> to <em>answer</em> a question</>}
+                                />
                             </span>
                         </div>
                         <div className='af-filtered-browser-action'>
@@ -68,16 +68,13 @@ class ArtefactBrowserTute extends React.Component {
                                 >
                                     Discover incredible artefacts
                                 </Button>
-                                <Tooltip         
+                                <TuteTooltip         
                                     placement="bottom"
                                     isOpen={this.props.findInterLesson.toolTipOpen}
                                     target={this.props.findInterLesson.id}
-                                    autohide={false}
-                                    className="af-tooltip"
-                                    toggle={this.props.browserTuteRunState}
-                                >
-                                    Looking for more?
-                                </Tooltip>
+                                    onClick={this.props.browserTuteRunState}
+                                    content={<>Looking for more?&nbsp;<FontAwesomeIcon icon={faTimes} size="xs"/></>}
+                                />
                             </span>
                         </div>
                     </div>

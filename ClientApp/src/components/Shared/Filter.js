@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import { tute as tuteActions } from 'redux/actions';
 import CategorySelect from 'components/Category/CategorySelect';
 import { queryTypes, sortOptions, catQueryTypes } from './filterUtils';
+import TuteTooltip from 'components/Shared/TuteTooltip';
 
 // date range
 import { Calendar } from 'react-date-range';
@@ -15,7 +16,7 @@ import 'components/Shared/Filter.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faArrowUp, faSortUp, faSortDown, faTimes, } from '@fortawesome/free-solid-svg-icons';
 import { Collapse, } from 'reactstrap';
-import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Tooltip, } from 'reactstrap';
+import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, } from 'reactstrap';
 import Select from 'react-select';
 
 
@@ -41,7 +42,7 @@ class Filter extends React.Component {
             since: null,
             until: null,
             sortQuery: {
-                ...sortOptions[1],
+                ...sortOptions[3],
                 order: "desc", 
             },
             catQueryType: catQueryTypes[1],
@@ -143,16 +144,14 @@ class Filter extends React.Component {
                                 setCategoryVals={this.handleFilterChange("category")} 
                             />
                         </div>
-                        <Tooltip         
-                                placement="right"
-                                isOpen={this.props.filterCatsTt.toolTipOpen}
-                                target={this.props.filterCatsTt.id}
-                                autohide={false}
-                                className="af-tooltip"
-                                toggle={this.props.browserTuteRunState}
-                            >
-                                What are you interested in?
-                        </Tooltip>
+                        <TuteTooltip         
+                            placement="right"
+                            isOpen={this.props.filterCatsTt.toolTipOpen}
+                            target={this.props.filterCatsTt.id}
+                            onClick={this.props.browserTuteRunState}
+                            content={<>What are your &nbsp;&nbsp;<FontAwesomeIcon icon={faTimes} size="xs"/>
+                                    <br/>interests?</>}
+                        />
                     </div>
 
                     <ButtonDropdown
@@ -268,17 +267,17 @@ class Filter extends React.Component {
 
                                 id={this.props.sortArtsTt.id}
                             />
-
-                            <Tooltip         
+                            <TuteTooltip         
                                 placement="right"
                                 isOpen={this.props.sortArtsTt.toolTipOpen}
                                 target={this.props.sortArtsTt.id}
-                                autohide={false}
-                                className="af-tooltip"
-                                toggle={this.props.browserTuteRunState}
-                            >
-                                You can sort the artefacts that appear here
-                            </Tooltip>
+                                onClick={this.props.browserTuteRunState}
+                                content={<>
+                                    You can sort the &nbsp;&nbsp;<FontAwesomeIcon icon={faTimes} size="xs"/>
+                                    <br/>
+                                    artefacts that appear here
+                                </>}
+                            />
                         </div>
                         <button
                             onClick={this.toggleSortDir}
@@ -303,7 +302,7 @@ class Filter extends React.Component {
                             onClick={this.clearFilter}
                             className="btn btn-outline-secondary af-filter-control"
                         > 
-                            <FontAwesomeIcon icon={faTimes} color="#417dba"/>
+                            <FontAwesomeIcon icon={faTimes} color="#dc3545"/>
                             &nbsp; 
                             Clear
                         </button>
@@ -316,16 +315,13 @@ class Filter extends React.Component {
                             &nbsp; 
                             Search
                         </button>
-                        <Tooltip         
-                                placement="top"
-                                isOpen={this.props.searchTt.toolTipOpen}
-                                target={this.props.searchTt.id}
-                                autohide={false}
-                                className="af-tooltip"
-                                toggle={this.props.browserTuteRunState}
-                        >
-                                Your turn!
-                        </Tooltip>
+                        <TuteTooltip         
+                            placement="top"
+                            isOpen={this.props.searchTt.toolTipOpen}
+                            target={this.props.searchTt.id}
+                            onClick={this.props.browserTuteRunState}
+                            content={<>Your turn! <FontAwesomeIcon icon={faTimes} size="xs"/> </>}
+                        />
                     </div>
                 </div>
             </div>

@@ -104,22 +104,26 @@ code {
 
 /* tool tips */
 .af-tooltip .tooltip-inner {
-    background-color: #fcd308 ;
+    background-color: #F2DCD0 ;
     color: #000000;
 }
   
 .af-tooltip .bs-tooltip-auto[x-placement^="bottom"] .arrow::before, .bs-tooltip-bottom .arrow::before{
-    border-bottom-color: #fcd308;
+    border-bottom-color: #F2DCD0;
 }
 
 .af-tooltip .bs-tooltip-auto[x-placement^="top"] .arrow::before, .bs-tooltip-top .arrow::before{
-    border-top-color:#fcd308 ;
+    border-top-color:#F2DCD0 ;
 }
 
 .af-tooltip .bs-tooltip-auto[x-placement^="left"] .arrow::before, .bs-tooltip-left .arrow::before{
-    border-left-color: #fcd308;
+    border-left-color: #F2DCD0;
 }
 
 .af-tooltip .bs-tooltip-auto[x-placement^="right"] .arrow::before, .bs-tooltip-right .arrow::before{
-    border-right-color: #fcd308;
+    border-right-color: #F2DCD0;
+}
+
+.input-group-text {
+    background-color: #ffffff;
 }
