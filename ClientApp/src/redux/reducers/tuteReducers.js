@@ -3,6 +3,11 @@ import getInitTuteState from './initTuteState'
 
 function tute(state = getInitTuteState(), action) {
     switch (action.type) {
+        case "@@router/LOCATION_CHANGE":
+            // need to reset all tooltips, otherwise popper js will raise 
+            // exception due to lack of target id on dom - see
+            // https://github.com/reactstrap/reactstrap/issues/773
+            return getInitTuteState();
         case tuteTypes.TOGGLE_ANSWER_Q_TT:
             return {
                 ...state,

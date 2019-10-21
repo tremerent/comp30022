@@ -5,6 +5,7 @@
     height: 1em;
     vertical-align: -0.125em;
     width: 1em;
+    fill: inherit;
 }
 
 /* Provide sufficient contrast against white background */

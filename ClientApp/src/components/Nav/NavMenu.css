@@ -17,12 +17,30 @@ html {
     height: 100%;
 }
 
-.af-active-nav-link {
-    color: #F2DCD0 !important;
+/* .af-nav-link {
+    color: #89624B !important;
+    fill: #89624B !important;
+} */
+
+.af-nav-link {
+    color: #89624B;
+    fill: #89624B;
+}
+    
+.af-nav-link:hover {
+    color: #9f9189 !important;
+    fill: #9f9189 !important; 
 }
 
-.af-login-signup-nav-link {
-    color: #89624B !important;
+.af-active-nav-link {
+    color: #F2DCD0 !important;
+    fill: #F2DCD0 !important; 
+}
+
+.af-active-nav-link:hover {
+    /* Pretty arbitrary, I don't know what NavLink uses. */
+    color: #9f9189 !important;
+    fill: #9f9189 !important;
 }
 
 .af-navmenu {
