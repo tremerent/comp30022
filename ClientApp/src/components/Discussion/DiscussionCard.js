@@ -104,20 +104,23 @@ class DiscussionCard extends React.Component {
                 <hr/>
                 <div className='af-dcard-actions'>
                     {
-                        this.props.questionId &&
+                        this.props.questionId && this.props.auth.isOwner &&
                             <a href='#mark-answered' className='af-dcard-action'>
                                 Mark Answered
                             </a>
                     }
-                    <a
-                        href='#reply'
-                        className='af-dcard-action'
-                        data-target={this.COMMENTBOX_SELECTOR}
-                        data-toggle='collapse'
-                    >
-                        {/* TODO: style this 'active' when replying */}
-                        Reply
-                    </a>
+                    {
+                        this.props.auth.loggedIn &&
+                            <a
+                                href='#reply'
+                                className='af-dcard-action'
+                                data-target={this.COMMENTBOX_SELECTOR}
+                                data-toggle='collapse'
+                            >
+                                {/* TODO: style this 'active' when replying */}
+                                Reply
+                            </a>
+                    }
                 </div>
                 <div id={this.COMMENTBOX_ID} className='collapse af-dcard-reply'>
                     <CommentBox

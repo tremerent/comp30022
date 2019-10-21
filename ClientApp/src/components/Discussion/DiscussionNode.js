@@ -17,7 +17,7 @@ export default class DiscussionNode extends React.Component {
 
         return (
             <div key={item.id} className='af-dnode-item'>
-                <DiscussionCard item={item} questionId={rootId}/>
+                <DiscussionCard item={item} questionId={rootId} auth={this.props.auth}/>
                 <div className='af-dnode-children'>
                     <div className='af-dnode-vline'/>
                     <div className='af-dnode-replies'>
