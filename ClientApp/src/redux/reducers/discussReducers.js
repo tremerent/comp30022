@@ -1,53 +1,82 @@
 import { discussTypes } from '../actions/types';
 import getInitDiscussState from './initDiscussState.js';
 
-//// Starting at a (new) leaf item, iterate backwards to construct a new tree
-//// matching the old one, except with the new item added.
-//// This is pretty inefficient, but if we wanted efficiency we wouldn't be using
-//// redux :P
-//// -- Sam
-//function addInTree(tree, item) {
-//    let newTree = item;
-//    // TODO(sam): sort order of replies.
-//    while (newTree.parent)
-//        newTree = {
-//            ...newTree.parent,
-//            replies: [
-//                newTree,
-//                ...newTree.parent.replies
-//            ],
-//        };
-//    return [ ...tree.filter(x => x.id !== newTree.id), newTree ];
-//}
-
-
-function replaceInTree(tree, oldItem, newItem) {
-
-    if (!oldItem.parent) {
-        let newTreeTop = [];
-        for (const item of tree) {
-            if (item.id === oldItem.id) {
-                newTreeTop.push(newItem);
-            } else
-                newTreeTop.push(item);
-        }
-        return newTreeTop;
-    }
-
-    let newTree = { ...newItem };
-
-    while (newTree.parent) {
-        newTree = { ...newTree.parent };
-        let newReplies = [];
-        for (const reply of newTree.replies)
-            newReplies.push(reply.id === oldItem.id ? newItem : reply);
-        newTree.replies = newReplies;
-    }
-
-    return newTree;
+function pnode(node) {
+    return `[${node.objId}].[${node.body}]`;
 }
 
+// Returns a copy of `tree` with any top-level nodes that have id `oldId`
+// replaced by `child`.
+function placeAtTopLevel(tree, oldId, child) {
+    let newTreeTop = [];
+    let replaced = false;
+    for (const item of tree) {
+        if (item.id === oldId) {
+            newTreeTop.push(child);
+            replaced = true;
+        } else {
+            newTreeTop.push(item);
+        }
+    }
 
+    if (!replaced) {
+        newTreeTop.unshift(child);
+    }
+
+    return newTreeTop;
+}
+
+// Returns a copy of `node`, with any child artefacts that have id `oldId`
+// replaced by the new `child`.
+function placeAtNode(node, oldId, child) {
+
+    let newNode = { ...node, replies: [] };
+
+    let replaced = false;
+    for (let reply of node.replies) {
+        if (reply.id === oldId) {
+            // Mumble mumble garbage collection mumble mumble.
+            reply.parent = null;
+            child.parent = newNode;
+            newNode.replies.push(child);
+            replaced = true;
+        } else {
+            reply.parent = newNode;
+            newNode.replies.push(reply);
+        }
+    }
+
+    if (!replaced)
+        newNode.replies.unshift(child);
+
+    return newNode;
+}
+
+// Takes a `newItem` (which should have newItem.parent set appropriately to
+// define the item's position in the tree), and rebuilds `tree` with `newItem`
+// in the place of any child of `newItem.parent` with id `oldId`.
+function placeInTree(tree, oldId, newItem) {
+    if (!newItem.parent)
+        return placeAtTopLevel(tree, oldId, newItem);
+
+    let newParent = placeAtNode(newItem.parent, oldId, newItem);
+
+    return placeInTree(tree, newParent.id, newParent);
+}
+
+function addInTree(tree, item) {
+    if (item.parent) {
+        const oldParent = item.parent;
+        item.parent = { ...oldParent, replies: [ item, ...oldParent.replies ] };
+        return placeInTree(
+            tree,
+            item.parent.id,
+            item.parent,
+        );
+    }
+    return [ item, ...tree ];
+    return placeInTree(tree, null, item);
+}
 
 export function discuss(state = getInitDiscussState(), action) {
 
@@ -72,27 +101,15 @@ export function discuss(state = getInitDiscussState(), action) {
         };
 
     case discussTypes.REQ_POST_DISCUSSION:
-        // Yes, we are modifying the redux store in-place. I contest that this
-        // is acceptable because the discussion tree is not really something
-        // we'd ever want to do redux's "time travel" thing on, and because
-        // the alternative is extremely inefficient and convoluted (see the
-        // commented code above, which is as far as I got before giving up).
-        let item = action.item;
-        item.loading = true;
-        if (!item.replies)
-            item.replies = [];
-        if (item.parent) {
-            item.parent.replies = [ item, ...item.parent.replies ];
-            return state;
-        }
+        action.item.replies = action.item.replies || [];
+        action.item.loading = true;
         return {
             ...state,
-            [item.artefact]: {
-                ...state[item.artefact],
-                tree: [
-                    item,
-                    ...state[item.artefact].tree
-                ],
+            [action.item.artefact]: {
+                tree:   addInTree(
+                            state[action.item.artefact].tree,
+                            action.item,
+                        ),
             },
         };
 
@@ -104,9 +121,9 @@ export function discuss(state = getInitDiscussState(), action) {
         return {
             ...state,
             [action.item.artefact]: {
-                tree:   replaceInTree(
+                tree:   placeInTree(
                             state[action.item.artefact].tree,
-                            action.item,
+                            action.item.id,
                             newItem
                         ),
             },
@@ -116,9 +133,9 @@ export function discuss(state = getInitDiscussState(), action) {
         return {
             ...state,
             [action.item.artefact]: {
-                tree:   replaceInTree(
+                tree:   placeInTree(
                             state[action.item.artefact].tree,
-                            action.item,
+                            action.item.id,
                             {
                                 ...action.item,
                                 loading: undefined,
