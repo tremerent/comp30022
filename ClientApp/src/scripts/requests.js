@@ -182,23 +182,24 @@ async function getComment(id) {
     return resp.data;
 }
 
-// Is totally not working atm:
-//// Adds a reference to each item in a discussion tree pointing to that item's
-//// parent item (or null at the top level).
-//// Possibly this causes memory leaks; I don't know anything about JS garbage
-//// collection.
-//// -- Sam
-//function addParentRefsToDiscussionTree(tree) {
-//    (function recurse(parent, tree) {
-//        for (let child of tree) {
-//            child.parent = parent;
-//            recurse(child, child.replies);
-//        }
-//    })(null, tree);
-//}
+// Adds a reference to each item in a discussion tree pointing to that item's
+// parent item (or null at the top level).
+// Possibly this causes memory leaks; I don't know anything about JS garbage
+// collection.
+// -- Sam
+function addParentRefsToDiscussionTree(tree) {
+    (function recurse(parent, tree) {
+        for (let child of tree) {
+            child.parent = parent;
+            child.parentId = child.parent && child.parent.id;
+            recurse(child, child.replies);
+        }
+    })(null, tree);
+    return tree;
+}
 
 export async function getDiscussion(artefactId) {
-    return ((
+    return addParentRefsToDiscussionTree((
             await apiFetch(getToken())
                 .get(`/artefacts/comments?artefactId=${artefactId}`)
         ).data);
@@ -223,10 +224,12 @@ export async function postDiscussion(item) {
         ];
     }
 
-    return (
+    let data = (
             await apiFetch(getToken())
                 .post(...args)
         ).data;
+    data.parent = item.parent;
+    return data;
 }
 
 

@@ -1,8 +1,14 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import CommentBox from './CommentBox.js';
 
 import './DiscussionCard.css';
 
-export default class DiscussionCard extends React.Component {
+import { discuss } from '../../redux/actions/index.js';
+
+class DiscussionCard extends React.Component {
 
     constructor(props) {
         super(props);
@@ -17,6 +23,20 @@ export default class DiscussionCard extends React.Component {
         this.setState({ replying: true });
     }
 
+    postReply = (body) => {
+        const item = {
+            id: `${Date.now()}`,
+            artefact: this.props.item.artefact,
+            type: this.props.item.type,
+            author: this.props.username,
+            parent: this.props.item,
+            body,
+        };
+
+        this.props.postItem(item);
+    }
+
+
     render() {
         const item = this.props.item;
 
@@ -29,15 +49,44 @@ export default class DiscussionCard extends React.Component {
         else if (item.isAnswer)
             style.backgroundColor = '#deffe9';
 
-        if (item.error)
+        let postStatus;
+        if (item.loading) {
+            postStatus = (
+                <div className='text-muted af-dcard-status'>
+                    Posting...
+                    <div className="spinner-border text-primary af-dcard-loading" role="status">
+                        <span className="sr-only">Loading...</span>
+                    </div>
+                </div>
+            );
+        } else if (item.error) {
             style.opacity = 0.5;
+            postStatus = (
+                <span
+                    className='error af-dcard-error'
+                    title={
+                        "An error occured posting your "
+                            + `${item.type}. Try reloading `
+                            + "the page and submitting again."
+                    }
+                >
+                    ⚠ Error
+                </span>
+            );
+        } else {
+            postStatus = (
+                <div className='text-muted af-dcard-status'>
+                    {new Date(item.ts).toLocaleString()}
+                </div>
+            );
+        }
 
         return (
             <div className='af-dcard-card' style={style}>
                 <div className='af-dcard-title'>
                     <div className='af-dcard-avatar'/>
                     <div className='af-dcard-author'>{item.author}</div>
-                    <div className='text-muted af-dcard-ts'>{item.ts /* TODO format */}</div>
+                    {postStatus}
                 </div>
                 <hr/>
                 <div className='af-dcard-body'>
@@ -45,27 +94,6 @@ export default class DiscussionCard extends React.Component {
                 </div>
                 <hr/>
                 <div className='af-dcard-actions'>
-                    {
-                        (item.loading) ? (
-                            <div className="spinner-border text-primary af-dcard-loading" role="status">
-                                <span className="sr-only">Loading...</span>
-                            </div>
-                        ) : (item.error) ? (
-                            <span
-                                className='error af-dcard-error'
-                                title={
-                                    "An error occured posting your "
-                                        + `${item.type}. Try reloading `
-                                        + "the page and submitting again."
-                                }
-                            >
-                                ⚠
-                            </span>
-                        ) : (
-                            // Empty div for that sweet flex space-between.
-                            <div></div>
-                        )
-                    }
                     {
                         this.props.questionId &&
                             <a href='#mark-answered' className='af-dcard-action'>
@@ -83,8 +111,7 @@ export default class DiscussionCard extends React.Component {
                     </a>
                 </div>
                 <div id={`reply-${item.id}`} className='collapse af-dcard-reply'>
-                    <textarea className='form-control af-dcard-replybox'/>
-                    <button className='btn btn-primary af-dcard-replybtn'>Reply</button>
+                    <CommentBox type={item.type} onSubmit={body => this.postReply(body)}/>
                 </div>
             </div>
         );
@@ -92,4 +119,18 @@ export default class DiscussionCard extends React.Component {
 
 }
 
+
+function mapStateToProps(state) {
+    return {
+        username: state.auth.user.username,
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+        postItem: discuss.postDiscussion,
+    }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DiscussionCard);
 

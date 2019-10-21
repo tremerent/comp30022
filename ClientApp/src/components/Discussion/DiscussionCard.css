@@ -28,7 +28,7 @@
     flex-grow: 1;
 }
 
-.af-dcard-ts {
+.af-dcard-status {
     font-style: italic;
     font-size: 0.9em;
     text-align: right;
@@ -46,7 +46,7 @@
 .af-dcard-actions {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-end;
     flex-wrap: wrap;
     margin-top: 0.3rem;
     align-items: center;
@@ -78,6 +78,7 @@
     height: 1rem;
     width: 1rem;
     border-width: 1px;
+    margin-left: 1em;
 }
 
 .af-dcard-error {

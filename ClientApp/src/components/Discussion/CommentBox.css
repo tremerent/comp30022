@@ -1,0 +1,14 @@
+
+.af-cbox-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.af-cbox-actions button,
+.af-cbox-actions input {
+    margin-top: 0.5em;
+    font-size: 0.8em;
+    padding: 0.1em 0.5em;
+}
+

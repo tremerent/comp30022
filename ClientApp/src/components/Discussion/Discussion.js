@@ -27,7 +27,6 @@ class DiscussSection extends React.Component {
     render() {
         const items = this.props.items.filter(x => { console.assert(x.type); return x.type === this.props.type; });
 
-
         return (
             <>
             <div className='af-dh'>

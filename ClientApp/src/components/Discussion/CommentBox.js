@@ -1,5 +1,7 @@
 import React from 'react';
 
+import './CommentBox.css';
+
 export default class CommentBox extends React.Component {
 
     constructor(props) {
@@ -27,7 +29,7 @@ export default class CommentBox extends React.Component {
     render() {
         return (
             <form
-                    className='af-dh-create'
+                    className='af-cbox'
                     onSubmit={this.onSubmit}
             >
                 <textarea
@@ -35,7 +37,7 @@ export default class CommentBox extends React.Component {
                         onChange={this.onChange}
                         className="form-control"
                 />
-                <div className='af-dh-create-actions'>
+                <div className='af-cbox-actions'>
                     <button
                             className='btn btn-secondary'
                             onClick={this.onCancel}
