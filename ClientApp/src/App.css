@@ -103,6 +103,14 @@ code {
 
 
 /* tool tips */
+.tooltip.show {
+    opacity: 1;
+}
+
+.tooltip {
+    z-index: 31;  /* below navbar */
+}
+
 .af-tooltip .tooltip-inner {
     background-color: #F2DCD0 ;
     color: #000000;
