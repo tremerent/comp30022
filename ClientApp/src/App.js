@@ -48,7 +48,8 @@ export default class App extends Component {
 
                     <Route path='/user'>
                         <Container>
-                            <AuthedUser/>
+                            <UserView />
+                            {/* <AuthedUser/> */}
                         </Container>
                     </Route>
 

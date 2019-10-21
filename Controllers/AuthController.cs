@@ -112,7 +112,10 @@ namespace Artefactor.Controllers
             {
                 ApplicationUser user;
 
-                user = new ApplicationUser { UserName = registerReq.Username, };
+                user = new ApplicationUser { 
+                    UserName = registerReq.Username, 
+                    NewUser = true,
+                };
 
                 var result = await _userManager.CreateAsync(user, registerReq.Password);
 

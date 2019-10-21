@@ -20,8 +20,17 @@ class UserInfo extends React.Component {
 
     render() {
         const BioText = (props) => {
-            const bioPlaceholderStr =
-                `Oh no! ${this.props.user.username} is yet to provide a bio.`;
+            let bioPlaceholderStr;
+
+            if (this.props.isCurUser) {
+                bioPlaceholderStr = 
+                    `Oh no! Looks like you haven't set a bio yet.`;
+            }
+            else {
+                bioPlaceholderStr = 
+                    `Oh no! ${this.props.user.username} is yet to provide a bio.`;
+            }
+                
             return <div className='text-muted'>
                     {
                         props.value != null && props.value.length

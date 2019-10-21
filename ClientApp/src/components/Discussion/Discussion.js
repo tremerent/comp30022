@@ -85,7 +85,9 @@ class DiscussSection extends React.Component {
                                 item => <DiscussionNode key={item.id} item={item} auth={this.props.auth}/>
                             )
                     ) : (
-                        <span className='text-muted'>Nope sorry nothing here.</span>
+                        <span className='text-muted af-discuss-scroller-empty'>
+                            No items.
+                        </span>
                     )
                 }
                 </div>
@@ -139,12 +141,6 @@ function mapStateToProps(state, ownProps) {
         props.username = state.auth.user.username;
         if (artefact)
             props.auth.isOwner = props.username === artefact.owner.username;
-        else
-            console.warn(`Failed to get artefact with id ${ownProps.artefactId}`);
-
-        if (!props.auth.isOwner) {
-            console.log(`You are not the owner, because ${props.username} !== ${artefact.owner.username}`);
-        }
     }
 
     return props;

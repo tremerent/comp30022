@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, } from '@fortawesome/free-solid-svg-icons';
-
 import { tute as tuteActions } from 'redux/actions';
 import TuteTooltip from 'components/Shared/TuteTooltip';
 
@@ -99,7 +98,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-
+    // console.log(tuteA)
     return bindActionCreators({
         toggleBrowserTuteApplyFindInter: tuteActions.toggleBrowserTuteApplyFindInter,
         toggleBrowserTuteApplyAnswerQ: tuteActions.toggleBrowserTuteApplyAnswerQ,

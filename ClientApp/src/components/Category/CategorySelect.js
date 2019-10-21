@@ -103,6 +103,7 @@ class CategorySelect extends Component {
      * those options with the id returned by api
      */
     handleCreateOption = async (newValues) => {
+        // react-select tags created options with '__isNew__'
         const [createdVals, other] = bifurcateBy(newValues, (val) => val.__isNew__);
 
         const newCategoryPromises = createdVals.map(async (val) => {
@@ -112,16 +113,23 @@ class CategorySelect extends Component {
 
         try {
             const newCategories = await Promise.all(newCategoryPromises);
+
+            // we've just added selected a new category (a created one),
+            // so notify parent
             const newCategoryOpts = newCategories.map(
                 (newCat) => ({ label: newCat.name, value: newCat.id, id: newCat.id })
             );
+            this.props.setCategoryVals([...newCategoryOpts, ...other]);
 
+
+            // update the category list in state and in parent
             this.setState({
                 ...this.state,
-                categoryOpts: [...newCategoryOpts, ...this.state.categoryOpts]
+                categoryCache: [...newCategories, ...this.state.categoryCache]
+            }, () => {
+                this.props.cacheCategories(this.state.categoryCache);
             });
 
-            this.props.setCategoryVals([...newCategoryOpts, ...other]);
         }
         catch (e) {
         }
