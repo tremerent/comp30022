@@ -5,6 +5,9 @@
             "family",
             "public"
         ],
+        cache: {
+            categories: [],
+        },
         myArts: {
             myArtefacts: [],
             loading: true,

@@ -1,7 +1,7 @@
-﻿import { authTypes, artefactTypes, usersTypes, tuteTypes, } from './types';
-import { setUser, logoutUser, } from '../../scripts/auth';
-import { push } from 'connected-react-router';
+﻿import { push } from 'connected-react-router';
 
+import { authTypes, artefactTypes, usersTypes, tuteTypes, } from './types';
+import { setUser, logoutUser, } from '../../scripts/auth';
 import {
     postArtefactAndCategories,
     postRegister,
@@ -12,6 +12,7 @@ import {
     getArtefact,
     addArtefactImage,
 } from '../../scripts/requests';
+import { sortOptions, getQueryDetails, } from 'components/Shared/filterUtils';
 
 function setRedir(to) {
     return {
@@ -396,6 +397,13 @@ const setFilter = (filterDetails) => {
     };
 }
 
+const setCategoriesCache = (categories) => {
+    return {
+        type: artefactTypes.SET_CATEGORIES_CACHE,
+        categories,
+    }
+}
+
 const artefacts = {
     createMyArtefact,
     getMyArtefacts,
@@ -405,6 +413,7 @@ const artefacts = {
     getBrowserArtefacts,
     getUserOrMyArtefacts,
     setFilter,
+    setCategoriesCache,
 };
 
 function reqGetUser(username) {
@@ -513,6 +522,109 @@ const users = {
     updateCurUserProfilePic,
 };
 
+function browserTuteApplyAnswerQEffects() {
+    return function(dispatch, getState) {
+
+        const filterDetails = () => getState().art.browserArts.filterDetails;
+
+        // sort by question count
+        dispatch(setFilter({
+            ...filterDetails(),
+            sortQuery: {
+                ...sortOptions.filter(sortOpt => sortOpt.name == 'questionCount')[0],
+                order: 'desc',
+            },
+        }));
+
+        // submit filter
+        dispatch(getBrowserArtefacts(getQueryDetails(filterDetails())));
+    }
+}
+
+function browserTuteApplyFilterCatEffects() {
+    return function(dispatch, getState) {
+        const filterDetails = () => getState().art.browserArts.filterDetails;
+
+        const state = getState();
+
+        const categories = state.art.cache.categories;
+        const filterCategories = [];
+
+        // check undefined
+        if (categories != null && categories.length) {
+            const numCats = randNumMax(2) + 1;  // shouldn't have 0 categories
+
+            for (let i = 0; i < numCats; i++) {
+                const randCat = categories[randNumMax(categories.length)];
+
+                // skip duplicates - note we don't use 'includes' since this
+                // checks for strict equality (same obj.)
+                if (!filterCategories.find(cat => cat.id === randCat.id)) {
+                    filterCategories.push(randCat);
+                }
+            }
+        }
+
+        // doesn't include 'n'
+        function randNumMax(n) {
+            return Math.floor(Math.random() * Math.floor(n));
+        }
+
+        // sort by comment count
+        dispatch(setFilter({
+            ...filterDetails(),
+            category: filterCategories.map(
+                // filter takes opts with same label/value
+                ({ id, name }) => ({ value: name, label: name })  
+            ),
+            sortQuery: {
+                ...sortOptions.filter(sortOpt => sortOpt.name == 'commentCount')[0],
+                order: 'desc',
+            },
+        }));
+
+        // submit filter
+        dispatch(getBrowserArtefacts(getQueryDetails(filterDetails())));
+    }
+}
+
+function toggleBrowserTuteApplyAnswerQ() {
+    return function (dispatch, getState) {
+        const browserTute = () => getState().tute.browserTute;
+
+        const findInterLessonActive = browserTute().findInter.lessonActive;
+
+        // toggle other lesson type off 
+        if (findInterLessonActive) {
+            dispatch({ type: tuteTypes.TOGGLE_FIND_INTER_LESSON_ACTIVE});
+        }
+
+        // toggle this lesson type on and apply effects
+        dispatch({ type: tuteTypes.TOGGLE_ANSWER_Q_LESSON_ACTIVE});
+        if (browserTute().answerQuestion.lessonActive) {
+            dispatch(browserTuteApplyAnswerQEffects());
+        }
+    }
+}
+
+function toggleBrowserTuteApplyFindInter() {
+    return function (dispatch, getState) {
+        const browserTute = () => getState().tute.browserTute;
+        const answerQLessonActive = browserTute().answerQuestion.lessonActive;
+
+        // toggle other lesson type off 
+        if (answerQLessonActive) {
+            dispatch({ type: tuteTypes.TOGGLE_ANSWER_Q_LESSON_ACTIVE});
+        }
+
+        // toggle this lesson type on and apply effects
+        dispatch({ type: tuteTypes.TOGGLE_FIND_INTER_LESSON_ACTIVE});
+        if (browserTute().findInter.lessonActive) {
+            dispatch(browserTuteApplyFilterCatEffects());
+        }
+    }
+}
+
 function browserTuteRunState() {
     return function(dispatch, getState) {
         const bTuteState = getState().tute.browserTute;
@@ -521,14 +633,19 @@ function browserTuteRunState() {
             !bTuteState.answerQuestion.toolTipOpen &&
             !bTuteState.sortArts.toolTipOpen &&
             !bTuteState.findInter.toolTipOpen &&
-            !bTuteState.filterCats.toolTipOpen;
+            !bTuteState.filterCats.toolTipOpen &&
+            !bTuteState.search.toolTipOpen;
 
         // open current tooltip, close previous
 
         if (tuteAtInitState && !bTuteState.complete) {
             dispatch({ type: tuteTypes.TOGGLE_ANSWER_Q_TT });
+            dispatch({ type: tuteTypes.TOGGLE_ANSWER_Q_LESSON_ACTIVE});
         }
         else if (bTuteState.answerQuestion.toolTipOpen) {
+            dispatch(browserTuteApplyAnswerQEffects());
+
+            // tooltips
             dispatch({ type: tuteTypes.TOGGLE_ANSWER_Q_TT });
             dispatch({ type: tuteTypes.TOGGLE_SORT_ARTS_TT });
         }
@@ -537,11 +654,20 @@ function browserTuteRunState() {
             dispatch({ type: tuteTypes.TOGGLE_FIND_INTER_ARTS_TT });
         }
         else if (bTuteState.findInter.toolTipOpen) {
+
+            dispatch({ type: tuteTypes.TOGGLE_ANSWER_Q_LESSON_ACTIVE});
+            dispatch({ type: tuteTypes.TOGGLE_FIND_INTER_LESSON_ACTIVE});
+            dispatch(browserTuteApplyFilterCatEffects());
+
             dispatch({ type: tuteTypes.TOGGLE_FIND_INTER_ARTS_TT });
             dispatch({ type: tuteTypes.TOGGLE_FILTER_CATS_TT });
         }
         else if (bTuteState.filterCats.toolTipOpen) {
             dispatch({ type: tuteTypes.TOGGLE_FILTER_CATS_TT });
+            dispatch({ type: tuteTypes.TOGGLE_SEARCH_TT });
+        }
+        else if (bTuteState.search.toolTipOpen) {
+            dispatch({ type: tuteTypes.TOGGLE_SEARCH_TT });
             // flag so tuteAtInitState not satisfied
             dispatch({ type: tuteTypes.BROWSER_TUTE_COMPLETE });
         }
@@ -550,6 +676,8 @@ function browserTuteRunState() {
 
 const tute = {
     browserTuteRunState,
+    toggleBrowserTuteApplyAnswerQ,
+    toggleBrowserTuteApplyFindInter,
 };
 
 export {

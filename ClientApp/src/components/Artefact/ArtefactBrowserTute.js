@@ -30,20 +30,21 @@ class ArtefactBrowserTute extends React.Component {
                             <span>
                                 <Button 
                                     color={
-                                        (true
+                                        (this.props.answerQLesson.lessonActive
                                         ?
                                         'outline-danger'
                                         :
                                         'primary')
                                     }
-                                    id={"Tooltip-" + this.props.answerQTt.id}
+                                    id={this.props.answerQLesson.id}
+                                    onClick={this.handleAnswerQButton}
                                 >
                                     Help others
                                 </Button>
                                 <Tooltip         
                                     placement="left"
-                                    isOpen={this.props.answerQTt.toolTipOpen}
-                                    target={"Tooltip-" + this.props.answerQTt.id}
+                                    isOpen={this.props.answerQLesson.toolTipOpen}
+                                    target={this.props.answerQLesson.id}
                                     autohide={false}
                                     className="af-tooltip"
                                     toggle={this.props.browserTuteRunState}
@@ -56,20 +57,21 @@ class ArtefactBrowserTute extends React.Component {
                             <span>
                                 <Button 
                                     color={
-                                        (true
+                                        (this.props.findInterLesson.lessonActive
                                         ?
                                         'outline-danger'
                                         :
                                         'primary')
                                     }
-                                    id={"Tooltip-" + this.props.findInterTt.id}
+                                    id={this.props.findInterLesson.id}
+                                    onClick={this.handleFindInterButton}
                                 >
                                     Discover incredible artefacts
                                 </Button>
                                 <Tooltip         
                                     placement="bottom"
-                                    isOpen={this.props.findInterTt.toolTipOpen}
-                                    target={"Tooltip-" + this.props.findInterTt.id}
+                                    isOpen={this.props.findInterLesson.toolTipOpen}
+                                    target={this.props.findInterLesson.id}
                                     autohide={false}
                                     className="af-tooltip"
                                     toggle={this.props.browserTuteRunState}
@@ -82,21 +84,28 @@ class ArtefactBrowserTute extends React.Component {
                 </div>
         );
     }
+
+    handleFindInterButton = () => {
+        this.props.toggleBrowserTuteApplyFindInter();
+    }
+
+    handleAnswerQButton = () => {
+        this.props.toggleBrowserTuteApplyAnswerQ();
+    }
 }
 
 const mapStateToProps = (state) => {
     return {
-        findInterTt: state.tute.browserTute.findInter,
-        answerQTt: state.tute.browserTute.answerQuestion,
+        findInterLesson: state.tute.browserTute.findInter,
+        answerQLesson: state.tute.browserTute.answerQuestion,
     }
 };
 
 const mapDispatchToProps = (dispatch) => {
+
     return bindActionCreators({
-        // toggleAnswerQTt: () => ({ type: tuteTypes.TOGGLE_ANSWER_Q_TT }),
-        // toggleSortArtsTt: () => ({ type: tuteTypes.TOGGLE_SORT_ARTS_TT }),
-        // toggleFindInterTt: () => ({ type: tuteTypes.TOGGLE_FIND_INTER_ARTS_TT }),
-        // toggleFilterCatsTt: () => ({ type: tuteTypes.TOGGLE_FILTER_CATS_TT }),
+        toggleBrowserTuteApplyFindInter: tuteActions.toggleBrowserTuteApplyFindInter,
+        toggleBrowserTuteApplyAnswerQ: tuteActions.toggleBrowserTuteApplyAnswerQ,
         browserTuteRunState: tuteActions.browserTuteRunState,
     }, dispatch);
 };

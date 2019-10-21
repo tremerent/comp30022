@@ -155,6 +155,14 @@ function art(state = getInitArtState(), action) {
                     filterDetails: action.filterDetails,
                 },
             }
+        case artefactTypes.SET_CATEGORIES_CACHE:
+            return {
+                ...state,
+                cache: {
+                    ...state.cache,
+                    categories: action.categories,
+                },
+            }
         default:
             return state
     }

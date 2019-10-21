@@ -3,14 +3,14 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { tute as tuteActions } from 'redux/actions';
+import CategorySelect from 'components/Category/CategorySelect';
+import { queryTypes, sortOptions, catQueryTypes } from './filterUtils';
 
 // date range
 import { Calendar } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { format } from 'date-fns';
-import CategorySelect from 'components/Category/CategorySelect';
-
 import 'components/Shared/Filter.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faArrowUp, faSortUp, faSortDown, faTimes, } from '@fortawesome/free-solid-svg-icons';
@@ -18,7 +18,6 @@ import { Collapse, } from 'reactstrap';
 import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Tooltip, } from 'reactstrap';
 import Select from 'react-select';
 
-import { queryTypes, sortOptions, catQueryTypes } from './filterUtils';
 
 function formatDateDisplay(date, defaultText) {
     if (!date) return defaultText;
@@ -135,7 +134,7 @@ class Filter extends React.Component {
                 {/* category select */}
                 <div className="af-filter-row">
                     <div className="af-filter-row-item">
-                        <div id={"Tooltip-" + this.props.filterCatsTt.id}>
+                        <div id={this.props.filterCatsTt.id}>
                             <CategorySelect
                                 blurPlaceholder={"Click to choose a category"}
                                 focusPlaceholder={"Categories"}
@@ -147,7 +146,7 @@ class Filter extends React.Component {
                         <Tooltip         
                                 placement="right"
                                 isOpen={this.props.filterCatsTt.toolTipOpen}
-                                target={"Tooltip-" + this.props.filterCatsTt.id}
+                                target={this.props.filterCatsTt.id}
                                 autohide={false}
                                 className="af-tooltip"
                                 toggle={this.props.browserTuteRunState}
@@ -267,19 +266,19 @@ class Filter extends React.Component {
                                 menuPlacement="top"
                                 isClearable={true}
 
-                                id={"Tooltip-" + this.props.sortArtsTt.id}
+                                id={this.props.sortArtsTt.id}
                             />
 
                             <Tooltip         
                                 placement="right"
                                 isOpen={this.props.sortArtsTt.toolTipOpen}
-                                target={"Tooltip-" + this.props.sortArtsTt.id}
+                                target={this.props.sortArtsTt.id}
                                 autohide={false}
                                 className="af-tooltip"
                                 toggle={this.props.browserTuteRunState}
                             >
                                 You can sort the artefacts that appear here
-                        </Tooltip>
+                            </Tooltip>
                         </div>
                         <button
                             onClick={this.toggleSortDir}
@@ -310,12 +309,23 @@ class Filter extends React.Component {
                         </button>
                         <button 
                             onClick={this.handleSubmit}
-                            className="btn btn-primary "
+                            className="btn btn-primary"
+                            id={this.props.searchTt.id}
                         > 
                             <FontAwesomeIcon icon={faSearch} />
                             &nbsp; 
                             Search
                         </button>
+                        <Tooltip         
+                                placement="top"
+                                isOpen={this.props.searchTt.toolTipOpen}
+                                target={this.props.searchTt.id}
+                                autohide={false}
+                                className="af-tooltip"
+                                toggle={this.props.browserTuteRunState}
+                        >
+                                Your turn!
+                        </Tooltip>
                     </div>
                 </div>
             </div>
@@ -448,6 +458,7 @@ const mapStateToProps = (state) => {
         // browser tute
         sortArtsTt: state.tute.browserTute.sortArts,
         filterCatsTt: state.tute.browserTute.filterCats,
+        searchTt: state.tute.browserTute.search,
     }
 }
 

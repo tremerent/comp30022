@@ -51,12 +51,48 @@ function tute(state = getInitTuteState(), action) {
                     },
                 },
             };
+        case tuteTypes.TOGGLE_SEARCH_TT:
+            return {
+                ...state,
+                browserTute: {
+                    ...state.browserTute,
+                    search: {
+                        ...state.browserTute.search,
+                        toolTipOpen: 
+                            !state.browserTute.search.toolTipOpen,
+                    },
+                },
+            };
         case tuteTypes.BROWSER_TUTE_COMPLETE:
             return {
                 ...state,
                 browserTute: {
                     ...state.browserTute,
                     complete: true,
+                }
+            }
+        case tuteTypes.TOGGLE_ANSWER_Q_LESSON_ACTIVE:
+            return {
+                ...state,
+                browserTute: {
+                    ...state.browserTute,
+                    answerQuestion: {
+                        ...state.browserTute.answerQuestion,
+                        lessonActive: 
+                            !state.browserTute.answerQuestion.lessonActive,
+                    },
+                }
+            }
+        case tuteTypes.TOGGLE_FIND_INTER_LESSON_ACTIVE:
+            return {
+                ...state,
+                browserTute: {
+                    ...state.browserTute,
+                    findInter: {
+                        ...state.browserTute.findInter,
+                        lessonActive: 
+                            !state.browserTute.findInter.lessonActive,
+                    },
                 }
             }
         

@@ -1,5 +1,3 @@
-import { tute } from "./tuteReducers";
-
 export default function getInitTuteState() {
 
     // things will break if tooltips not closed at start - see
@@ -14,6 +12,7 @@ export default function getInitTuteState() {
             findInter: {
                 toolTipOpen: false,
                 id: 'findInterTuteTt',
+                lessonActive: false,
             },
             sortArts: {
                 toolTipOpen: false,
@@ -23,6 +22,11 @@ export default function getInitTuteState() {
             answerQuestion: {
                 toolTipOpen: false,
                 id: 'answerQuestionTuteTt',
+                lessonActive: false,
+            },
+            search: {
+                toolTipOpen: false,
+                id: 'searchTuteTt',
             },
         },
     }
