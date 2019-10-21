@@ -15,6 +15,8 @@ import { ReactComponent as ArtefactIcon } from 'images/amphora.svg';
 
 import './NavMenu.css';
 import ARTEFACTOR_BRAND from '../../images/artefactor-brand.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrophy } from '@fortawesome/free-solid-svg-icons';
 
 class NavMenu extends React.Component {
 
