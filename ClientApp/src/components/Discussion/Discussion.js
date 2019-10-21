@@ -30,6 +30,7 @@ class DiscussSection extends React.Component {
         return (
             <div className='af-discuss-section'>
                 <div className='af-dh-outer'>
+                    <div className='af-dh-blocker'></div>
                     <div className='af-dh-inner'>
                         <div className='af-dh-title'>
                             <h4 className='af-dh-heading'>
