@@ -18,6 +18,11 @@ a.navbar-brand {
       color: #F2DCD0 !important;
       fill: #F2DCD0 !important;
   }
+
+  .af-inactive-nav-link {
+    color: rgba(0, 0, 0, 0.5);
+    fill: rgba(0, 0, 0, 0.5);
+  }   
   
   .af-login-signup-nav-link {
       color: #89624B !important;
