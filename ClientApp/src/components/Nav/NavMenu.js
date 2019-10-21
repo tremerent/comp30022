@@ -14,7 +14,6 @@ import UserNavMenu from './UserNavMenu.js';
 import { ReactComponent as ArtefactIcon } from 'images/amphora.svg';
 
 import './NavMenu.css';
-import ARTEFACTOR_BRAND from '../../images/artefactor-brand.png';
 
 class NavMenu extends React.Component {
 
@@ -34,8 +33,8 @@ class NavMenu extends React.Component {
     }
 
     render() {
-        const artefactIcon = 
-            <ArtefactIcon 
+        const artefactIcon =
+            <ArtefactIcon
                 fill={
                     this.state.browseNavItemColor
                 }
@@ -48,7 +47,8 @@ class NavMenu extends React.Component {
                     <Navbar light className="navbar-expand-md ng-white box-shadow">
                         <Container>
                             <NavbarBrand tag={Link} to="/">
-                                <img src={ARTEFACTOR_BRAND} className='af-navmenu-brand' alt='Artefactor logo'/>
+                                <ArtefactIcon className='af-navmenu-brand'/>
+                                Artefactor
                             </NavbarBrand>
                             <NavbarToggler onClick={this.toggleNav}/>
                             <Collapse
