@@ -1,3 +1,12 @@
+/* inspected font awesome icons to get styles */
+/* this should be applied to a div, and the inner svg */
+/* should have width/height:100%; */
+.af-icon {
+    height: 1em;
+    vertical-align: -0.125em;
+    width: 1em;
+    fill: inherit;
+}
 
 /* Provide sufficient contrast against white background */
 a {
@@ -19,8 +28,9 @@ code {
 
 .btn-primary {
   color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+  /* background-color: #1b6ec2; */
+  background-color: #417dba;
+  border-color: #417dba;
 }
 
 .error {
@@ -88,4 +98,32 @@ code {
 
 .container {
     height: 100%;
+}
+
+
+
+/* tool tips */
+.af-tooltip .tooltip-inner {
+    background-color: #F2DCD0 ;
+    color: #000000;
+}
+  
+.af-tooltip .bs-tooltip-auto[x-placement^="bottom"] .arrow::before, .bs-tooltip-bottom .arrow::before{
+    border-bottom-color: #F2DCD0;
+}
+
+.af-tooltip .bs-tooltip-auto[x-placement^="top"] .arrow::before, .bs-tooltip-top .arrow::before{
+    border-top-color:#F2DCD0 ;
+}
+
+.af-tooltip .bs-tooltip-auto[x-placement^="left"] .arrow::before, .bs-tooltip-left .arrow::before{
+    border-left-color: #F2DCD0;
+}
+
+.af-tooltip .bs-tooltip-auto[x-placement^="right"] .arrow::before, .bs-tooltip-right .arrow::before{
+    border-right-color: #F2DCD0;
+}
+
+.input-group-text {
+    background-color: #ffffff;
 }

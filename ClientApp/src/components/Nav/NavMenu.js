@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
     Collapse,
@@ -12,6 +11,7 @@ import { connect } from 'react-redux';
 
 import StyledNavLink from './StyledNavLink.js';
 import UserNavMenu from './UserNavMenu.js';
+import { ReactComponent as ArtefactIcon } from 'images/amphora.svg';
 
 import './NavMenu.css';
 import ARTEFACTOR_BRAND from '../../images/artefactor-brand.png';
@@ -36,6 +36,14 @@ class NavMenu extends React.Component {
     }
 
     render() {
+        const artefactIcon = 
+            <ArtefactIcon 
+                fill={
+                    this.state.browseNavItemColor
+                }
+                className="af-icon"
+            />
+
         return (
             <header>
                 <div className='af-navmenu'>
@@ -55,7 +63,7 @@ class NavMenu extends React.Component {
                                         label={
                                             <>
                                                 <span> Browse </span>&nbsp;
-                                                <FontAwesomeIcon icon={faTrophy}/> 
+                                                {artefactIcon}
                                             </>
                                         }
                                         curPath={this.props.curPath}
@@ -94,4 +102,3 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(NavMenu);
-

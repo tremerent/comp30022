@@ -1,177 +1,76 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import { tute as tuteActions } from 'redux/actions';
+import CategorySelect from 'components/Category/CategorySelect';
+import { queryTypes, sortOptions, catQueryTypes } from './filterUtils';
+import TuteTooltip from 'components/Shared/TuteTooltip';
+
 // date range
 import { Calendar } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { format } from 'date-fns';
-import CategorySelect from 'components/Category/CategorySelect';
-
-
 import 'components/Shared/Filter.css';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faArrowUp, faSortUp, faSortDown, faTimes, } from '@fortawesome/free-solid-svg-icons';
 import { Collapse, } from 'reactstrap';
-import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, } from 'reactstrap';
 import Select from 'react-select';
 
-const queryTypes = [
-    {
-        name: "title",
-        label: "Title",
-    },
-    {
-        name: "description",
-        label: "Description",
-    },
-    {
-        name: "both",
-        label: "Title + Description",
-    }
-];
-
-const sortOptions = [
-    {
-        name: "title",
-        label: "Title",
-    },
-    {
-        name: "createdAt",
-        label: "Upload date",
-    },
-    {
-        name: "imageCount",
-        label: "Images"
-    }
-];
-
-const catQueryTypes = [
-    {
-        name: "matchAll",
-        label: "All",
-    },
-    {
-        name: "matchAny",
-        label: "Any",
-    },
-];
 
 function formatDateDisplay(date, defaultText) {
     if (!date) return defaultText;
     return format(date, 'dd/MM/yyyy');
 }
 
-function apiFormatDate(date, defaultText) {
-    if (!date) return defaultText;
-    return format(date, 'MM.dd.yyyy');
-}
-
-// Converts 'state.filterDetails' to proper key value query strings
-function getFormattedQuery(filterDetails) {
-    const newFilterQueryParams = {};
-    // nullify 'filterDetails' params. we don't want in q string
-    const removedFilterQueryParams = {};
-
-    // search query - can't search for an empty string
-    if (filterDetails.searchQuery && filterDetails.searchQuery.text != "") {
-
-        newFilterQueryParams.q = [];
-        removedFilterQueryParams.searchQuery = null;
-
-        if (filterDetails.searchQuery.type) {
-            if (filterDetails.searchQuery.type.name == "both") {
-                newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:title`);
-                newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:description`);
-            }
-            else if (filterDetails.searchQuery.type.name == "title") {
-                newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:title`);
-            }
-            else if (filterDetails.searchQuery.type.name == "description") {
-                newFilterQueryParams.q.push(`${filterDetails.ssearchQuery.text}:description`);
-            }
-        }
-        else {
-            // default to just title
-            newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:title`);
-        }
-    }
-
-    // date queries
-    if (filterDetails.since) {
-        newFilterQueryParams.since = apiFormatDate(filterDetails.since)
-    }
-    if (filterDetails.until) {
-        newFilterQueryParams.until = apiFormatDate(filterDetails.until)
-    }
-
-    // sort query
-    if (filterDetails.sortQuery != null) {
-        newFilterQueryParams.sort =
-            `${filterDetails.sortQuery.name}:${filterDetails.sortQuery.order}`;
-
-        removedFilterQueryParams.sortQuery = null;
-    }
-
-    // category queries
-    if (filterDetails.catQueryType != null) {
-        if (filterDetails.catQueryType.name == "matchAll") {
-            newFilterQueryParams.matchAll = "true";
-        }
-        else if (filterDetails.catQueryType.name == "matchAny") {
-            newFilterQueryParams.matchAll = "false";
-        }
-    }
-    if (filterDetails.categories && filterDetails.categories.length > 0) {
-        // query string expects only name of category
-        newFilterQueryParams.category =
-            filterDetails.categories
-                         .map(catOption => catOption.label);
-    }
-    removedFilterQueryParams.categories = null;
-
-    const queryDetails = {
-        ...filterDetails,
-        ...newFilterQueryParams,
-        ...removedFilterQueryParams
-    }
-
-    return queryDetails;
-}
-
 /**
- * Parent passes 'props.submitFilter'.
+ * Browser filter presentation component.
  */
-export default class Filter extends React.Component {
+class Filter extends React.Component {
 
     constructor(props) {
         super(props);
 
-
+        this.initStateFilterDetails = {
+            searchQuery: {
+                text: "",
+                type: queryTypes[0],
+            },
+            category: [],
+            since: null,
+            until: null,
+            sortQuery: {
+                ...sortOptions[3],
+                order: "desc", 
+            },
+            catQueryType: catQueryTypes[1],
+        }
+        
         this.state = {
+            // prop filter details overrides default
             filterDetails: {
-                searchQuery: {
-                    text: "",
-                    type: queryTypes[0],
-                },
-                categories: [],
-                since: null,
-                until: null,
-                sortQuery: {
-                    ...sortOptions[1],
-                    order: "desc",
-                },
-                catQueryType: catQueryTypes[1],
+                ...this.initStateFilterDetails,
+                ...this.props.filterDetails,
             },
             showUntilCalendar: false,
             showSinceCalendar: false,
             showQuerySearchDrop: false,
-            // maintain two for the collapse
+            // maintain two for the collapse - 'showFilter' toggled during 
+            // transition, 'filterShown' toggled when complete
             showFilter: true,
             filterShown: true,
         };
     }
 
+
     render() {
+        const filterDetails = {
+            ...this.state.filterDetails,
+            ...this.props.filterDetails,
+        }
+
         const filterInputs = (
             <div>
                 <div class="af-filter-row">
@@ -186,13 +85,13 @@ export default class Filter extends React.Component {
                             <input
                                 onChange={(e) =>
                                     this.handleFilterChange("searchQuery")({
-                                        ...this.state.filterDetails.searchQuery,
+                                        ...filterDetails.searchQuery,
                                         text: e.target.value
                                     })
                                 }
-                                value={this.state.filterDetails.searchQuery.text}
+                                value={filterDetails.searchQuery.text}
                                 className={`form-control`}
-                                placeholder={this.state.filterDetails.searchQuery.type.label}
+                                placeholder={filterDetails.searchQuery.type.label}
                             />
                         </div>
                     </div>
@@ -201,7 +100,7 @@ export default class Filter extends React.Component {
                         toggle={() => this.toggle("showQuerySearchDrop") }
                     >
                         <DropdownToggle caret>
-                            {this.state.filterDetails.searchQuery.type.label}&nbsp;
+                            {filterDetails.searchQuery.type.label}&nbsp;
                         </DropdownToggle>
                         <DropdownMenu>
                             {
@@ -209,13 +108,13 @@ export default class Filter extends React.Component {
                                     .map((queryType, i) => {
                                         // pass array ele. by index so ref
                                         // not duplicated by lambda
-                                        if (queryType.name != this.state.filterDetails.searchQuery.type.name) {
+                                        if (queryType.name != filterDetails.searchQuery.type.name) {
                                             return (
                                                 <DropdownItem
                                                     onClick={() => {
                                                         this.toggle("showQuerySearchDrop");
                                                         this.handleFilterChange("searchQuery")({
-                                                            ...this.state.filterDetails.searchQuery,
+                                                            ...filterDetails.searchQuery,
                                                             type: queryTypes[i]
                                                         });
                                                     }}
@@ -236,12 +135,22 @@ export default class Filter extends React.Component {
                 {/* category select */}
                 <div className="af-filter-row">
                     <div className="af-filter-row-item">
-                        <CategorySelect
-                            blurPlaceholder={"Click to choose a category"}
-                            focusPlaceholder={"Categories"}
-                            creatable={false}
-                            categoryVals={this.state.filterDetails.categories}
-                            setCategoryVals={this.handleFilterChange("categories")}
+                        <div id={this.props.filterCatsTt.id}>
+                            <CategorySelect
+                                blurPlaceholder={"Click to choose a category"}
+                                focusPlaceholder={"Categories"}
+                                creatable={false} 
+                                categoryVals={filterDetails.category} 
+                                setCategoryVals={this.handleFilterChange("category")} 
+                            />
+                        </div>
+                        <TuteTooltip         
+                            placement="right"
+                            isOpen={this.props.filterCatsTt.toolTipOpen}
+                            target={this.props.filterCatsTt.id}
+                            onClick={this.props.browserTuteRunState}
+                            content={<>What are your &nbsp;&nbsp;<FontAwesomeIcon icon={faTimes} size="xs"/>
+                                    <br/>interests?</>}
                         />
                     </div>
 
@@ -250,7 +159,7 @@ export default class Filter extends React.Component {
                                 toggle={() => this.toggle("showCatQueryTypeDrop") }
                         >
                         <DropdownToggle caret>
-                            {this.state.filterDetails.catQueryType.label}&nbsp;
+                            {filterDetails.catQueryType.label}&nbsp;
                         </DropdownToggle>
                         <DropdownMenu>
                             {
@@ -258,7 +167,7 @@ export default class Filter extends React.Component {
                                     .map((catQueryType, i) => {
                                         // pass array ele. by index so ref
                                         // not duplicated by lambda
-                                        if (catQueryType.name != this.state.filterDetails.catQueryType.name) {
+                                        if (catQueryType.name != filterDetails.catQueryType.name) {
                                             return (
                                                 <DropdownItem
                                                     onClick={() => {
@@ -283,9 +192,9 @@ export default class Filter extends React.Component {
                     <div className="af-filter-row-flex-item">
                         <Select
                             menuIsOpen={false}
-                            value={this.state.filterDetails.since
-                                ? { label: `After ${formatDateDisplay(this.state.filterDetails.since)}`,
-                                    value: this.state.filterDetails.since}
+                            value={filterDetails.since
+                                ? { label: `After ${formatDateDisplay(filterDetails.since)}`,
+                                    value: filterDetails.since}
                                 : null}
                             placeholder="After"
                             onFocus={() => {
@@ -298,9 +207,9 @@ export default class Filter extends React.Component {
                     <div className="af-filter-row-flex-item">
                         <Select
                             menuIsOpen={false}
-                            value={this.state.filterDetails.until
-                                    ? { label: `Before ${formatDateDisplay(this.state.filterDetails.until)}`,
-                                        value: this.state.filterDetails.until}
+                            value={filterDetails.until
+                                    ? { label: `Before ${formatDateDisplay(filterDetails.until)}`,
+                                        value: filterDetails.until}
                                     : null
                                   }
                             placeholder="Before"
@@ -322,7 +231,7 @@ export default class Filter extends React.Component {
                         <div className="af-filter-datepicker-inner">
                             <p className="text-dark text-center"> Show artefacts created after: </p>
                             <Calendar
-                                    date={this.state.filterDetails.since}
+                                    date={filterDetails.since}
                                     onChange={this.handleFilterChange("since")}
                             />
                         </div>
@@ -334,7 +243,7 @@ export default class Filter extends React.Component {
                         <div className="af-filter-datepicker-inner">
                             <p className="text-dark"> Show artefacts created before: </p>
                             <Calendar
-                                    date={this.state.filterDetails.until}
+                                    date={filterDetails.until}
                                     onChange={this.handleFilterChange("until")}
                             />
                         </div>
@@ -347,14 +256,27 @@ export default class Filter extends React.Component {
                             <Select
                                 onChange={(value) =>
                                     this.handleFilterChange("sortQuery")
-                                    ({...this.state.filterDetails.sortQuery,
+                                    ({...filterDetails.sortQuery,
                                         ...value,
                                         order: "desc"})}  // TODO: sort query order
-                                values={this.state.filterDetails.sortQuery}
+                                value={filterDetails.sortQuery}
                                 options={sortOptions}
                                 placeholder="Sort by"
                                 menuPlacement="top"
                                 isClearable={true}
+
+                                id={this.props.sortArtsTt.id}
+                            />
+                            <TuteTooltip         
+                                placement="right"
+                                isOpen={this.props.sortArtsTt.toolTipOpen}
+                                target={this.props.sortArtsTt.id}
+                                onClick={this.props.browserTuteRunState}
+                                content={<>
+                                    You can sort the &nbsp;&nbsp;<FontAwesomeIcon icon={faTimes} size="xs"/>
+                                    <br/>
+                                    artefacts that appear here
+                                </>}
                             />
                         </div>
                         <button
@@ -362,44 +284,81 @@ export default class Filter extends React.Component {
                             className="btn af-filter-sort-order-toggle"
                         >
                             {
-                                this.state.filterDetails.sortQuery.order === "asc"
+                                filterDetails.sortQuery.order === "asc"
                                 ?
                                     <FontAwesomeIcon icon={
-                                        faArrowUp
+                                        faSortUp
                                     } />
                                 :
                                     <FontAwesomeIcon icon={
-                                        faArrowDown
+                                        faSortDown
                                     } />
                             }
 
                         </button>
                     </div>
-                    <button
-                        onClick={this.handleSubmit}
-                        className="btn btn-primary "
-                    >
-                        <FontAwesomeIcon icon={faSearch} />
-                        &nbsp;
-                        Search
-                    </button>
+                    <div className="af-filter-controls">
+                        <button 
+                            onClick={this.clearFilter}
+                            className="btn btn-outline-secondary af-filter-control"
+                        > 
+                            <FontAwesomeIcon icon={faTimes} color="#dc3545"/>
+                            &nbsp; 
+                            Clear
+                        </button>
+                        <button 
+                            onClick={this.handleSubmit}
+                            className="btn btn-primary"
+                            id={this.props.searchTt.id}
+                        > 
+                            <FontAwesomeIcon icon={faSearch} />
+                            &nbsp; 
+                            Search
+                        </button>
+                        <TuteTooltip         
+                            placement="top"
+                            isOpen={this.props.searchTt.toolTipOpen}
+                            target={this.props.searchTt.id}
+                            onClick={this.props.browserTuteRunState}
+                            content={<>Your turn! <FontAwesomeIcon icon={faTimes} size="xs"/> </>}
+                        />
+                    </div>
                 </div>
             </div>
         );
 
         return (
             <>
-                <div className="af-filter-header">
+                <div className={ "af-filter-header " +
+                    (this.state.showFilter
+                    ? "af-flex-between"
+                    : "af-flex-end")
+                }>
+                    {   
+                        this.state.showFilter
+                        ?
+                        this.props.filterTitle
+                        :
+                        null
+                    }
                     <button
                         onClick={() => this.toggle("showFilter")}
-                        className="btn btn-outline"
+                        className="btn btn-outline-dark"
                     >
                         {
                             this.state.filterShown
                             ?
-                                <FontAwesomeIcon icon={faArrowUp} />
+                                <>
+                                    <FontAwesomeIcon icon={faArrowUp} />
+                                    &nbsp;
+                                    Hide
+                                </>
                             :
-                                <FontAwesomeIcon icon={faSearch} />
+                                <>
+                                    <FontAwesomeIcon icon={faSearch} />
+                                    &nbsp;
+                                    Wanting to get specific?
+                                </>
                         }
                     </button>
                 </div>
@@ -416,8 +375,18 @@ export default class Filter extends React.Component {
         );
     }
 
-    handleSubmit = () => {
-        this.props.submitFilter(getFormattedQuery(this.state.filterDetails));
+    handleSubmit = (filterDetails) => { 
+        this.props.submitFilter(filterDetails);
+    }
+
+    clearFilter = () => {
+        this.setState({
+            ...this.state,
+            filterDetails: this.initStateFilterDetails,
+        }, () => {
+            this.props.onFilterChange(this.state.filterDetails);
+            this.handleSubmit();
+        });
     }
 
     toggleSortDir = () => {
@@ -474,6 +443,25 @@ export default class Filter extends React.Component {
                 ...this.state.filterDetails,
                 [key]: value,
             },
+        }, () => {
+            this.props.onFilterChange(this.state.filterDetails);
         });
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        // browser tute
+        sortArtsTt: state.tute.browserTute.sortArts,
+        filterCatsTt: state.tute.browserTute.filterCats,
+        searchTt: state.tute.browserTute.search,
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators({
+        browserTuteRunState: tuteActions.browserTuteRunState,
+    }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps) (Filter);

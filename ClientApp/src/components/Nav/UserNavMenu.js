@@ -31,18 +31,31 @@ class UserNavMenu extends React.Component {
                     to={`/user/${this.props.user.username}`}
                     label={
                         <>
-                            <span> Home </span>&nbsp;
+                            <span> My Collection </span>&nbsp;
                             <FontAwesomeIcon icon={faHome}/> 
                         </>
                     }
                     curPath={this.props.curPath}
+                    className="af-nav-link-inherit"
                 />
-                <NavItem>
+                <StyledNavLink
+                    to={`/`}
+                    label={
+                        <>
+                           <span>Logout </span>&nbsp;
+                            <FontAwesomeIcon icon={faSignOutAlt}/> 
+                        </>
+                    }
+                    curPath={this.props.curPath}
+                    className="af-nav-link-inherit"
+                    onClick={this.props.logout}
+                />
+                {/* <NavItem>
                     <button onClick={(e) => { e.preventDefault(); this.props.logout("/browse"); }} className="text-dark btn nav-link">
                         <span>Logout </span>&nbsp;
                         <FontAwesomeIcon icon={faSignOutAlt}/> 
                     </button>
-                </NavItem>
+                </NavItem> */}
             </>
         );
     }
@@ -59,7 +72,7 @@ class UserNavMenu extends React.Component {
                         </>
                     }
                     curPath={this.props.curPath}
-                    className="af-inactive-nav-link"
+                    className="af-inactive-nav-link af-nav-link-inherit"
                 />
                 <StyledNavLink
                     to={signupPath}
@@ -69,7 +82,7 @@ class UserNavMenu extends React.Component {
                         </>
                     }
                     curPath={this.props.curPath}
-                    className="af-inactive-nav-link"
+                    className="af-inactive-nav-link af-nav-link-inherit"
                 />
             </>
         );
@@ -82,14 +95,14 @@ UserNavMenu.propTypes = {
             username: PropTypes.string,
     }).isRequired,
     logout: PropTypes.func.isRequired,
-}
+};
 
 const mapStateToProps = (state) => {
     return {
         ...state.auth,
         curPath: state.router.location.pathname,
-    }
-}
+    };
+};
 
 const mapDispatchToProps = (dispatch) => {
     //return bindActionCreators({ logout: auth.logout }, dispatch);
@@ -98,7 +111,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(auth.logout(redirTo));
         }
     };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps) (UserNavMenu)
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 
 import ImageCarousel from  '../Shared/ImageCarousel.js';
@@ -45,8 +45,8 @@ export class ArtefactPreview extends Component {
                         <div className="af-artcard-categories">
                             {this.categoryJoinsToCategories(a.categoryJoin).map(c =>
                                 <Link
-                                        to={`/browse?category=${c.id}`}
-                                        key={c.id} className="badge badge-decal-text mx-1"
+                                        to={`/browse?category=${c.name}`}
+                                        key={c.name} className="badge badge-decal-text mx-1"
                                 >
                                     {c.name}
                                 </Link>

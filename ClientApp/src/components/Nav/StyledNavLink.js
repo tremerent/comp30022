@@ -12,7 +12,13 @@ import './NavMenu.css';
  */
 
 function StyledNavLink(props) {
-    const { to, label, curPath, className: navLinkClasses, ...rest } = props;
+    const { 
+        to, 
+        label, 
+        curPath, 
+        className: navLinkClasses, 
+        ...rest 
+    } = props;
 
     return <NavLink
         to={to}

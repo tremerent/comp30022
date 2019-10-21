@@ -82,17 +82,11 @@ class ArtefactImageUploadTest extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
 
-        addArtefactImage(this.props.artefact.id, this.state.selectedFile)
-            .then((respData) => {
-                console.log('profile image set');
-            });
+        addArtefactImage(this.props.artefact.id, this.state.selectedFile);
     }
 
     deleteImg = (imgUrl) => {
-        removeArtefactImage(imgUrl)
-            .then((respData) => {
-                console.log('img deleted')
-            });
+        removeArtefactImage(imgUrl);
     }
 }
 

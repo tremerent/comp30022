@@ -5,6 +5,9 @@
             "family",
             "public"
         ],
+        cache: {
+            categories: [],
+        },
         myArts: {
             myArtefacts: [],
             loading: true,
@@ -25,7 +28,7 @@
             browserArtefacts: [],
             loading: true,
             error: null,
-            query: {},
+            filterDetails: {},
         },
     }
 

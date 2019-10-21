@@ -148,6 +148,22 @@ function artMain(state = getInitArtState(), action) {
                     error: true,
                 },
             }
+        case artefactTypes.SET_FILTER:
+            return {
+                ...state,
+                browserArts: {
+                    ...state.browserArts,
+                    filterDetails: action.filterDetails,
+                },
+            }
+        case artefactTypes.SET_CATEGORIES_CACHE:
+            return {
+                ...state,
+                cache: {
+                    ...state.cache,
+                    categories: action.categories,
+                },
+            }
         default:
             return state
     }
