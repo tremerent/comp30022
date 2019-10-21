@@ -4,6 +4,7 @@
     box-shadow: .15rem .15rem .6rem rgba(0, 0, 0, 0.18);
     padding: 0.5rem 0.8rem;
     width: 100%;
+    overflow: hidden;
 }
 
 .af-dcard-title {
