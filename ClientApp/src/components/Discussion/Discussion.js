@@ -30,7 +30,7 @@ class DiscussSection extends React.Component {
         return (
             <div className='af-discuss-section'>
                 <div className='af-dh-outer'>
-                    <div className='af-dh-blocker'></div>
+                    <div className='af-dh-blocker'/>
                     <div className='af-dh-inner'>
                         <div className='af-dh-title'>
                             <h4 className='af-dh-heading'>
@@ -49,6 +49,7 @@ class DiscussSection extends React.Component {
                         </div>
                     </div>
                 </div>
+                <div className='af-discuss-scroller'>
                 {
                     items.length ? (
                         items.map(
@@ -58,6 +59,7 @@ class DiscussSection extends React.Component {
                         <span className='text-muted'>Nope sorry nothing here.</span>
                     )
                 }
+                </div>
             </div>
         );
     }

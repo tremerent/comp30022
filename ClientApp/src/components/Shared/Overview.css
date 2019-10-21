@@ -1,4 +1,11 @@
 
+@media (min-width: 576px) {
+
+.af-ov {
+    display: flex;
+    flex-direction: row;
+}
+
 .af-ov-frame {
     position: fixed;
     top: 0;
@@ -9,14 +16,18 @@
 .af-ov-static {
     height: 100vh;
     flex-grow: 1;
+    width: 50%;
 }
 
 .af-ov-scroll {
     position: relative;
+    width: 50%;
 }
 
 .af-ov-navbar-placeholder {
     /* XXX: this must be kept up-to-date with navbar height. */
     height: 3.625rem;
+}
+
 }
 
