@@ -104,18 +104,6 @@ export class CreateArtefactForm extends Component {
         );
     }
 
-    // renderArtefactCreated = () => {
-    //     return (
-    //         <div className='af-createart-success'>
-    //             <FontAwesomeIcon
-    //                 className='af-createart-success-icon' icon={faCheckCircle}
-    //             />
-    //             <h4>Success!</h4>
-    //             <button className='btn btn-primary' data-dismiss='modal'>Ok</button>
-    //         </div>
-    //     );
-    // }
-
     renderArtefactForm = () => {
         return (
             <div id="create-artefact-stepper" className="bs-stepper">

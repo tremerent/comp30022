@@ -226,6 +226,15 @@ function updateArtIdCache(state = getInitArtState(), action) {
             },
         };
 
+    case artefactTypes.UPDATE_ARTEFACT:
+        return {
+            ...state,
+            artIdCache: {
+                ...state.artIdCache,
+                [action.artefact.id]: action.artefact,
+            },
+        }
+
     default:
         return state;
     }

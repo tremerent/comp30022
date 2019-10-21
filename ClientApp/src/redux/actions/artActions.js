@@ -1,10 +1,30 @@
 import {
     postArtefactAndCategories,
+    patchArtefactAndCategories,
     getArtefacts,
     getArtefact as apiGetArtefact,
     addArtefactImage,
 } from '../../scripts/requests';
 import { artefactTypes, } from './types';
+import apiFetchWithAuth from '../../scripts/apiFetch';
+
+// function reqUpdateArtefact(artefact) {
+
+// }
+
+// function resUpdateArtefact(artefact) {
+
+// }
+
+// export function updateArtefact(artefact) {
+//     return function(dispatch) {
+
+//         apiFetchWithAuth()
+
+//     }
+// }
+
+
 
 function reqGetBrowserArtefacts(queryDetails) {
     return {
@@ -28,8 +48,6 @@ function errGetBrowserArtefacts() {
 
 export function getBrowserArtefacts(queryKeyValues) {
     return async function(dispatch) {
-        console.log('submitting');
-        console.log(queryKeyValues);
         dispatch(reqGetBrowserArtefacts(queryKeyValues))
 
         try {
@@ -242,6 +260,24 @@ export function createMyArtefact(newArtefact, docs) {
         dispatch(resCreateMyArtefact(postedArtefact));
 
         return getState().art.myArts.create.createdArtefact;
+    }
+}
+
+function updateCachedArtefact(artefact) {
+    return {
+        type: artefactTypes.UPDATE_ARTEFACT,
+        artefact,
+    }
+}
+
+export function updateArtefact(updatedArtefact, docs) {
+    return async function (dispatch, getState) {
+        const patchedArt = await patchArtefactAndCategories(
+            updatedArtefact, 
+            getState().art.artIdCache[updatedArtefact.id]
+        );
+
+        dispatch(updateCachedArtefact(patchedArt));
     }
 }
 

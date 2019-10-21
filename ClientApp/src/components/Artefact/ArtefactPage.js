@@ -5,6 +5,8 @@ import { discuss as discussActions, artefacts as artActions } from '../../redux/
 
 import Overview from '../Shared/Overview.js';
 import ArtefactPreview from './ArtefactPreview.js';
+import ArtefactPreviewNew from './ArtefactPreviewNew.js';
+
 import CentreLoading from 'components/Shared/CentreLoading';
 import '../User/UserProfile.css';
 import './ArtefactPage.css';
@@ -40,7 +42,12 @@ class ArtefactPage extends React.Component {
             return <CentreLoading/>;
         return (
             <Overview>
-                <ArtefactPreview artefact={this.props.artefact}/>
+                {/* <ArtefactPreview artefact={this.props.artefact}/> */}
+                <ArtefactPreviewNew 
+                    artefact={this.props.artefact} 
+                    editable={this.props.isViewOfCurUser}
+                    updateArtefact={this.props.updateArtefact}
+                />
                 {
                     (this.props.discussion.loading) ? (
                         <CentreLoading/>
@@ -61,6 +68,15 @@ class ArtefactPage extends React.Component {
 
 function mapStateToProps(state) {
     const artefactId = getArtefactIdFromRoute(state.router.location.pathname);
+
+    let isViewOfCurUser = false;
+
+    if (state.art.artIdCache[artefactId]) {
+        isViewOfCurUser = 
+            state.art.artIdCache[artefactId].owner.username === 
+                state.auth.user.username;
+    }
+
     return {
         artefactId,
         artefact: state.art.artIdCache[artefactId],
@@ -70,12 +86,14 @@ function mapStateToProps(state) {
             loading: !state.discuss[artefactId],
             error: state.discuss[artefactId] && state.discuss[artefactId].error,
         },
+        isViewOfCurUser,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         getArtefact: artActions.getArtefact,
+        updateArtefact: artActions.updateArtefact,
         getDiscussion: discussActions.getDiscussion,
     }, dispatch);
 }
