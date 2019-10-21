@@ -90,9 +90,16 @@ class FilteredBrowser extends React.Component {
 
         return (
             <div className='af-filtered-browser'>
-                <div className='af-filter-header'>
-                    {this.props.filterHeader}
-                </div>
+                {
+                    this.props.filterHeader 
+                    ?
+                    <div className='af-filter-header'>
+                        {this.props.filterHeader}
+                    </div>
+                    : 
+                    null
+                }
+   
                 <Filter
                     filterTitle={<h3> Refine <em>your</em> Search  </h3>}
                     submitFilter={this.submitFilter}
