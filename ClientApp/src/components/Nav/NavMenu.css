@@ -33,7 +33,7 @@ fill: rgba(0, 0, 0, 0.7);
 .af-inactive-nav-link {
 color: rgba(0, 0, 0, 0.5);
 fill: rgba(0, 0, 0, 0.5);
-}   
+}
 
 .af-login-signup-nav-link {
     color: #89624B !important;
@@ -62,8 +62,25 @@ fill: rgba(0, 0, 0, 0.5);
 }
 
 .af-navmenu-brand {
-    /* sam: *makes his sexy logo as large as possible* */
     height: 2.4rem;
+    width: 2.4rem;
     padding-bottom: 0.2rem;
+    flex-grow: 0;
 }
+
+.navbar-brand {
+    display: flex;
+    font-weight: bold;
+    align-items: center;
+}
+
+.navbar-expand-sm .container {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container > .d-sm-inline-flex {
+    flex-grow: 0;
+}
+
 
