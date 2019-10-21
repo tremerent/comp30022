@@ -55,28 +55,34 @@ class DiscussSection extends React.Component {
                             <h4 className='af-dh-heading'>
                                 {this.props.title || this.props.type}
                             </h4>
-                            <button
-                                    className='btn btn-secondary'
-                                    data-target={this.COMMENTBOX_SELECTOR}
-                                    data-toggle='collapse'
-                            >
-                                +
-                            </button>
+                            {
+                                this.props.editable &&
+                                <button
+                                        className='btn btn-secondary'
+                                        data-target={this.COMMENTBOX_SELECTOR}
+                                        data-toggle='collapse'
+                                >
+                                    +
+                                </button>
+                            }
                         </div>
-                        <div className='collapse' id={this.COMMENTBOX_ID}>
-                            <CommentBox
-                                    type={this.props.type}
-                                    onSubmit={this.onSubmitTopLevel}
-                                    onCancel={this.onCancelTopLevel}
-                            />
-                        </div>
+                        {
+                            this.props.editable &&
+                            <div className='collapse' id={this.COMMENTBOX_ID}>
+                                <CommentBox
+                                        type={this.props.type}
+                                        onSubmit={this.onSubmitTopLevel}
+                                        onCancel={this.onCancelTopLevel}
+                                />
+                            </div>
+                        }
                     </div>
                 </div>
                 <div className='af-discuss-scroller'>
                 {
                     items.length ? (
                         items.map(
-                                item => <DiscussionNode key={item.id} item={item}/>
+                                item => <DiscussionNode key={item.id} item={item} auth={this.props.auth}/>
                             )
                     ) : (
                         <span className='text-muted'>Nope sorry nothing here.</span>
@@ -107,20 +113,41 @@ function Discussion(props) {
                 type='comment'
                 title="Comments"
                 {...props}
+                editable={props.auth.loggedIn}
             />
             <DiscussSection
                 type='question'
                 title="Questions"
                 {...props}
+                editable={props.auth.isOwner}
             />
         </div>
     );
 }
 
-function mapStateToProps(state) {
-    return {
-        username: state.auth.user.username,
+function mapStateToProps(state, ownProps) {
+    const artefact = state.art.artIdCache[ownProps.artefactId];
+
+    let props = {
+        auth: {
+            loggedIn: state.auth.isLoggedIn,
+            isOwner: false,
+        },
     };
+
+    if (props.auth.loggedIn) {
+        props.username = state.auth.user.username;
+        if (artefact)
+            props.auth.isOwner = props.username === artefact.owner.username;
+        else
+            console.warn(`Failed to get artefact with id ${ownProps.artefactId}`);
+
+        if (!props.auth.isOwner) {
+            console.log(`You are not the owner, because ${props.username} !== ${artefact.owner.username}`);
+        }
+    }
+
+    return props;
 }
 
 function mapDispatchToProps(dispatch) {
