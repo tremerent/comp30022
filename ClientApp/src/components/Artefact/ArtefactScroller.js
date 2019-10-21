@@ -18,9 +18,6 @@ export default class ArtefactScroller extends Component {
                 : [];
 
         return (
-            //<div className={this.props.className + ' af-artefact-scroller-wrapper'}>
-            //    <div className='af-artefact-scroller'>
-            //        <div className='af-artefact-scroller-inner'>
             <div className='af-artefact-scroller-container'>
                 {
                     artefactsToScroll.length
@@ -35,38 +32,8 @@ export default class ArtefactScroller extends Component {
                                 : "Oh no! No artefacts to display."
                             }
                           </div>
-
-        //            //this.props.artefacts
-        //            //    ? this.props.artefacts.map(a => {
-        //            //        if (a) {
-        //            //            a.images = [
-        //            //                PLACEHOLDER_IMAGE_01,
-        //            //                PLACEHOLDER_IMAGE_02,
-        //            //                PLACEHOLDER_IMAGE_03,
-        //            //            ];
-        //            //            return <ArtefactPreview key={a.id} artefact={a} />;
-        //            //        }
-        //            //    })
-        //            //    : this.state.artefacts.map(a => {
-        //            //        if (a) {
-        //            //            a.images = [
-        //            //                PLACEHOLDER_IMAGE_01,
-        //            //                PLACEHOLDER_IMAGE_02,
-        //            //                PLACEHOLDER_IMAGE_03,
-        //            //            ];
-        //            //            return <ArtefactPreview key={a.id} artefact={a} />;
-        //            //        }
-        //            //    })
                 }
             </div>
-            //        </div>
-            //    </div>
-            //</div>
-            //<div style={{
-            //    height: '500px',
-            //    overflowY: 'scroll'
-            //}}>
-            //</div>
         );
     }
 }

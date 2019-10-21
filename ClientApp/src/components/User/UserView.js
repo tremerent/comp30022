@@ -80,7 +80,7 @@ function mapStateToProps(state) {
         username,
         userArtefacts,
         user: user,
-        loading: (user.loading || userArtsLoading.loading),
+        loading: (user.loading || userArtsLoading),
     }
 }
 
