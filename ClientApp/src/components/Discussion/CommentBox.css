@@ -1,4 +1,8 @@
 
+.af-cbox {
+    width: 100%;
+}
+
 .af-cbox-actions {
     display: flex;
     flex-direction: row;
