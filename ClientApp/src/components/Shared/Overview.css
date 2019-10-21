@@ -1,4 +1,8 @@
 
+.af-ov-scroll {
+    margin-top: 1em;
+}
+
 @media (min-width: 576px) {
 
 .af-ov {
@@ -22,6 +26,7 @@
 .af-ov-scroll {
     position: relative;
     width: 50%;
+    margin-top: 0;
 }
 
 .af-ov-navbar-placeholder {
