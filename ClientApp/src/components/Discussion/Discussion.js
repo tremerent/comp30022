@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import $ from 'jquery';
 
 import CommentBox from './CommentBox.js';
 import DiscussionNode from './DiscussionNode.js';
@@ -11,8 +12,18 @@ import './Discussion.css';
 
 class DiscussSection extends React.Component {
 
+    constructor(props) {
+        super(props);
 
-    postItem(body, parent) {
+        this.COMMENTBOX_ID = `af-dh-create-${this.props.type}`;
+        this.COMMENTBOX_SELECTOR = `#${this.COMMENTBOX_ID}`;
+    }
+
+    closeCommentBox = () => {
+        $(this.COMMENTBOX_SELECTOR).collapse('hide');
+    }
+
+    onSubmitTopLevel = (body) => {
         const item = {
             id: `${Date.now()}`,
             artefact: this.props.artefactId,
@@ -21,8 +32,16 @@ class DiscussSection extends React.Component {
             body,
         };
 
+        this.closeCommentBox();
+
         this.props.postItem(item);
     }
+
+    onCancelTopLevel = () => {
+        this.closeCommentBox();
+    }
+
+
 
     render() {
         const items = this.props.items.filter(x => { console.assert(x.type); return x.type === this.props.type; });
@@ -38,14 +57,18 @@ class DiscussSection extends React.Component {
                             </h4>
                             <button
                                     className='btn btn-secondary'
-                                    data-target={`#af-dh-create-${this.props.type}`}
+                                    data-target={this.COMMENTBOX_SELECTOR}
                                     data-toggle='collapse'
                             >
                                 +
                             </button>
                         </div>
-                        <div className='collapse' id={`af-dh-create-${this.props.type}`}>
-                            <CommentBox type={this.props.type} onSubmit={body => this.postItem(body, null)}/>
+                        <div className='collapse' id={this.COMMENTBOX_ID}>
+                            <CommentBox
+                                    type={this.props.type}
+                                    onSubmit={this.onSubmitTopLevel}
+                                    onCancel={this.onCancelTopLevel}
+                            />
                         </div>
                     </div>
                 </div>
