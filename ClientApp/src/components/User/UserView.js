@@ -48,7 +48,9 @@ function getUsernameFromPath(pathname) {
 
 function mapStateToProps(state) {
     const username = getUsernameFromPath(state.router.location.pathname);
-    const isViewOfCurUser = username === state.auth.user.username;
+    const isViewOfCurUser =
+        state.auth.isLoggedIn &&
+        username === state.auth.user.username;
 
     // state.users.username may not exist yet
     const user =
