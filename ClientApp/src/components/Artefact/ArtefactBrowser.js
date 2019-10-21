@@ -13,15 +13,6 @@ import './ArtefactBrowser.css';
 class ArtefactBrowser extends React.Component {
 
     render() {
-        let shouldApplyDetectiveAction;
-        // check for filter events
-        if (this.props.location.state) {
-            // user has navigated from landing page with 'detectiveBrowse' action
-            shouldApplyDetectiveAction =
-                this.props.location.state.prevPath === '/' &&
-                this.props.location.state.action === 'detectiveBrowse';
-        }
-
         return (
             <div className='af-artbrowser'>
                 {/* somewhat hacky forced rerender if query in url changes -
@@ -30,7 +21,6 @@ class ArtefactBrowser extends React.Component {
                  redux. Oops - jonah */}
                 <FilteredBrowser
                     key={this.props.queryString}
-                    detectiveActionActive={shouldApplyDetectiveAction}
                     filterHeader={<ArtefactBrowserTute />}
                 />
             </div>
@@ -50,7 +40,5 @@ const mapDispatchToProps = (dispatch) => {
     }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-    withRouter(props => <ArtefactBrowser {...props}/>)
-);
+export default connect(mapStateToProps, mapDispatchToProps) (ArtefactBrowser);
 

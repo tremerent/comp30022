@@ -1,4 +1,4 @@
-import { push } from 'connected-react-router';
+﻿import { push } from 'connected-react-router';
 import { authTypes, artefactTypes, usersTypes, tuteTypes } from './types';
 import { setUser, logoutUser, } from '../../scripts/auth';
 import * as discuss from './discussActions.js';
@@ -150,6 +150,8 @@ function errGetBrowserArtefacts() {
 
 function getBrowserArtefacts(queryKeyValues) {
     return async function(dispatch) {
+        console.log('submitting');
+        console.log(queryKeyValues);
         dispatch(reqGetBrowserArtefacts(queryKeyValues))
 
         try {
@@ -158,6 +160,7 @@ function getBrowserArtefacts(queryKeyValues) {
             dispatch(resGetBrowserArtefacts(browserArtefacts));
         }
         catch(e) {
+            console.log(e);
             dispatch(errGetBrowserArtefacts({ error: e }));
         }
     }

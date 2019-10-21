@@ -265,7 +265,7 @@ class Filter extends React.Component {
                                         order: "desc"
                                     })
                                 }
-                                values={filterDetails.sortQuery}
+                                value={filterDetails.sortQuery}
                                 options={sortOptions}
                                 placeholder="Sort by"
                                 menuPlacement="top"
@@ -381,7 +381,12 @@ class Filter extends React.Component {
         );
     }
 
-    handleSubmit = (filterDetails) => {
+    handleSubmit = () => {
+        const filterDetails = {
+            ...this.state.filterDetails,
+            ...this.props.filterDetails,
+        };
+
         this.props.submitFilter(filterDetails);
     }
 
