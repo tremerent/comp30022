@@ -1,35 +1,4 @@
 
-.af-profile-outer {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    align-items: top;
-    height: 100%;
-    width: 100%;
-    justify-content: space-between;
-}
-
-.af-profile-scroller {
-    height: 100%;
-    max-width: 40%;
-}
-
-.af-profile-inner {
-    position: fixed;
-    width: 40%;
-    top: 0em;
-    margin-right: 0em;
-    flex-basis: 60%;
-    height: 100%;
-
-}
-
-.af-profile-inner-placeholder {
-    flex-shrink: 0;
-    width: 40%;
-    margin-top: 4em;
-    margin-right: 5em;
-}
 
 .af-profile-info {
     padding-top: 1.2em;
@@ -37,11 +6,6 @@
     flex-direction: column;
     width: 100%;
     height: 100%;
-}
-
-.af-profile-card-inner {
-    display: flex;
-    flex-direction: column;
     align-items: center;
 }
 
@@ -61,6 +25,13 @@
     background-color: rgb(97, 64, 44) !important;
 }
 
+
+
+
+.af-profile-scroller {
+    height: 100%;
+}
+
 .af-profile-scroller-title {
     display: flex;
     flex-direction: row;
@@ -74,45 +45,6 @@
     text-align: center;
 }
 
-@media (min-width: 576px) {
-    .af-profile-card {
-        height: 100%;
-        width: 200%;
-        overflow-y: scroll;
-        position: absolute;
-    }
-
-    .af-profile-card-wrapper {
-        height: 100%;
-        width: 100%;
-        position: relative;
-        overflow-x: hidden;
-    }
-
-    .af-profile-card-inner {
-        width: 50%;
-        padding-bottom: 4em;
-        margin-top: 7em;
-    }
-}
-
-@media (max-width: 576px) {
-    .af-profile-outer {
-        flex-direction: column;
-    }
-    .af-profile-inner {
-        margin-top: 0;
-        position: static;
-        width: 100%;
-    }
-    .af-profile-scroller {
-        max-width: 100%;
-    }
-    .af-profile-image {
-        width: 70%;
-    }
-
-}
 
 .bs-stepper-content {
     padding: 20px;
@@ -124,5 +56,4 @@
     flex-grow: 1;
     max-width: 40%;
 }
-
 

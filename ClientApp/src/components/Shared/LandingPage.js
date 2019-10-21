@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 import BACKGROUND_IMAGE from 'images/landing-page.jpg';
 import SIGNUP_IMAGE from 'images/red-vase-coloured.png';
@@ -21,7 +22,7 @@ function BgImage(props) {
     );
 }
 
-export default function LandingPage(props) {
+function LandingPage(props) {
     // TODO(sam) if user is logged in, just redirect to profile/family/
     // artefacts/whatever.
     return (
@@ -44,13 +45,13 @@ export default function LandingPage(props) {
                         </div>
                         <div className='af-lp-action-outer'>
                             triggers a filter option on the 'browse' page
-                            <Link 
+                            <Link
                                 to={{
-                                    pathname: "/browse", 
-                                    state: { 
-                                        prevPath: props.location.pathname, 
+                                    pathname: "/browse",
+                                    state: {
+                                        prevPath: props.location.pathname,
                                         action: "detectiveBrowse",
-                                }}} 
+                                }}}
                                 className="af-lp-action">
                                 <button className="btn btn-primary mv-3">
                                     <span >Become an <br/> artefact detective</span>
@@ -67,11 +68,11 @@ export default function LandingPage(props) {
                         </div>
                             {/* </div> */}
                         <div>
-                            <Link 
+                            <Link
                                 to={{
-                                    pathname: "/browse", 
-                                    state: { 
-                                        prevPath: props.location.pathname, 
+                                    pathname: "/browse",
+                                    state: {
+                                        prevPath: props.location.pathname,
                                         action: "detectiveBrowse",
                                 }}}
                             >
@@ -92,11 +93,11 @@ export default function LandingPage(props) {
                         </div>
                             {/* </div> */}
                         <div>
-                            <Link 
+                            <Link
                                 to={{
-                                    pathname: "/auth/signup", 
-                                    state: { 
-                                        prevPath: props.location.pathname, 
+                                    pathname: "/auth/signup",
+                                    state: {
+                                        prevPath: props.location.pathname,
                                         action: "detectiveBrowse",
                                 }}}
                             >
@@ -124,7 +125,7 @@ export default function LandingPage(props) {
                             </Link>
                         </div>
                     </div> */}
-                    
+
                     {/* <Link to="/browse" className="af-lp-action">
                         <button className="btn btn-primary mt-3">
                             Browse artefacts
@@ -140,4 +141,6 @@ export default function LandingPage(props) {
         </BgImage>
     );
 }
+
+export default withRouter(props => <LandingPage {...props}/>);
 

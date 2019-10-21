@@ -9,9 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faSignOutAlt, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 
 const loginPath = '/auth/login';
-const signupPath = '/auth/signup'
-const profilePath = '/profile';
-const myArtefactsPath = '/my-artefacts';
+const signupPath = '/auth/signup';
 
 class UserNavMenu extends React.Component {
 
@@ -32,7 +30,7 @@ class UserNavMenu extends React.Component {
                     label={
                         <>
                             <span> My Collection </span>&nbsp;
-                            <FontAwesomeIcon icon={faHome}/> 
+                            <FontAwesomeIcon icon={faHome}/>
                         </>
                     }
                     curPath={this.props.curPath}
@@ -43,7 +41,7 @@ class UserNavMenu extends React.Component {
                     label={
                         <>
                            <span>Logout </span>&nbsp;
-                            <FontAwesomeIcon icon={faSignOutAlt}/> 
+                            <FontAwesomeIcon icon={faSignOutAlt}/>
                         </>
                     }
                     curPath={this.props.curPath}
@@ -53,7 +51,7 @@ class UserNavMenu extends React.Component {
                 {/* <NavItem>
                     <button onClick={(e) => { e.preventDefault(); this.props.logout("/browse"); }} className="text-dark btn nav-link">
                         <span>Logout </span>&nbsp;
-                        <FontAwesomeIcon icon={faSignOutAlt}/> 
+                        <FontAwesomeIcon icon={faSignOutAlt}/>
                     </button>
                 </NavItem> */}
             </>
@@ -68,7 +66,7 @@ class UserNavMenu extends React.Component {
                     label={
                         <>
                             <span> Login </span>
-                            <FontAwesomeIcon icon={faSignInAlt}/> 
+                            <FontAwesomeIcon icon={faSignInAlt}/>
                         </>
                     }
                     curPath={this.props.curPath}

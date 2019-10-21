@@ -12,7 +12,7 @@ import { bindActionCreators } from 'redux';
 function requireAuth(Component, unauthedRedirTo) {
     class AuthComponent extends React.Component {
         render() {
-            // otherwise user gets redir if 
+            // otherwise user gets redir if
             if (this.props.authLoading) {
                 return <> </>;
             }

@@ -1,10 +1,7 @@
-﻿import React, { Component } from 'react';
-
-import Scratch from './Scratch.js';
-import AuthTest from './components/AuthTest';
+﻿import React from 'react';
 import ComponentTests from './ComponentTests.js';
 
-export default class TestingHome extends Component {
+export default class TestingHome extends React.Component {
     static displayName = TestingHome.name;
 
     render() {

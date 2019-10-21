@@ -1,0 +1,89 @@
+
+.af-dcard-card {
+    margin-top: 1em;
+    box-shadow: .15rem .15rem .6rem rgba(0, 0, 0, 0.18);
+    padding: 0.5rem 0.8rem;
+    width: 100%;
+}
+
+.af-dcard-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 0.3rem;
+    font-size: 0.9em;
+}
+
+.af-dcard-avatar {
+    height: 1.6em;
+    width: 1.6em;
+    background-color: green;
+    border-radius: 1em;
+}
+
+.af-dcard-author {
+    margin-left: .5em;
+    font-weight: bold;
+    flex-grow: 1;
+}
+
+.af-dcard-status {
+    font-style: italic;
+    font-size: 0.9em;
+    text-align: right;
+    flex-grow: 1;
+}
+
+.af-dcard-card hr {
+    margin: 0;
+}
+
+.af-dcard-body {
+    padding: .4rem .4rem;
+}
+
+.af-dcard-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    margin-top: 0.3rem;
+    align-items: center;
+}
+
+.af-dcard-action {
+    font-size: 0.8em;
+    padding: 0 1rem;
+}
+
+.af-dcard-action-active {
+    background-color: #ced4da;
+}
+
+.af-dcard-reply {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-top: 0.3rem;
+}
+
+.af-dcard-replybtn {
+    margin-top: 0.5em;
+    font-size: 0.8em;
+    padding: 0.1em 0.5em;
+}
+
+.af-dcard-loading {
+    height: 1rem;
+    width: 1rem;
+    border-width: 1px;
+    margin-left: 1em;
+}
+
+.af-dcard-error {
+    font-size: 1em;
+    font-weight: 10000;
+    cursor: default;
+}
+

@@ -6,9 +6,9 @@ import CentreLoading from 'components/Shared/CentreLoading';
 import ArtefactScroller from 'components/Artefact/ArtefactScroller';
 import Filter from 'components/Shared/Filter';
 import { artefacts as artActions } from 'redux/actions';
-import { 
-    getQueryDetails, 
-    getFilterDetails 
+import {
+    getQueryDetails,
+    getFilterDetails
 } from 'components/Shared/filterUtils';
 
 import "./Filter.css";
@@ -60,13 +60,13 @@ class FilteredBrowser extends React.Component {
         super(props);
 
         this.state = {
-            detectiveActionActive: 
-                this.props.detectiveActionActive 
-                ? this.props.detectiveActionActive 
+            detectiveActionActive:
+                this.props.detectiveActionActive
+                ? this.props.detectiveActionActive
                 : false,
             interestingActionActive:
-                this.props.interestingActionActive 
-                ? this.props.interestingActionActive 
+                this.props.interestingActionActive
+                ? this.props.interestingActionActive
                 : false,
         }
     }
@@ -92,7 +92,7 @@ class FilteredBrowser extends React.Component {
                 <div className='af-filter-header'>
                     {this.props.filterHeader}
                 </div>
-                <Filter 
+                <Filter
                     filterTitle={<h3> Refine your <em> Search </em> </h3>}
                     submitFilter={this.submitFilter}
                     filterDetails={filterDetails}

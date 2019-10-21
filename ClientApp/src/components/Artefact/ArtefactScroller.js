@@ -4,17 +4,7 @@ import CentreLoading from '../Shared/CentreLoading.js';
 
 import './ArtefactScroller.css';
 
-import PLACEHOLDER_IMAGE_01 from '../../images/filler/artefact-01.jpg';
-import PLACEHOLDER_IMAGE_02 from '../../images/filler/artefact-02.jpg';
-import PLACEHOLDER_IMAGE_03 from '../../images/filler/artefact-03.jpg';
-
 export default class ArtefactScroller extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    componentDidMount() {
-    }
 
     render() {
         if (this.props.loading)
@@ -35,9 +25,9 @@ export default class ArtefactScroller extends Component {
                 {
                     artefactsToScroll.length
                         ? artefactsToScroll.map(a => {
-                            if (a) {
+                            if (a)
                                 return <ArtefactPreview key={a.id} artefact={a} />;
-                            }
+                            return null;
                           })
                         : <div className='text-muted text-center'>
                             {this.props.placeholder

@@ -1,7 +1,8 @@
-﻿import { push } from 'connected-react-router';
-
-import { authTypes, artefactTypes, usersTypes, tuteTypes, } from './types';
+import { push } from 'connected-react-router';
+import { authTypes, artefactTypes, usersTypes, tuteTypes } from './types';
 import { setUser, logoutUser, } from '../../scripts/auth';
+import * as discuss from './discussActions.js';
+
 import {
     postArtefactAndCategories,
     postRegister,
@@ -9,7 +10,7 @@ import {
     getUser as fetchUser,
     patchUserInfo,
     setProfileImage,
-    getArtefact,
+    getArtefact as apiGetArtefact,
     addArtefactImage,
 } from '../../scripts/requests';
 import { sortOptions, getQueryDetails, } from 'components/Shared/filterUtils';
@@ -202,6 +203,47 @@ function getMyArtefacts() {
     }
 }
 
+function reqGetArtefact(id) {
+    return {
+        type: artefactTypes.REQ_GET_ARTEFACT,
+        id,
+    };
+}
+
+function resGetArtefact(artefact) {
+    return {
+        type: artefactTypes.RES_GET_ARTEFACT,
+        artefact,
+    };
+}
+
+function errGetArtefact(id, error) {
+    return {
+        type: artefactTypes.ERR_GET_ARTEFACT,
+        id,
+        error,
+    };
+}
+
+function getArtefact(id) {
+    return async function (dispatch, getState) {
+        dispatch(reqGetArtefact(id));
+        const artIdCache = getState().art.artIdCache;
+
+        if (artIdCache[id] !== undefined) {
+            dispatch(resGetArtefact(artIdCache[id]));
+            return;
+        }
+
+        try {
+            const art = await apiGetArtefact(id);
+            dispatch(resGetArtefact(art));
+        } catch (e) {
+            dispatch(errGetArtefact(id, e));
+        }
+    }
+}
+
 function setPublicArtefacts(publicArts) {
     return {
         type: artefactTypes.RES_GET_PUBLIC_ARTEFACTS,
@@ -250,14 +292,14 @@ function addMyArtefact(newArtefact) {
     }
 }
 
-// addMyArtefact, but synchronise 'state.art.browserArts' and 
+// addMyArtefact, but synchronise 'state.art.browserArts' and
 // 'state.art.userArts' if newArtefact is public
 function addMyArtefactSync(newArtefact) {
     return async function (dispatch, getState) {
 
         dispatch(addMyArtefact(newArtefact));
 
-        if (newArtefact.vis == "public") {
+        if (newArtefact.vis === "public") {
 
             updatePublicArts();
             updateUserArts();
@@ -312,9 +354,6 @@ function createMyArtefact(newArtefact, docs) {
 
         const postedArtefact = await postArtefactAndCategories(newArtefact);
         const postedDocs = await submitDocs(postedArtefact.id, docs);
-
-        console.log('here are the posted docs!!!!');
-        console.log(postedDocs);
 
         postedArtefact.images = postedDocs;
 
@@ -374,7 +413,7 @@ function getUserArtefacts(username, vis) {
 
 function isCurUser(username) {
     return function (dispatch, getState) {
-        return getState().auth.user.username == username;
+        return getState().auth.user.username === username;
     }
 }
 
@@ -414,6 +453,7 @@ const artefacts = {
     getUserOrMyArtefacts,
     setFilter,
     setCategoriesCache,
+    getArtefact,
 };
 
 function reqGetUser(username) {
@@ -575,7 +615,7 @@ function browserTuteApplyFilterCatEffects() {
             ...filterDetails(),
             category: filterCategories.map(
                 // filter takes opts with same label/value
-                ({ id, name }) => ({ value: name, label: name })  
+                ({ id, name }) => ({ value: name, label: name })
             ),
             sortQuery: {
                 ...sortOptions.filter(sortOpt => sortOpt.name == 'commentCount')[0],
@@ -601,7 +641,7 @@ function toggleBrowserTuteApplyAnswerQ() {
         }
 
         const findInterLessonActive = browserTute().findInter.lessonActive;
-        // toggle other lesson type off 
+        // toggle other lesson type off
         if (findInterLessonActive) {
             dispatch({ type: tuteTypes.TOGGLE_FIND_INTER_LESSON_ACTIVE});
         }
@@ -617,7 +657,7 @@ function toggleBrowserTuteApplyAnswerQ() {
 function toggleBrowserTuteApplyFindInter() {
     return function (dispatch, getState) {
         const browserTute = () => getState().tute.browserTute;
-        
+
         // if user just completed the lesson's action, just run the tute
         // and return early
         const findInterTtOpen = browserTute().findInter.toolTipOpen;
@@ -627,7 +667,7 @@ function toggleBrowserTuteApplyFindInter() {
         }
 
         const answerQLessonActive = browserTute().answerQuestion.lessonActive;
-        // toggle other lesson type off 
+        // toggle other lesson type off
         if (answerQLessonActive) {
             dispatch({ type: tuteTypes.TOGGLE_ANSWER_Q_LESSON_ACTIVE});
         }
@@ -645,7 +685,7 @@ function browserTuteRunState() {
     return function(dispatch, getState) {
         const bTuteState = getState().tute.browserTute;
 
-        const tuteAtInitState = 
+        const tuteAtInitState =
             !bTuteState.answerQuestion.toolTipOpen &&
             !bTuteState.sortArts.toolTipOpen &&
             !bTuteState.findInter.toolTipOpen &&
@@ -701,4 +741,6 @@ export {
     artefacts,
     users,
     tute,
+    discuss,
 };
+

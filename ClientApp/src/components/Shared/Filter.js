@@ -43,11 +43,11 @@ class Filter extends React.Component {
             until: null,
             sortQuery: {
                 ...sortOptions[3],
-                order: "desc", 
+                order: "desc",
             },
             catQueryType: catQueryTypes[1],
         }
-        
+
         this.state = {
             // prop filter details overrides default
             filterDetails: {
@@ -57,7 +57,7 @@ class Filter extends React.Component {
             showUntilCalendar: false,
             showSinceCalendar: false,
             showQuerySearchDrop: false,
-            // maintain two for the collapse - 'showFilter' toggled during 
+            // maintain two for the collapse - 'showFilter' toggled during
             // transition, 'filterShown' toggled when complete
             showFilter: true,
             filterShown: true,
@@ -73,7 +73,7 @@ class Filter extends React.Component {
 
         const filterInputs = (
             <div>
-                <div class="af-filter-row">
+                <div className="af-filter-row">
                     <div className="af-filter-row-item">
                         <div className="input-group mr-sm-2">
 
@@ -108,9 +108,11 @@ class Filter extends React.Component {
                                     .map((queryType, i) => {
                                         // pass array ele. by index so ref
                                         // not duplicated by lambda
-                                        if (queryType.name != filterDetails.searchQuery.type.name) {
+                                            // ??? -- Sam
+                                        if (queryType.name !== this.state.filterDetails.searchQuery.type.name) {
                                             return (
                                                 <DropdownItem
+                                                    key={queryType.name}
                                                     onClick={() => {
                                                         this.toggle("showQuerySearchDrop");
                                                         this.handleFilterChange("searchQuery")({
@@ -139,12 +141,12 @@ class Filter extends React.Component {
                             <CategorySelect
                                 blurPlaceholder={"Click to choose a category"}
                                 focusPlaceholder={"Categories"}
-                                creatable={false} 
-                                categoryVals={filterDetails.category} 
-                                setCategoryVals={this.handleFilterChange("category")} 
+                                creatable={false}
+                                categoryVals={filterDetails.category}
+                                setCategoryVals={this.handleFilterChange("category")}
                             />
                         </div>
-                        <TuteTooltip         
+                        <TuteTooltip
                             placement="right"
                             isOpen={this.props.filterCatsTt.toolTipOpen}
                             target={this.props.filterCatsTt.id}
@@ -167,9 +169,10 @@ class Filter extends React.Component {
                                     .map((catQueryType, i) => {
                                         // pass array ele. by index so ref
                                         // not duplicated by lambda
-                                        if (catQueryType.name != filterDetails.catQueryType.name) {
+                                        if (catQueryType.name !== this.state.filterDetails.catQueryType.name) {
                                             return (
                                                 <DropdownItem
+                                                    key={catQueryType.name}
                                                     onClick={() => {
                                                         this.toggle("showCatQueryTypeDrop");
                                                         this.handleFilterChange("catQueryType")(catQueryTypes[i]);
@@ -254,12 +257,15 @@ class Filter extends React.Component {
                     <div className="af-filter-sort-outer">
                         <div className="af-filter-sort-select">
                             <Select
+                                // TODO: sort query order
                                 onChange={(value) =>
-                                    this.handleFilterChange("sortQuery")
-                                    ({...filterDetails.sortQuery,
+                                    this.handleFilterChange("sortQuery")({
+                                        ...filterDetails.sortQuery,
                                         ...value,
-                                        order: "desc"})}  // TODO: sort query order
-                                value={filterDetails.sortQuery}
+                                        order: "desc"
+                                    })
+                                }
+                                values={filterDetails.sortQuery}
                                 options={sortOptions}
                                 placeholder="Sort by"
                                 menuPlacement="top"
@@ -267,7 +273,7 @@ class Filter extends React.Component {
 
                                 id={this.props.sortArtsTt.id}
                             />
-                            <TuteTooltip         
+                            <TuteTooltip
                                 placement="right"
                                 isOpen={this.props.sortArtsTt.toolTipOpen}
                                 target={this.props.sortArtsTt.id}
@@ -298,24 +304,24 @@ class Filter extends React.Component {
                         </button>
                     </div>
                     <div className="af-filter-controls">
-                        <button 
+                        <button
                             onClick={this.clearFilter}
                             className="btn btn-outline-secondary af-filter-control"
-                        > 
+                        >
                             <FontAwesomeIcon icon={faTimes} color="#dc3545"/>
-                            &nbsp; 
+                            &nbsp;
                             Clear
                         </button>
-                        <button 
+                        <button
                             onClick={this.handleSubmit}
                             className="btn btn-primary"
                             id={this.props.searchTt.id}
-                        > 
+                        >
                             <FontAwesomeIcon icon={faSearch} />
-                            &nbsp; 
+                            &nbsp;
                             Search
                         </button>
-                        <TuteTooltip         
+                        <TuteTooltip
                             placement="top"
                             isOpen={this.props.searchTt.toolTipOpen}
                             target={this.props.searchTt.id}
@@ -334,7 +340,7 @@ class Filter extends React.Component {
                     ? "af-flex-between"
                     : "af-flex-end")
                 }>
-                    {   
+                    {
                         this.state.showFilter
                         ?
                         this.props.filterTitle
@@ -375,7 +381,7 @@ class Filter extends React.Component {
         );
     }
 
-    handleSubmit = (filterDetails) => { 
+    handleSubmit = (filterDetails) => {
         this.props.submitFilter(filterDetails);
     }
 
@@ -391,10 +397,10 @@ class Filter extends React.Component {
 
     toggleSortDir = () => {
         let newOrder;
-        if (this.state.filterDetails.sortQuery.order == "desc") {
+        if (this.state.filterDetails.sortQuery.order === "desc") {
             newOrder = "asc";
         }
-        else if (this.state.filterDetails.sortQuery.order == "asc") {
+        else if (this.state.filterDetails.sortQuery.order === "asc") {
             newOrder = "desc";
         }
         else {
