@@ -46,15 +46,23 @@ class DiscussionCard extends React.Component {
         this.props.postItem(item);
     }
 
+    markAnswer = e => {
+        e.preventDefault();
+        console.assert(this.props.question);
+
+        this.props.markAnswer(this.props.question, this.props.item);
+    }
+
     render() {
         const item = this.props.item;
+        console.log(`this.props.question: ${this.props.question}, this.props.auth.isOwner: ${this.props.auth.isOwner}`);
 
         let style = {
             backgroundColor: '#ffffff',
         };
 
         if (item.type === 'question')
-            style.backgroundColor = '#e0dbf0';
+            style.backgroundColor = '#f0ecfd';
         else if (item.isAnswer)
             style.backgroundColor = '#deffe9';
 
@@ -112,9 +120,15 @@ class DiscussionCard extends React.Component {
                 <hr/>
                 <div className='af-dcard-actions'>
                     {
-                        this.props.questionId && this.props.auth.isOwner &&
-                            <a href='#mark-answered' className='af-dcard-action'>
+                        this.props.question && this.props.auth.isOwner &&
+                            <a href='#mark-answered' className='af-dcard-action' onClick={this.markAnswer}>
                                 Mark Answered
+                            </a>
+                    }
+                    {
+                        item.isAnswer &&
+                            <a href='#unmark-answered' className='af-dcard-action' onClick={this.unmarkAnswer}>
+                                Unmark Answered
                             </a>
                     }
                     {
@@ -153,6 +167,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         postItem: discuss.postDiscussion,
+        markAnswer: discuss.markAnswer,
     }, dispatch);
 }
 

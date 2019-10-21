@@ -28,6 +28,8 @@ namespace Artefactor.Services.Converters
                     replies = childJson ?? new List<object>(),
                     type = "question",
                     ts = c.CreatedAt,
+                    isAnswered = ((ArtefactQuestion)c).AnswerComment != null,
+                    answerComment = ((ArtefactQuestion)c).AnswerCommentId,
                 };
             }
 
