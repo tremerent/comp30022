@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 import Stepper from 'bs-stepper';
 import 'bs-stepper/dist/css/bs-stepper.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImages, faShareAltSquare, faTrophy } from '@fortawesome/free-solid-svg-icons';
-import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 
 import CategorySelect from '../Category/CategorySelect.js';
 import ArtefactDocs from './ArtefactDocs.js';
