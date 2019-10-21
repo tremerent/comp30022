@@ -1,13 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { discuss as discussActions, artefacts as artActions } from '../../redux/actions';
-import { faEye } from '@fortawesome/free-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from 'react-router-dom';
+import { 
+    discuss as discussActions, 
+    artefacts as artActions,
+} from '../../redux/actions';
 
 import Overview from '../Shared/Overview.js';
-import ArtefactPreview from './ArtefactPreview.js';
 import ArtefactPreviewNew from './ArtefactPreviewNew.js';
 
 import CentreLoading from 'components/Shared/CentreLoading';
@@ -45,14 +44,14 @@ class ArtefactPage extends React.Component {
             return <CentreLoading/>;
         return (
             <Overview>
-                {/* <ArtefactPreviewNew 
+                <ArtefactPreviewNew 
                     artefact={this.props.artefact} 
                     editable={this.props.isViewOfCurUser}
                     updateArtefact={this.props.updateArtefact}
-                /> */}
-                <ArtefactInfo 
+                />
+                {/* <ArtefactInfo 
                     artefact={this.props.artefact} 
-                    auth={{isOwner: this.props.isViewOfCurUser}}/>
+                    auth={{isOwner: this.props.isViewOfCurUser}}/> */}
                 {
                     (this.props.discussion.loading) ? (
                         <CentreLoading/>
@@ -97,9 +96,12 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
+    console.log('mapping');
+    console.log(artActions.updateMyArtefactSync);
+
     return bindActionCreators({
         getArtefact: artActions.getArtefact,
-        updateArtefact: artActions.updateArtefact,
+        updateArtefact: artActions.updateMyArtefactSync,
         getDiscussion: discussActions.getDiscussion,
     }, dispatch);
 }

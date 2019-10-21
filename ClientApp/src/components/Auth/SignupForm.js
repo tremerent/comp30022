@@ -92,6 +92,7 @@ class SignupForm extends React.Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
+        console.log('handlesub');
 
         if (this.formValidate()) {
             const signupData = {

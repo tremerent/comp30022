@@ -23,7 +23,7 @@ class ArtefactBrowserTute extends React.Component {
 
     render() {
         return (
-            <div className='af-filter-header'>
+            <div className='af-filter-header af-browser-tute'>
                     <div className='af-filter-header-title'>
                         <h2> What are you  looking for? </h2>
                     </div>

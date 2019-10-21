@@ -40,6 +40,15 @@ namespace Artefactor.Services.Converters
                     });
             }
 
+            int questionCount = 0;
+            int commentCount = 0;
+            if (a.Comments != null) 
+            {
+                commentCount = a.Comments.Count();
+                
+                questionCount = a.Comments.OfType<ArtefactQuestion>().Count();
+            }
+
             return new
             {
                 a.Id,
@@ -51,6 +60,8 @@ namespace Artefactor.Services.Converters
                 images,
                 owner,
                 categoryJoin,
+                questionCount,
+                commentCount,
             };
 
             // Prepare an 'ApplicationUser' for returning to a client.

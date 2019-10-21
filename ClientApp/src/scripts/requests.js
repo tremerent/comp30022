@@ -69,34 +69,38 @@ async function patchArtefactAndCategories(updatedArt, origArt) {
     // patch artefact
     await patchArtefact(updatedArt);
 
-    if (origArt.categoryJoin && updatedArt.categoryJoin) {
+    // if (origArt.categoryJoin && updatedArt.categoryJoin) {
 
-        const updatedCj = updatedArt.categoryJoin;
-        const origCj = origArt.categoryJoin;
+    //     const updatedCj = updatedArt.categoryJoin;
+    //     const origCj = origArt.categoryJoin;
 
-        const toAdd = updatedCj.filter(cj => 
-            !origCj.find(ocj => ocj.categoryId === cj.categoryId));
+    //     console.log('hi');
+    //     console.log(updatedCj);
+    //     console.log(origCj);
 
-        const toRemove = origCj.filter(cj => 
-            !updatedCj.find(ocj => ocj.categoryId == cj.categoryId));
+    //     const toAdd = updatedCj.filter(cj => 
+    //         !origCj.find(ocj => ocj.categoryId === cj.categoryId));
 
-        console.log("toAdd");
-        console.log(toAdd);
+    //     const toRemove = origCj.filter(cj => 
+    //         !updatedCj.find(ocj => ocj.categoryId == cj.categoryId));
 
-        console.log("toRemove");
-        console.log(toRemove);
+    //     console.log("toAdd");
+    //     console.log(toAdd);
 
-        // add categories
-        console.log('fst');
-        await postArtefactCategories(categoryOptsToDbModel(updatedArt.id, toAdd));
+    //     console.log("toRemove");
+    //     console.log(toRemove);
+
+    //     // add categories
+    //     console.log('fst');
+    //     await postArtefactCategories(categoryOptsToDbModel(updatedArt.id, toAdd));
         
-        console.log('snd');
-        // remove categories
-        await Promise.all(
-            categoryOptsToDbModel(updatedArt.id, toRemove)
-            .map(cjDbModel => deleteArtefactCategory(cjDbModel))
-        );
-    }
+    //     console.log('snd');
+    //     // remove categories
+    //     await Promise.all(
+    //         categoryOptsToDbModel(updatedArt.id, toRemove)
+    //         .map(cjDbModel => deleteArtefactCategory(cjDbModel))
+    //     );
+    // }
 
     // fetch artefact again now that it has category relationships
     // (this could also be stored prior to posting the artefact, and then

@@ -1,3 +1,7 @@
+.af-browser-tute {
+    margin-bottom: 3% !important;
+}
+
 .af-filtered-browser {
     flex-grow: 1;
     display: flex;

@@ -93,9 +93,7 @@ class FilteredBrowser extends React.Component {
                 {
                     this.props.filterHeader 
                     ?
-                    <div className='af-filter-header'>
-                        {this.props.filterHeader}
-                    </div>
+                    this.props.filterHeader
                     : 
                     null
                 }

@@ -54,6 +54,8 @@ export default class ArtefactPreview extends Component {
                             )}
                         </div>
                         <span className="af-artcard-actions">
+                            <p className="af-artcard-action badge badge-decal-text mx-1"> {`${a.questionCount} questions}`} </p>
+                            <p className="af-artcard-action badge badge-decal-text mx-1"> {`${a.questionCount} comments}`} </p>
                             <Link className="af-artcard-action" to={`/artefact/${a.id}`}>
                                 View Full Page ↗ {/* <- U+2197 */}
                             </Link>
