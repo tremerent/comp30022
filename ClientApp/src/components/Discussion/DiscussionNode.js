@@ -8,7 +8,7 @@ export default class DiscussionNode extends React.Component {
 
     render(item = this.props.item, root) {
         const childRoot = item.type === 'question' ? (
-                (item.answer ? null : item)
+                (item.isAnswered ? null : item)
             ) : (root) ? (
                 root
             ) : (
