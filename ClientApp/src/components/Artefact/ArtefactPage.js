@@ -46,7 +46,10 @@ class ArtefactPage extends React.Component {
                 <ArtefactPreviewNew 
                     artefact={this.props.artefact} 
                     editable={this.props.isViewOfCurUser}
-                    updateArtefact={this.props.updateArtefact}
+                    updateArtefact={(art) => {
+                        console.log('hi');
+                        this.props.updateArtefact(art, null)
+                    }}
                 />
                 {
                     (this.props.discussion.loading) ? (
@@ -91,9 +94,12 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
+    console.log('mapping');
+    console.log(artActions.updateMyArtefactSync);
+
     return bindActionCreators({
         getArtefact: artActions.getArtefact,
-        updateArtefact: artActions.updateArtefact,
+        updateArtefact: artActions.updateMyArtefactSync,
         getDiscussion: discussActions.getDiscussion,
     }, dispatch);
 }

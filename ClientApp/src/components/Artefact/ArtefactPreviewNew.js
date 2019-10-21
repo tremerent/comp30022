@@ -15,8 +15,6 @@ export default class ArtefactPreviewNew extends Component {
             descToggle: false,
             artefact: this.props.artefact,
         };
-
-        console.log(this.state.artefact);
     }
 
     render() {
@@ -138,6 +136,7 @@ export default class ArtefactPreviewNew extends Component {
     }
 
     handleSubmit = () => {
+        console.log('updating');
         this.props.updateArtefact(this.state.artefact);
     }
 

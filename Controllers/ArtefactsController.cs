@@ -648,9 +648,7 @@ namespace Artefactor.Controllers
                     artefactProperty == "CreatedAt" ||
                     artefactProperty == "OwnerId" ||
                     artefactProperty == "Owner" ||
-                    artefactProperty == "Title" ||
-                    artefactProperty == "CategoryJoin" ||
-                    artefactProperty == "Visibility"
+                    artefactProperty == "CategoryJoin"
                 );
             }
 

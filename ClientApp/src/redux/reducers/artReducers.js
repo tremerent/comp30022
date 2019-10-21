@@ -1,9 +1,22 @@
 ﻿import { artefactTypes } from '../actions/types';
 import getInitArtState from './initArtState'
 import { flatCombineReducers } from '../util.js';
+import { updateOrPush } from '../actions/artActions';
 
 function artMain(state = getInitArtState(), action) {
     switch (action.type) {
+        case artefactTypes.UPDATE_MY_ARTEFACTS:
+            const updatedOrPushedMyArtefacts = updateOrPush(
+                art, state.myArts.myArtefacts
+            );
+
+            return {
+                ...state,
+                myArts: {
+                    ...state.myArts,
+                    myArtefacts: updatedOrPushedMyArtefacts,
+                }
+            };
         case artefactTypes.REQ_GET_MY_ARTEFACTS:
             return {
                 ...state,
@@ -25,7 +38,7 @@ function artMain(state = getInitArtState(), action) {
             return {
                 // TODO
                 ...state,
-            }
+            };
         case artefactTypes.ADD_MY_ARTEFACTS:
             const updatedMyArtefacts =
                 [action.newArtefact, ...state.myArts.myArtefacts];
@@ -226,7 +239,7 @@ function updateArtIdCache(state = getInitArtState(), action) {
             },
         };
 
-    case artefactTypes.UPDATE_ARTEFACT:
+    case artefactTypes.UPDATE_MY_ARTEFACTS:
         return {
             ...state,
             artIdCache: {
