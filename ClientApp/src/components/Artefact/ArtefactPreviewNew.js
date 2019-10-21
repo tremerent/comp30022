@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { Link, } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
+import { faEye } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { editableTextArea } from 'components/Shared/editableTextArea';
 import CategorySelect from 'components/Category/CategorySelect';
 import ImageCarousel from  '../Shared/ImageCarousel.js';
+
 
 export default class ArtefactPreviewNew extends Component {
 
@@ -18,18 +21,19 @@ export default class ArtefactPreviewNew extends Component {
     }
 
     render() {
-        const a = this.props.artefact;
+        const a = this.state.artefact;
 
         const id = `af-artcard-desc-${a.id}`;
         const carouselId = `af-artdoc-carousel-${this.props.artefact.id}`;
 
         // components
-        let title;
-        let categories;
-        let description;
+        let title = null;
+        let categories = null;
+        let description = null;
+        let vis = null;
 
-        let EditableDesc;
-        let EditableTitle;
+        let EditableDesc = null;
+        let EditableTitle = null;
 
         const propValOrDefaultStr = (props, defaultStr) => {
             return (props.value != null && props.value.length
@@ -38,30 +42,32 @@ export default class ArtefactPreviewNew extends Component {
         }
 
         if (!this.props.editable) {
+            title = <h3 className="af-ai-title">{a.title}</h3>;
+            
             categories = 
-                <div className="">
+                    <div className="af-ai-categories">
                     {this.categoryJoinsToCategories(a.categoryJoin).map(c =>
                         <Link
                                 to={`/browse?category=${c.name}`}
                                 key={c.id}
-                                className="badge badge-decal-text mx-1"
+                                className="badge badge-decal-text mx-1 af-ai-badge"
                         >
                             {c.name}
                         </Link>
                     )}
-                </div>;
+                </div>
 
             description = 
-                <div>
-                    <p>{this.state.artefact.description}</p>
-                </div>;
+                <p className='text-muted af-ai-desc'>
+                    {a.description}
+                </p>;
         }
         else {
 
             // if category join in api format, need to convert, otherwise
             // it is ready for 'CategorySelect'
             let curArtCatSelectOpts = [];
-            const cj = this.state.artefact.categoryJoin;
+            const cj = a.categoryJoin;
             // just check first ele. since all will be same
             if (cj.length && 
                 cj[0].label && cj[0].value) {  
@@ -84,75 +90,97 @@ export default class ArtefactPreviewNew extends Component {
             />
 
             const Description = (props) => {
-                return <h5>{propValOrDefaultStr(props, "No description")}</h5>;
+                return (
+                    <p className='text-muted af-ai-desc'>
+                    {a.description}
+                </p>
+                );
+                
+                // <h5>
+                //     {propValOrDefaultStr(props, "No description")}
+                //     </h5>;
             }
             EditableDesc = editableTextArea(Description);
             description = <EditableDesc
-                value={this.state.artefact.description}
+                value={a.description}
                 onValueSubmit={this.handleArtValChange("description")}
             />
     
             const Title = (props) => {
                 return (
-                    <div className='text-muted'>
-                        {propValOrDefaultStr(props, "No description")}
-                    </div>
+                    <h3 className="af-ai-title">{a.title}</h3>
                 )
             }
             EditableTitle = editableTextArea(Title);
             title = <EditableTitle
-                value={this.state.artefact.title}
+                value={a.title}
                 onValueSubmit={this.handleArtValChange("title")}
             />;
-        }
 
-        
+            vis = (
+                <div className='af-ai-vis'>
+                    <FontAwesomeIcon icon={faEye}/>{' '}
+                    {
+                        (a.visibility === 'public') ? (
+                            'This artefact is visible to everyone.'
+                        ) : (a.visibility === 'private') ? (
+                            'This artefact is only visible to you.'
+                        ) : (
+                            '???'
+                        )
+                    }
+                </div>
+            );
+        }        
 
         return (
-            <div className="af-artcard">
-                <ImageCarousel
-                    id={carouselId}
-                    items={a.images}
-                    getId={x => x.id}
-                    activeId={
-                            a.images
-                        &&  a.images[0]
-                        &&  a.images[0].id
-                    }
-                />
-                <div className="af-artcard-body">
+            <div className="af-ai">
+                <div className='af-ai-carousel'>
+                    <ImageCarousel
+                        id={carouselId}
+                        items={a.images}
+                        getId={x => x.id}
+                        activeId={
+                                a.images
+                            &&  a.images[0]
+                            &&  a.images[0].id
+                        }
+                    />
+                </div>
+                <div className="af-ai-info">
                     {title}
                     <Link
-                        to={a.owner && a.owner.username ? `/user/${a.owner.username}` : ``}
-                    > {a.owner && a.owner.username ? a.owner.username : ''} </Link>
+                            className='af-ai-owner'
+                            to={
+                                a.owner && a.owner.username ?
+                                    `/user/${a.owner.username}` : ``
+                            }
+                    >
+                        {a.owner && a.owner.username ? a.owner.username : ''}
+                    </Link>
 
                     {categories}
                     {description}
-         
-                    <button onClick={this.handleSubmit}> Submit</button>
+                    {vis}
                 </div>
             </div>
         );
     }
 
     handleSubmit = () => {
-        console.log('updating');
         this.props.updateArtefact(this.state.artefact);
     }
 
     handleArtValChange = (attrib) => (val) => {
-        console.log(val);
         this.setState({
             ...this.state,
             artefact: {
                 ...this.state.artefact,
                 [attrib]: val,
             },
+        }, () => {
+            this.handleSubmit();
         });
-    }
-
-    updateArtefact = () => {
-        this.props.updateArtefact(this.state.artefact);
     }
 
     categoryJoinsToCategories(categoryJoins) {

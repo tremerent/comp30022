@@ -24,6 +24,7 @@ namespace Artefactor.Services.Converters
                     c.Body,
                     author = c.Author.UserName,
                     artefact = c.ArtefactId,
+                    authorImageUrl = c.Author.ImageUrl,
                     replies = childJson ?? new List<object>(),
                     type = "question",
                     ts = c.CreatedAt,

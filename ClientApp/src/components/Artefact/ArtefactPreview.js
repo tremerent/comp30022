@@ -54,33 +54,14 @@ export default class ArtefactPreview extends Component {
                             )}
                         </div>
                         <span className="af-artcard-actions">
-                            <a
-                                href={`#${id}`}
-                                className="af-artcard-action"
-                                data-toggle="collapse"
-                                data-target={`#${id}`}
-                                onClick={
-                                    e => {
-                                        e.preventDefault();
-                                        this.setState({
-                                            descToggle: !this.state.descToggle
-                                        })
-                                    }
-                                }
-                            >
-                                View Description { this.state.descToggle ?
-                                        '▼' /* U+25bc */
-                                    :
-                                        '▶' /* U+25b6 */
-                                }
-                            </a>
-                            <div className="af-artcard-actions-divider"></div>
+                            <p className="af-artcard-action badge badge-decal-text mx-1"> {`${a.questionCount} questions}`} </p>
+                            <p className="af-artcard-action badge badge-decal-text mx-1"> {`${a.questionCount} comments}`} </p>
                             <Link className="af-artcard-action" to={`/artefact/${a.id}`}>
                                 View Full Page ↗ {/* <- U+2197 */}
                             </Link>
                         </span>
                     </div>
-                    <div className="text-muted af-artcard-desc collapse" id={id}>
+                    <div className="text-muted af-artcard-desc" id={id}>
                         <hr/>
                         <p>{a.description}</p>
                     </div>

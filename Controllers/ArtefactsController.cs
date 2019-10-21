@@ -95,7 +95,8 @@ namespace Artefactor.Controllers
                         .Include(a => a.CategoryJoin)
                             .ThenInclude(cj => cj.Category)
                         .Include(a => a.Owner)
-                        .Include(a => a.Images);
+                        .Include(a => a.Images)
+                        .Include(a => a.Comments);
             ApplicationUser curUser = await _userService.GetCurUser(HttpContext);
 
             // if querying for a single artefact, simply return that artefact
@@ -563,8 +564,10 @@ namespace Artefactor.Controllers
         }
 
         public class EditArtefactReq {
+            [JsonRequired]
             public string Id { get; set; }
             public string Title { get; set; }
+            [JsonConverter(typeof(StringEnumConverter))]
             public string Visibility { get; set; }
             public string Description { get; set; }
 
