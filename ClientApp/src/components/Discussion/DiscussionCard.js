@@ -126,7 +126,7 @@ class DiscussionCard extends React.Component {
                             </a>
                     }
                     {
-                        item.isAnswer &&
+                        item.isAnswer && this.props.auth.isOwner &&
                             <a href='#unmark-answered' className='af-dcard-action' onClick={this.unmarkAnswer}>
                                 Unmark Answered
                             </a>
