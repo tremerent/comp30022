@@ -47,6 +47,7 @@ namespace Artefactor.Controllers
                     username = user.UserName,
                     bio = user.Bio,
                     imageUrl = user.ImageUrl,
+                    newUser = user.NewUser,
                 });
             }
             else
@@ -59,6 +60,7 @@ namespace Artefactor.Controllers
         {
             public string bio;
             public string image_url;
+            public bool? newUser;
         }
 
         [Authorize]
@@ -81,6 +83,9 @@ namespace Artefactor.Controllers
             if (diff.image_url != null)
                 curUser.ImageUrl = diff.image_url;
 
+            if (diff.newUser.HasValue)
+                curUser.NewUser = diff.newUser.Value;
+
             await _context.SaveChangesAsync();
 
             return new JsonResult(new
@@ -89,6 +94,7 @@ namespace Artefactor.Controllers
                 curUser.UserName,
                 curUser.Bio,
                 curUser.ImageUrl,
+                curUser.NewUser,
             });
         }
 

@@ -34,7 +34,14 @@ namespace Artefactor
                     //Configuration.GetConnectionString("DefaultConnection")));
             Configuration.GetConnectionString("AzureDbConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(options => {
+                    // <https://stackoverflow.com/a/27831598>
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequiredLength = 10;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -88,7 +95,7 @@ namespace Artefactor
 
             // models -> json
             services.AddTransient<IConverter<Artefact>, ArtefactConverter>();
-            
+            services.AddTransient<IConverter<ArtefactComment>, ArtefactCommentConverter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
     Collapse,
@@ -12,9 +11,9 @@ import { connect } from 'react-redux';
 
 import StyledNavLink from './StyledNavLink.js';
 import UserNavMenu from './UserNavMenu.js';
+import { ReactComponent as ArtefactIcon } from 'images/amphora.svg';
 
 import './NavMenu.css';
-import ARTEFACTOR_BRAND from '../../images/artefactor-brand.png';
 
 class NavMenu extends React.Component {
 
@@ -34,16 +33,22 @@ class NavMenu extends React.Component {
     }
 
     render() {
-        //<NavLink tag={Link} to="/browse" activeClassName="af-active-nav-link"> Browse</NavLink>
-
+        const artefactIcon =
+            <ArtefactIcon
+                fill={
+                    this.state.browseNavItemColor
+                }
+                className="af-icon"
+            />
 
         return (
             <header>
                 <div className='af-navmenu'>
-                    <Navbar light className="navbar-expand-sm ng-white box-shadow">
+                    <Navbar light className="navbar-expand-md ng-white box-shadow">
                         <Container>
                             <NavbarBrand tag={Link} to="/">
-                                <img src={ARTEFACTOR_BRAND} className='af-navmenu-brand' alt='Artefactor logo'/>
+                                <ArtefactIcon className='af-navmenu-brand'/>
+                                Artefactor
                             </NavbarBrand>
                             <NavbarToggler onClick={this.toggleNav}/>
                             <Collapse
@@ -53,7 +58,12 @@ class NavMenu extends React.Component {
                                 <ul className="navbar-nav">
                                     <StyledNavLink
                                         to="/browse"
-                                        label="Browse"
+                                        label={
+                                            <>
+                                                <span> Browse </span>&nbsp;
+                                                {artefactIcon}
+                                            </>
+                                        }
                                         curPath={this.props.curPath}
                                     />
                                     {
@@ -90,4 +100,3 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(NavMenu);
-

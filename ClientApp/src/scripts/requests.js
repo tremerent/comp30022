@@ -22,8 +22,7 @@ async function postRegister(registerDetails) {
 
 async function getArtefact(artefactId) {
     const resp = await apiFetch(getToken())
-        // XXX not sure if this is sanitised -- Sam
-        .get(`/Artefacts/${artefactId}`);
+        .get(`/Artefacts?id=${artefactId}`);
 
     return resp.data;
 }
@@ -117,24 +116,29 @@ async function getArtefacts(queryDetails) {
     Object.keys(queryDetails).map(function(key) {
         const val = queryDetails[key];
 
-        if (val != null && val != "" && val.length) {
-
-            // handle lists
-            if (key === "category") {
-                queries.push(makeQueryFromArray(val, "category"))
-            }
-            else if (key === "q") {
-                queries.push(makeQueryFromArray(val, "q"))
-            }
-            else {
-                queries.push(
-                    makeQuery(key, queryDetails[key])
-                );
-            }
+        if (val !== null && val !== "" && val.length) {
+            queries.push(
+                makeQuery(key, val)
+            );
         }
+
+        return null;
     });
 
+    let url = `/artefacts`;
+    if (queries.length) {
+        url += '?' + queries.reduce((acc, cur) => acc + cur);
+    }
+    resp = await apiFetch(getToken())
+            .get(url);
+
+    return resp.data;
+
     function makeQuery(k, v) {
+        if (Array.isArray(v)) {
+            return makeQueryFromArray(v, k);
+        }
+
         return `&${k}=${v}`;
     }
 
@@ -143,17 +147,6 @@ async function getArtefacts(queryDetails) {
         return queryArray.map(q => makeQuery(queryName, q))
                          .reduce((acc, cur) => acc + cur);
     }
-    
-
-    let url = `/artefacts`;
-    if (queries.length) {
-        url += '?' + queries.reduce((acc, cur) => acc + cur);
-    }
-    console.log(url);
-    resp = await apiFetch(getToken())
-            .get(url);
-
-    return resp.data;
 }
 
 async function getUser(username) {
@@ -163,11 +156,7 @@ async function getUser(username) {
     return resp.data;
 }
 
-// This is a total hack. Will fix to be proper reduxy given more time.
-// -- Sam
 async function patchUserInfo(username, newInfo) {
-    console.log('------- new info ----------');
-    console.log(newInfo);
     const resp = await apiFetch(getToken())
         .patch(`/user/${username}`, newInfo);
 
@@ -184,6 +173,80 @@ async function setProfileImage(file) {
 
     return resp.data;
 }
+
+
+async function getComment(id) {
+    const resp = await apiFetch(getToken())
+        .get(`/artefacts/comments/${id}`);
+
+    return resp.data;
+}
+
+// Adds a reference to each item in a discussion tree pointing to that item's
+// parent item (or null at the top level).
+// Possibly this causes memory leaks; I don't know anything about JS garbage
+// collection.
+// -- Sam
+function addParentRefsToDiscussionTree(tree) {
+    (function recurse(parent, tree, question, answerId) {
+        for (let child of tree) {
+            let nextQuestion = null;
+            let nextAnswerId = null;
+            if (!question) {
+                if (child.type === 'question' && child.isAnswered) {
+                    nextQuestion = child;
+                    nextAnswerId = child.answerComment;
+                }
+            } else if (child.id === answerId) {
+                child.isAnswer = true;
+            }
+            child.parent = parent;
+            child.parentId = child.parent && child.parent.id;
+            recurse(child, child.replies, nextQuestion, nextAnswerId);
+        }
+    })(null, tree, null, null);
+    return tree;
+}
+
+export async function getDiscussion(artefactId) {
+    return addParentRefsToDiscussionTree((
+            await apiFetch(getToken())
+                .get(`/artefacts/comments?artefactId=${artefactId}`)
+        ).data);
+}
+
+export async function postDiscussion(item) {
+    let args;
+    if (item.parent) {
+        args = [
+            '/artefacts/comments/reply',
+            { Body: item.body, ParentCommentId: item.parent.id },
+        ];
+    } else if (item.type === 'question') {
+        args = [
+            '/artefacts/comments/question',
+            { Body: item.body, ArtefactId: item.artefact },
+        ];
+    } else  {
+        args = [
+            '/artefacts/comments',
+            { Body: item.body, ArtefactId: item.artefact },
+        ];
+    }
+
+    let data = (
+            await apiFetch(getToken())
+                .post(...args)
+        ).data;
+    data.parent = item.parent;
+    return data;
+}
+
+export async function markAnswer(question, answer) {
+    const resp = await apiFetch(getToken())
+        .patch(`/artefacts/comments/mark-answer`, { QuestionId: question.id, AnswerId: answer.id });
+}
+
 
 export {
     postArtefact,
@@ -205,4 +268,6 @@ export {
     getUser,
     patchUserInfo,
     setProfileImage,
+
+    getComment,
 }

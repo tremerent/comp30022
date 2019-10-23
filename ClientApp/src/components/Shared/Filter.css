@@ -1,12 +1,22 @@
 .af-filtered-browser {
+    flex-grow: 1;
+    display: flex;
     margin-top: 5%;
+    flex-direction: column;
 }
 
 .af-filter-header {
-    display: flex;
-    justify-content: end;
-
     margin-bottom: 3%;
+}
+
+.af-flex-end {
+    display: flex;
+    justify-content: flex-end !important;
+}
+
+.af-flex-between {
+    display: flex;
+    justify-content: space-between;
 }
 
 .af-filter-row {
@@ -42,7 +52,7 @@
 }
 
 .af-filter-sort-outer {
-    width: 30%;
+    width: 60%;
 }
 
 .af-filter-sort-select {
@@ -54,4 +64,46 @@
 .af-filter-sort-order-toggle {
     width: 20%;
     margin-bottom: 7px;
+}
+
+.af-filter-controls
+ {
+    display: inline-block;
+}
+
+.af-filter-control {
+    margin-right: 10px;
+}
+
+@media (max-width: 1000px) {
+    .af-filtered-browser-actions {
+        flex-direction: column !important;
+    }
+
+    .af-filtered-browser-action {
+        display: flex;
+        justify-content: center;
+        justify-content: center;
+    }
+}
+
+.af-filtered-browser-actions {
+    display: flex;
+    justify-content: space-around;
+    align-content: center;
+}
+
+.af-filtered-browser-action {
+    margin-left: 5%;
+}
+
+.af-filter-header-title {
+    text-justify: left;
+    width: 30%;
+}
+
+.af-filter-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5%;
 }

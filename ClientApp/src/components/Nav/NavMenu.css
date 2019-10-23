@@ -1,24 +1,43 @@
+
 a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+white-space: normal;
+text-align: center;
+word-break: break-all;
 }
 
-html {
-  font-size: 14px;
+/* i think this makes the whole page font bigger? */
+/* html {
+font-size: 20px;
 }
 @media (min-width: 768px) {
-  html {
+html {
     font-size: 16px;
-  }
+}
+} */
+
+.navbar-nav .nav-link {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.nav-link:hover {
+color: rgba(0, 0, 0, 0.7);
+fill: rgba(0, 0, 0, 0.7);
 }
 
 .af-active-nav-link {
     color: #F2DCD0 !important;
+    fill: #F2DCD0 !important;
+}
+
+.af-inactive-nav-link {
+color: rgba(0, 0, 0, 0.5);
+fill: rgba(0, 0, 0, 0.5);
 }
 
 .af-login-signup-nav-link {
     color: #89624B !important;
+    fill: #89624B !important;
 }
 
 .af-navmenu {
@@ -32,8 +51,8 @@ html {
 
 .af-navmenu-placeholder {
     /* XXX this needs to be kept in sync with whatever the navmenu's height
-       is. */
-    height: 3.5rem;
+        is. */
+    height: 4rem;
 }
 
 .box-shadow {
@@ -43,12 +62,25 @@ html {
 }
 
 .af-navmenu-brand {
-    /* sam: *makes his sexy logo as large as possible* */
-    height: 1.8rem;
+    height: 2.4rem;
+    width: 2.4rem;
     padding-bottom: 0.2rem;
+    flex-grow: 0;
 }
 
-.navbar-nav .nav-link {
+.navbar-brand {
+    display: flex;
     font-weight: bold;
+    align-items: center;
 }
+
+.navbar-expand-sm .container {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container > .d-sm-inline-flex {
+    flex-grow: 0;
+}
+
 

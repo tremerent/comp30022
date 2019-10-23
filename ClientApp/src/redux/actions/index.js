@@ -1,14 +1,13 @@
-﻿import { authTypes, artefactTypes, usersTypes } from './types';
+﻿import { push } from 'connected-react-router';
+import { authTypes, } from './types';
 import { setUser, logoutUser, } from '../../scripts/auth';
-import { push } from 'connected-react-router';
+import * as discuss from './discussActions';
+import tute from './tuteActions';
+import * as artefacts from './artActions';
+import * as users from './userActions';
 
 import {
-    postArtefactAndCategories,
     postRegister,
-    getArtefacts,
-    getUser as fetchUser,
-    patchUserInfo,
-    setProfileImage,
 } from '../../scripts/requests';
 
 function setRedir(to) {
@@ -83,23 +82,17 @@ function register(registerData) {
     return async function (dispatch) {
         dispatch(reqRegister());
 
-        const responseData = await postRegister(registerData);
-
-        if (responseData.isOk) {
+        try {
+            const responseData = await postRegister(registerData);
             await dispatch(login(registerData));
-
             return responseData;
+        } catch (e) {
+            if (e.response)
+                dispatch(errRegister(e.response.data.value));
+            else
+                dispatch(errRegister({ errors: [ 'Unspecified Error' ] }));
+            return null;
         }
-        else {
-            if (responseData.errorCode) {
-                dispatch(errRegister(responseData.errorCode));
-            }
-            else {
-                dispatch(errRegister("NO ERROR CODE"));
-            }
-        }
-
-
     }
 }
 
@@ -124,351 +117,11 @@ const auth = {
     setRedir,
 }
 
-function reqGetBrowserArtefacts(queryDetails) {
-    return {
-        type: artefactTypes.REQ_GET_BROWSER_ARTEFACTS,
-        query: queryDetails,
-    }
-}
-
-function resGetBrowserArtefacts(browserArtefacts) {
-    return {
-        type: artefactTypes.RES_GET_BROWSER_ARTEFACTS,
-        browserArtefacts,
-    }
-}
-
-function errGetBrowserArtefacts() {
-    return {
-        type: artefactTypes.ERR_GET_BROWSER_ARTEFACTS,
-    }
-}
-
-function getBrowserArtefacts(queryKeyValues) {
-    return async function(dispatch) {
-        dispatch(reqGetBrowserArtefacts(queryKeyValues))
-
-        try {
-            const browserArtefacts = await getArtefacts(queryKeyValues);
-
-            dispatch(resGetBrowserArtefacts(browserArtefacts));
-        }
-        catch(e) {
-            dispatch(errGetBrowserArtefacts({ error: e }));
-        }
-    }   
-}
-
-function reqGetMyArtefacts() {
-    return {
-        type: artefactTypes.REQ_GET_MY_ARTEFACTS,
-    }
-}
-
-function resGetMyArtefacts(myArtefacts) {
-    return {
-        type: artefactTypes.RES_GET_MY_ARTEFACTS,
-        myArtefacts,
-    }
-}
-
-function errGetMyArtefacts() {
-    return {
-        type: artefactTypes.ERR_GET_MY_ARTEFACTS,
-    }
-}
-
-function getMyArtefacts() {
-    return async function (dispatch, getState) {
-        const { user: { username: curUserUsername } } =
-            getState().auth;
-
-        dispatch(reqGetMyArtefacts());
-
-        try {
-            const myArtefacts = await getArtefacts({
-                user: curUserUsername
-            });
-            dispatch(resGetMyArtefacts(myArtefacts));
-        }
-        catch (e) {
-            // TODO
-            dispatch(errGetMyArtefacts());
-        }
-    }
-}
-
-function setPublicArtefacts(publicArts) {
-    return {
-        type: artefactTypes.RES_GET_PUBLIC_ARTEFACTS,
-        artefacts: publicArts,
-    }
-}
-
-function reqGetPublicArtefacts() {
-    return {
-        type: artefactTypes.REQ_GET_PUBLIC_ARTEFACTS,
-    }
-}
-
-function resGetPublicArtefacts(publicArts) {
-    return {
-        type: artefactTypes.RES_GET_PUBLIC_ARTEFACTS,
-        artefacts: publicArts,
-    }
-}
-
-function errGetPublicArtefacts() {
-    return {
-        type: artefactTypes.ERR_GET_PUBLIC_ARTEFACTS,
-    }
-}
-
-function getPublicArtefacts() {
-    return async function (dispatch) {
-        dispatch(reqGetPublicArtefacts());
-
-        try {
-            const publicArts = await getArtefacts();
-            dispatch(resGetPublicArtefacts(publicArts));
-        }
-        catch (e) {
-            // TODO
-            dispatch(errGetPublicArtefacts());
-        }
-    }
-}
-
-function addMyArtefact(newArtefact) {
-    return {
-        type: artefactTypes.ADD_MY_ARTEFACTS,
-        newArtefact,
-    }
-}
-
-// addMyArtefact, but synchronise 'state.auth.browse' and 'user' if
-// newArtefact is public
-function addMyArtefactSync(newArtefact) {
-    return async function (dispatch, getState) {
-
-        dispatch(addMyArtefact(newArtefact));
-
-        if (newArtefact.vis == "public") {
-
-            updatePublicArts();
-            updateUserArts();
-        }
-
-        function updatePublicArts() {
-            const { art:
-                { publicArts: { artefacts: publicArtefacts } }
-            } = getState();
-
-            dispatch(setPublicArtefacts([newArtefact, ...publicArtefacts]))
-        }
-
-        function updateUserArts() {
-            const { art: { userArts } } = getState();
-
-            // if the user doesn't already artefacts stored in 'userArts',
-            // just let it be fetched from server - REQ_GET_USER_ARTEFACTS
-            if (userArts[newArtefact.owner.username]) {
-                const userArtefacts =
-                    userArts[newArtefact.owner.username].artefacts;
-
-                if (userArtefacts) {
-                    dispatch(resUserArtefacts(
-                        newArtefact.owner.username,
-                        [newArtefact, userArtefacts],
-                    ));
-                }
-            }
-        }
-    }
-}
-
-function reqCreateMyArtefact() {
-    return {
-        type: artefactTypes.REQ_CREATE_MY_ARTEFACTS,
-        loading: true,
-    }
-}
-
-function resCreateMyArtefact(createdArtefact) {
-    return {
-        type: artefactTypes.RES_CREATE_MY_ARTEFACTS,
-        createdArtefact,
-    }
-}
-
-// returns the created artefact
-function createMyArtefact(newArtefact) {
-    return async function (dispatch, getState) {
-        dispatch(reqCreateMyArtefact())
-
-        const postedArtefact = await postArtefactAndCategories(newArtefact);
-
-        dispatch(addMyArtefactSync(postedArtefact));
-        dispatch(resCreateMyArtefact(postedArtefact));
-
-        return getState().art.myArts.create.createdArtefact;
-    }
-}
-
-function reqUserArtefacts(username) {
-    return {
-        type: artefactTypes.REQ_GET_USER_ARTEFACTS,
-        username,
-    }
-}
-
-function resUserArtefacts(username, userArtefacts) {
-    return {
-        type: artefactTypes.RES_GET_USER_ARTEFACTS,
-        username,
-        userArtefacts,
-    }
-}
-
-function errGetUserArtefacts(username) {
-    return {
-        type: artefactTypes.ERR_GET_USER_ARTEFACTS,
-        username,
-    }
-}
-
-function getUserArtefacts(username, vis) {
-    return async function (dispatch) {
-        dispatch(reqUserArtefacts(username));
-
-        try {
-            const userArtefacts = await getArtefacts(username, vis);
-            dispatch(resUserArtefacts(username, userArtefacts));
-        }
-        catch (e) {
-            // TODO
-            dispatch(errGetUserArtefacts());
-        }
-    }
-}
-
-const artefacts = {
-    createMyArtefact,
-    getMyArtefacts,
-    addMyArtefactSync,
-    getPublicArtefacts,
-    getUserArtefacts,
-    getBrowserArtefacts,
-}
-
-function reqGetUser(username) {
-    return {
-        type: usersTypes.REQ_GET_USER,
-        username,
-    }
-}
-
-function resGetUser(user) {
-    return {
-        type: usersTypes.RES_GET_USER,
-        user,
-    }
-}
-
-function errGetUser(username) {
-    return {
-        type: usersTypes.ERR_GET_USER,
-        username,
-    }
-}
-
-function getUser(username) {
-    return async function(dispatch) {
-        dispatch(reqGetUser(username));
-
-        try {
-            const user = await fetchUser(username);
-
-            dispatch(resGetUser(user));
-        }
-        catch (e) {
-            // TODO
-            dispatch(errGetUser(username));
-        }
-    }
-}
-
-function reqPatchUserDetails(username) {
-    return {
-        type: usersTypes.REQ_PATCH_USER_DETAILS,
-        username,
-    }
-}
-
-function resPatchUserDetails(username, patchedDetails) {
-    return {
-        type: usersTypes.RES_PATCH_USER_DETAILS,
-        username,
-        patchedDetails,
-    }
-}
-
-function errPatchUserDetails(username) {
-    return {
-        type: usersTypes.ERR_PATCH_USER_DETAILS,
-        username,
-    }
-}
-
-function updateCurUserDetails(newDetails) {
-    return async function(dispatch, getState) {
-        const curUserName = getState().auth.user.username;
-
-        dispatch(reqPatchUserDetails(curUserName));
-
-        try {
-            await patchUserInfo(curUserName, newDetails);
-
-            dispatch(resPatchUserDetails(curUserName, newDetails));
-        }
-        catch (e) {
-            // unauthed or other?
-            dispatch(errPatchUserDetails(curUserName));
-        }
-    }
-}
-
-function updateCurUserProfilePic(file) {
-    return async function(dispatch, getState) {
-        const curUserName = getState().auth.user.username;
-
-        dispatch(reqPatchUserDetails(curUserName));
-
-        try {
-            const respData = await setProfileImage(file);
-
-            dispatch(resPatchUserDetails(curUserName, { 
-                imageUrl: respData.url,
-            }));
-        }
-        catch (e) {
-            // unauthed or other?
-            dispatch(errPatchUserDetails(curUserName));
-        }
-    }
-}
-
-const users = {
-    reqGetUser,
-    resGetUser,
-    errGetUser,
-    getUser,
-    updateCurUserDetails,
-    updateCurUserProfilePic,
-}
-
 export {
     auth,
     artefacts,
     users,
-}
+    tute,
+    discuss,
+};
+

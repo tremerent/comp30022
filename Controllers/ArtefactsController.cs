@@ -55,7 +55,7 @@ namespace Artefactor.Controllers
                 new List<Visibility>((Visibility[])Enum.GetValues(typeof(Visibility)));
 
             var visValsEnumMemberAttribs = visVals
-                .Select(eVal => EnumHelper.GetAttributeOfType<EnumMemberAttribute>(eVal))
+                .Select(eVal => Helpers.GetAttributeOfType<EnumMemberAttribute>(eVal))
                 .Where(enumMemberAttrib => enumMemberAttrib != null)
                 .Select(enumMemberAttrib => enumMemberAttrib.Value)
                 .ToList();
@@ -73,7 +73,7 @@ namespace Artefactor.Controllers
             [FromQuery] string[] q,  // query by string
             [FromQuery] bool? includeDesc,
 
-            [FromQuery] string vis,  // eg. ...&vis=public,private&...
+            [FromQuery] Visibility[] vis,  // eg. ...&vis=public,private&...
 
             [FromQuery] string[] category,
             [FromQuery] bool? matchAll,
@@ -90,45 +90,15 @@ namespace Artefactor.Controllers
             //
             // Similar expressions are built for calls to '.OrderBy'.
 
-            IQueryable<Artefact> artefacts = _context.Artefacts;
-
-            // '.Load()' calls are made since can't '.Include(a => a.Images)'.
-            // See - https://github.com/aspnet/EntityFrameworkCore/issues/16061
-
-            artefacts
-                .Include(a => a.CategoryJoin)
-                    .ThenInclude(cj => cj.Category)
-                .Include(a => a.Owner)
-                .Where(a =>
-                    a.Visibility == Visibility.Public
-                ).Load();
-
-            artefacts.Include(a => a.Images).Load();
-
-            ParameterExpression artefactParam = 
-                Expression.Parameter(typeof(Artefact), "artefact");
-
-            IList<Expression> whereLambdas = new List<Expression>();
-            IList<Expression> orderByLambdas = new List<Expression>();
-
-            /// Build queries
-            
-            // first initialise curUser and queryUser - check for NotFound
+            IQueryable<Artefact> artefacts = 
+                _context.Artefacts
+                        .Include(a => a.CategoryJoin)
+                            .ThenInclude(cj => cj.Category)
+                        .Include(a => a.Owner)
+                        .Include(a => a.Images);
             ApplicationUser curUser = await _userService.GetCurUser(HttpContext);
-            ApplicationUser queryUser = null;  // query 'user'
-            if (user != null)
-            {
-                // this throws if 'user == null'
-                queryUser = await _userManager.FindByNameAsync(user);
 
-                if (queryUser == null)
-                {
-                    return NotFound("'user' does not exist.");
-                }
-            }
-
-            // visibility query - handles auth
-
+            // if querying for a single artefact, simply return that artefact
             if (id != null)
             {
                 var artefact = await artefacts
@@ -141,7 +111,7 @@ namespace Artefactor.Controllers
 
                 // check auth
 
-                if (Queries.VisQueryIsAuthorised(
+                if (Queries.QueryIsAuthorised(
                     artefact.Visibility,
                     curUser, 
                     artefact.Owner, 
@@ -152,21 +122,32 @@ namespace Artefactor.Controllers
                 return new JsonResult(_artefactConverter.ToJson(artefact));
             }
 
-            if (vis != null)
-            {
-                IList<string> visQueryStrings = Queries.QueryStringValueList(vis);
-                IEnumerable<Visibility> visQueryEnums;
-                try 
-                {
-                    visQueryEnums = visQueryStrings
-                        .Select(visString => Queries.VisStringQueryToEnum(visString));
-                }
-                catch (QueryException)
-                {
-                    return BadRequest("Badly formatted query 'vis'");
-                }
+            /// Build dynamic linq queries using expression trees. See -
+            /// https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/expression-trees/how-to-use-expression-trees-to-build-dynamic-queries
 
-                if (visQueryEnums.Any(visQuery => !Queries.VisQueryIsAuthorised(
+            ParameterExpression artefactParam = 
+                Expression.Parameter(typeof(Artefact), "artefact");
+
+            IList<Expression> whereLambdas = new List<Expression>();
+            IList<Expression> orderByLambdas = new List<Expression>();
+            
+            // first initialise queryUser - check for NotFound
+
+            ApplicationUser queryUser = null;  // query 'user'
+            if (user != null)
+            {
+                // this throws if 'user == null'
+                queryUser = await _userManager.FindByNameAsync(user);
+
+                if (queryUser == null)
+                {
+                    return NotFound("'user' does not exist.");
+                }
+            }
+
+            if (vis != null && vis.Length > 0)
+            {
+                if (vis.Any(visQuery => !Queries.QueryIsAuthorised(
                         visQuery, 
                         curUser, 
                         queryUser,
@@ -178,14 +159,35 @@ namespace Artefactor.Controllers
                 }
                 else
                 {
-                    foreach(Visibility visQuery in visQueryEnums)
+                    var visLambdas = new List<Expression>(
+                        Enum.GetValues(typeof(Visibility)).Length
+                    );
+
+                    foreach(Visibility visQuery in vis)
                     {
-                        whereLambdas.Add(
+                        visLambdas.Add(
                             QueryExpressions.ArtefactVisQueryExpression(visQuery, artefactParam)
                         );
                     }
 
+                    // OR visibilities since artefact can belong to any of the
+                    // queried visibilities
+                    whereLambdas.Add(
+                        QueryExpressions.FoldBoolLambdas(
+                            Expression.Constant(false), 
+                            visLambdas, 
+                            (lamb1, lamb2) => Expression.OrElse(lamb1, lamb2))
+                    );
                 }
+            }
+            else
+            {
+                // no vis query has been specified, so just return public 
+                // artefacts and consider other queries
+                whereLambdas.Add(
+                    QueryExpressions.ArtefactVisQueryExpression(
+                        Visibility.Public, artefactParam)
+                );
             }
 
             // user query
@@ -411,39 +413,46 @@ namespace Artefactor.Controllers
                             "CreatedAt", artefactParam);
                         break;
 
-                    // TODO(jonah) test after merge
+                    // TODO(jonah) 
 
-                    // case "questionCount":
+                    case "questionCount":
+                        orderType = typeof(int);
                         
-                    //     var questionsPropertyExp = 
-                    //         QueryExpressions.ArtefactPropertyExpression<IEnumerable<ArtefactComment>>(
-                    //             "Comments",
-                    //             artefactParam
-                    //         );
+                        var commentsPropertyExpQ = 
+                            QueryExpressions.ArtefactPropertyExpression<IEnumerable<ArtefactComment>>(
+                                "Comments",
+                                artefactParam
+                            );
 
-                    //     orderByBodyExp = QueryExpressions.CountExpression(
-                    //         (Expression<IEnumerable<ArtefactComment>>) questionsPropertyExp);
+                        var ofTypeMethod = 
+                            typeof(Enumerable)
+                            .GetMethods()
+                            .Single(method => method.Name == "OfType" && 
+                                    method.IsStatic && 
+                                    method.GetParameters().Length == 1);
 
-                    //     break;
+                        var questionsExp = Expression.Call(
+                            ofTypeMethod.MakeGenericMethod(typeof(ArtefactQuestion)),
+                            commentsPropertyExpQ
+                        );
 
-                    // case "commentCount":
+                        orderByBodyExp = QueryExpressions
+                            .CountExpression<ArtefactQuestion>(questionsExp);
 
-                    //     var questionsPropertyExp = 
-                    //         QueryExpressions.ArtefactPropertyExpression<IEnumerable<ArtefactComment>>(
-                    //             "Comments",
-                    //             artefactParam
-                    //         );
+                        break;
 
-                    //     var commentsExp = Expression.Call(
-                    //         toCountExp,
-                    //         typeof(Enumerable)
-                    //             .GetMethod("Count", new [] { typeof(T) })
-                    //     );
+                    case "commentCount":
+                        orderType = typeof(int);
 
-                    //     orderByBodyExp = QueryExpressions.CountExpression(
-                    //         (Expression<IEnumerable<ArtefactComment>>) commentsPropertyExp);
+                        var commentsPropertyExp = QueryExpressions
+                            .ArtefactPropertyExpression<IEnumerable<ArtefactComment>>(
+                                "Comments",
+                                artefactParam
+                            );
 
-                    //     break;
+                        orderByBodyExp = QueryExpressions
+                            .CountExpression<ArtefactComment>(commentsPropertyExp);
+                        break;
 
                     case "imageCount":
 
@@ -524,7 +533,7 @@ namespace Artefactor.Controllers
             // may need owner username
             var curUser = await _userService.GetCurUser(HttpContext);
 
-            _context.Attach(artefact);
+            _context.Add(artefact);
 
             artefact.CreatedAt = DateTime.UtcNow;
             // OwnerId is shadow property
@@ -668,24 +677,30 @@ namespace Artefactor.Controllers
                 Uri uri =
                     await _uploadService.UploadFileToBlobAsync(file.FileName, file);
 
-                await _context.AddAsync(new ArtefactDocument
+                var artDoc = new ArtefactDocument
                 {
                     Title = file.FileName,
                     Url = uri.AbsoluteUri,
                     ArtefactId = artefactId,
                     DocType = DocType.Image,
-                });
+                };
+
+                await _context.AddAsync(artDoc);
 
                 await _context.SaveChangesAsync();
 
-                return NoContent();
+                // todo - use converter
+                return new JsonResult(new {
+                    id      = artDoc.Id,
+                    title   = artDoc.Title,
+                    url     = artDoc.Url,
+                    type    = artDoc.DocType,
+                });
             }
             catch (Exception e)
             {
                 return StatusCode(500, e.ToString());
             }
-
-            return Ok();
         }
 
         [HttpDelete("{artefactId}/image")]

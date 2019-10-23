@@ -1,7 +1,8 @@
 ﻿import { artefactTypes } from '../actions/types';
 import getInitArtState from './initArtState'
+import { flatCombineReducers } from '../util.js';
 
-function art(state = getInitArtState(), action) {
+function artMain(state = getInitArtState(), action) {
     switch (action.type) {
         case artefactTypes.REQ_GET_MY_ARTEFACTS:
             return {
@@ -111,7 +112,7 @@ function art(state = getInitArtState(), action) {
                     },
                 },
             }
-        case artefactTypes.ERR_GET_PUBLIC_ARTEFACTS:
+        case artefactTypes.ERR_GET_USER_ARTEFACTS:
             return {
                 ...state,
                 userArts: {
@@ -147,11 +148,88 @@ function art(state = getInitArtState(), action) {
                     error: true,
                 },
             }
+        case artefactTypes.SET_FILTER:
+            return {
+                ...state,
+                browserArts: {
+                    ...state.browserArts,
+                    filterDetails: action.filterDetails,
+                },
+            }
+        case artefactTypes.SET_CATEGORIES_CACHE:
+            return {
+                ...state,
+                cache: {
+                    ...state.cache,
+                    categories: action.categories,
+                },
+            }
         default:
             return state
     }
 }
 
-export {
-    art,
+function updateArtIdCache(state = getInitArtState(), action) {
+    switch (action.type) {
+
+    case artefactTypes.RES_GET_ARTEFACT:
+        return {
+            ...state,
+            artIdCache: {
+                ...state.artIdCache,
+                [action.artefact.id]: action.artefact,
+            },
+        };
+
+    case artefactTypes.RES_GET_MY_ARTEFACTS:
+        return {
+            ...state,
+            artIdCache: {
+                ...state.artIdCache,
+                ...action.myArtefacts.reduce(
+                        (cache, value) => ({ ...cache, [value.id]: value }),
+                        { }
+                    ),
+            }
+        };
+
+    case artefactTypes.ADD_MY_ARTEFACTS:
+        return {
+            ...state,
+            artIdCache: {
+                ...state.artIdCache,
+                [action.newArtefact.id]: action.newArtefact,
+            }
+        };
+
+    case artefactTypes.RES_GET_PUBLIC_ARTEFACTS:
+        return {
+            ...state,
+            artIdCache: {
+                ...state.artIdCache,
+                ...action.artefacts.reduce(
+                        (cache, value) => ({ ...cache, [value.id]: value }),
+                        { }
+                    ),
+            },
+        };
+
+    case artefactTypes.RES_GET_USER_ARTEFACTS:
+        return {
+            ...state,
+            artIdCache: {
+                ...state.artIdCache,
+                ...action.userArtefacts.reduce(
+                        (cache, value) => ({ ...cache, [value.id]: value }),
+                        { }
+                    ),
+            },
+        };
+
+    default:
+        return state;
+    }
 }
+
+export const art = flatCombineReducers(artMain, updateArtIdCache);
+

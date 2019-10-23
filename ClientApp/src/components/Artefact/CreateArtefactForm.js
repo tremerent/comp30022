@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 import Stepper from 'bs-stepper';
 import 'bs-stepper/dist/css/bs-stepper.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImages, faShareAltSquare, faTrophy } from '@fortawesome/free-solid-svg-icons';
-import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 
 import CategorySelect from '../Category/CategorySelect.js';
 import ArtefactDocs from './ArtefactDocs.js';
-
-import { addArtefactImage } from '../../scripts/requests.js';
 
 import './CreateArtefactForm.css';
 
@@ -32,6 +30,7 @@ export class CreateArtefactForm extends Component {
             visibility: null,
         };
 
+        // this doesn't participate in
         this.docs = { };
 
         this.state = {
@@ -62,42 +61,60 @@ export class CreateArtefactForm extends Component {
 
     render() {
         return (
-            <div style={{ height: '100%' }}>
-                <div className="text-center">
-                    <div className="spinner-border text-primary" role="status"
-                        style={{
-                            display:
-                                this.state.artefactWasCreated ? "none" :
-                                    this.state.loading ? null : "none",
-                        }}>
-                        <span className="sr-only">Loading...</span>
-                    </div>
-                </div>
-                <div className="card"
+            <>
+            <div className="text-center">
+                <div className="spinner-border text-primary" role="status"
                     style={{
-                        display: this.state.artefactWasCreated ? "none" :
-                                    this.state.loading ? "none" : null,
+                        display:
+                            this.state.artefactWasCreated ? "none" :
+                                this.state.loading ? null : "none",
+                            margin: '5em 5em',
                     }}>
-                    {this.renderArtefactForm()}
-                </div>
-                <div style={{ display: this.state.artefactWasCreated ? null : "none" }}>
-                    {this.renderArtefactCreated()}
+                    <span className="sr-only">Loading...</span>
                 </div>
             </div>
+            <div className="card"
+                style={{
+                    display: this.state.artefactWasCreated ? "none" :
+                                this.state.loading ? "none" : null,
+                }}>
+                {this.renderArtefactForm()}
+            </div>
+            <div style={{ display: this.state.artefactWasCreated ? null : "none" }}>
+                {this.renderArtefactCreated()}
+            </div>
+            </>
         );
     }
 
     renderArtefactCreated = () => {
         return (
-            <div className='af-createart-success'>
-                <FontAwesomeIcon
-                    className='af-createart-success-icon' icon={faCheckCircle}
-                />
-                <h4>Success!</h4>
-                <button className='btn btn-primary' data-dismiss='modal'>Ok</button>
+            <div className="alert alert-success create-art-succ" role="alert">
+                <h4 className="alert-heading">Thanks for registering an artefact!</h4>
+                <hr/>
+                <div className="row justify-content-start">
+                    <Link to={`/artefact/${this.state.createdArtefactId}`}>
+                        <button className="btn btn-secondary mx-2" style={{color: "#fff !important"}}>
+                            See your artefact
+                        </button> 
+                    </Link>
+                    <button className="btn btn-primary" onClick={this.resetArtefactCreation}> Create another artefact</button>
+                </div>
             </div>
         );
     }
+
+    // renderArtefactCreated = () => {
+    //     return (
+    //         <div className='af-createart-success'>
+    //             <FontAwesomeIcon
+    //                 className='af-createart-success-icon' icon={faCheckCircle}
+    //             />
+    //             <h4>Success!</h4>
+    //             <button className='btn btn-primary' data-dismiss='modal'>Ok</button>
+    //         </div>
+    //     );
+    // }
 
     renderArtefactForm = () => {
         return (
@@ -192,10 +209,10 @@ export class CreateArtefactForm extends Component {
                 </div>
 
                 <div className="form-group">
-                    <CategorySelect 
-                        creatable={true} 
-                        categoryVals={this.state.artefact.categories} 
-                        setCategoryVals={this.handleSelectValsChange("categories")} 
+                    <CategorySelect
+                        creatable={true}
+                        categoryVals={this.state.artefact.categories}
+                        setCategoryVals={this.handleSelectValsChange("categories")}
                         blurPlaceholder={"Choose your artefact's categories"}
                         focusPlaceholder={"Type to search for a category or create your own"}
                     />
@@ -245,23 +262,20 @@ export class CreateArtefactForm extends Component {
             }
 
             return (
-                <div>
-                    <div key={visOpt} className="form-check">
-                        { invalidFeedback }
-                        <input
-                            className="form-check-input"
-                            type="radio"
-                            name="visibility"
-                            id="visibility"
-                            value={visOpt}
-                            onChange={this.handleFormChange}
-                            required
-                        />
-                        <label className="form-check-label">
-                            {visbilityOptLabels[visOpt]}
-                        </label>
-
-                    </div>
+                <div key={visOpt} className="form-check">
+                    { invalidFeedback }
+                    <input
+                        className="form-check-input"
+                        type="radio"
+                        name="visibility"
+                        id="visibility"
+                        value={visOpt}
+                        onChange={this.handleFormChange}
+                        required
+                    />
+                    <label className="form-check-label">
+                        {visbilityOptLabels[visOpt]}
+                    </label>
                 </div>
             );
         });
@@ -291,17 +305,6 @@ export class CreateArtefactForm extends Component {
         );
     }
 
-    async submitDocs(id) {
-        let promises = [];
-
-        for (let doc of Object.values(this.docs)) {
-            promises.push(addArtefactImage(id, doc.blob));
-            console.log(`POST ${id} :: ${doc.filename}`);
-        }
-
-        await Promise.all(promises);
-    }
-
     handleSubmit = (e) => {
         if (e) {
             e.preventDefault();
@@ -312,13 +315,16 @@ export class CreateArtefactForm extends Component {
             loading: true,
         });
 
-        this.props.createArtefact(this.state.artefact)
-            .then((async (...args) => {
-
-                if (this.props.createdArtefact) {
-                    const response =
-                        await this.submitDocs(this.props.createdArtefact.id);
-                }
+        // At this point the artefact object has a temporary ID (a timestamp).
+        // We need to remove that before the object is sent to the server, or
+        // else EF and whoever actually put the temporary id in the database.
+        // FIXME is to stop that happening, since it's not great that anyone
+        // with an account can insert objects with arbitrary string IDs into
+        // our database.
+        let artefact = this.state.artefact;
+        artefact.id = undefined;
+        this.props.createArtefact(artefact, this.docs)
+            .then(() => {
 
                 // add created artefacts id so we have a link to it for the success
                 // message
@@ -328,7 +334,7 @@ export class CreateArtefactForm extends Component {
                     artefactWasCreated: true,
                     createdArtefactId: this.getCreatedArtefactId(),
                 });
-            }).bind(this));
+            });
     }
 
     // null check created artefact's id
@@ -353,7 +359,9 @@ export class CreateArtefactForm extends Component {
             artefactWasCreated: false,
             createdArtefactId: this.getCreatedArtefactId(),
             artefact: { ...this.initialArtefactState },
-        })
+        });
+
+        this.props.createArtReset();
     }
 
     resetFormValidation = () => {

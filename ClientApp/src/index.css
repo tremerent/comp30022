@@ -1,0 +1,27 @@
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    src:
+         url('fonts/Lato/Lato-Regular.ttf') format('truetype'),
+}
+
+@font-face {
+    font-family: 'Source Sans Pro';
+    font-style: normal;
+    font-weight: 400;
+    src:
+         url('fonts/Source_Sans_Pro/SourceSansPro-Regular.ttf') format('truetype'), 
+}
+
+body {
+    font-family: 'Source Sans Pro', sans-serif
+}
+.heading {
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+}
+.subheading {
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+}

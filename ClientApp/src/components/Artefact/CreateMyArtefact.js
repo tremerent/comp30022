@@ -12,7 +12,7 @@ class CreateMyArtefact extends React.Component {
 
         this.state = {
             createdArtefact: null,
-        }
+        };
     }
 
     render() {
@@ -20,15 +20,22 @@ class CreateMyArtefact extends React.Component {
             createArtefact={this.createMyArtefact}
             createdArtefact={this.state.createdArtefact}
             visibilityOpts={this.props.visibilityOpts}
+            createArtReset={this.createArtReset}
         />;
     }
 
-    createMyArtefact = async (artefact) => {
-        const createdArtefact = await this.props.createMyArtefact(artefact);
+    createArtReset = () => {
+        this.props.createArtReset();
+    }
+
+    createMyArtefact = async (artefact, docs) => {
+        const createdArtefact = await this.props.createMyArtefact(artefact, docs);
 
         this.setState({
             ...this.state,
             createdArtefact,
+        }, () => {
+            this.props.artCreated();
         });
     }
 }

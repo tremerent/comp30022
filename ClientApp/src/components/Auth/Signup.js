@@ -29,8 +29,9 @@ class Signup extends React.Component {
             <AuthLayout
                 component={SignupForm}
                 componentProps={{
+                    error: this.props.error,
                     duplicateUsername: this.props.error
-                        ? this.props.error.code == "DuplicateUserName"
+                        ? this.props.error.code === "DuplicateUserName"
                         : false,
                     signup: this.signup,
                     formVals: {
@@ -44,19 +45,23 @@ class Signup extends React.Component {
         );
     }
 
-    signup = (signupData) => {
+    signup = async (signupData) => {
 
+        await this.props.register(signupData)
         this.props.register(signupData)
-                  .then((() => {
+                  .then(() => {
                       // TODO: handle username already taken
                       if (this.props.error) {
-                          // passed down as prop
+                            console.log(`HERE, this.props.error: ${JSON.stringify(this.props.error)})`);
                       }
                       else {
-                          const nextDir = this.props.redir ? this.props.redir : '/my-artefacts';
+                          const nextDir = this.props.redir ?
+                                  this.props.redir
+                              :
+                                  `/user/${this.props.username}`;
                           this.props.push(nextDir);
                       }
-                  }).bind(this));
+                  });
 
         // horrible hackyness so SignupForm doesn't have username etc. equal to ""
         // when initialised - todo: redux when more time
@@ -67,15 +72,13 @@ class Signup extends React.Component {
 
 Signup.propTypes = {
     register: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired,
+    loading: PropTypes.bool,
     redir: PropTypes.string,
-    error: {
-        errorCode: PropTypes.string,
-    }
 }
 
 const mapStateToProps = state => ({
     loading: state.auth.loading,
+    username: state.auth.user.username,
     redir: state.auth.redir,
     error: state.auth.error,
 });

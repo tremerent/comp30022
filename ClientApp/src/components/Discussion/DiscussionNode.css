@@ -1,0 +1,22 @@
+
+.af-dnode-item {
+}
+
+.af-dnode-children {
+    display: flex;
+    flex-direction: row;
+}
+
+.af-dnode-replies {
+    flex-grow: 1;
+}
+
+.af-dnode-vline {
+    height: auto;
+    border-style: solid;
+    border-color: #f0f0f0;
+    border-left: 1px;
+    margin: 0 1.5rem;
+    margin-top: 0;
+}
+

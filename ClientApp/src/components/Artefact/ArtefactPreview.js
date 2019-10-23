@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 
 import ImageCarousel from  '../Shared/ImageCarousel.js';
 
 import './ArtefactPreview.css';
 
-export class ArtefactPreview extends Component {
+export default class ArtefactPreview extends Component {
 
     constructor(props) {
         super(props);
@@ -45,41 +45,21 @@ export class ArtefactPreview extends Component {
                         <div className="af-artcard-categories">
                             {this.categoryJoinsToCategories(a.categoryJoin).map(c =>
                                 <Link
-                                        to={`/browse?category=${c.id}`}
-                                        key={c.id} className="badge badge-decal-text mx-1"
+                                        to={`/browse?category=${c.name}`}
+                                        key={c.id}
+                                        className="badge badge-decal-text mx-1"
                                 >
                                     {c.name}
                                 </Link>
                             )}
                         </div>
                         <span className="af-artcard-actions">
-                            <a
-                                href="#null"
-                                className="af-artcard-action"
-                                data-toggle="collapse"
-                                data-target={`#${id}`}
-                                onClick={
-                                    e => {
-                                        e.preventDefault();
-                                        this.setState({
-                                            descToggle: !this.state.descToggle
-                                        })
-                                    }
-                                }
-                            >
-                                View Description { this.state.descToggle ?
-                                        '▼' /* U+25bc */
-                                    :
-                                        '▶' /* U+25b6 */
-                                }
-                            </a>
-                            <div className="af-artcard-actions-divider"></div>
                             <Link className="af-artcard-action" to={`/artefact/${a.id}`}>
                                 View Full Page ↗ {/* <- U+2197 */}
                             </Link>
                         </span>
                     </div>
-                    <div className="text-muted af-artcard-desc collapse" id={id}>
+                    <div className="text-muted af-artcard-desc" id={id}>
                         <hr/>
                         <p>{a.description}</p>
                     </div>
@@ -92,7 +72,7 @@ export class ArtefactPreview extends Component {
         return categoryJoins.map((cj) => {
             if (cj.categoryId && cj.category) {
                 return {
-                    id: cj.category.id,
+                    id: cj.categoryId,
                     name: cj.category.name,
                 };
             }
@@ -102,4 +82,6 @@ export class ArtefactPreview extends Component {
         }).filter(cat => cat !== null);
     }
 }
+
+export { ArtefactPreview };
 

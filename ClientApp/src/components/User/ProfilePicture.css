@@ -32,3 +32,8 @@
     backface-visibility: hidden;
     border-radius: 60%;
 }
+
+.profile-pic-button  {
+    cursor: pointer;
+}
+

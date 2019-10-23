@@ -38,8 +38,6 @@ export default class ArtefactDocs extends React.Component {
     deleteItem(items, n) {
         const item = this.state[items][n];
 
-        // TODO(sam): Somehow add nice transition on delete last carousel item.
-
         let newItems = [ ...this.state[items] ];
         newItems.splice(n, 1);
 
@@ -66,10 +64,9 @@ export default class ArtefactDocs extends React.Component {
                 $(this.CAROUSEL_SELECTOR).on('slid.bs.carousel', e => {
                         if (!this.deleting)
                             return;
-                        this.state.activeItemId =
-                            this.state[this.deleting.from][e.to].id;
                         this.setState({
                             ...this.state,
+                            activeItemId: this.state[this.deleting.from][e.to].id,
                             [this.deleting.from]: this.deleting.to,
                         })
                         this.onChange(
@@ -89,9 +86,9 @@ export default class ArtefactDocs extends React.Component {
 
     addItem(item) {
         let newItems = [ ...this.state[item.type], item ];
+        this.moveCarousel = item.type === 'image';
         this.setState({
             ...this.state,
-            moveCarousel: item.type === 'image',
             activeItemId: item.id,
             [item.type]: newItems,
         });
@@ -99,6 +96,8 @@ export default class ArtefactDocs extends React.Component {
     }
 
     docListItem = (item, n, alt) => {
+        // Fuck you, eslint.
+        /* eslint no-useless-computed-key: 0 */
         const linkCarousel = item.type === 'image' ? {
                 ['data-target']: this.CAROUSEL_SELECTOR,
                 ['data-slide-to']: n,
@@ -156,9 +155,9 @@ export default class ArtefactDocs extends React.Component {
     }
 
     componentDidUpdate() {
-        if (this.state.moveCarousel) {
+        if (this.moveCarousel) {
             $(this.CAROUSEL_SELECTOR).carousel(this.state.image.length - 1);
-            this.state.moveCarousel = false;
+            this.moveCarousel = false;
         }
     }
 
@@ -195,7 +194,7 @@ export default class ArtefactDocs extends React.Component {
                     <h6 className='af-artdoc-upload-desc'>
                         Upload images and documentation
                     </h6>
-                    <label class="btn mt-2 btn-outline-info af-artdoc-browse">
+                    <label className="btn mt-2 btn-outline-info af-artdoc-browse">
                         Browse
                         <input
                             type="file"

@@ -2,6 +2,7 @@
 .af-artbrowser {
     height: 100%;
     margin: auto;
+    display: flex;
 }
 
 @media (min-width: 576px) {
