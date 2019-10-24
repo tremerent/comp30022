@@ -191,39 +191,41 @@ class Filter extends React.Component {
                         </DropdownMenu>
                     </ButtonDropdown>
                 </div>
-                <div className="input-group mr-sm-2 af-filter-bottom-margin">
-                    <div className="af-filter-row-flex-item">
-                        <Select
-                            menuIsOpen={false}
-                            value={filterDetails.since
-                                ? { label: `After ${formatDateDisplay(filterDetails.since)}`,
-                                    value: filterDetails.since}
-                                : null}
-                            placeholder="After"
-                            onFocus={() => {
-                                this.paramToggle("showSinceCalendar")(true)
-                            }}
-                            onBlur={() => this.paramToggle("showSinceCalendar")(false)}
-                        />
-                    </div>
+                <div className="af-filter-row-flex af-filter-bottom-margin">
+                    <div className="af-filter-row-item-flex">
+                        <div className="af-filter-row-item-flex-inner">
+                            <Select
+                                menuIsOpen={false}
+                                value={filterDetails.since
+                                    ? { label: `After ${formatDateDisplay(filterDetails.since)}`,
+                                        value: filterDetails.since}
+                                    : null}
+                                placeholder="After"
+                                onFocus={() => {
+                                    this.paramToggle("showSinceCalendar")(true)
+                                }}
+                                onBlur={() => this.paramToggle("showSinceCalendar")(false)}
+                            />
+                        </div>
 
-                    <div className="af-filter-row-flex-item">
-                        <Select
-                            menuIsOpen={false}
-                            value={filterDetails.until
-                                    ? { label: `Before ${formatDateDisplay(filterDetails.until)}`,
-                                        value: filterDetails.until}
-                                    : null
-                                  }
-                            placeholder="Before"
-                            onFocus={() => {
-                                if (this.state.showSinceCalendar) {
-                                    this.paramToggle("showSinceCalendar")(false);
-                                }
-                                this.paramToggle("showUntilCalendar")(true);
-                            }}
-                            onBlur={() => this.paramToggle("showUntilCalendar")(false)}
-                        />
+                        <div className="af-filter-row-item-flex-inner">
+                            <Select
+                                menuIsOpen={false}
+                                value={filterDetails.until
+                                        ? { label: `Before ${formatDateDisplay(filterDetails.until)}`,
+                                            value: filterDetails.until}
+                                        : null
+                                    }
+                                placeholder="Before"
+                                onFocus={() => {
+                                    if (this.state.showSinceCalendar) {
+                                        this.paramToggle("showSinceCalendar")(false);
+                                    }
+                                    this.paramToggle("showUntilCalendar")(true);
+                                }}
+                                onBlur={() => this.paramToggle("showUntilCalendar")(false)}
+                            />
+                        </div>
                     </div>
                 </div>
                 {/* date pickers */}
@@ -254,7 +256,7 @@ class Filter extends React.Component {
                 </div>
                 {/* sort and submit */}
                 <div className="af-filter-row">
-                    <div className="af-filter-row-item">
+                    <div className="af-filter-row-control-item">
                         <div className="af-filter-sort-outer">
                             <div className="af-filter-sort-select">
                                 <Select
@@ -303,22 +305,20 @@ class Filter extends React.Component {
 
                             </button>
                         </div>
-                        <div className="af-filter-control">
-                            <button
-                                    onClick={this.clearFilter}
-                                    className="btn btn-outline-secondary"
-                                >
-                                    <FontAwesomeIcon icon={faTimes} color="#dc3545"/>
-                                    &nbsp;
-                                    Clear
-                            </button>
-                        </div>
+                        <button
+                            onClick={this.clearFilter}
+                            className="btn btn-outline-secondary"
+                        >
+                            <FontAwesomeIcon icon={faTimes} color="#dc3545"/>
+                            &nbsp;
+                            Clear
+                        </button>
                     </div>
                 </div>
-                <div className="af-filter-controls">
-                
-                    <div className="af-filter-control">
-                        <button
+                <div className="af-filter-row">
+                    <div className="af-filter-row-item">
+                        <div className="af-filter-controls">
+                            <button
                                 onClick={this.handleSubmit}
                                 className="btn btn-primary"
                                 id={this.props.searchTt.id}
@@ -334,9 +334,8 @@ class Filter extends React.Component {
                                 onClick={this.props.browserTuteRunState}
                                 content={<>Your turn! <FontAwesomeIcon icon={faTimes} size="xs"/> </>}
                             />
+                        </div>
                     </div>
-                        
-                        
                     </div>
             </div>
         );
