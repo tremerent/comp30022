@@ -22,7 +22,7 @@ import Select from 'react-select';
 
 function formatDateDisplay(date, defaultText) {
     if (!date) return defaultText;
-    return format(date, 'dd/MM/yyyy');
+    return format(date, 'do MMM, y');
 }
 
 /**
@@ -193,7 +193,7 @@ class Filter extends React.Component {
                 </div>
                 <div className="af-filter-row-flex af-filter-bottom-margin">
                     <div className="af-filter-row-item-flex">
-                        <div className="af-filter-row-item-flex-inner">
+                        <div className="af-filter-row-item-flex-inner af-filter-bottom-margin">
                             <Select
                                 menuIsOpen={false}
                                 value={filterDetails.since
@@ -305,14 +305,16 @@ class Filter extends React.Component {
 
                             </button>
                         </div>
-                        <button
-                            onClick={this.clearFilter}
-                            className="btn btn-outline-secondary"
-                        >
-                            <FontAwesomeIcon icon={faTimes} color="#dc3545"/>
-                            &nbsp;
-                            Clear
-                        </button>
+                        <div className="af-filter-clear-btn-outer">
+                            <button
+                                onClick={this.clearFilter}
+                                className="btn btn-outline-secondary af-filter-clear-btn"
+                            >
+                                <FontAwesomeIcon icon={faTimes} color="#dc3545"/>
+                                &nbsp;
+                                Clear
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div className="af-filter-row">
