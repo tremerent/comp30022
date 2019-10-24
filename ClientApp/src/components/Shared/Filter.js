@@ -254,82 +254,90 @@ class Filter extends React.Component {
                 </div>
                 {/* sort and submit */}
                 <div className="af-filter-row">
-                    <div className="af-filter-sort-outer">
-                        <div className="af-filter-sort-select">
-                            <Select
-                                // TODO: sort query order
-                                onChange={(value) =>
-                                    this.handleFilterChange("sortQuery")({
-                                        ...filterDetails.sortQuery,
-                                        ...value,
-                                        order: "desc"
-                                    })
+                    <div className="af-filter-row-item">
+                        <div className="af-filter-sort-outer">
+                            <div className="af-filter-sort-select">
+                                <Select
+                                    // TODO: sort query order
+                                    onChange={(value) =>
+                                        this.handleFilterChange("sortQuery")({
+                                            ...filterDetails.sortQuery,
+                                            ...value,
+                                            order: "desc"
+                                        })
+                                    }
+                                    value={filterDetails.sortQuery}
+                                    options={sortOptions}
+                                    placeholder="Sort by"
+                                    menuPlacement="top"
+                                    isClearable={true}
+
+                                    id={this.props.sortArtsTt.id}
+                                />
+                                <TuteTooltip
+                                    placement="right"
+                                    isOpen={this.props.sortArtsTt.toolTipOpen}
+                                    target={this.props.sortArtsTt.id}
+                                    onClick={this.props.browserTuteRunState}
+                                    content={<>
+                                        You can sort artefacts here &nbsp;&nbsp;<FontAwesomeIcon icon={faTimes} size="xs"/>
+                                        <br/>
+                                    </>}
+                                />
+                            </div>
+                            <button
+                                onClick={this.toggleSortDir}
+                                className="btn af-filter-sort-order-toggle"
+                            >
+                                {
+                                    filterDetails.sortQuery.order === "asc"
+                                    ?
+                                        <FontAwesomeIcon icon={
+                                            faSortUp
+                                        } />
+                                    :
+                                        <FontAwesomeIcon icon={
+                                            faSortDown
+                                        } />
                                 }
-                                value={filterDetails.sortQuery}
-                                options={sortOptions}
-                                placeholder="Sort by"
-                                menuPlacement="top"
-                                isClearable={true}
 
-                                id={this.props.sortArtsTt.id}
-                            />
-                            <TuteTooltip
-                                placement="right"
-                                isOpen={this.props.sortArtsTt.toolTipOpen}
-                                target={this.props.sortArtsTt.id}
-                                onClick={this.props.browserTuteRunState}
-                                content={<>
-                                    You can sort the &nbsp;&nbsp;<FontAwesomeIcon icon={faTimes} size="xs"/>
-                                    <br/>
-                                    artefacts that appear here
-                                </>}
-                            />
+                            </button>
                         </div>
-                        <button
-                            onClick={this.toggleSortDir}
-                            className="btn af-filter-sort-order-toggle"
-                        >
-                            {
-                                filterDetails.sortQuery.order === "asc"
-                                ?
-                                    <FontAwesomeIcon icon={
-                                        faSortUp
-                                    } />
-                                :
-                                    <FontAwesomeIcon icon={
-                                        faSortDown
-                                    } />
-                            }
-
-                        </button>
-                    </div>
-                    <div className="af-filter-controls">
-                        <button
-                            onClick={this.clearFilter}
-                            className="btn btn-outline-secondary af-filter-control"
-                        >
-                            <FontAwesomeIcon icon={faTimes} color="#dc3545"/>
-                            &nbsp;
-                            Clear
-                        </button>
-                        <button
-                            onClick={this.handleSubmit}
-                            className="btn btn-primary"
-                            id={this.props.searchTt.id}
-                        >
-                            <FontAwesomeIcon icon={faSearch} />
-                            &nbsp;
-                            Search
-                        </button>
-                        <TuteTooltip
-                            placement="top"
-                            isOpen={this.props.searchTt.toolTipOpen}
-                            target={this.props.searchTt.id}
-                            onClick={this.props.browserTuteRunState}
-                            content={<>Your turn! <FontAwesomeIcon icon={faTimes} size="xs"/> </>}
-                        />
+                        <div className="af-filter-control">
+                            <button
+                                    onClick={this.clearFilter}
+                                    className="btn btn-outline-secondary"
+                                >
+                                    <FontAwesomeIcon icon={faTimes} color="#dc3545"/>
+                                    &nbsp;
+                                    Clear
+                            </button>
+                        </div>
                     </div>
                 </div>
+                <div className="af-filter-controls">
+                
+                    <div className="af-filter-control">
+                        <button
+                                onClick={this.handleSubmit}
+                                className="btn btn-primary"
+                                id={this.props.searchTt.id}
+                            >
+                                <FontAwesomeIcon icon={faSearch} />
+                                &nbsp;
+                                Search
+                            </button>
+                            <TuteTooltip
+                                placement="top"
+                                isOpen={this.props.searchTt.toolTipOpen}
+                                target={this.props.searchTt.id}
+                                onClick={this.props.browserTuteRunState}
+                                content={<>Your turn! <FontAwesomeIcon icon={faTimes} size="xs"/> </>}
+                            />
+                    </div>
+                        
+                        
+                    </div>
             </div>
         );
 

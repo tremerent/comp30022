@@ -72,11 +72,14 @@
 
 .af-filter-controls
  {
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
 }
 
 .af-filter-control {
-    margin-right: 10px;
+    width: 30%;
 }
 
 @media (max-width: 1000px) {

@@ -33,13 +33,13 @@ function LandingPage(props) {
                 </div>
                 <div className="af-lp-actions">
                     <div className="af-action-card-new">
-                        <img src={DETECTIVE_IMAGE} className="af-detective-img"/>
+                        <img src={DETECTIVE_IMAGE} className="af-lp-action-img"/>
                         <div className="af-lp-action-text-outer">
                             <h4 className="af-lp-action-text af-lp-action-title">
                                 Share your knowledge
                             </h4>
                         </div>
-                        <div>
+                        <div className="af-lp-action-button-div-div">
                             <Link
                                 to={{
                                     pathname: "/browse",
@@ -48,22 +48,23 @@ function LandingPage(props) {
                                         action: "detectiveBrowse",
                                 }}}
                             >
-                                <button className="btn btn-primary mv-3">
+                                <button className="btn btn-primary mv-3 af-lp-action-button">
                                     <span className="af-lp-action-button-text">
-                                        Become an <br/> artefact detective</span>
+                                        Become an <b><em>Artefact</em></b> detective
+                                    </span>
                                 </button>
                             </Link>
                         </div>
                     </div>
                     <div className="af-action-card-new">
-                        <img src={SIGNUP_IMAGE} className="af-detective-img"/>
+                        <img src={SIGNUP_IMAGE} className="af-lp-action-img"/>
 
                         <div className="af-lp-action-text-outer">
                             <h4 className="af-lp-action-text af-lp-action-title">
                                 Archive your artefacts
                             </h4>
                         </div>
-                        <div>
+                        <div className="af-lp-action-button-div">
                             <Link
                                 to={{
                                     pathname: "/auth/signup",
@@ -72,9 +73,9 @@ function LandingPage(props) {
                                         action: "detectiveBrowse",
                                 }}}
                             >
-                                <button className="btn btn-primary mv-3">
+                                <button className="btn btn-primary mv-3 af-lp-action-button">
                                     <span className="af-lp-action-button-text">
-                                        Start your repository</span>
+                                        Start your <br/><b><em>Collection</em></b></span>
                                 </button>
                             </Link>
                         </div>

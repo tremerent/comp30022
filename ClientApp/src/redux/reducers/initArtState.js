@@ -2,7 +2,7 @@
     const initArtState = {
         visOpts:[
             "private",
-            "family",
+            // "family",
             "public"
         ],
         cache: {
