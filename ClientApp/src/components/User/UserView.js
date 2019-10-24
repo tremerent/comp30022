@@ -75,6 +75,10 @@ function mapStateToProps(state) {
         }
     }
 
+    console.log(user.loading);
+    console.log('user.loading');
+    console.log(userArtsLoading);
+    
     return {
         isViewOfCurUser,
         username,

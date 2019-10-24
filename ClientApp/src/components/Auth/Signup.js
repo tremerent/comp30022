@@ -47,21 +47,18 @@ class Signup extends React.Component {
 
     signup = async (signupData) => {
 
-        await this.props.register(signupData)
-        this.props.register(signupData)
-                  .then(() => {
-                      // TODO: handle username already taken
-                      if (this.props.error) {
-                            console.log(`HERE, this.props.error: ${JSON.stringify(this.props.error)})`);
-                      }
-                      else {
-                          const nextDir = this.props.redir ?
-                                  this.props.redir
-                              :
-                                  `/user/${this.props.username}`;
-                          this.props.push(nextDir);
-                      }
-                  });
+        await this.props.register(signupData);
+
+        if (this.props.error) {
+            console.log(`HERE, this.props.error: ${JSON.stringify(this.props.error)})`);
+        }
+        else {
+            const nextDir = this.props.redir ?
+                    this.props.redir
+                :
+                    `/user/${this.props.username}`;
+            this.props.push(nextDir);
+        }
 
         // horrible hackyness so SignupForm doesn't have username etc. equal to ""
         // when initialised - todo: redux when more time

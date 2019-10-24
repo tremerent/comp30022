@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Link, } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExternalLinkAlt, } from '@fortawesome/free-solid-svg-icons';
 
 import ImageCarousel from  '../Shared/ImageCarousel.js';
 
@@ -54,8 +56,14 @@ export default class ArtefactPreview extends Component {
                             )}
                         </div>
                         <span className="af-artcard-actions">
+                            <p className="af-artcard-action badge badge-decal-text mx-1"> 
+                                {`${a.questionCount} questions`} 
+                            </p>
+                            <p className="af-artcard-action badge badge-decal-text mx-1"> 
+                                {`${a.commentCount} comments`} 
+                            </p>
                             <Link className="af-artcard-action" to={`/artefact/${a.id}`}>
-                                View Full Page ↗ {/* <- U+2197 */}
+                                View Full Page <FontAwesomeIcon icon={faExternalLinkAlt} />
                             </Link>
                         </span>
                     </div>

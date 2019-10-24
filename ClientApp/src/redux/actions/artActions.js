@@ -1,10 +1,30 @@
 import {
     postArtefactAndCategories,
+    patchArtefactAndCategories,
     getArtefacts,
     getArtefact as apiGetArtefact,
     addArtefactImage,
 } from '../../scripts/requests';
 import { artefactTypes, } from './types';
+import apiFetchWithAuth from '../../scripts/apiFetch';
+
+// function reqUpdateArtefact(artefact) {
+
+// }
+
+// function resUpdateArtefact(artefact) {
+
+// }
+
+// export function updateArtefact(artefact) {
+//     return function(dispatch) {
+
+//         apiFetchWithAuth()
+
+//     }
+// }
+
+
 
 function reqGetBrowserArtefacts(queryDetails) {
     return {
@@ -28,8 +48,6 @@ function errGetBrowserArtefacts() {
 
 export function getBrowserArtefacts(queryKeyValues) {
     return async function(dispatch) {
-        console.log('submitting');
-        console.log(queryKeyValues);
         dispatch(reqGetBrowserArtefacts(queryKeyValues))
 
         try {
@@ -182,19 +200,12 @@ export function addMyArtefactSync(newArtefact) {
 
         if (newArtefact.vis === "public") {
 
-            updatePublicArts();
-            updateUserArts();
-        }
-
-        function updatePublicArts() {
             const { art:
                 { publicArts: { artefacts: publicArtefacts } }
             } = getState();
 
-            dispatch(setPublicArtefacts([newArtefact, ...publicArtefacts]))
-        }
+            updatePublicArts(newArtefact, publicArtefacts, dispatch);
 
-        function updateUserArts() {
             const { art: { userArts } } = getState();
 
             // if the user doesn't already artefacts stored in 'userArts',
@@ -203,15 +214,39 @@ export function addMyArtefactSync(newArtefact) {
                 const userArtefacts =
                     userArts[newArtefact.owner.username].artefacts;
 
-                if (userArtefacts) {
-                    dispatch(resUserArtefacts(
-                        newArtefact.owner.username,
-                        [newArtefact, userArtefacts],
-                    ));
-                }
+                updateUserArts(newArtefact, userArtefacts, dispatch);
             }
         }
     }
+}
+
+function updatePublicArts(newArtefact, publicArtefacts, dispatch) {
+    const newPubArts = updateOrPush(newArtefact, publicArtefacts);
+
+    dispatch(setPublicArtefacts(newPubArts))
+}
+
+function updateUserArts(newArtefact, userArtefacts, dispatch) {
+    const newUserArts = 
+        updateOrPush(newArtefact, userArtefacts);
+
+    dispatch(resUserArtefacts(
+        newArtefact.owner.username, newUserArts,
+    ));
+}
+
+export function updateOrPush(art, artList) {
+    const artIndex = 
+        artList.findIndex((a) => a.id == art.id);
+
+    if (artIndex === -1) {
+        artList.push(art);
+    }
+    else {
+        artList[artIndex] = art;
+    }
+
+    return artList;
 }
 
 function reqCreateMyArtefact() {
@@ -242,6 +277,53 @@ export function createMyArtefact(newArtefact, docs) {
         dispatch(resCreateMyArtefact(postedArtefact));
 
         return getState().art.myArts.create.createdArtefact;
+    }
+}
+
+// function updateCachedArtefact(artefact) {
+//     return {
+//         type: artefactTypes.UPDATE_MY_ARTEFACTS,
+//         artefact,
+//     }
+// }
+
+function updateMyArtefact(updatedArtefact) {
+    return {
+        type: artefactTypes.UPDATE_MY_ARTEFACTS,
+        artefact: updatedArtefact,
+    }
+}
+
+export function updateMyArtefactSync(updatedArtefact, docs) {
+    return async function (dispatch, getState) {
+        console.log('updating sync');
+        const patchedArt = await patchArtefactAndCategories(
+            updatedArtefact, 
+            getState().art.artIdCache[updatedArtefact.id]
+        );
+
+        dispatch(updateMyArtefact(patchedArt));
+
+        if (updatedArtefact.vis === "public") {
+            const { art:
+                { publicArts: { artefacts: publicArtefacts } }
+            } = getState();
+
+            updatePublicArts(updatedArtefact, publicArtefacts, dispatch);
+
+            const { art: { userArts } } = getState();
+
+            // if the user doesn't already artefacts stored in 'userArts',
+            // just let it be fetched from server - REQ_GET_USER_ARTEFACTS
+            if (userArts[updatedArtefact.owner.username]) {
+                const userArtefacts =
+                    userArts[updatedArtefact.owner.username].artefacts;
+
+                updateUserArts(updatedArtefact, userArtefacts, dispatch);
+            }
+        }
+
+        // dispatch(updateCachedArtefact(patchedArt));
     }
 }
 

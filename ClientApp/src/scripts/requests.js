@@ -53,6 +53,64 @@ async function postArtefact(artefact) {
     return resp.data;
 }
 
+async function patchArtefact(artefact) {
+    const resp = await apiFetch(getToken())
+        .patch(`/artefacts/${artefact.id}`, artefact);
+
+    return resp.data;
+}
+
+async function patchArtefactAndCategories(updatedArt, origArt) {
+
+    if (updatedArt.id !== origArt.id) {
+        console.error(`CANNOT UPDATE ART ${origArt.id} SINCE IDS DO NOT MATCH`);
+    }
+
+    // patch artefact
+    await patchArtefact(updatedArt);
+
+    // if (origArt.categoryJoin && updatedArt.categoryJoin) {
+
+    //     const updatedCj = updatedArt.categoryJoin;
+    //     const origCj = origArt.categoryJoin;
+
+    //     console.log('hi');
+    //     console.log(updatedCj);
+    //     console.log(origCj);
+
+    //     const toAdd = updatedCj.filter(cj => 
+    //         !origCj.find(ocj => ocj.categoryId === cj.categoryId));
+
+    //     const toRemove = origCj.filter(cj => 
+    //         !updatedCj.find(ocj => ocj.categoryId == cj.categoryId));
+
+    //     console.log("toAdd");
+    //     console.log(toAdd);
+
+    //     console.log("toRemove");
+    //     console.log(toRemove);
+
+    //     // add categories
+    //     console.log('fst');
+    //     await postArtefactCategories(categoryOptsToDbModel(updatedArt.id, toAdd));
+        
+    //     console.log('snd');
+    //     // remove categories
+    //     await Promise.all(
+    //         categoryOptsToDbModel(updatedArt.id, toRemove)
+    //         .map(cjDbModel => deleteArtefactCategory(cjDbModel))
+    //     );
+    // }
+
+    // fetch artefact again now that it has category relationships
+    // (this could also be stored prior to posting the artefact, and then
+    // appended to the 'postedArtefact', but fetching now ensures
+    // client-server synchronisation
+    const newArtefact = await getArtefact(updatedArt.id);
+
+    return newArtefact;
+}
+
 async function postArtefactAndCategories(artefactToPost) {
     const artefactCategories =
         artefactToPost.categories.map(selectOpt => (
@@ -92,12 +150,24 @@ async function getCategories() {
     return resp.data;
 }
 
+const categoryOptsToDbModel = (artefactId, categoryOpts) => {
+    console.log(artefactId);
+    console.log(categoryOpts);
+    return categoryOpts.map(cat => ({ artefactId, categoryId: cat.id }));
+}
+
 async function postArtefactCategories(artefactId, categories) {
-    const artefactCategories = categories
-        .map(cat => ({ artefactId, categoryId: cat.id }));
+    const artefactCategories = categoryOptsToDbModel(artefactId, categories);
 
     const resp = await apiFetch(getToken())
         .post(`/ArtefactCategories/Many`, artefactCategories);
+
+    return resp.data;
+}
+
+async function deleteArtefactCategory(artCategory) {
+    const resp = await apiFetch(getToken())
+        .delete(`/ArtefactCategories`, artCategory);
 
     return resp.data;
 }
@@ -250,6 +320,7 @@ export async function markAnswer(question, answer) {
 
 export {
     postArtefact,
+    patchArtefactAndCategories,
     postArtefactAndCategories,
     getArtefact,
     getArtefacts,

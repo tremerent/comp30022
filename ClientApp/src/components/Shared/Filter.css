@@ -1,3 +1,7 @@
+.af-browser-tute {
+    margin-bottom: 3% !important;
+}
+
 .af-filtered-browser {
     flex-grow: 1;
     display: flex;
@@ -6,7 +10,7 @@
 }
 
 .af-filter-header {
-    margin-bottom: 3%;
+    margin-bottom: 2%;
 }
 
 .af-flex-end {
@@ -26,10 +30,40 @@
     margin-bottom: 2%;
 }
 
+.af-filter-row-item-flex {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+}
+
+.af-filter-row-item-flex-inner {
+    width: 100%;
+}
+
+@media (min-width: 800px) {
+    .af-filter-row-item-flex-inner {
+        width: 45%;
+    }
+
+    .af-filter-row-item-flex {
+        width: 80%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
+
 .af-filter-row-item {
     width: 80%;
     display: inline-block;
     margin-right: 4%;
+}
+
+.af-filter-row-control-item {
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
 }
 
 .af-filter-bottom-margin {
@@ -68,11 +102,14 @@
 
 .af-filter-controls
  {
-    display: inline-block;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
 
 .af-filter-control {
-    margin-right: 10px;
+    width: 30%;
+    display: flex;
 }
 
 @media (max-width: 1000px) {

@@ -6,10 +6,11 @@ import './ImageCarousel.css';
 
 function renderFrame(image, n) {
     return (
-        <img
-                src={image.url}
-                className='d-block af-imgcar-image'
-                alt={image.filename}
+        <img 
+            src={image.url}
+            className='d-block af-imgcar-image'
+            alt={image.filename}
+            rotation={90}
         />
     );
 }

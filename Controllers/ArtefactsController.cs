@@ -95,7 +95,8 @@ namespace Artefactor.Controllers
                         .Include(a => a.CategoryJoin)
                             .ThenInclude(cj => cj.Category)
                         .Include(a => a.Owner)
-                        .Include(a => a.Images);
+                        .Include(a => a.Images)
+                        .Include(a => a.Comments);
             ApplicationUser curUser = await _userService.GetCurUser(HttpContext);
 
             // if querying for a single artefact, simply return that artefact
@@ -562,10 +563,26 @@ namespace Artefactor.Controllers
               artefactJson);
         }
 
+        public class EditArtefactReq {
+            [JsonRequired]
+            public string Id { get; set; }
+            public string Title { get; set; }
+            [JsonConverter(typeof(StringEnumConverter))]
+            public string Visibility { get; set; }
+            public string Description { get; set; }
+
+            public class CategoryJoinReq 
+            {
+                [JsonRequired]
+                public string CategoryId { get; set; }
+                public string ArtefactId { get; set; }
+            }
+        }
+
         // PATCH: api/Artefacts/as23-123
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<IActionResult> EditArtefact(string id, Artefact artefact)
+        public async Task<IActionResult> EditArtefact(string id, EditArtefactReq artefact)
         {
             if (id != artefact.Id)
             {
@@ -586,7 +603,7 @@ namespace Artefactor.Controllers
                 return Unauthorized();
             }
 
-            foreach (var patchProperty in artefact.GetType().GetProperties())
+            foreach (var  patchProperty in artefact.GetType().GetProperties())
             {
                 string patchPropName = patchProperty.Name;
                 object patchPropValue = patchProperty.GetValue(artefact);
@@ -596,6 +613,17 @@ namespace Artefactor.Controllers
                     SetPropertyValue(dbArt, patchPropName, patchPropValue);
                 }
             }
+
+            // foreach (var patchProperty in artefact.GetType().GetProperties())
+            // {
+            //     string patchPropName = patchProperty.Name;
+            //     object patchPropValue = patchProperty.GetValue(artefact);
+
+            //     if (patchPropValue != null && IsModifiable(patchPropName))
+            //     {
+            //         SetPropertyValue(dbArt, patchPropName, patchPropValue);
+            //     }
+            // }
 
             try
             {
@@ -623,7 +651,6 @@ namespace Artefactor.Controllers
                     artefactProperty == "CreatedAt" ||
                     artefactProperty == "OwnerId" ||
                     artefactProperty == "Owner" ||
-                    artefactProperty == "Title" ||
                     artefactProperty == "CategoryJoin"
                 );
             }

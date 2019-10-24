@@ -6,6 +6,7 @@
     /* Semi-hack to avoid carousel viewport shrinking enough that you can't
        find the buttons. This happens with broken images. */
     min-height: 100px;
+    image-orientation: from-image;
 }
 
 

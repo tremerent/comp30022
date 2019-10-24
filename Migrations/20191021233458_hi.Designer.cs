@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Artefactor.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20191016132229_Init following db wipe")]
-    partial class Initfollowingdbwipe
+    [Migration("20191021233458_hi")]
+    partial class hi
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -51,6 +51,9 @@ namespace Artefactor.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("NewUser")
+                        .HasColumnType("bit");
 
                     b.Property<string>("NormalizedEmail")
                         .HasColumnType("nvarchar(256)")
@@ -253,6 +256,8 @@ namespace Artefactor.Migrations
                     b.HasIndex("DeviceCode")
                         .IsUnique();
 
+                    b.HasIndex("Expiration");
+
                     b.ToTable("DeviceCodes");
                 });
 
@@ -288,6 +293,8 @@ namespace Artefactor.Migrations
                         .HasMaxLength(50);
 
                     b.HasKey("Key");
+
+                    b.HasIndex("Expiration");
 
                     b.HasIndex("SubjectId", "ClientId", "Type");
 

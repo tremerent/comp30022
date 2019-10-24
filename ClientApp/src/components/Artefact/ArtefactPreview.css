@@ -64,8 +64,15 @@
     padding-bottom: 0.4em;
 }
 
-.af-artcard-actions {
+/* .af-artcard-actions {
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap-reverse;
+    margin-bottom: 1em;
+    align-items: center;
+} */
+.af-artcard-actions {
+    display: column;
     flex-direction: row;
     flex-wrap: wrap-reverse;
     margin-bottom: 1em;
@@ -74,6 +81,7 @@
 
 .af-artcard-action {
     white-space: nowrap;
+    margin-bottom: 2px;
 }
 
 .af-artcard-action:hover {

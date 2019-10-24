@@ -14,7 +14,7 @@ import './CreateArtefactForm.css';
 
 const visbilityOptLabels = {
     "private": "Only me",
-    "family": "My family",
+    // "family": "My family",
     "public": "Anyone",
 };
 
@@ -104,18 +104,6 @@ export class CreateArtefactForm extends Component {
         );
     }
 
-    // renderArtefactCreated = () => {
-    //     return (
-    //         <div className='af-createart-success'>
-    //             <FontAwesomeIcon
-    //                 className='af-createart-success-icon' icon={faCheckCircle}
-    //             />
-    //             <h4>Success!</h4>
-    //             <button className='btn btn-primary' data-dismiss='modal'>Ok</button>
-    //         </div>
-    //     );
-    // }
-
     renderArtefactForm = () => {
         return (
             <div id="create-artefact-stepper" className="bs-stepper">
@@ -173,7 +161,7 @@ export class CreateArtefactForm extends Component {
                                     type="submit"
                                     onClick={this.finalFormPageOnSubmitPress}
                                 >
-                                    Share
+                                    Register
                                 </button>
                             </div>
                         </div>
@@ -282,13 +270,13 @@ export class CreateArtefactForm extends Component {
 
         return (
             <div className="px-3">
-                <div className="form-group">
+                {/* <div className="form-group">
                     <div className="row justify-content-start mb-2">
                         <h5> Questions </h5> <i> </i>
                     </div>
                     <p> questions component </p>
                 </div>
-                <hr />
+                <hr /> */}
                 <div>
                     <div className="row justify-content-start mb-2">
                         <h5> Who can see my artefact? </h5>

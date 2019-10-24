@@ -1,13 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { discuss as discussActions, artefacts as artActions } from '../../redux/actions';
-import { faEye } from '@fortawesome/free-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from 'react-router-dom';
+import { 
+    discuss as discussActions, 
+    artefacts as artActions,
+} from '../../redux/actions';
 
 import Overview from '../Shared/Overview.js';
-import ArtefactPreview from './ArtefactPreview.js';
+import ArtefactPreviewNew from './ArtefactPreviewNew.js';
+
 import CentreLoading from 'components/Shared/CentreLoading';
 import ArtefactInfo from './ArtefactInfo.js';
 import '../User/UserProfile.css';
@@ -43,7 +44,14 @@ class ArtefactPage extends React.Component {
             return <CentreLoading/>;
         return (
             <Overview>
-                <ArtefactInfo artefact={this.props.artefact} auth={this.props.auth}/>
+                <ArtefactPreviewNew 
+                    artefact={this.props.artefact} 
+                    editable={this.props.isViewOfCurUser}
+                    updateArtefact={this.props.updateArtefact}
+                />
+                {/* <ArtefactInfo 
+                    artefact={this.props.artefact} 
+                    auth={{isOwner: this.props.isViewOfCurUser}}/> */}
                 {
                     (this.props.discussion.loading) ? (
                         <CentreLoading/>
@@ -65,12 +73,16 @@ class ArtefactPage extends React.Component {
 
 function mapStateToProps(state) {
     const artefactId = getArtefactIdFromRoute(state.router.location.pathname);
-    const artefact = state.art.artIdCache[artefactId];
-    let props = {
-        auth: {
-            loggedIn: state.auth.isLoggedIn,
-            isOwner: false,
-        },
+
+    let isViewOfCurUser = false;
+
+    if (state.art.artIdCache[artefactId]) {
+        isViewOfCurUser = 
+            state.art.artIdCache[artefactId].owner.username === 
+                state.auth.user.username;
+    }
+
+    return {
         artefactId,
         artefact: state.art.artIdCache[artefactId],
         loading: state.art.artIdCache[artefactId] === undefined,
@@ -79,18 +91,17 @@ function mapStateToProps(state) {
             loading: !state.discuss[artefactId],
             error: state.discuss[artefactId] && state.discuss[artefactId].error,
         },
+        isViewOfCurUser,
     };
-    if (props.auth.loggedIn) {
-        props.username = state.auth.user.username;
-        if (artefact)
-            props.auth.isOwner = props.username === artefact.owner.username;
-    }
-    return props;
 }
 
 function mapDispatchToProps(dispatch) {
+    console.log('mapping');
+    console.log(artActions.updateMyArtefactSync);
+
     return bindActionCreators({
         getArtefact: artActions.getArtefact,
+        updateArtefact: artActions.updateMyArtefactSync,
         getDiscussion: discussActions.getDiscussion,
     }, dispatch);
 }
