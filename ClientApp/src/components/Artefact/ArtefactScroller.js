@@ -24,8 +24,10 @@ export default class ArtefactScroller extends Component {
     update_artefacts_to_scroll() {
         var j = 0;
         for (var i = this.state.artefactsToScroll.length; 
-             i < this.props.artefacts.length && j < this.state.load_limit; i++, j++) {
-            this.state.artefactsToScroll.push(this.props.artefacts[i])
+            i < this.props.artefacts.length && j < this.state.load_limit; i++, j++) {
+            this.setState((state, props) => {
+                 return {artefactsToScroll: state.artefactsToScroll.push(props.artefacts[i])};
+            });
         }
     }
     
