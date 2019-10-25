@@ -30,6 +30,7 @@ export class CreateArtefactForm extends Component {
             description: "",
             categories: [],
             visibility: null,
+            creationDate: new Date(),
         };
 
         this.docs = { };
