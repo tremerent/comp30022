@@ -82,6 +82,7 @@ export class ArtefactPreview extends Component {
                     <div className="text-muted af-artcard-desc collapse" id={id}>
                         <hr/>
                         <p>{a.description}</p>
+                        <p>Created on :{a.creationDate}</p>
                     </div>
                 </div>
             </div>
