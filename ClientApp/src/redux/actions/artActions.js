@@ -6,25 +6,6 @@ import {
     addArtefactImage,
 } from '../../scripts/requests';
 import { artefactTypes, } from './types';
-import apiFetchWithAuth from '../../scripts/apiFetch';
-
-// function reqUpdateArtefact(artefact) {
-
-// }
-
-// function resUpdateArtefact(artefact) {
-
-// }
-
-// export function updateArtefact(artefact) {
-//     return function(dispatch) {
-
-//         apiFetchWithAuth()
-
-//     }
-// }
-
-
 
 function reqGetBrowserArtefacts(queryDetails) {
     return {
@@ -94,6 +75,13 @@ export function getMyArtefacts() {
                 vis: ["public", "private",], //"family"
             });
             dispatch(resGetMyArtefacts(myArtefacts));
+
+            // this prevents a special case where a user starts logged in
+            // and stays on 'UserView', and then is logged out.
+            const publicArts = myArtefacts
+                .filter(art => art.visibility === 'public');
+
+            dispatch(resUserArtefacts(curUserUsername, publicArts));
         }
         catch (e) {
             // TODO

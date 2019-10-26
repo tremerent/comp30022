@@ -74,10 +74,6 @@ function mapStateToProps(state) {
             userArtsLoading = state.art.userArts[username].loading;
         }
     }
-
-    console.log(user.loading);
-    console.log('user.loading');
-    console.log(userArtsLoading);
     
     return {
         isViewOfCurUser,
