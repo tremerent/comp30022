@@ -81,6 +81,12 @@
     margin: 0 3%;
     box-shadow: 2px 2px .4rem rgba(0, 0, 0, .25);
     max-width: 350px;
+    background: radial-gradient(
+        circle,
+        #c99289dd 0%,
+        #c9928933 75%,
+        #c9928900 80%
+    );
 }
 
 
@@ -126,8 +132,8 @@
 
 @media (max-width: 576px) {
 
-    .lp-copy {
-        display: none;
+    .lp-copy h1 {
+        font-size: 1.8em;
     }
 
     .lp-actions {
