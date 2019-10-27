@@ -453,7 +453,7 @@ export class CreateArtefactForm extends Component {
 
     firstFormPageValid = () => {
         return (this.state.artefact.title.length !== 0) &&
-            (this.state.artefact.title.length > 20) &&
+            (this.state.artefact.title.length < 20) &&
             (this.state.artefact.description.length !== 0)
     }
 
