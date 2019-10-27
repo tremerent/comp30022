@@ -26,6 +26,11 @@
     margin-left: .5em;
     font-weight: bold;
     flex-grow: 1;
+    color: black;
+}
+
+.af-dcard-author:hover {
+    color: black;
 }
 
 .af-dcard-status {
