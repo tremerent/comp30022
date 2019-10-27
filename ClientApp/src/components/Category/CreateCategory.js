@@ -6,6 +6,8 @@ import { formIsValid, categorySchema } from '../../data/validation.js';
 /*
  *
  */
+/*The list of all the categories*/
+var allCategories = [];
 
 export default class CreateCategory extends Component {
     static displayName = CreateCategory.name;
@@ -36,6 +38,10 @@ export default class CreateCategory extends Component {
     componentDidMount = () => {
 
     }
+    
+    update_all_categories() {
+        allCategories.push(this.state.category);
+    }
 
     render() {
         const errs = Joi.validate(
@@ -63,7 +69,7 @@ export default class CreateCategory extends Component {
                 }
             }
         }
-
+        this.update_all_categories();
         return (
             <div>
                 <div className="card">
