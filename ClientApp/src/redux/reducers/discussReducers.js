@@ -157,7 +157,9 @@ export function discuss(state = getInitDiscussState(), action) {
                                         loading: true,
                                     }
                                 );
-        action.question.answer = true;
+        action.answer.isAnswer = true;
+        action.answer.loading = true;
+        action.question.isAnswered = true;
         return {
             ...state,
             [action.question.artefact]: {
