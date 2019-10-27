@@ -74,9 +74,6 @@ async function patchArtefactAndCategories(updatedArt, origArt) {
     //     const updatedCj = updatedArt.categoryJoin;
     //     const origCj = origArt.categoryJoin;
 
-    //     console.log('hi');
-    //     console.log(updatedCj);
-    //     console.log(origCj);
 
     //     const toAdd = updatedCj.filter(cj => 
     //         !origCj.find(ocj => ocj.categoryId === cj.categoryId));
@@ -84,17 +81,11 @@ async function patchArtefactAndCategories(updatedArt, origArt) {
     //     const toRemove = origCj.filter(cj => 
     //         !updatedCj.find(ocj => ocj.categoryId == cj.categoryId));
 
-    //     console.log("toAdd");
-    //     console.log(toAdd);
 
-    //     console.log("toRemove");
-    //     console.log(toRemove);
 
     //     // add categories
-    //     console.log('fst');
     //     await postArtefactCategories(categoryOptsToDbModel(updatedArt.id, toAdd));
         
-    //     console.log('snd');
     //     // remove categories
     //     await Promise.all(
     //         categoryOptsToDbModel(updatedArt.id, toRemove)
@@ -151,8 +142,6 @@ async function getCategories() {
 }
 
 const categoryOptsToDbModel = (artefactId, categoryOpts) => {
-    console.log(artefactId);
-    console.log(categoryOpts);
     return categoryOpts.map(cat => ({ artefactId, categoryId: cat.id }));
 }
 

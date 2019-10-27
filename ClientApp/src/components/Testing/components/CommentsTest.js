@@ -73,6 +73,5 @@ export default class CommentsTest extends React.Component {
     }
 
     handleNewComment(comment) {
-        console.log(comment.text);
     }
 }

@@ -42,7 +42,6 @@ export function setLogoutTimeout(expiry) {
     }
 
     const timeUntilAuthExp = (expiry - Date.now()).valueOf();
-    console.log(timeUntilAuthExp);
 
     setTimeout(() => {
         store.dispatch(authActions.logout());
