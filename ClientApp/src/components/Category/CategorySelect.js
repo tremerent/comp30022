@@ -1,9 +1,13 @@
 ﻿import React, { Component } from 'react';
 import AsyncCreatableSelect from 'react-select/async-creatable';
+import AsyncSelect from 'react-select/async';
+import { bindActionCreators } from 'redux';
+import { artefacts as artActions } from 'redux/actions';
+import { connect } from 'react-redux';
 
 import { getCategories, postCategory } from '../../scripts/requests.js';
 
-export default class CategorySelect extends Component {
+class CategorySelect extends Component {
     /*
      * Select component for categories.
      *
@@ -16,30 +20,71 @@ export default class CategorySelect extends Component {
     constructor(props) {
         super(props);
 
+        this.blurPlaceholder = this.props.blurPlaceholder;
+        this.focusPlaceholder = this.props.focusPlaceholder;
 
         this.state = {
-            categoryOpts: [],
+            categoryCache: [],
+            placeholder: this.blurPlaceholder
         };
-
     }
 
     render() {
         return (
-            <div>
-            <AsyncCreatableSelect
-                onChange={this.handleChange}
-                value={this.props.categoryVals}
+            <>
+                {
+                    this.props.creatable
+                    ?
+                    <AsyncCreatableSelect
+                        onChange={this.handleChange}
+                        value={this.props.categoryVals}
 
-                defaultOptions
-                loadOptions={this.getCategoryOptionsThenFilter}
+                        defaultOptions
+                        loadOptions={this.getCategoryOptionsThenFilter}
 
-                isMulti
-                isSearchable
-                closeMenuOnSelect={false}
-                placeholder={this.props.placeholder}
-            />
-            </div>
+                        onFocus={this.setFocusPlaceholder}
+                        onBlur={this.setBlurPlaceholder}
+
+                        menuPlacement="top"
+                        isMulti
+                        isSearchable
+                        closeMenuOnSelect={false}
+                        placeholder={this.state.placeholder}
+                    />
+                    :
+                    <AsyncSelect
+                        onChange={this.handleChange}
+                        value={this.props.categoryVals}
+
+                        defaultOptions
+                        loadOptions={this.getCategoryOptionsThenFilter}
+
+                        onFocus={this.setFocusPlaceholder}
+                        onBlur={this.setBlurPlaceholder}
+
+                        maxMenuHeight={130}
+                        isSearchable
+                        isMulti
+                        closeMenuOnSelect={true}
+                        placeholder={this.state.placeholder}
+                    />
+                }
+            </>  
         );
+    }
+
+    setBlurPlaceholder = () => {
+        this.setState({
+            ...this.state,
+            placeholder: this.blurPlaceholder,
+        });
+    }
+
+    setFocusPlaceholder = () => {
+        this.setState({
+            ...this.state,
+            placeholder: this.focusPlaceholder,
+        });
     }
 
     handleChange = (newValues, actionMeta) => {
@@ -58,6 +103,7 @@ export default class CategorySelect extends Component {
      * those options with the id returned by api
      */
     handleCreateOption = async (newValues) => {
+        // react-select tags created options with '__isNew__'
         const [createdVals, other] = bifurcateBy(newValues, (val) => val.__isNew__);
 
         const newCategoryPromises = createdVals.map(async (val) => {
@@ -67,16 +113,23 @@ export default class CategorySelect extends Component {
 
         try {
             const newCategories = await Promise.all(newCategoryPromises);
+
+            // we've just added selected a new category (a created one),
+            // so notify parent
             const newCategoryOpts = newCategories.map(
                 (newCat) => ({ label: newCat.name, value: newCat.id, id: newCat.id })
             );
+            this.props.setCategoryVals([...newCategoryOpts, ...other]);
 
+
+            // update the category list in state and in parent
             this.setState({
                 ...this.state,
-                categoryOpts: [...newCategoryOpts, ...this.state.categoryOpts]
+                categoryCache: [...newCategories, ...this.state.categoryCache]
+            }, () => {
+                this.props.cacheCategories(this.state.categoryCache);
             });
 
-            this.props.setCategoryVals([...newCategoryOpts, ...other]);
         }
         catch (e) {
         }
@@ -111,23 +164,27 @@ export default class CategorySelect extends Component {
         return filtered;
     }
 
-    // use this instead of this.state.categoryOpts
+    // use this instead of this.state.categoryCache
     categoryOptions = async () => {
-        let categoryOpts;
+        let categories;
 
-        if (!this.state.categoryOpts.length) {
-            categoryOpts = await getCategories();
+        if (!this.state.categoryCache.length) {
+            categories = await getCategories();
+
+            // 'CategorySelect' maintains its own category list, but pass this
+            // list to parent in case parent needs to use
+            this.props.cacheCategories(categories);
 
             this.setState({
                 ...this.state,
-                categoryOpts,
-            })
+                categoryCache: categories,
+            });
         }
         else {
-            categoryOpts = this.state.categoryOpts;
+            categories = this.state.categoryCache;
         }
 
-        return categoryOpts.map(
+        return categories.map(
             ({ id, name }) => ({ value: id, label: name })
         );
     }
@@ -137,4 +194,15 @@ CategorySelect.defaultProps = {
     categoryVals: [],
     placeholder: "Select your artefact's categories, or create a new one",
     categoryInputName: "categories",
+    creatable: false,
 };
+
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators({
+        cacheCategories: artActions.setCategoriesCache,
+    }, dispatch);
+}
+
+export default connect(null, mapDispatchToProps) (CategorySelect);
+
+

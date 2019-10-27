@@ -1,0 +1,182 @@
+.af-browser-tute {
+    margin-bottom: 3% !important;
+}
+
+.af-filtered-browser {
+    flex-grow: 1;
+    display: flex;
+    margin-top: 5%;
+    flex-direction: column;
+}
+
+.af-filter-header {
+    margin-bottom: 2%;
+}
+
+.af-flex-end {
+    display: flex;
+    justify-content: flex-end !important;
+}
+
+.af-flex-between {
+    display: flex;
+    justify-content: space-between;
+}
+
+.af-filter-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 2%;
+}
+
+.af-filter-row-item-flex {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+}
+
+.af-filter-row-item-flex-inner {
+    width: 100%;
+}
+
+.af-filter-row-margin {
+    margin-bottom: 2%;
+}
+
+@media (min-width: 800px) {
+    .af-filter-row-item-flex-inner {
+        width: 49%;
+    }
+
+    .af-filter-bottom-margin-small-screen {
+        margin-bottom: 0% !important;
+    }
+
+    .af-filter-row-item-flex {
+        width: 80%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .af-filter-row-control-item {
+        width: 80%;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+    }
+}
+
+/* .af-filter-clear-btn-outer {
+    display: flex;
+    justify-content: center;
+    margin-top: 2%;
+} */
+
+.af-filter-controls-buttons {
+    width: 40%;
+    display: flex;
+    justify-content: start;
+}
+
+.af-filter-clear-btn {
+    margin-right: 5px;
+}
+
+
+.af-filter-row-item {
+    width: 80%;
+    display: inline-block;
+    margin-right: 4%;
+}
+
+.af-filter-row-control-item {
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.af-filter-bottom-margin {
+    margin-bottom: 2%;
+}
+
+.af-filter-bottom-margin-small-screen {
+    margin-bottom: 2%;
+}
+
+.af-filter-datepicker-outer {
+    display: flex;
+    flex-direction: row;
+}
+
+.af-filter-datepicker-inner {
+    display: flex;
+    flex-direction: column;
+}
+
+.af-filter-sort-outer {
+    width: 100%;
+}
+
+.af-filter-sort-select {
+    display: inline-block;
+    width: 87%;
+    margin-right: 1%;
+}
+
+.af-filter-sort-order-toggle {
+    width: 12%;
+    vertical-align: top;
+}
+
+.af-filter-clear-btn {
+    height: 40px;  /* match form inputs */
+    width: 6em;
+}
+
+.af-filter-controls
+ {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+}
+
+.af-filter-control {
+    width: 30%;
+    display: flex;
+}
+
+@media (max-width: 1000px) {
+    .af-filtered-browser-actions {
+        flex-direction: column !important;
+    }
+
+    .af-filtered-browser-action {
+        display: flex;
+        justify-content: center;
+        justify-content: center;
+    }
+}
+
+.af-filtered-browser-actions {
+    display: flex;
+    justify-content: space-around;
+    align-content: center;
+}
+
+.af-filtered-browser-action {
+    margin-left: 5%;
+}
+
+.af-filter-header-title {
+    text-justify: left;
+    width: 30%;
+}
+
+.af-filter-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5%;
+}

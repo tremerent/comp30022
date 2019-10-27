@@ -3,10 +3,6 @@ using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Artefactor.Data
 {
@@ -20,6 +16,12 @@ namespace Artefactor.Data
         }
 
         public DbSet<Artefact> Artefacts { get; set; }
+        public DbSet<ArtefactDocument> ArtefactDocuments { get; set; }
+        public DbSet<ArtefactComment> ArtefactComments { get; set; }
+        public DbSet<ArtefactQuestion> ArtefactQuestions { get; set; }
+        
+        public DbSet<Artefactor.Models.Category> Category { get; set; }
+        public DbSet<Artefactor.Models.ArtefactCategory> ArtefactCategory { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,6 +37,14 @@ namespace Artefactor.Data
                 .Property(c => c.Id)
                 .HasDefaultValue("NEWID()");
 
+            modelBuilder.Entity<ArtefactDocument>()
+                .Property(c => c.Id)
+                .HasDefaultValue("NEWID()");
+
+            modelBuilder.Entity<ArtefactComment>()
+                .Property(c => c.Id)
+                .HasDefaultValue("NEWID()");
+
             // Artefact - category many-many
 
             modelBuilder.Entity<ArtefactCategory>()
@@ -47,10 +57,19 @@ namespace Artefactor.Data
                         .HasOne(ac => ac.Artefact)
                         .WithMany(c => c.CategoryJoin)
                         .HasForeignKey(ac => ac.ArtefactId);
+
+            // artefact - artefact documents
+            modelBuilder.Entity<Artefact>()
+                .HasMany(a => a.Images)
+                .WithOne(ad => ad.Artefact);
+
+            // artefact - artefact comments
+            modelBuilder.Entity<Artefact>()
+                .HasMany(a => a.Comments)
+                .WithOne(ac => ac.Artefact);
+
+            modelBuilder.Entity<ArtefactComment>()
+                .HasDiscriminator<string>("CommentType");
         }
-
-        public DbSet<Artefactor.Models.Category> Category { get; set; }
-
-        public DbSet<Artefactor.Models.ArtefactCategory> ArtefactCategory { get; set; }
     }
 }

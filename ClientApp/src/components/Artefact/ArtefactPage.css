@@ -1,0 +1,16 @@
+
+.af-discuss-scroller {
+    height: 100%;
+}
+
+@media (min-width: 576px) {
+    .af-ov-static {
+        width: 50% !important;
+    }
+
+    .af-ov-scroll {
+        width: 46% !important;
+    }
+}
+
+

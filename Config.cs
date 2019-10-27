@@ -52,22 +52,11 @@ namespace TokenAuth
                         IdentityServerConstants.StandardScopes.Email,
                         IdentityServerConstants.StandardScopes.Address,
                         "artefactorapi",
-                    }
+                    },
 
-                    //ClientId = "artefactor.react",
-                    //AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-
-                    //ClientSecrets =
-                    //{
-                    //    new Secret("secret".Sha256())
-                    //},
-                    //AllowedScopes = {
-                    //    IdentityServerConstants.StandardScopes.OpenId,
-                    //    IdentityServerConstants.StandardScopes.Profile,
-                    //    IdentityServerConstants.StandardScopes.Email,
-                    //    IdentityServerConstants.StandardScopes.Address,
-                    //    "api1"
-                    //}
+                    // AllowOfflineAccess = true,  // refresh tokens
+                    AccessTokenLifetime = 72 * 60 * 60,  // seconds
+                    IdentityTokenLifetime = 72 * 60 * 60,
                 }
             };
         }

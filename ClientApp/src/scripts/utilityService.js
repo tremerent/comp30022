@@ -22,7 +22,24 @@ function convertToSelectOptsStr(idNameObjs) {
     return selectOpts;
 }
 
+// Bind to a React.Component.
+// Null check 'this.state[stateProperty]' returning it's
+// contents or filling with results of 'awaitGetter'.
+async function statefulAwaitGetter(stateProperty, awaitGetter) {
+    if (!this.state[stateProperty]) {
+        var newState = await awaitGetter();
+
+        this.setState({
+            ...this.state,
+            newState,
+        })
+    }
+
+    return this.state[stateProperty];
+}
+
 export {
     convertToSelectOptsStr,
     formToJson,
+    statefulAwaitGetter,
 };

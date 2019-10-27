@@ -2,6 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 
+import { isExpired } from 'scripts/auth';
 import { auth as authActions } from 'redux/actions';
 import { bindActionCreators } from 'redux';
 
@@ -12,7 +13,11 @@ import { bindActionCreators } from 'redux';
 function requireAuth(Component, unauthedRedirTo) {
     class AuthComponent extends React.Component {
         render() {
-            if (this.props.isLoggedIn) {
+            // otherwise user gets redir if
+            if (this.props.authLoading) {
+                return <> </>;
+            }
+            else if (this.props.isLoggedIn && !this.props.tokenExpired) {
                 return <Component />;
             }
             else {
@@ -28,7 +33,9 @@ function requireAuth(Component, unauthedRedirTo) {
     function mapStateToProps(state) {
         return {
             isLoggedIn: state.auth.isLoggedIn,
+            authLoading: state.auth.loading,
             goingToAddr: state.router.location.pathname,
+            tokenExpired: isExpired(state.auth.expiry),
         };
     }
 

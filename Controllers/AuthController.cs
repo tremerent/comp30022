@@ -18,7 +18,7 @@ namespace Artefactor.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public AuthController(SignInManager<ApplicationUser> signInManager, 
+        public AuthController(SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager)
         {
             _signInManager = signInManager;
@@ -45,19 +45,11 @@ namespace Artefactor.Controllers
             public string Email { get; set; }
 
             [Required]
-            [DataType(DataType.Password)]
             public string Password { get; set; }
             [Required]
-            [DataType(DataType.Password)]
             public string ConfirmPassword { get; set; }
 
         }
-
-        //[HttpPost("/Token")]
-        //public async Task<JsonResult> Login(TokenReq tokReq)
-        //{
-
-        //}
 
         // GET: api/<controller>
         [HttpPost("Login")]
@@ -81,7 +73,7 @@ namespace Artefactor.Controllers
                     var resp = new JsonResult(new
                     {
                         IsOk = true,
-                        user = new { user.UserName }
+                        user = new { user.UserName, user.Id, }
                     });
 
                     return resp;
@@ -110,28 +102,29 @@ namespace Artefactor.Controllers
             }
         }
 
-        
+
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register(RegisterRequest registerReq, 
+        public async Task<IActionResult> Register(RegisterRequest registerReq,
             string returnUrl = null)
         {
             if (true)  // validate
             {
                 ApplicationUser user;
 
-                user = new ApplicationUser { UserName = registerReq.Username, };
+                user = new ApplicationUser { 
+                    UserName = registerReq.Username, 
+                    NewUser = true,
+                };
 
                 var result = await _userManager.CreateAsync(user, registerReq.Password);
 
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-
                     var resp = new JsonResult(new
                     {
                         IsOk = true,
-                        user = new { user.UserName },
+                        user = new { user.UserName, user.Id, },
                     });
 
                     return resp;
@@ -141,31 +134,13 @@ namespace Artefactor.Controllers
                 {
                     JsonResult resp;
 
-                    // cherry pick error codes handled by client
+                    resp = new JsonResult(new {
+                        IsOk = false,
+                        errorCode = "error",
+                        errors = result.Errors.ToList(),
+                    });
 
-                    var dupUsernameError = result
-                        .Errors
-                        .SingleOrDefault(e => e.Code == "DuplicateUserName");
-
-                    if (dupUsernameError != null)
-                    {
-                        resp = new JsonResult(new
-                        {
-                            IsOk = false,
-                            errorCode = dupUsernameError.Code,
-                        });
-                    }
-                    else
-                    {
-                        // TODO
-                        resp = new JsonResult(new
-                        {
-                            IsOk = false,
-                            errorCode = "Other",
-                        });
-                    }
-
-                    return resp;
+                    return StatusCode(400, resp);
                 }
             }
             else
@@ -189,10 +164,11 @@ namespace Artefactor.Controllers
             //return JsonRespIfNoRedir(resp, returnUrl);
         }
 
-        // TODO: this is broken for now - the JsonResult casts (or something) 
-        //       to an IActionResult, wrapping it in a non-conformant manner 
-        //       ie. { statusCode, ..., value: jsonObj }
-        private IActionResult JsonRespIfNoRedir(Object jsonObj, 
+        // TODO: this was a method used in promotion of DRY, but
+        //       is broken for now - the JsonResult casts (or something)
+        //       to an IActionResult, and the response is formatted as:
+        //       { statusCode, ..., value: jsonObj }
+        private IActionResult JsonRespIfNoRedir(Object jsonObj,
             string returnUrl = null)
         {
             if (returnUrl != null)

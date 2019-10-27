@@ -1,0 +1,84 @@
+
+.af-discuss-section {
+    min-width: 240px;
+}
+
+.af-dh-outer {
+    position: sticky;
+    top: 4rem;
+    width: 100%;
+}
+
+.af-dh-blocker {
+    height: 1.05rem;
+    position: relative;
+    background-color: white;
+}
+
+.af-dh-inner {
+    z-index: 10;
+    padding: 0.2em 1em;
+    padding-top: .9em;
+    height: 100%;
+    box-shadow: 0 .15rem .35rem rgba(0, 0, 0, .25);
+    background-color: white;
+    position: relative;
+}
+
+.af-discuss-scroller {
+    margin: 0 6% ;
+}
+
+
+@media (max-width: 576px) {
+    .af-dh-blocker, .af-dh-inner {
+        margin: 0 0;
+    }
+    .af-discuss-scroller {
+        margin: 0 5% ;
+    }
+}
+
+.af-dh-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.af-dh-heading {
+    font-weight: 300;
+}
+
+.af-dh-title button {
+    font-size: 0.8em;
+    padding: 0.2em 0.2em;
+    width: 2em;
+    height: 2em;
+}
+
+.af-dh-create-actions button {
+    margin-top: 0.5em;
+    font-size: 0.8em;
+    padding: 0.1em 0.5em;
+}
+
+.af-dh-create-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.af-discussion {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.af-discuss-scroller-empty {
+    height: 2em;
+    padding-top: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+

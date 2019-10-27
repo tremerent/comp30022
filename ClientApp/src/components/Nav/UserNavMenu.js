@@ -5,11 +5,11 @@ import PropTypes from 'prop-types';
 
 import { auth } from '../../redux/actions';
 import StyledNavLink from './StyledNavLink';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHome, faSignOutAlt, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 
 const loginPath = '/auth/login';
-const signupPath = '/auth/signup'
-const profilePath = '/profile';
-const myArtefactsPath = '/my-artefacts';
+const signupPath = '/auth/signup';
 
 class UserNavMenu extends React.Component {
 
@@ -26,20 +26,34 @@ class UserNavMenu extends React.Component {
         return (
             <>
                 <StyledNavLink
-                    to={profilePath}
-                    label="Profile"
+                    to={`/user/${this.props.user.username}`}
+                    label={
+                        <>
+                            <span> My Collection </span>&nbsp;
+                            <FontAwesomeIcon icon={faHome}/>
+                        </>
+                    }
                     curPath={this.props.curPath}
+                    className="af-nav-link-inherit"
                 />
                 <StyledNavLink
-                    to={myArtefactsPath}
-                    label="My Artefacts"
+                    to={`/`}
+                    label={
+                        <>
+                           <span>Logout </span>&nbsp;
+                            <FontAwesomeIcon icon={faSignOutAlt}/>
+                        </>
+                    }
                     curPath={this.props.curPath}
+                    className="af-nav-link-inherit"
+                    onClick={this.props.logout}
                 />
-                <NavItem>
+                {/* <NavItem>
                     <button onClick={(e) => { e.preventDefault(); this.props.logout("/browse"); }} className="text-dark btn nav-link">
-                        Logout
+                        <span>Logout </span>&nbsp;
+                        <FontAwesomeIcon icon={faSignOutAlt}/>
                     </button>
-                </NavItem>
+                </NavItem> */}
             </>
         );
     }
@@ -48,16 +62,25 @@ class UserNavMenu extends React.Component {
         return (
             <>
                 <StyledNavLink
-                    to={signupPath}
-                    label="Signup"
+                    to={loginPath}
+                    label={
+                        <>
+                            <span> Login </span>
+                            <FontAwesomeIcon icon={faSignInAlt}/>
+                        </>
+                    }
                     curPath={this.props.curPath}
-                    className="af-inactive-nav-link"
+                    className="af-inactive-nav-link af-nav-link-inherit"
                 />
                 <StyledNavLink
-                    to={loginPath}
-                    label="Login"
+                    to={signupPath}
+                    label={
+                        <>
+                            <span> Signup </span>
+                        </>
+                    }
                     curPath={this.props.curPath}
-                    className="af-inactive-nav-link"
+                    className="af-inactive-nav-link af-nav-link-inherit"
                 />
             </>
         );
@@ -70,14 +93,14 @@ UserNavMenu.propTypes = {
             username: PropTypes.string,
     }).isRequired,
     logout: PropTypes.func.isRequired,
-}
+};
 
 const mapStateToProps = (state) => {
     return {
         ...state.auth,
         curPath: state.router.location.pathname,
-    }
-}
+    };
+};
 
 const mapDispatchToProps = (dispatch) => {
     //return bindActionCreators({ logout: auth.logout }, dispatch);
@@ -86,7 +109,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(auth.logout(redirTo));
         }
     };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps) (UserNavMenu)
 

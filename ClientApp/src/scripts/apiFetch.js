@@ -7,27 +7,19 @@
 
 const apiUrl = '/api'
 
-function apiFetch() {
-    const apiOpts = {
+function getApiFetch() {
+    const instance = axios.create({
         baseURL: apiUrl,
         headers: {
             'Content-Type': 'application/json',
-        }
-    }
-
-    const instance = axios.create(apiOpts);
-
-    instance.interceptors.request.use(function (config) {
-        const token = localStorage.getItem('token');
-        config.headers.Authorization = token ? `Bearer ${token}` : '';
-        return config;
+        },
     });
 
     return instance;
 }
 
 function apiFetchWithAuth(token) {
-    const ax = apiFetch();
+    const ax = getApiFetch();
 
     if (token) {
         ax.defaults.headers.common.Authorization = `Bearer ${token}`;

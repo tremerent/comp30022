@@ -1,6 +1,11 @@
-﻿import { authTypes } from './types';
+﻿import { push } from 'connected-react-router';
+import { authTypes, } from './types';
 import { setUser, logoutUser, } from '../../scripts/auth';
-import { push } from 'connected-react-router';
+import * as discuss from './discussActions';
+import tute from './tuteActions';
+import * as artefacts from './artActions';
+import * as users from './userActions';
+import { setLogoutTimeout } from 'redux/reducers/initAuthState';
 
 import {
     postRegister,
@@ -21,10 +26,15 @@ function reqLogin() {
 }
 
 // receive login response
-function resLogin(userData) {
+function resLogin(authDetails) {
     return {
         type: authTypes.RES_LOGIN,
-        userData,
+        authDetails: {
+            user: {
+                username: authDetails.user.username,
+            },
+            expiry: authDetails.expiry,
+        },
     }
 }
 
@@ -38,11 +48,15 @@ function login(loginData) {
     return async function (dispatch) {
         dispatch(reqLogin());
 
-        if (await setUser(loginData)) {
-            console.log('user set');
+        const authDetails = await setUser(loginData);
+        if (authDetails) {
+            setLogoutTimeout(authDetails.expiry);
 
             dispatch(resLogin({
-                username: loginData.username,
+                expiry: authDetails.expiry,
+                user: {
+                    username: loginData.username,
+                },
             }));
         }
         else {
@@ -80,22 +94,17 @@ function register(registerData) {
     return async function (dispatch) {
         dispatch(reqRegister());
 
-        const responseData = await postRegister(registerData);
-
-        if (responseData.isOk) {
-            dispatch(login(registerData));
+        try {
+            const responseData = await postRegister(registerData);
+            await dispatch(login(registerData));
             return responseData;
+        } catch (e) {
+            if (e.response)
+                dispatch(errRegister(e.response.data.value));
+            else
+                dispatch(errRegister({ errors: [ 'Unspecified Error' ] }));
+            return null;
         }
-        else {
-            if (responseData.errorCode) {
-                dispatch(errRegister(responseData.errorCode));
-            }
-            else {
-                dispatch(errRegister("NO ERROR CODE"));
-            }
-        }
-
-
     }
 }
 
@@ -109,7 +118,9 @@ function logout(redirTo) {
     return async function (dispatch) {
         logoutUser();
         dispatch(logoutActionCreator());
-        dispatch(push(redirTo));
+        if (redirTo != null) {
+            dispatch(push(redirTo));
+        }
     }
 }
 
@@ -122,4 +133,9 @@ const auth = {
 
 export {
     auth,
-}
+    artefacts,
+    users,
+    tute,
+    discuss,
+};
+

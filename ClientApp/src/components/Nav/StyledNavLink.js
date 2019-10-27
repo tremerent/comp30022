@@ -8,27 +8,18 @@ import './NavMenu.css';
  * Apply css '.af-active-nav-link' to the NavLink that directs
  * to prop 'curPath'.
  * 
- * For performance considerations, parent passes in 'curPath'.
+ * Since parent will likely have several <StyledNavLink />, it must pass 'curPath'.
  */
 
-//function StyledNavLink(props) {
-//        const { to, label, curPath } = props;
-
-//        return <NavLink
-//            to={to}
-//            tag={Link}
-//            className={
-//                curPath === to
-//                    ? "af-active-nav-link"
-//                    : "af-inactive-nav-link"}
-//        >{label}</NavLink>;
-//}
-
-
 function StyledNavLink(props) {
-    const { to, label, curPath, className: navLinkClasses, ...rest } = props;
-    console.log('hello');
-    console.log(navLinkClasses);
+    const { 
+        to, 
+        label, 
+        curPath, 
+        className: navLinkClasses, 
+        ...rest 
+    } = props;
+
     return <NavLink
         to={to}
         tag={Link}

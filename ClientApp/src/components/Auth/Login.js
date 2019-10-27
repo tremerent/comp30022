@@ -19,8 +19,6 @@ class Login extends React.Component {
     }
 
     loginForm = () => {
-        console.log(this);
-        console.log(this.props);
         return (
             <>
                 <h3>Log in</h3>
@@ -63,7 +61,7 @@ class Login extends React.Component {
                     const nextDir =
                         component.props.redirAddr
                             ? component.props.redirAddr
-                            : '/my-artefacts';
+                            : `/user/${this.props.username}`;
 
                     this.props.push(nextDir);
                 }
@@ -76,26 +74,19 @@ class Login extends React.Component {
 
 Login.propTypes = {
     login: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired,
+    loading: PropTypes.bool,
     redir: PropTypes.string,
 }
 
 const mapStateToProps = state => ({
     loading: state.auth.loading,
+    username: state.auth.user.username,
     redir: state.auth.redir,
     isLoggedIn: state.auth.isLoggedIn,
 });
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators({ login: auth.login, push, }, dispatch);
-    //return {
-    //    login: (details) => {
-    //        dispatch(auth.login(details))
-    //    },
-    //    push: (dir) => {
-    //        dispatch(push(dir));
-    //    },
-    //};
 }
 
 export default connect(

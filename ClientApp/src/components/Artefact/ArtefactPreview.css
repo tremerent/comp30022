@@ -7,7 +7,7 @@
     overflow: hidden;
     margin-top: 1.5em;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     box-shadow: 0.2em 0.2em 0.4em rgba(0, 0, 0, 0.1);
 }
 
@@ -64,8 +64,15 @@
     padding-bottom: 0.4em;
 }
 
-.af-artcard-actions {
+/* .af-artcard-actions {
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap-reverse;
+    margin-bottom: 1em;
+    align-items: center;
+} */
+.af-artcard-actions {
+    display: column;
     flex-direction: row;
     flex-wrap: wrap-reverse;
     margin-bottom: 1em;
@@ -74,6 +81,7 @@
 
 .af-artcard-action {
     white-space: nowrap;
+    margin-bottom: 2px;
 }
 
 .af-artcard-action:hover {
