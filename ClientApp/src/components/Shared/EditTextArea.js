@@ -58,7 +58,7 @@ export default class EditTextArea extends React.Component {
 
         let taHeight;
         if (this.adjustTaHeight) {
-            taHeight = this.textarea && this.textarea.scrollHeight + 2 + 'px';
+            taHeight = this.textarea && this.textarea.scrollHeight + 3 + 'px';
             this.adjustTaHeight = false;
         } else {
             taHeight = 0;
