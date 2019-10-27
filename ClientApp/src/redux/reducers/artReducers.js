@@ -32,7 +32,7 @@ function artMain(state = getInitArtState(), action) {
                     ...state.myArts,
                     loading: false,
                     myArtefacts: action.myArtefacts,
-                }
+                },
             };
         case artefactTypes.ERR_GET_MY_ARTEFACTS:
             return {

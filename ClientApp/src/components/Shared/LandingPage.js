@@ -39,7 +39,7 @@ function LandingPage(props) {
                                 Share your knowledge
                             </h4>
                         </div>
-                        <div className="af-lp-action-button-div-div">
+                        <div className="af-lp-action-button-div">
                             <Link
                                 to={{
                                     pathname: "/browse",
@@ -50,7 +50,7 @@ function LandingPage(props) {
                             >
                                 <button className="btn btn-primary mv-3 af-lp-action-button">
                                     <span className="af-lp-action-button-text">
-                                        Become an <b><em>Artefact</em></b> detective
+                                        Become an <br/><b><em>Artefact</em></b> detective
                                     </span>
                                 </button>
                             </Link>

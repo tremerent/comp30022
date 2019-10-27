@@ -1,5 +1,5 @@
 ﻿import { combineReducers } from 'redux';
-import { connectRouter } from 'connected-react-router'
+import { connectRouter } from 'connected-react-router';
 
 import * as auth from './authReducers';
 import * as art from './artReducers';

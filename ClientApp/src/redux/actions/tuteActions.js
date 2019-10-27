@@ -1,6 +1,7 @@
 import { tuteTypes } from './types';
 import { setFilter, getBrowserArtefacts } from './artActions';
 import { updateCurUserDetails } from './userActions';
+import jsCookie from 'js-cookie';
 
 import { sortOptions, getQueryDetails, } from 'components/Shared/filterUtils';
 
@@ -168,6 +169,9 @@ function browserTuteRunState() {
             dispatch({ type: tuteTypes.TOGGLE_SEARCH_TT });
             // flag so tuteAtInitState not satisfied
             dispatch({ type: tuteTypes.BROWSER_TUTE_COMPLETE });
+            jsCookie.set('browserTuteComplete', 'true', 
+                { expires: 10 * 365 }  // expires in 10 years
+            );
         }
     }
 }

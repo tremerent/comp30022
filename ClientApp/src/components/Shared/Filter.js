@@ -22,7 +22,7 @@ import Select from 'react-select';
 
 function formatDateDisplay(date, defaultText) {
     if (!date) return defaultText;
-    return format(date, 'dd/MM/yyyy');
+    return format(date, 'do MMM, y');
 }
 
 /**
@@ -191,133 +191,135 @@ class Filter extends React.Component {
                         </DropdownMenu>
                     </ButtonDropdown>
                 </div>
-                <div className="af-filter-row-flex af-filter-bottom-margin">
-                    <div className="af-filter-row-item-flex">
-                        <div className="af-filter-row-item-flex-inner">
-                            <Select
-                                menuIsOpen={false}
-                                value={filterDetails.since
-                                    ? { label: `After ${formatDateDisplay(filterDetails.since)}`,
-                                        value: filterDetails.since}
-                                    : null}
-                                placeholder="After"
-                                onFocus={() => {
-                                    this.paramToggle("showSinceCalendar")(true)
-                                }}
-                                onBlur={() => this.paramToggle("showSinceCalendar")(false)}
-                            />
-                        </div>
-
-                        <div className="af-filter-row-item-flex-inner">
-                            <Select
-                                menuIsOpen={false}
-                                value={filterDetails.until
-                                        ? { label: `Before ${formatDateDisplay(filterDetails.until)}`,
-                                            value: filterDetails.until}
-                                        : null
-                                    }
-                                placeholder="Before"
-                                onFocus={() => {
-                                    if (this.state.showSinceCalendar) {
-                                        this.paramToggle("showSinceCalendar")(false);
-                                    }
-                                    this.paramToggle("showUntilCalendar")(true);
-                                }}
-                                onBlur={() => this.paramToggle("showUntilCalendar")(false)}
-                            />
-                        </div>
-                    </div>
-                </div>
-                {/* date pickers */}
-                <div className="af-filter-datepicker-outer">
-                    <Collapse
-                        isOpen={this.state.showSinceCalendar}
-                    >
-                        <div className="af-filter-datepicker-inner">
-                            <p className="text-dark text-center"> Show artefacts created after: </p>
-                            <Calendar
-                                    date={filterDetails.since}
-                                    onChange={this.handleFilterChange("since")}
-                            />
-                        </div>
-
-                    </Collapse>
-                    <Collapse
-                        isOpen={this.state.showUntilCalendar}
-                    >
-                        <div className="af-filter-datepicker-inner">
-                            <p className="text-dark"> Show artefacts created before: </p>
-                            <Calendar
-                                    date={filterDetails.until}
-                                    onChange={this.handleFilterChange("until")}
-                            />
-                        </div>
-                    </Collapse>
-                </div>
-                {/* sort and submit */}
-                <div className="af-filter-row">
-                    <div className="af-filter-row-control-item">
-                        <div className="af-filter-sort-outer">
-                            <div className="af-filter-sort-select">
+                <div className='af-filter-bottom-margin'>
+                    <div className="af-filter-row-flex af-filter-bottom-margin">
+                        <div className="af-filter-row-item-flex">
+                            <div className="af-filter-row-item-flex-inner af-filter-bottom-margin-small-screen">
                                 <Select
-                                    // TODO: sort query order
-                                    onChange={(value) =>
-                                        this.handleFilterChange("sortQuery")({
-                                            ...filterDetails.sortQuery,
-                                            ...value,
-                                            order: "desc"
-                                        })
-                                    }
-                                    value={filterDetails.sortQuery}
-                                    options={sortOptions}
-                                    placeholder="Sort by"
-                                    menuPlacement="top"
-                                    isClearable={true}
-
-                                    id={this.props.sortArtsTt.id}
-                                />
-                                <TuteTooltip
-                                    placement="right"
-                                    isOpen={this.props.sortArtsTt.toolTipOpen}
-                                    target={this.props.sortArtsTt.id}
-                                    onClick={this.props.browserTuteRunState}
-                                    content={<>
-                                        You can sort artefacts here &nbsp;&nbsp;<FontAwesomeIcon icon={faTimes} size="xs"/>
-                                        <br/>
-                                    </>}
+                                    menuIsOpen={false}
+                                    value={filterDetails.since
+                                        ? { label: `After ${formatDateDisplay(filterDetails.since)}`,
+                                            value: filterDetails.since}
+                                        : null}
+                                    placeholder="After"
+                                    onFocus={() => {
+                                        this.paramToggle("showSinceCalendar")(true)
+                                    }}
+                                    onBlur={() => this.paramToggle("showSinceCalendar")(false)}
                                 />
                             </div>
-                            <button
-                                onClick={this.toggleSortDir}
-                                className="btn af-filter-sort-order-toggle"
-                            >
-                                {
-                                    filterDetails.sortQuery.order === "asc"
-                                    ?
-                                        <FontAwesomeIcon icon={
-                                            faSortUp
-                                        } />
-                                    :
-                                        <FontAwesomeIcon icon={
-                                            faSortDown
-                                        } />
-                                }
 
-                            </button>
+                            <div className="af-filter-row-item-flex-inner">
+                                <Select
+                                    menuIsOpen={false}
+                                    value={filterDetails.until
+                                            ? { label: `Before ${formatDateDisplay(filterDetails.until)}`,
+                                                value: filterDetails.until}
+                                            : null
+                                        }
+                                    placeholder="Before"
+                                    onFocus={() => {
+                                        if (this.state.showSinceCalendar) {
+                                            this.paramToggle("showSinceCalendar")(false);
+                                        }
+                                        this.paramToggle("showUntilCalendar")(true);
+                                    }}
+                                    onBlur={() => this.paramToggle("showUntilCalendar")(false)}
+                                />
+                            </div>
                         </div>
-                        <button
-                            onClick={this.clearFilter}
-                            className="btn btn-outline-secondary"
+                    </div>
+                    {/* date pickers */}
+                    <div className="af-filter-datepicker-outer">
+                        <Collapse
+                            isOpen={this.state.showSinceCalendar}
                         >
-                            <FontAwesomeIcon icon={faTimes} color="#dc3545"/>
-                            &nbsp;
-                            Clear
-                        </button>
+                            <div className="af-filter-datepicker-inner">
+                                <p className="text-dark text-center"> Show artefacts created after: </p>
+                                <Calendar
+                                        date={filterDetails.since}
+                                        onChange={this.handleFilterChange("since")}
+                                />
+                            </div>
+
+                        </Collapse>
+                        <Collapse
+                            isOpen={this.state.showUntilCalendar}
+                        >
+                            <div className="af-filter-datepicker-inner">
+                                <p className="text-dark"> Show artefacts created before: </p>
+                                <Calendar
+                                        date={filterDetails.until}
+                                        onChange={this.handleFilterChange("until")}
+                                />
+                            </div>
+                        </Collapse>
+                    </div>
+                    {/* sort */}
+                    <div className="af-filter-row">
+                        <div className="af-filter-row-control-item">
+                            <div className="af-filter-sort-outer">
+                                <div className="af-filter-sort-select">
+                                    <Select
+                                        // TODO: sort query order
+                                        onChange={(value) =>
+                                            this.handleFilterChange("sortQuery")({
+                                                ...filterDetails.sortQuery,
+                                                ...value,
+                                                order: "desc"
+                                            })
+                                        }
+                                        value={filterDetails.sortQuery}
+                                        options={sortOptions}
+                                        placeholder="Sort by"
+                                        menuPlacement="top"
+                                        isClearable={true}
+
+                                        id={this.props.sortArtsTt.id}
+                                    />
+                                    <TuteTooltip
+                                        placement="right"
+                                        isOpen={this.props.sortArtsTt.toolTipOpen}
+                                        target={this.props.sortArtsTt.id}
+                                        onClick={this.props.browserTuteRunState}
+                                        content={<>
+                                            You can sort artefacts here &nbsp;&nbsp;<FontAwesomeIcon icon={faTimes} size="xs"/>
+                                            <br/>
+                                        </>}
+                                    />
+                                </div>
+                                <button
+                                    onClick={this.toggleSortDir}
+                                    className="btn af-filter-sort-order-toggle"
+                                >
+                                    {
+                                        filterDetails.sortQuery.order === "asc"
+                                        ?
+                                            <FontAwesomeIcon icon={
+                                                faSortUp
+                                            } />
+                                        :
+                                            <FontAwesomeIcon icon={
+                                                faSortDown
+                                            } />
+                                    }
+
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className="af-filter-row">
                     <div className="af-filter-row-item">
                         <div className="af-filter-controls">
+                            <button
+                                    onClick={this.clearFilter}
+                                    className="btn btn-outline-secondary af-filter-clear-btn"
+                                >
+                                    <FontAwesomeIcon icon={faTimes} color="#dc3545"/>
+                                    &nbsp;
+                                    Clear
+                            </button>
                             <button
                                 onClick={this.handleSubmit}
                                 className="btn btn-primary"

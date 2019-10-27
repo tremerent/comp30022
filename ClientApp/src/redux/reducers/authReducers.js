@@ -15,8 +15,10 @@ function auth(state = initAuthState(), action) {
             };
         case authTypes.RES_LOGIN:
             return {
+                ...state,
                 loading: false,
-                user: action.userData,
+                user: action.authDetails.user,
+                expiry: action.authDetails.expiry,
                 isLoggedIn: true,
             };
         case authTypes.REQ_REGISTER:

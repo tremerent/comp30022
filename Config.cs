@@ -52,7 +52,11 @@ namespace TokenAuth
                         IdentityServerConstants.StandardScopes.Email,
                         IdentityServerConstants.StandardScopes.Address,
                         "artefactorapi",
-                    }
+                    },
+
+                    // AllowOfflineAccess = true,  // refresh tokens
+                    AccessTokenLifetime = 72 * 60 * 60,  // seconds
+                    IdentityTokenLifetime = 72 * 60 * 60,
                 }
             };
         }

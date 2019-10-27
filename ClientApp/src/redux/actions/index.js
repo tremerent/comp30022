@@ -5,6 +5,7 @@ import * as discuss from './discussActions';
 import tute from './tuteActions';
 import * as artefacts from './artActions';
 import * as users from './userActions';
+import { setLogoutTimeout } from 'redux/reducers/initAuthState';
 
 import {
     postRegister,
@@ -25,10 +26,15 @@ function reqLogin() {
 }
 
 // receive login response
-function resLogin(userData) {
+function resLogin(authDetails) {
     return {
         type: authTypes.RES_LOGIN,
-        userData,
+        authDetails: {
+            user: {
+                username: authDetails.user.username,
+            },
+            expiry: authDetails.expiry,
+        },
     }
 }
 
@@ -42,9 +48,15 @@ function login(loginData) {
     return async function (dispatch) {
         dispatch(reqLogin());
 
-        if (await setUser(loginData)) {
+        const authDetails = await setUser(loginData);
+        if (authDetails) {
+            setLogoutTimeout(authDetails.expiry);
+
             dispatch(resLogin({
-                username: loginData.username,
+                expiry: authDetails.expiry,
+                user: {
+                    username: loginData.username,
+                },
             }));
         }
         else {
@@ -106,7 +118,9 @@ function logout(redirTo) {
     return async function (dispatch) {
         logoutUser();
         dispatch(logoutActionCreator());
-        dispatch(push(redirTo));
+        if (redirTo != null) {
+            dispatch(push(redirTo));
+        }
     }
 }
 

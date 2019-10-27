@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import jsCookie from 'js-cookie';
 
 import FilteredBrowser from 'components/Shared/FilteredBrowser';
 import { artefacts as artActions, tute as tuteActions, } from 'redux/actions';
@@ -47,7 +48,7 @@ const mapStateToProps = (state) => {
             ? (state.users.users[state.auth.user.username]
                 ? state.users.users[state.auth.user.username].newUser
                 : false)  // if user not fetched, assume user is not new
-            : !state.tute.browserTute.complete
+            : !jsCookie.get('browserTuteComplete')
     }
 }
 
