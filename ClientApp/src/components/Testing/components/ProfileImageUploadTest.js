@@ -48,7 +48,6 @@ class ProfileImageUploadTest extends React.Component {
 
         setProfileImage(this.state.selectedFile)
             .then((respData) => {
-                console.log(respData);
             });
     }
 }

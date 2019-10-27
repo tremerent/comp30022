@@ -56,7 +56,6 @@ export function getBrowserArtefacts(queryKeyValues) {
             dispatch(resGetBrowserArtefacts(browserArtefacts));
         }
         catch(e) {
-            console.log(e);
             dispatch(errGetBrowserArtefacts({ error: e }));
         }
     }
@@ -303,7 +302,6 @@ function updateMyArtefact(updatedArtefact) {
 
 export function updateMyArtefactSync(updatedArtefact, docs) {
     return async function (dispatch, getState) {
-        console.log('updating sync');
         const patchedArt = await patchArtefactAndCategories(
             updatedArtefact, 
             getState().art.artIdCache[updatedArtefact.id]

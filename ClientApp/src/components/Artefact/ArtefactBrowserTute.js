@@ -98,7 +98,6 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    // console.log(tuteA)
     return bindActionCreators({
         toggleBrowserTuteApplyFindInter: tuteActions.toggleBrowserTuteApplyFindInter,
         toggleBrowserTuteApplyAnswerQ: tuteActions.toggleBrowserTuteApplyAnswerQ,

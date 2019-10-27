@@ -50,7 +50,6 @@ class Signup extends React.Component {
         await this.props.register(signupData);
 
         if (this.props.error) {
-            console.log(`HERE, this.props.error: ${JSON.stringify(this.props.error)})`);
         }
         else {
             const nextDir = this.props.redir ?

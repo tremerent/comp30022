@@ -96,8 +96,6 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    console.log('mapping');
-    console.log(artActions.updateMyArtefactSync);
 
     return bindActionCreators({
         getArtefact: artActions.getArtefact,

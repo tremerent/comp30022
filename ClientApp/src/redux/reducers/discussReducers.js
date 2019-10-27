@@ -146,8 +146,6 @@ export function discuss(state = getInitDiscussState(), action) {
         };
 
     case discussTypes.REQ_MARK_ANSWER:
-        console.log(`PARENT: ${action.answer.parent}`);
-        console.log(`idh: ${JSON.stringify({ ...action.question, parent: "<parent>", replies: [] })}`);
         const intermediateTree = placeInTree(
                                     state[action.question.artefact].tree,
                                     action.answer.id,
@@ -172,8 +170,6 @@ export function discuss(state = getInitDiscussState(), action) {
         };
 
     case discussTypes.RES_MARK_ANSWER:
-        console.log(`PARENT: ${action.answer.parent}`);
-        console.log(`action.question.answer: ${action.question.answer}`);
         return {
             ...state,
             [action.question.artefact]: {
