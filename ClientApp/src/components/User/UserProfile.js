@@ -4,6 +4,7 @@ import CreateArtefacts from '../Artefact/CreateMyArtefact.js';
 import Overview from '../Shared/Overview.js';
 
 import ArtefactScroller from '../Artefact/ArtefactScroller.js';
+import EditTextArea from '../Shared/EditTextArea.js';
 import { editableTextArea } from 'components/Shared/editableTextArea';
 import ProfilePicture from './ProfilePicture';
 
@@ -21,33 +22,6 @@ class UserInfo extends React.Component {
     }
 
     render() {
-        const BioText = (props) => {
-            let bioPlaceholderStr;
-
-            if (this.props.isCurUser) {
-                bioPlaceholderStr = 
-                    `Oh no! Looks like you haven't set a bio yet.`;
-            }
-            else {
-                bioPlaceholderStr = 
-                    `Oh no! ${this.props.user.username} is yet to provide a bio.`;
-            }
-                
-            return <div className='text-muted'>
-                    {
-                        props.value != null && props.value.length
-                        ? props.value
-                        : bioPlaceholderStr
-                    }
-                </div>;
-        }
-
-        let EditableBio;
-        if (this.props.editable) {
-
-            EditableBio = editableTextArea(BioText);
-        }
-
         return (
             <div className='af-profile-info'>
                 <ProfilePicture
@@ -65,16 +39,21 @@ class UserInfo extends React.Component {
                     </span>
                 </div>
                 <hr/>
+                <EditTextArea
+                    className='text-muted af-profile-bio'
+                    editable={this.props.editable}
+                    onSubmit={this.changeBio}
+                >
                 {
-                    this.props.editable
-                    ?
-                    <EditableBio
-                        value={this.props.user.bio}
-                        onValueSubmit={this.changeBio}
-                    />
-                    :
-                    <BioText />
+                    (this.props.user.bio) ? (
+                        this.props.user.bio
+                    ) : (this.props.isCurUser) ? (
+                        "Oh no! Looks like you haven't set a bio yet."
+                    ) : (
+                        `Oh no! ${this.props.user.username} is yet to provide a bio.`
+                    )
                 }
+                </EditTextArea>
             </div>
         );
     }
@@ -91,12 +70,12 @@ class UserScroller extends React.Component {
     }
 
     render() {
-        const scrollerTitle = 
+        const scrollerTitle =
             this.props.isCurUser
             ? `Your Artefacts`
             : `${this.props.user.username}'s Artefacts`;
 
-        const addArtButton = 
+        const addArtButton =
             this.props.isCurUser
             ? <button className='btn btn-primary btn-circle btn-circle-lg' data-target='#addart' data-toggle='modal'>
                  <FontAwesomeIcon icon={faPlus}/>
@@ -105,14 +84,14 @@ class UserScroller extends React.Component {
             // Add
         return (
             <>
-            <FloatingWindow 
-                id="addart" 
-                className='af-register-modal' 
+            <FloatingWindow
+                id="addart"
+                className='af-register-modal'
                 title='Register An Artefact'
                 showHeader={this.state.showCreateArtHeader}
             >
-                <CreateArtefacts 
-                    artCreated={() => 
+                <CreateArtefacts
+                    artCreated={() =>
                         this.setState({
                             ...this.state,
                             showCreateArtHeader: false,
