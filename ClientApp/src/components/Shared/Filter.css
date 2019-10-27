@@ -49,6 +49,10 @@
         width: 49%;
     }
 
+    .af-filter-bottom-margin-small-screen {
+        margin-bottom: 0% !important;
+    }
+
     .af-filter-row-item-flex {
         width: 80%;
         display: flex;
@@ -64,10 +68,20 @@
     }
 }
 
-.af-filter-clear-btn-outer {
+/* .af-filter-clear-btn-outer {
     display: flex;
     justify-content: center;
     margin-top: 2%;
+} */
+
+.af-filter-controls-buttons {
+    width: 40%;
+    display: flex;
+    justify-content: start;
+}
+
+.af-filter-clear-btn {
+    margin-right: 5px;
 }
 
 
@@ -85,6 +99,10 @@
 }
 
 .af-filter-bottom-margin {
+    margin-bottom: 2%;
+}
+
+.af-filter-bottom-margin-small-screen {
     margin-bottom: 2%;
 }
 
@@ -109,6 +127,7 @@
 }
 
 .af-filter-sort-order-toggle {
+    width: 12%;
     vertical-align: top;
 }
 
@@ -121,7 +140,7 @@
  {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: start;
 }
 
 .af-filter-control {
