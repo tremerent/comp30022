@@ -30,7 +30,7 @@ export class CategoryIndex extends Component {
         let contents = this.state.loading
                      ? <p><em>Loading...</em></p>
             : CategoryIndex.renderCategorySpace(this.state.categories);
-
+        categories = allCategories;
         return (
             <div>
                 <h2> Artefact Categories </h2>
