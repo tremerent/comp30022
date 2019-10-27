@@ -39,7 +39,11 @@ function LandingPage(props) {
                                 Share your knowledge
                             </h4>
                         </div>
+<<<<<<< HEAD
                         <div className="af-lp-action-button-div-div">
+=======
+                        <div className="af-lp-action-button-div">
+>>>>>>> jonah-dev
                             <Link
                                 to={{
                                     pathname: "/browse",
@@ -50,7 +54,11 @@ function LandingPage(props) {
                             >
                                 <button className="btn btn-primary mv-3 af-lp-action-button">
                                     <span className="af-lp-action-button-text">
+<<<<<<< HEAD
                                         Become an <b><em>Artefact</em></b> detective
+=======
+                                        Become an <br/><b><em>Artefact</em></b> detective
+>>>>>>> jonah-dev
                                     </span>
                                 </button>
                             </Link>

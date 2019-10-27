@@ -77,9 +77,10 @@ class FilteredBrowser extends React.Component {
             ...this.props.filterDetails,
         };
 
-
         this.props
-            .getFilteredArtefacts(filterDetails);
+            .getFilteredArtefacts(
+                getQueryDetails(filterDetails)
+            );
     }
 
     render() {

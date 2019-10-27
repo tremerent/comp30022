@@ -19,8 +19,10 @@ import App from './App';
 
 const rootElement = document.getElementById('root');
 
+export const store = configureStore();
+
 ReactDOM.render(
-    <Provider store={configureStore()}>
+    <Provider store={store}>
         <ConnectedRouter history={history}>
             <App />
         </ConnectedRouter>
