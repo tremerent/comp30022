@@ -32,6 +32,8 @@ export class CreateArtefactForm extends Component {
             visibility: null,
             creationDate: new Date(),
         };
+        
+        this.maximumArtefactNameLength = 20;
 
         this.docs = { };
 
@@ -453,7 +455,7 @@ export class CreateArtefactForm extends Component {
 
     firstFormPageValid = () => {
         return (this.state.artefact.title.length !== 0) &&
-            (this.state.artefact.title.length < 20) &&
+            (this.state.artefact.title.length < this.maximumArtefactNameLength) &&
             (this.state.artefact.description.length !== 0)
     }
 
