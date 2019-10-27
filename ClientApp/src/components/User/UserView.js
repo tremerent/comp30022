@@ -74,13 +74,6 @@ function mapStateToProps(state) {
             userArtsLoading = state.art.userArts[username].loading;
         }
     }
-<<<<<<< HEAD
-
-    console.log(user.loading);
-    console.log('user.loading');
-    console.log(userArtsLoading);
-=======
->>>>>>> jonah-dev
     
     return {
         isViewOfCurUser,
