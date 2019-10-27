@@ -8,6 +8,9 @@ class SignupForm extends React.Component {
 
         this.noUNameEnteredText = "You'll need a username to signup.";
         this.duplicateUsernameText = "Sorry! This username is already taken.";
+        this.unameTooLongText = "Usernames cannot be longer than 20 characters.";
+        
+        this.maximumUserNameLength = 20;
 
         // initialise form state to "", unless parent passes 'formVals'
         this.state = {
@@ -137,6 +140,10 @@ class SignupForm extends React.Component {
                 this.noUsernameEntered();
                 return false;
             }
+            else if (this.state.username.length > this.maximumUserNameLength) {
+                this.usernameTooLong();
+                return false;
+            }
             else {
                 this.usernameEntered();
             }
@@ -155,6 +162,13 @@ class SignupForm extends React.Component {
     noUsernameEntered = () => {
         this.state.usernameInvalidText = this.noUNameEnteredText;
 
+        this.formUsername.classList.add("is-invalid");
+        this.formUsername.classList.remove("is-valid");
+    }
+    
+    usernameTooLong = () => {
+        this.state.usernameInvalidText = this.unameTooLongText;
+        
         this.formUsername.classList.add("is-invalid");
         this.formUsername.classList.remove("is-valid");
     }
