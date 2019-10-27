@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { 
-    discuss as discussActions, 
+import {
+    discuss as discussActions,
     artefacts as artActions,
 } from '../../redux/actions';
 
@@ -44,14 +44,11 @@ class ArtefactPage extends React.Component {
             return <CentreLoading/>;
         return (
             <Overview>
-                <ArtefactPreviewNew 
-                    artefact={this.props.artefact} 
-                    editable={this.props.isViewOfCurUser}
+                <ArtefactInfo
+                    artefact={this.props.artefact}
+                    auth={{isOwner: this.props.isViewOfCurUser}}
                     updateArtefact={this.props.updateArtefact}
                 />
-                {/* <ArtefactInfo 
-                    artefact={this.props.artefact} 
-                    auth={{isOwner: this.props.isViewOfCurUser}}/> */}
                 {
                     (this.props.discussion.loading) ? (
                         <CentreLoading/>
@@ -77,8 +74,8 @@ function mapStateToProps(state) {
     let isViewOfCurUser = false;
 
     if (state.art.artIdCache[artefactId]) {
-        isViewOfCurUser = 
-            state.art.artIdCache[artefactId].owner.username === 
+        isViewOfCurUser =
+            state.art.artIdCache[artefactId].owner.username ===
                 state.auth.user.username;
     }
 

@@ -3,15 +3,58 @@ import { faEye } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 
+import CategorySelect from '../Category/CategorySelect.js';
 import ImageCarousel from  '../Shared/ImageCarousel.js';
+import EditTextArea from '../Shared/EditTextArea.js';
 
 import './ArtefactInfo.css';
 
 export default class ArtefactInfo extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = { artefact: this.props.artefact };
+    }
+
+    update = () => {
+        this.props.updateArtefact(this.state.artefact);
+    }
+
+    onEdit = attrib => value => {
+        this.setState(
+            {
+                ...this.state,
+                artefact: {
+                    ...this.state.artefact,
+                    [attrib]: value,
+                }
+            },
+            this.update
+        );
+    }
+
     render() {
-        const a = this.props.artefact;
+        const a = this.state.artefact;
         const id = `af-artcard-desc-${a.id}`;
         const carouselId = `af-artdoc-carousel-${this.props.artefact.id}`;
+
+        // if category join in api format, need to convert, otherwise
+        // it is ready for 'CategorySelect'
+        let curArtCatSelectOpts = [];
+        const cj = a.categoryJoin;
+        // just check first ele. since all will be same
+        if (cj.length &&
+            cj[0].label && cj[0].value) {
+            curArtCatSelectOpts = cj;
+        }
+        else {
+            const curArtCats = // { id, name }
+                this.categoryJoinsToCategories(cj);
+            curArtCatSelectOpts = curArtCats.map(c =>
+                ({ label: c.name, value: c.id })
+            );
+        }
 
         return (
             <div className='af-ai'>
@@ -28,7 +71,13 @@ export default class ArtefactInfo extends React.Component {
                     />
                 </div>
                 <div className='af-ai-info'>
-                    <h3 className="af-ai-title">{a.title}</h3>
+                    <EditTextArea
+                        className="af-ai-title"
+                        editable={this.props.auth.isOwner}
+                        onSubmit={this.onEdit('title')}
+                    >
+                        {a.title}
+                    </EditTextArea>
                     <Link
                             className='af-ai-owner'
                             to={
@@ -40,19 +89,42 @@ export default class ArtefactInfo extends React.Component {
                     </Link>
 
                     <div className="af-ai-categories">
-                        {this.categoryJoinsToCategories(a.categoryJoin).map(c =>
-                            <Link
-                                    to={`/browse?category=${c.name}`}
-                                    key={c.id}
-                                    className="badge badge-decal-text mx-1 af-ai-badge"
-                            >
-                                {c.name}
-                            </Link>
-                        )}
+                    {
+                        this.props.auth.isOwner ? (
+                            <CategorySelect
+                                creatable={true}
+                                categoryVals={curArtCatSelectOpts}
+                                setCategoryVals={this.onEdit("categoryJoin")}
+                                blurPlaceholder={"Choose your artefact's categories"}
+                                focusPlaceholder={"Type to search for a category or create your own"}
+                            />
+                        ) : (
+                            this.categoryJoinsToCategories(a.categoryJoin).map(c =>
+                                <Link
+                                        to={`/browse?category=${c.name}`}
+                                        key={c.id}
+                                        className="badge badge-decal-text mx-1 af-ai-badge"
+                                >
+                                    {c.name}
+                                </Link>
+                            )
+                        )
+                    }
                     </div>
-                    <p className='text-muted af-ai-desc'>
-                        {a.description}
-                    </p>
+                    <EditTextArea
+                        className='text-muted af-ai-desc'
+                        editable={this.props.auth.isOwner}
+                        onSubmit={this.onEdit('description')}
+                    >
+                        {
+                            a.description || (this.props.auth.isOwner ?
+                                    'Enter a description...'
+                                :
+                                    `${a.owner.username} has not yet given `
+                                    +   'this arefact a description.'
+                            )
+                        }
+                    </EditTextArea>
                     {
                         this.props.auth.isOwner && (
                             <div className='af-ai-vis'>
@@ -88,3 +160,4 @@ export default class ArtefactInfo extends React.Component {
         }).filter(cat => cat !== null);
     }
 }
+
