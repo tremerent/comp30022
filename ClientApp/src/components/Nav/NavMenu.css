@@ -66,6 +66,7 @@ fill: rgba(0, 0, 0, 0.5);
     width: 2.4rem;
     padding-bottom: 0.2rem;
     flex-grow: 0;
+    margin-right: -0.2em;
 }
 
 .navbar-brand {
