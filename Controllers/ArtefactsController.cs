@@ -83,14 +83,14 @@ namespace Artefactor.Controllers
 
             [FromQuery] string sort)
         {
-            // Iterate through query params, adding lambdas of type 
-            // 'System.Linq.Expression'. 
+            // Iterate through query params, adding lambdas of type
+            // 'System.Linq.Expression'.
             //
             // Their conjunction is applied ie. 'artefact.Where(conj)'
             //
             // Similar expressions are built for calls to '.OrderBy'.
 
-            IQueryable<Artefact> artefacts = 
+            IQueryable<Artefact> artefacts =
                 _context.Artefacts
                         .Include(a => a.CategoryJoin)
                             .ThenInclude(cj => cj.Category)
@@ -114,8 +114,8 @@ namespace Artefactor.Controllers
 
                 if (Queries.QueryIsAuthorised(
                     artefact.Visibility,
-                    curUser, 
-                    artefact.Owner, 
+                    curUser,
+                    artefact.Owner,
                     (curUser, queryUser) => curUser.Id == queryUser.Id,
                     (curUser, queryUser) => true  // just one big happy family
                 ))
@@ -126,12 +126,12 @@ namespace Artefactor.Controllers
             /// Build dynamic linq queries using expression trees. See -
             /// https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/expression-trees/how-to-use-expression-trees-to-build-dynamic-queries
 
-            ParameterExpression artefactParam = 
+            ParameterExpression artefactParam =
                 Expression.Parameter(typeof(Artefact), "artefact");
 
             IList<Expression> whereLambdas = new List<Expression>();
             IList<Expression> orderByLambdas = new List<Expression>();
-            
+
             // first initialise queryUser - check for NotFound
 
             ApplicationUser queryUser = null;  // query 'user'
@@ -149,8 +149,8 @@ namespace Artefactor.Controllers
             if (vis != null && vis.Length > 0)
             {
                 if (vis.Any(visQuery => !Queries.QueryIsAuthorised(
-                        visQuery, 
-                        curUser, 
+                        visQuery,
+                        curUser,
                         queryUser,
                         (curUser, queryUser) => curUser.Id == queryUser.Id,
                         (curUser, queryUser) => true  // just one big happy family
@@ -175,15 +175,15 @@ namespace Artefactor.Controllers
                     // queried visibilities
                     whereLambdas.Add(
                         QueryExpressions.FoldBoolLambdas(
-                            Expression.Constant(false), 
-                            visLambdas, 
+                            Expression.Constant(false),
+                            visLambdas,
                             (lamb1, lamb2) => Expression.OrElse(lamb1, lamb2))
                     );
                 }
             }
             else
             {
-                // no vis query has been specified, so just return public 
+                // no vis query has been specified, so just return public
                 // artefacts and consider other queries
                 whereLambdas.Add(
                     QueryExpressions.ArtefactVisQueryExpression(
@@ -193,7 +193,7 @@ namespace Artefactor.Controllers
 
             // user query
 
-            // Visibility filter should already have been authorised and added 
+            // Visibility filter should already have been authorised and added
             // to 'whereLambdas'.
             //
             // If no 'vis' query was specified, just returns public artefacts
@@ -251,7 +251,7 @@ namespace Artefactor.Controllers
                         throw new QueryException { IsQuery = true };
                     }
 
-                    var propertyName = 
+                    var propertyName =
                         ApiQueryPropertyToPropertyName(queryProperty);
 
                     whereLambdas.Add(
@@ -287,7 +287,7 @@ namespace Artefactor.Controllers
 
                     var queryText = split[0];
                     string queryProperty;  // Artefact property to be queried
-                    if (split.Length > 1) 
+                    if (split.Length > 1)
                     {
                         queryProperty = split[1];
                     }
@@ -332,7 +332,7 @@ namespace Artefactor.Controllers
 
             // since & until
 
-            bool isSpecified(DateTime date) 
+            bool isSpecified(DateTime date)
             {
                 return date.CompareTo(default(DateTime)) != 0;
             }
@@ -358,7 +358,7 @@ namespace Artefactor.Controllers
                 );
             }
 
-            // Query param lambda have been appended to 'whereLambdas'. 
+            // Query param lambda have been appended to 'whereLambdas'.
             // Take conjunction, then call with Where.
 
             Expression whereLambdasAnded = QueryExpressions.FoldBoolLambdas(
@@ -368,8 +368,8 @@ namespace Artefactor.Controllers
             );
 
             Expression whereCallExpression = QueryExpressions.GetWhereExp<Artefact>(
-                whereLambdasAnded, 
-                artefactParam, 
+                whereLambdasAnded,
+                artefactParam,
                 artefacts
             );
 
@@ -379,13 +379,13 @@ namespace Artefactor.Controllers
 
             // sort queries
 
-            if (sort != null) 
+            if (sort != null)
             {
                 var split = sort.Split(':');
 
                 var sortBy = split[0];
                 string sortOrder;
-                if (split.Length > 1) 
+                if (split.Length > 1)
                 {
                     sortOrder = split[1];
                 }
@@ -414,22 +414,22 @@ namespace Artefactor.Controllers
                             "CreatedAt", artefactParam);
                         break;
 
-                    // TODO(jonah) 
+                    // TODO(jonah)
 
                     case "questionCount":
                         orderType = typeof(int);
-                        
-                        var commentsPropertyExpQ = 
+
+                        var commentsPropertyExpQ =
                             QueryExpressions.ArtefactPropertyExpression<IEnumerable<ArtefactComment>>(
                                 "Comments",
                                 artefactParam
                             );
 
-                        var ofTypeMethod = 
+                        var ofTypeMethod =
                             typeof(Enumerable)
                             .GetMethods()
-                            .Single(method => method.Name == "OfType" && 
-                                    method.IsStatic && 
+                            .Single(method => method.Name == "OfType" &&
+                                    method.IsStatic &&
                                     method.GetParameters().Length == 1);
 
                         var questionsExp = Expression.Call(
@@ -458,13 +458,13 @@ namespace Artefactor.Controllers
                     case "imageCount":
 
                         orderType = typeof(int);
-                        
-                        var imagePropertyExp = 
+
+                        var imagePropertyExp =
                             QueryExpressions.ArtefactPropertyExpression<IEnumerable<ArtefactDocument>>(
                                 "Images",
                                 artefactParam
                             );
-                        
+
                         orderByBodyExp = QueryExpressions.CountExpression<ArtefactDocument>(imagePropertyExp);
 
                         break;
@@ -473,10 +473,10 @@ namespace Artefactor.Controllers
                         return BadRequest($"Invalid sort query '{sortBy}'");
                 }
 
-                // Set 'finalExpr' since 'OrderBy(..)' instance is 
+                // Set 'finalExpr' since 'OrderBy(..)' instance is
                 // 'artefacts.Where(..)'.
 
-                if (sortOrder == "asc") 
+                if (sortOrder == "asc")
                 {
                     finalExpr = MakeOrderByExp(false);
                 }
@@ -484,18 +484,18 @@ namespace Artefactor.Controllers
                 {
                     finalExpr = MakeOrderByExp(true);
                 }
-                else 
+                else
                 {
                     return BadRequest($"Invalid sort query order '${sortOrder}'");
                 }
 
                 MethodCallExpression MakeOrderByExp(bool isDesc)
                 {
-                    MethodInfo GetOrderByExpression_MethInfo = 
+                    MethodInfo GetOrderByExpression_MethInfo =
                         typeof(Artefactor.Shared.QueryExpressions)
                         .GetMethod("GetOrderByExp");
 
-                    object orderByCallExpression = 
+                    object orderByCallExpression =
                         GetOrderByExpression_MethInfo
                         .MakeGenericMethod(typeof(Artefact), orderType)
                         .Invoke(this, new object[] {
@@ -558,7 +558,7 @@ namespace Artefactor.Controllers
 
             artefact.Owner = curUser;
             var artefactJson = _artefactConverter.ToJson(artefact);
-            
+
             return CreatedAtAction("GetArtefact", new { id = artefact.Id },
               artefactJson);
         }
@@ -568,10 +568,10 @@ namespace Artefactor.Controllers
             public string Id { get; set; }
             public string Title { get; set; }
             [JsonConverter(typeof(StringEnumConverter))]
-            public string Visibility { get; set; }
+            public Visibility Visibility { get; set; }
             public string Description { get; set; }
 
-            public class CategoryJoinReq 
+            public class CategoryJoinReq
             {
                 [JsonRequired]
                 public string CategoryId { get; set; }
