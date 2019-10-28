@@ -30,14 +30,12 @@ export class CreateArtefactForm extends Component {
             visibility: null,
         };
 
-        // this doesn't participate in
-        this.docs = { };
-
         this.state = {
             artefact: { ...this.initialArtefactState },
             artefactWasCreated: false,
             loading: false,
             createdArtefactId: null,
+            docs: {},
         };
     }
 
@@ -93,12 +91,12 @@ export class CreateArtefactForm extends Component {
                 <h4 className="alert-heading">Thanks for registering an artefact!</h4>
                 <hr/>
                 <div className="row justify-content-start">
-                    <Link to={`/artefact/${this.state.createdArtefactId}`}>
-                        <button className="btn btn-secondary mx-2" style={{color: "#fff !important"}}>
+                    <Link to={`/artefact/${this.state.createdArtefactId}`} className='create-art-succ-action'>
+                        <button className="btn btn-secondary" style={{color: "#fff !important"}}>
                             See your artefact
                         </button> 
                     </Link>
-                    <button className="btn btn-primary" onClick={this.resetArtefactCreation}> Create another artefact</button>
+                    <button className="btn btn-primary create-art-succ-action" onClick={this.resetArtefactCreation}> Register another artefact</button>
                 </div>
             </div>
         );
@@ -212,12 +210,27 @@ export class CreateArtefactForm extends Component {
     handleArtefactDocsChange = (doc, action) => {
         switch (action) {
         case 'delete':
-            if (!this.docs[doc.id])
+            if (!this.state.docs[doc.id])
                 console.warn(`'${doc.id}' deleted but is not tracked`);
-            delete this.docs[doc.id];
+
+            const oldDocs = {...this.state.docs};
+            delete oldDocs[doc.id];
+
+            this.setState({
+                ...this.state,
+                docs: {
+                    ...oldDocs
+                }
+            });
             break;
         case 'create':
-            this.docs[doc.id] = doc;
+            this.setState({
+                ...this.state,
+                docs: {
+                    ...this.state.docs,
+                    [doc.id]: doc,
+                },
+            });
             break;
         default:
             console.warn(
@@ -227,10 +240,14 @@ export class CreateArtefactForm extends Component {
     }
 
     renderSecondFormPage = () => {
+        const artDocs = Object.values(this.state.docs);
+
         return (
             <ArtefactDocs
                 artefact={this.state.artefact}
+                docs={artDocs}
                 onChange={this.handleArtefactDocsChange}
+                key={artDocs.length}
             />
         );
     }
@@ -311,7 +328,7 @@ export class CreateArtefactForm extends Component {
         // our database.
         let artefact = this.state.artefact;
         artefact.id = undefined;
-        this.props.createArtefact(artefact, this.docs)
+        this.props.createArtefact(artefact, this.state.docs)
             .then(() => {
 
                 // add created artefacts id so we have a link to it for the success
@@ -347,6 +364,7 @@ export class CreateArtefactForm extends Component {
             artefactWasCreated: false,
             createdArtefactId: this.getCreatedArtefactId(),
             artefact: { ...this.initialArtefactState },
+            docs: {},
         });
 
         this.props.createArtReset();

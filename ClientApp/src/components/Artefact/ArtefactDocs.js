@@ -5,25 +5,35 @@ import ImageCarousel from '../Shared/ImageCarousel.js';
 
 import './ArtefactDocs.css';
 
+// expects 'props.docs'. Pass '[]' if none.
 export default class ArtefactDocs extends React.Component {
 
     constructor(props) {
         super(props);
-
-        if (!props.artefact.docs)
-            props.artefact.docs = [];
 
         this.CAROUSEL_ID = `af-artdoc-carousel-${this.props.artefact.id}`;
         this.CAROUSEL_SELECTOR = `#${this.CAROUSEL_ID}`;
 
         this.onChange = this.props.onChange || (() => {});
 
-        this.state = {
-            image: props.artefact.docs.filter(x => x.type === 'image'),
-            file: props.artefact.docs.filter(x => x.type === 'file'),
-        };
+        this.state = this.docPropsToState(this.props.docs);
         this.state.activeItemId =
             this.state.image.length && this.state.image[0].id;
+    }
+
+    docPropsToState(docProps) {
+        return {
+            image: docProps.filter(x => x.type === 'image'),
+            file: docProps.filter(x => x.type === 'file'),
+        };
+    }
+
+    componentDidUpdate(prevProps) {
+        console.log('did update');
+        console.log(this.props.docs);
+        if (this.props.docs.length != prevProps.docs.length) {
+            this.setState(this.docPropsToState(this.props.docs));
+        }
     }
 
     currentCarouselItemId() {
