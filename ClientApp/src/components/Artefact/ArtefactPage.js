@@ -58,7 +58,7 @@ class ArtefactPage extends React.Component {
                             the server. Try reloading the page.
                         </div>
                     ) : (
-                        <Discussion items={this.props.discussion.tree} artefactId={this.props.artefactId}/>
+                        <Discussion items={this.props.discussion.items} artefactId={this.props.artefactId}/>
                     )
                 }
             </Overview>
@@ -84,8 +84,9 @@ function mapStateToProps(state) {
         artefact: state.art.artIdCache[artefactId],
         loading: state.art.artIdCache[artefactId] === undefined,
         discussion: {
-            tree: state.discuss[artefactId] && state.discuss[artefactId].tree,
-            loading: !state.discuss[artefactId],
+            items: state.discuss[artefactId] && state.discuss[artefactId].items,
+            loading: !state.discuss[artefactId]
+                        || state.discuss[artefactId].loading,
             error: state.discuss[artefactId] && state.discuss[artefactId].error,
         },
         isViewOfCurUser,

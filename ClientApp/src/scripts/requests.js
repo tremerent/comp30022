@@ -75,17 +75,17 @@ async function patchArtefactAndCategories(updatedArt, origArt) {
     //     const origCj = origArt.categoryJoin;
 
 
-    //     const toAdd = updatedCj.filter(cj => 
+    //     const toAdd = updatedCj.filter(cj =>
     //         !origCj.find(ocj => ocj.categoryId === cj.categoryId));
 
-    //     const toRemove = origCj.filter(cj => 
+    //     const toRemove = origCj.filter(cj =>
     //         !updatedCj.find(ocj => ocj.categoryId == cj.categoryId));
 
 
 
     //     // add categories
     //     await postArtefactCategories(categoryOptsToDbModel(updatedArt.id, toAdd));
-        
+
     //     // remove categories
     //     await Promise.all(
     //         categoryOptsToDbModel(updatedArt.id, toRemove)
@@ -241,37 +241,11 @@ async function getComment(id) {
     return resp.data;
 }
 
-// Adds a reference to each item in a discussion tree pointing to that item's
-// parent item (or null at the top level).
-// Possibly this causes memory leaks; I don't know anything about JS garbage
-// collection.
-// -- Sam
-function addParentRefsToDiscussionTree(tree) {
-    (function recurse(parent, tree, question, answerId) {
-        for (let child of tree) {
-            let nextQuestion = null;
-            let nextAnswerId = null;
-            if (!question) {
-                if (child.type === 'question' && child.isAnswered) {
-                    nextQuestion = child;
-                    nextAnswerId = child.answerComment;
-                }
-            } else if (child.id === answerId) {
-                child.isAnswer = true;
-            }
-            child.parent = parent;
-            child.parentId = child.parent && child.parent.id;
-            recurse(child, child.replies, nextQuestion, nextAnswerId);
-        }
-    })(null, tree, null, null);
-    return tree;
-}
-
 export async function getDiscussion(artefactId) {
-    return addParentRefsToDiscussionTree((
+    return (
             await apiFetch(getToken())
                 .get(`/artefacts/comments?artefactId=${artefactId}`)
-        ).data);
+        ).data;
 }
 
 export async function postDiscussion(item) {
@@ -279,7 +253,7 @@ export async function postDiscussion(item) {
     if (item.parent) {
         args = [
             '/artefacts/comments/reply',
-            { Body: item.body, ParentCommentId: item.parent.id },
+            { Body: item.body, ParentCommentId: item.parent },
         ];
     } else if (item.type === 'question') {
         args = [

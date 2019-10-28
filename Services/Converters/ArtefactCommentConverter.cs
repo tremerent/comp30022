@@ -9,11 +9,6 @@ namespace Artefactor.Services.Converters
     {
         public object ToJson(ArtefactComment c)
         {
-            IEnumerable<object> childJson = null;
-            if (c.ChildComments != null)
-            {
-                childJson = c.ChildComments.Select(child => ToJson(child));
-            }
 
             if (c is ArtefactQuestion)
             {
@@ -25,12 +20,17 @@ namespace Artefactor.Services.Converters
                     author = c.Author.UserName,
                     artefact = c.ArtefactId,
                     authorImageUrl = c.Author.ImageUrl,
-                    replies = c.ChildComments.Select(c => c.Id),
+                    replies = c.ChildComments == null ?
+                                    new List<string>()
+                                :
+                                    c.ChildComments.Select(c => c.Id).ToList(),
                     parent = c.ParentCommentId,
                     type = "question",
                     ts = c.CreatedAt,
-                    isAnswered = ((ArtefactQuestion)c).AnswerComment != null,
-                    answerComment = ((ArtefactQuestion)c).AnswerCommentId,
+                    answer =    ((ArtefactQuestion)c).AnswerComment == null ?
+                                    null
+                                :
+                                    ((ArtefactQuestion)c).AnswerComment.Id,
                 };
             }
 
@@ -40,7 +40,10 @@ namespace Artefactor.Services.Converters
                 author = c.Author.UserName,
                 authorImageUrl = c.Author.ImageUrl,
                 artefact = c.ArtefactId,
-                replies = c.ChildComments.Select(c => c.Id),
+                replies = c.ChildComments == null ?
+                                new List<string>()
+                            :
+                                c.ChildComments.Select(c => c.Id).ToList(),
                 parent = c.ParentCommentId,
                 type = "comment",
                 ts = c.CreatedAt,

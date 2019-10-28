@@ -11,10 +11,10 @@ const reqGetDiscussion = (artefactId) => ({
     artefactId,
 });
 
-const resGetDiscussion = (artefactId, tree) => ({
+const resGetDiscussion = (artefactId, items) => ({
     type: discussTypes.RES_GET_DISCUSSION,
     artefactId,
-    tree,
+    items,
 });
 
 const errGetDiscussion = (artefactId, error) => ({
@@ -33,8 +33,8 @@ export function getDiscussion(artefactId) {
         dispatch(reqGetDiscussion(artefactId));
 
         try {
-            const tree = await apiGetDiscussion(artefactId);
-            dispatch(resGetDiscussion(artefactId, tree));
+            const items = await apiGetDiscussion(artefactId);
+            dispatch(resGetDiscussion(artefactId, items));
         } catch (e) {
             dispatch(errGetDiscussion(artefactId, e));
         }

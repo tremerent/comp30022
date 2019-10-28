@@ -82,125 +82,170 @@ export function discuss(state = getInitDiscussState(), action) {
 
     switch (action.type) {
 
-    case discussTypes.REQ_GET_DISCUSSION:
+    case discussTypes.REQ_GET_DISCUSSION: {
         return {
             ...state,
-            [action.artefactId]: null,
+            [action.artefactId]: { loading: true },
         };
+    }
 
-    case discussTypes.RES_GET_DISCUSSION:
+    case discussTypes.RES_GET_DISCUSSION: {
+
+        let items = action.items.reduce(
+                        (stateItems, item) => ({
+                            ...stateItems, [item.id]: item
+                        }), { }
+                    );
+
+        for (const item of action.items) {
+            if (item.answer)
+                items[item.answer].answers = item.id;
+        }
+
         return {
             ...state,
-            [action.artefactId]: { tree: action.tree },
+            [action.artefactId]: { items },
         };
+    }
 
-    case discussTypes.ERR_GET_DISCUSSION:
+    case discussTypes.ERR_GET_DISCUSSION: {
         return {
             ...state,
             [action.artefactId]: { error: action.error },
         };
+    }
 
-    case discussTypes.REQ_POST_DISCUSSION:
-        action.item.replies = action.item.replies || [];
-        action.item.loading = true;
+    case discussTypes.REQ_POST_DISCUSSION: {
+        let newItems = state[action.item.artefact].items;
+        newItems[action.item.id] = {
+            replies: [],
+            ...action.item,
+            loading: true,
+        };
+        if (action.item.parent)
+            newItems[action.items.parent] = {
+                ...newItems[action.items.parent],
+                replies: [
+                    ...newItems[action.items.replies],
+                    action.item.id,
+                ],
+            };
+
         return {
             ...state,
             [action.item.artefact]: {
-                tree:   addInTree(
-                            state[action.item.artefact].tree,
-                            action.item,
-                        ),
+                newItems,
             },
         };
+    }
 
-    case discussTypes.RES_POST_DISCUSSION:
-        let newItem = {
+    case discussTypes.RES_POST_DISCUSSION: {
+        const oldItem = state[action.item.artefact].items[action.item.id];
+        let newItems = state[action.item.artefact].items;
+        newItems[action.newItem.id] = {
             ...action.newItem,
-            loading: undefined,
+            loading: false,
         };
+        delete newItems[action.item.id];
+
+        if (oldItem.parent) {
+            let parentReplies = [];
+            for (const reply of newItems[oldItem.parent])
+                if (reply.id !== oldItem.id)
+                    parentReplies.push(reply);
+            newItems[oldItem.parent].replies = parentReplies;
+        }
+
         return {
             ...state,
             [action.item.artefact]: {
-                tree:   placeInTree(
-                            state[action.item.artefact].tree,
-                            action.item.id,
-                            newItem
-                        ),
+                items: newItems,
             },
         };
+    }
 
-    case discussTypes.ERR_POST_DISCUSSION:
+    case discussTypes.ERR_POST_DISCUSSION: {
         return {
             ...state,
             [action.item.artefact]: {
-                tree:   placeInTree(
-                            state[action.item.artefact].tree,
-                            action.item.id,
-                            {
-                                ...action.item,
-                                loading: undefined,
-                                error: `${action.error}`
-                            }
-                        ),
+                items: {
+                    ...state[action.item.artefact].items,
+                    [action.item.id]: {
+                        ...state[action.item.artefact].items[action.item.id],
+                        loading: false,
+                        error: `${action.error}`,
+                    },
+                },
             },
         };
+    }
 
-    case discussTypes.REQ_MARK_ANSWER:
-        const intermediateTree = placeInTree(
-                                    state[action.question.artefact].tree,
-                                    action.answer.id,
-                                    {
-                                        ...action.answer,
-                                        isAnswer: true,
-                                        loading: true,
-                                    }
-                                );
-        action.answer.isAnswer = true;
-        action.answer.loading = true;
-        action.question.isAnswered = true;
+    case discussTypes.REQ_MARK_ANSWER: {
+        const q = action.question;
+        const a = action.answer;
         return {
             ...state,
-            [action.question.artefact]: {
-                tree:   placeInTree(
-                            intermediateTree,
-                            action.question.id,
-                            action.question
-                        ),
+            [q.artefact]: {
+                items: {
+                    ...state[q.artefact].items,
+                    [q.id]: {
+                        ...state[q.artefact].items[q.id],
+                        answer: a.id,
+                    },
+                    [a.id]: {
+                        ...state[a.artefact].items[a.id],
+                        answers: q.id,
+                        loading: true,
+                    },
+                },
             },
         };
+    }
 
-    case discussTypes.RES_MARK_ANSWER:
+    case discussTypes.RES_MARK_ANSWER: {
+        const q = action.question;
+        const a = action.answer;
         return {
             ...state,
-            [action.question.artefact]: {
-                tree:   placeInTree(
-                            state[action.question.artefact].tree,
-                            action.answer.id,
-                            {
-                                ...action.answer,
-                                isAnswer: true,
-                                loading: undefined,
-                            }
-                        ),
-            }
+            [q.artefact]: {
+                items: {
+                    ...state[q.artefact].items,
+                    [q.id]: {
+                        ...state[q.artefact].items[q.id],
+                        answer: a.id,
+                    },
+                    [a.id]: {
+                        ...state[a.artefact].items[a.id],
+                        answers: q.id,
+                        loading: false,
+                    },
+                },
+            },
         };
+    }
 
-    case discussTypes.ERR_MARK_ANSWER:
+    case discussTypes.ERR_MARK_ANSWER: {
+        const q = action.question;
+        const a = action.answer;
         return {
             ...state,
-            [action.question.artefact]: {
-                tree:   placeInTree(
-                            state[action.question.artefact].tree,
-                            action.answer.id,
-                            {
-                                ...action.answer,
-                                isAnswer: false,
-                                loading: undefined,
-                                error: `${action.error}`
-                            },
-                        ),
-            }
+            [q.artefact]: {
+                items: {
+                    ...state[q.artefact].items,
+                    [q.id]: {
+                        ...state[q.artefact].items[q.id],
+                        answer: null,
+                    },
+                    [a.id]: {
+                        ...state[a.artefact].items[a.id],
+                        answers: null,
+                        loading: false,
+                        error: `${action.error}`,
+                    },
+                },
+            },
         };
+    }
 
     default:
         return state;

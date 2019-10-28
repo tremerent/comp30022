@@ -37,7 +37,7 @@ class DiscussionCard extends React.Component {
             artefact: this.props.item.artefact,
             type: this.props.item.type,
             author: this.props.username,
-            parent: this.props.item,
+            parent: this.props.item.id,
             body,
         };
 
@@ -62,7 +62,7 @@ class DiscussionCard extends React.Component {
 
         if (item.type === 'question')
             style.backgroundColor = '#f0ecfd';
-        else if (item.isAnswer)
+        else if (item.answers)
             style.backgroundColor = '#deffe9';
 
         let postStatus;
@@ -125,7 +125,7 @@ class DiscussionCard extends React.Component {
                             </a>
                     }
                     {
-                        item.isAnswer && this.props.auth.isOwner &&
+                        item.answers && this.props.auth.isOwner &&
                             <a href='#unmark-answered' className='af-dcard-action' onClick={this.unmarkAnswer}>
                                 Unmark Answered
                             </a>

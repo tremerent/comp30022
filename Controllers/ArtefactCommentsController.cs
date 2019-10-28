@@ -56,29 +56,6 @@ namespace Artefactor.Controllers
                 .ToListAsync();
 
             return new JsonResult(artComments.Select(c => _converter.ToJson(c)));
-
-            // recursively attach children
-            void AttachChildren(ArtefactComment parent)
-            {
-                List<ArtefactComment> children;
-
-                // if 'parent' is an element of 'rootComments', no need to attach
-                // children, since they will already be attached from '.Include'
-                if (parent.ChildComments == null ||
-                    parent.ChildComments.Count() == 0)
-                {
-                    children = artComments
-                        .Where(ac => ac.ParentCommentId == parent.Id)
-                        .ToList();
-
-                    parent.ChildComments = children;
-                }
-
-                foreach (var child in parent.ChildComments)
-                {
-                    AttachChildren(child);
-                }
-            }
         }
 
         [HttpGet("{id}")]
