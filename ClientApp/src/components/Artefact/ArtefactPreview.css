@@ -75,7 +75,7 @@
     margin: 6px 6px 6px 0px;
 }
 
-.af-artcard-action {
+.af-artcard-fullpage-link {
     white-space: nowrap;
     margin-bottom: 4px 4px 4px 0px;
 }
@@ -83,7 +83,6 @@
 .af-artcard-action:hover {
     text-decoration: none;
 }
-
 
 .af-artcard-actions-divider {
     width: 1.8em;

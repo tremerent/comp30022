@@ -42,7 +42,7 @@ class Filter extends React.Component {
             since: null,
             until: null,
             sortQuery: {
-                ...sortOptions[3],
+                ...sortOptions[0],
                 order: "desc",
             },
             catQueryType: catQueryTypes[1],
@@ -198,7 +198,7 @@ class Filter extends React.Component {
                                 <Select
                                     menuIsOpen={false}
                                     value={filterDetails.since
-                                        ? { label: `After ${formatDateDisplay(filterDetails.since)}`,
+                                        ? { label: `After${": " + formatDateDisplay(filterDetails.since)}`,
                                             value: filterDetails.since}
                                         : null}
                                     placeholder="After"
@@ -213,7 +213,7 @@ class Filter extends React.Component {
                                 <Select
                                     menuIsOpen={false}
                                     value={filterDetails.until
-                                            ? { label: `Before ${formatDateDisplay(filterDetails.until)}`,
+                                            ? { label: `Before${": " + formatDateDisplay(filterDetails.until)}`,
                                                 value: filterDetails.until}
                                             : null
                                         }
@@ -238,7 +238,7 @@ class Filter extends React.Component {
                                 <p className="text-dark text-center"> Show artefacts created after: </p>
                                 <Calendar
                                         date={filterDetails.since}
-                                        onChange={this.handleFilterChange("since")}
+                                        onChange={this.handleDatePickerChange("since")}
                                 />
                             </div>
 
@@ -250,7 +250,7 @@ class Filter extends React.Component {
                                 <p className="text-dark"> Show artefacts created before: </p>
                                 <Calendar
                                         date={filterDetails.until}
-                                        onChange={this.handleFilterChange("until")}
+                                        onChange={this.handleDatePickerChange("until")}
                                 />
                             </div>
                         </Collapse>
@@ -466,6 +466,12 @@ class Filter extends React.Component {
         }, () => {
             this.props.onFilterChange(this.state.filterDetails);
         });
+    }
+
+    handleDatePickerChange = (key) => (calenderVal) => {
+        console.log(calenderVal);
+        console.log(calenderVal.toDate());
+        this.handleFilterChange(key)(calenderVal.toDate());
     }
 }
 

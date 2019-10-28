@@ -2,6 +2,7 @@ import React from 'react';
 import $ from 'jquery';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Link } from 'react-router-dom';
 
 import CommentBox from './CommentBox.js';
 
@@ -109,7 +110,11 @@ class DiscussionCard extends React.Component {
                             }
                             className='af-dcard-avatar'
                     />
-                    <div className='af-dcard-author'>{item.author}</div>
+                    <Link to={`/user/${item.author}`}>
+                        <div className='af-dcard-author'>
+                            {item.author}
+                        </div>
+                    </Link>
                     {postStatus}
                 </div>
                 <hr/>
