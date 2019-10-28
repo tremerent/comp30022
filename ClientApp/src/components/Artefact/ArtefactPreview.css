@@ -64,24 +64,20 @@
     padding-bottom: 0.4em;
 }
 
-/* .af-artcard-actions {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap-reverse;
-    margin-bottom: 1em;
-    align-items: center;
-} */
 .af-artcard-actions {
     display: column;
     flex-direction: row;
     flex-wrap: wrap-reverse;
-    margin-bottom: 1em;
     align-items: center;
+}
+
+.af-artcard-meta {
+    margin: 6px 6px 6px 0px;
 }
 
 .af-artcard-action {
     white-space: nowrap;
-    margin-bottom: 2px;
+    margin-bottom: 4px 4px 4px 0px;
 }
 
 .af-artcard-action:hover {

@@ -49,6 +49,12 @@ code {
 /* These things should probably have their own file: */
 .badge {
     background-color: #17a2b8;
+    margin: 2px 2px 2px 2px;
+}
+
+.info-badge {
+    background-color: rgb(138, 138, 138) !important;
+    margin: 2px 2px 2px 2px !important;
 }
 
 .badge-decal-text {

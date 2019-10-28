@@ -96,14 +96,10 @@ export function markAnswer(question, answer) {
     //const question = { ..._question };
     //const answer = { ..._answer };
     return async (dispatch, getState) => {
-        console.log(`1 answer.parent: ${answer.parent}`);
         dispatch(reqMarkAnswer(question, answer));
-        console.log(`2 answer.parent: ${answer.parent}`);
 
         try {
-            console.log(`3 answer.parent: ${answer.parent}`);
             const response = await apiMarkAnswer(question, answer);
-            console.log(`4 answer.parent: ${answer.parent}`);
             dispatch(resMarkAnswer(question, answer, response));
             return;
         } catch (e) {

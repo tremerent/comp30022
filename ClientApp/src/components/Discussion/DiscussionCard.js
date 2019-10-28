@@ -55,7 +55,6 @@ class DiscussionCard extends React.Component {
 
     render() {
         const item = this.props.item;
-        console.log(`this.props.question: ${this.props.question}, this.props.auth.isOwner: ${this.props.auth.isOwner}`);
 
         let style = {
             backgroundColor: '#ffffff',

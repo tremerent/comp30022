@@ -49,19 +49,21 @@ export default class ArtefactPreview extends Component {
                                 <Link
                                         to={`/browse?category=${c.name}`}
                                         key={c.id}
-                                        className="badge badge-decal-text mx-1"
+                                        className="badge badge-decal-text"
                                 >
                                     {c.name}
                                 </Link>
                             )}
                         </div>
                         <span className="af-artcard-actions">
-                            <p className="af-artcard-action badge badge-decal-text mx-1"> 
-                                {`${a.questionCount} questions`} 
-                            </p>
-                            <p className="af-artcard-action badge badge-decal-text mx-1"> 
-                                {`${a.commentCount} comments`} 
-                            </p>
+                            <div className="af-artcard-meta">
+                                <p className="badge info-badge badge-decal-text"> 
+                                    {`${a.questionCount} questions`} 
+                                </p>
+                                <p className="badge info-badge badge-decal-text"> 
+                                    {`${a.commentCount} comments`} 
+                                </p>
+                            </div>
                             <Link className="af-artcard-action" to={`/artefact/${a.id}`}>
                                 View Full Page <FontAwesomeIcon icon={faExternalLinkAlt} />
                             </Link>
