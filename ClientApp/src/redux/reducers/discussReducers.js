@@ -122,19 +122,22 @@ export function discuss(state = getInitDiscussState(), action) {
             ...action.item,
             loading: true,
         };
-        if (action.item.parent)
-            newItems[action.items.parent] = {
-                ...newItems[action.items.parent],
+        if (action.item.parent) {
+            if (!newItems[action.item.parent])
+                newItems[action.item.parent] = { };
+            newItems[action.item.parent] = {
+                ...newItems[action.item.parent],
                 replies: [
-                    ...newItems[action.items.replies],
+                    ...newItems[action.item.parent].replies,
                     action.item.id,
                 ],
             };
+        }
 
         return {
             ...state,
             [action.item.artefact]: {
-                newItems,
+                items: newItems,
             },
         };
     }
