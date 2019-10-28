@@ -1,4 +1,5 @@
 import React from 'react';
+import $ from 'jquery';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
@@ -37,6 +38,10 @@ export default class EditTextArea extends React.Component {
 
     componentDidUpdate() {
         if (this.state.editing) {
+            // css-tricks.com/snippets/jquery/mover-cursor-to-end-of-textarea/
+            const jqueryTextArea = $(this.textarea);
+            const taVal = jqueryTextArea.val();
+            jqueryTextArea.val("").val(taVal);
             this.textarea.focus();
         }
         if (this.adjustTaHeight)
@@ -58,7 +63,7 @@ export default class EditTextArea extends React.Component {
 
         let taHeight;
         if (this.adjustTaHeight) {
-            taHeight = this.textarea && this.textarea.scrollHeight + 2 + 'px';
+            taHeight = this.textarea && this.textarea.scrollHeight + 3 + 'px';
             this.adjustTaHeight = false;
         } else {
             taHeight = 0;

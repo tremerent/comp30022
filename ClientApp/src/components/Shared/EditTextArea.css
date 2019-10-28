@@ -15,6 +15,9 @@
     margin: 0 0;
     min-height: 2.7rem;
     padding-right: 2.3rem;
+
+    color: inherit;
+    font-weight: inherit;
 }
 
 .edit-text-area-wrap {
@@ -27,12 +30,14 @@
     background-color: #fff0;
     border: 1px solid #ccc8;
     flex-grow: 1;
-    color: inherit;
-    font-weight: inherit;
     height: auto;
     margin: -1px -2px;
     padding-right: 2.3rem;
     min-height: 2.7rem;
+
+    /* Ideally we'd do this for every attribute or something but no. */
+    color: inherit;
+    font-weight: inherit;
 }
 
 .edit-text-area-button-group-outer {
