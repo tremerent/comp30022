@@ -110,11 +110,7 @@ class DiscussionCard extends React.Component {
                             }
                             className='af-dcard-avatar'
                     />
-                    <Link to={`/user/${item.author}`}>
-                        <div className='af-dcard-author'>
-                            {item.author}
-                        </div>
-                    </Link>
+                    <Link to={`/user/${item.author}`} className='af-dcard-author'>{item.author}</Link>
                     {postStatus}
                 </div>
                 <hr/>
