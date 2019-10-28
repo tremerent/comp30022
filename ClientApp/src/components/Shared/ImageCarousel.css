@@ -1,7 +1,7 @@
 
 .af-imgcar-image {
-    width: 100%;
-    height: auto;
+    width: auto;
+    height: 60vh;
     image-orientation: from-image;
 }
 

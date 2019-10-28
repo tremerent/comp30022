@@ -469,8 +469,6 @@ class Filter extends React.Component {
     }
 
     handleDatePickerChange = (key) => (calenderVal) => {
-        console.log(calenderVal);
-        console.log(calenderVal.toDate());
         this.handleFilterChange(key)(calenderVal.toDate());
     }
 }

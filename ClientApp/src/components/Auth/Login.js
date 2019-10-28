@@ -32,16 +32,29 @@ class Login extends React.Component {
                         <label htmlFor="password">Password</label>
                         <input name="password" className="form-control" type="password" />
                     </div>
-                    <div className="form-row justify-content-start my-3">
-                        <div className="col-xs-3 mx-1">
-                            <Link to="/auth/signup">
-                                <button className="btn btn-outline-secondary">
-                                    Signup
-                                                </button>
-                            </Link>
-                        </div>
-                        <div className="col-xs-3">
-                            <button type="submit" className="btn btn-primary">Login</button>
+                    <div>
+                        {
+                            this.props.error
+                            ?
+                            <div>
+                                <p className='auth-error-text'>
+                                    {"Sorry! Those login details were invalid."}
+                                </p>
+                            </div>
+                            :
+                            null
+                        }
+                        <div className="form-row justify-content-start my-3">
+                            <div className="col-xs-3 mx-1">
+                                <Link to="/auth/signup">
+                                    <button className="btn btn-outline-secondary">
+                                        Signup
+                                                    </button>
+                                </Link>
+                            </div>
+                            <div className="col-xs-3">
+                                <button type="submit" className="btn btn-primary">Login</button>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -65,9 +78,6 @@ class Login extends React.Component {
 
                     this.props.push(nextDir);
                 }
-                else {
-                    // TODO: handle login error
-                }
             });
     }
 }
@@ -76,6 +86,7 @@ Login.propTypes = {
     login: PropTypes.func.isRequired,
     loading: PropTypes.bool,
     redir: PropTypes.string,
+    error: PropTypes.object,
 }
 
 const mapStateToProps = state => ({
@@ -83,6 +94,7 @@ const mapStateToProps = state => ({
     username: state.auth.user.username,
     redir: state.auth.redir,
     isLoggedIn: state.auth.isLoggedIn,
+    error: state.auth.loginError,
 });
 
 const mapDispatchToProps = dispatch => {

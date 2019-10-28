@@ -13,6 +13,7 @@ export default function getInitAuthState(authDetails) {
         loading: false,
         redir: null,
         expiry: null,
+        loginError: null,
     };
 
     if (authDetails != null) {

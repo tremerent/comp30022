@@ -38,9 +38,10 @@ function resLogin(authDetails) {
     }
 }
 
-function errLogin() {
+function errLogin(errorCode) {
     return {
         type: authTypes.ERR_LOGIN,
+        errorCode: errorCode,
     }
 }
 
@@ -48,7 +49,20 @@ function login(loginData) {
     return async function (dispatch) {
         dispatch(reqLogin());
 
-        const authDetails = await setUser(loginData);
+        const unspecLoginErr = { errors: [ 'Unspecified Error' ] };
+
+        let authDetails;
+        try {
+            authDetails = await setUser(loginData);
+        }
+        catch (e) {
+            if (e.response)
+                dispatch(errLogin(e.response.data.value));
+            else
+                dispatch(errLogin(unspecLoginErr));
+            return null;
+        }
+        
         if (authDetails) {
             setLogoutTimeout(authDetails.expiry);
 
@@ -60,7 +74,7 @@ function login(loginData) {
             }));
         }
         else {
-            dispatch(errLogin())
+            dispatch(errLogin(unspecLoginErr));
         }
     }
 }
@@ -71,13 +85,6 @@ function reqRegister() {
         type: authTypes.REQ_REGISTER,
     }
 }
-
-// registration complete
-//function resRegister() {
-//    return {
-//        type: authTypes.RES_REGISTER,
-//    }
-//}
 
 function errRegister(errorCode) {
     return {
