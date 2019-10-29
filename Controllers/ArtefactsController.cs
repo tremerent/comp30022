@@ -664,7 +664,7 @@ namespace Artefactor.Controllers
             {
                 return NotFound();
             }
-            else if (artefact.OwnerId != curUserId) 
+            else if (artefact.OwnerId != curUserId)
             {
                 return Unauthorized();
             }
@@ -729,7 +729,7 @@ namespace Artefactor.Controllers
         [HttpDelete]
         public async Task<IActionResult> RemoveImage(
             [FromQuery] string artefactId,
-            [FromQuery] string img_url)
+            [FromQuery] string imageId)
         {
             var dbArt = await _context
                 .Artefacts
@@ -747,7 +747,7 @@ namespace Artefactor.Controllers
 
             var artDoc = await _context
                 .ArtefactDocuments
-                .SingleOrDefaultAsync(doc => doc.Url == img_url);
+                .SingleOrDefaultAsync(doc => doc.Id == imageId);
 
             try {
                 _context.Remove(artDoc);
