@@ -726,7 +726,7 @@ namespace Artefactor.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("image")]
         public async Task<IActionResult> RemoveImage(
             [FromQuery] string artefactId,
             [FromQuery] string imageId)
