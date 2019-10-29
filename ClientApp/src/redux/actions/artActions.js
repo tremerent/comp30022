@@ -314,18 +314,18 @@ export function deleteMyArtefactSync(artefact) {
             dispatch(
                 setMyArtefacts(deleteArtefact(state.art.myArts.myArtefacts))
             );
-    
+
             if (artefact.vis === "public") {
                 const { art:
                     { publicArts: { artefacts: publicArtefacts } }
                 } = state;
-    
+
                 dispatch(setPublicArtefacts(deleteArtefact(publicArtefacts)));
-    
+
                 const { art: { userArts } } = state;
-    
+
                 dispatch(setUserArtefacts(
-                    artefact.owner.username, 
+                    artefact.owner.username,
                     deleteArtefact(userArts))
                 );
             }
@@ -375,7 +375,7 @@ async function submitDocs(artefactId, docs) {
     let promises = [];
 
     for (let doc of Object.values(docs)) {
-        promises.push(addArtefactImage(artefactId, doc.blob));
+        promises.push(addArtefactImage(artefactId, doc));
     }
 
     return await Promise.all(promises);

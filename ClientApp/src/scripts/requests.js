@@ -34,12 +34,12 @@ async function deleteArtefact(artefactId) {
     return resp.data;
 }
 
-async function addArtefactImage(artefactId, file) {
+async function addArtefactImage(artefactId, img) {
     const data = new FormData();
-    data.append("file", file);
+    data.append("file", img.blob);
 
     const resp = await apiFetch(getToken())
-        .post(`/artefacts/image?artefactId=${artefactId}`, data)
+        .post(`/artefacts/image?artefactId=${artefactId}&type=${img.type}`, data)
 
     return resp.data;
 }
@@ -82,7 +82,7 @@ async function patchArtefactAndCategories(updatedArt, origArt) {
 
         const updatedCjOpts = updatedArt.categoryJoin  // [{ label, value }]
             .map(updatedArt => ({ id: updatedArt.value, }));
-        
+
         const origCjs = origArt.categoryJoin;  // [{ categoryId, artefactId }]
 
         const toAdd = updatedCjOpts.filter(cjOpt =>

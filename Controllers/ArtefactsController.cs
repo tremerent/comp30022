@@ -678,6 +678,7 @@ namespace Artefactor.Controllers
         [HttpPost("image")]
         public async Task<IActionResult> AddImage(
             [FromQuery] string artefactId,
+            [FromQuery] string type,
             [FromForm] IFormFile file)
         {
             var dbArt = await _context
@@ -705,7 +706,7 @@ namespace Artefactor.Controllers
                     Title = file.FileName,
                     Url = uri.AbsoluteUri,
                     ArtefactId = artefactId,
-                    DocType = DocType.Image,
+                    DocType = type == "image" ? DocType.Image : DocType.File,
                 };
 
                 await _context.AddAsync(artDoc);
@@ -749,15 +750,18 @@ namespace Artefactor.Controllers
                 .ArtefactDocuments
                 .SingleOrDefaultAsync(doc => doc.Id == imageId);
 
+            if (artDoc == null)
+                return StatusCode(200, "I mean *technically* it's deleted.");
+
             try {
                 _context.Remove(artDoc);
                 await _context.SaveChangesAsync();
 
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return StatusCode(500);
+                return StatusCode(500, e.ToString());
             }
         }
 

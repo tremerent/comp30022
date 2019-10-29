@@ -95,7 +95,7 @@ class EditArtefactDocs extends React.Component {
     submit = async () => {
         this.setState({ ...this.state, loading: true });
         for (const item of Object.values(this.state.creates)) {
-            await addArtefactImage(this.props.artefact.id, item.blob);
+            await addArtefactImage(this.props.artefact.id, item);
         }
         for (const item of Object.values(this.state.deletes)) {
             await removeArtefactImage(this.props.artefact.id, item.id);
