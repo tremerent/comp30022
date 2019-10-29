@@ -55,38 +55,7 @@ namespace Artefactor.Controllers
                 .Include(ac => ac.Author)
                 .ToListAsync();
 
-            var rootComments = artComments
-                .Where(ac => ac.ParentCommentId == null);
-
-            foreach (var comment in rootComments)
-            {
-                AttachChildren(comment);
-            }
-
-            return new JsonResult(rootComments.Select(c => _converter.ToJson(c)));
-
-            // recursively attach children
-            void AttachChildren(ArtefactComment parent)
-            {
-                List<ArtefactComment> children;
-
-                // if 'parent' is an element of 'rootComments', no need to attach
-                // children, since they will already be attached from '.Include'
-                if (parent.ChildComments == null ||
-                    parent.ChildComments.Count() == 0)
-                {
-                    children = artComments
-                        .Where(ac => ac.ParentCommentId == parent.Id)
-                        .ToList();
-
-                    parent.ChildComments = children;
-                }
-
-                foreach (var child in parent.ChildComments)
-                {
-                    AttachChildren(child);
-                }
-            }
+            return new JsonResult(artComments.Select(c => _converter.ToJson(c)));
         }
 
         [HttpGet("{id}")]
@@ -284,21 +253,22 @@ namespace Artefactor.Controllers
         [HttpDelete("mark-answer")]
         [Authorize]
         public async Task<IActionResult> RemoveMarkedAnswer(
-            [FromBody] MarkAnswer removeMarkAnswer)
+                [FromQuery] string questionId, [FromQuery] string answerId
+            )
         {
             var curUserId = _userService.GetCurUserId(HttpContext);
 
             var question = await _context.ArtefactQuestions
-                .SingleOrDefaultAsync(q => q.Id == removeMarkAnswer.QuestionId);
+                .SingleOrDefaultAsync(q => q.Id == questionId);
 
             if (question == null)
             {
-                return NotFound($"Question '{removeMarkAnswer.QuestionId}' does not exist");
+                return NotFound($"Question '{questionId}' does not exist");
             }
-            if (question.AnswerCommentId != removeMarkAnswer.AnswerId)
+            if (question.AnswerCommentId != answerId)
             {
-                return BadRequest($"Question '{removeMarkAnswer.QuestionId}' " +
-                        $"does not have answer '{removeMarkAnswer.AnswerId}'");
+                return BadRequest($"Question '{questionId}' " +
+                        $"does not have answer '{answerId}'");
             }
 
             question.IsAnswered = false;

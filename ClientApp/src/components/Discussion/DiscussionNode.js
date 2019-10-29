@@ -8,7 +8,7 @@ export default class DiscussionNode extends React.Component {
 
     render(item = this.props.item, root) {
         const childRoot = item.type === 'question' ? (
-                (item.isAnswered ? null : item)
+                (item.answer ? null : item)
             ) : (root) ? (
                 root
             ) : (
@@ -17,12 +17,17 @@ export default class DiscussionNode extends React.Component {
 
         return (
             <div key={item.id} className='af-dnode-item'>
-                <DiscussionCard item={item} question={root} auth={this.props.auth}/>
+                <DiscussionCard
+                    item={item}
+                    question={root}
+                    auth={this.props.auth}
+                />
                 <div className='af-dnode-children'>
                     <div className='af-dnode-vline'/>
                     <div className='af-dnode-replies'>
                         {item.replies.map(
-                            item => this.render(item, childRoot)
+                            item => this.render(
+                                this.props.discussion.items[item], childRoot)
                         )}
                     </div>
                 </div>
