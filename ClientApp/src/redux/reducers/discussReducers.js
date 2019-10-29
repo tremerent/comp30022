@@ -1,81 +1,52 @@
 import { discussTypes } from '../actions/types';
 import getInitDiscussState from './initDiscussState.js';
 
-function pnode(node) {
-    return `[${node.objId}].[${node.body}]`;
+function addIfNew(array, item) {
+    if (!array.find(x => x === item))
+        array.unshift(item);
+    return array;
 }
 
-// Returns a copy of `tree` with any top-level nodes that have id `oldId`
-// replaced by `child`.
-function placeAtTopLevel(tree, oldId, child) {
-    let newTreeTop = [];
-    let replaced = false;
-    for (const item of tree) {
-        if (item.id === oldId) {
-            newTreeTop.push(child);
-            replaced = true;
-        } else {
-            newTreeTop.push(item);
-        }
-    }
+function addToTree(_discuss, _item) {
+    let items = { ..._discuss.items };
+    let discuss = { ..._discuss, items };
+    let item = { ..._item };
 
-    if (!replaced) {
-        newTreeTop.unshift(child);
-    }
-
-    return newTreeTop;
-}
-
-// Returns a copy of `node`, with any child artefacts that have id `oldId`
-// replaced by the new `child`.
-function placeAtNode(node, oldId, child) {
-
-    let newNode = { ...node, replies: [] };
-
-    let replaced = false;
-    for (let reply of node.replies) {
-        if (reply.id === oldId) {
-            // Mumble mumble garbage collection mumble mumble.
-            //reply.parent = null;
-            child.parent = newNode;
-            newNode.replies.push(child);
-            replaced = true;
-        } else {
-            reply.parent = newNode;
-            newNode.replies.push(reply);
-        }
-    }
-
-    if (!replaced)
-        newNode.replies.unshift(child);
-
-    return newNode;
-}
-
-// Takes a `newItem` (which should have newItem.parent set appropriately to
-// define the item's position in the tree), and rebuilds `tree` with `newItem`
-// in the place of any child of `newItem.parent` with id `oldId`.
-function placeInTree(tree, oldId, newItem) {
-    if (!newItem.parent)
-        return placeAtTopLevel(tree, oldId, newItem);
-
-    let newParent = placeAtNode(newItem.parent, oldId, newItem);
-
-    return placeInTree(tree, newParent.id, newParent);
-}
-
-function addInTree(tree, item) {
+    items[item.id] = item;
     if (item.parent) {
-        const oldParent = item.parent;
-        item.parent = { ...oldParent, replies: [ item, ...oldParent.replies ] };
-        return placeInTree(
-            tree,
-            item.parent.id,
-            item.parent,
-        );
+        items[item.parent] = { ...items[item.parent] };
+        items[item.parent].replies =
+            addIfNew([ ...items[item.parent].replies ], item.id)
+    } else {
+        discuss.topLevel = addIfNew([ ...discuss.topLevel ], item.id);
     }
-    return [ item, ...tree ];
-    return placeInTree(tree, null, item);
+    if (item.replies)
+        for (const replyId of item.replies) if (items[replyId])
+            items[replyId] = { ...items[replyId], parent: item.id };
+
+    return discuss;
+}
+
+function removeFromTree(_discuss, itemId) {
+    let items = { ..._discuss.items };
+    let discuss = { ..._discuss, items };
+
+    const item = items[itemId];
+
+    if (item.parent)
+        items[item.parent] = {
+            ...items[item.parent],
+            replies: items[item.parent].replies.filter(x => x != itemId),
+        };
+    else
+        discuss.topLevel = discuss.topLevel.filter(x => x != itemId);
+    if (item.replies)
+        for (let replyId of item.replies) if (items[replyId])
+            items[replyId] = {
+                ...items[replyId], parent: null
+            };
+    delete items[itemId];
+    return discuss;
 }
 
 export function discuss(state = getInitDiscussState(), action) {
@@ -93,7 +64,9 @@ export function discuss(state = getInitDiscussState(), action) {
 
         let items = action.items.reduce(
                         (stateItems, item) => ({
-                            ...stateItems, [item.id]: item
+                            ...stateItems, [item.id]: {
+                                replies: [], parent: null, ...item,
+                            }
                         }), { }
                     );
 
@@ -104,7 +77,11 @@ export function discuss(state = getInitDiscussState(), action) {
 
         return {
             ...state,
-            [action.artefactId]: { items },
+            [action.artefactId]: {
+                items,
+                topLevel: Object.getOwnPropertyNames(items)
+                            .filter(item => !items[item].parent),
+            },
         };
     }
 
@@ -116,70 +93,39 @@ export function discuss(state = getInitDiscussState(), action) {
     }
 
     case discussTypes.REQ_POST_DISCUSSION: {
-        let newItems = state[action.item.artefact].items;
-        newItems[action.item.id] = {
-            replies: [],
-            ...action.item,
-            loading: true,
-        };
-        if (action.item.parent) {
-            if (!newItems[action.item.parent])
-                newItems[action.item.parent] = { };
-            newItems[action.item.parent] = {
-                ...newItems[action.item.parent],
-                replies: [
-                    ...newItems[action.item.parent].replies,
-                    action.item.id,
-                ],
-            };
-        }
-
-        return {
+        const newState = {
             ...state,
-            [action.item.artefact]: {
-                items: newItems,
-            },
+            [action.item.artefact]: addToTree(
+                    state[action.item.artefact],
+                    { replies: [], ...action.item, loading: true }
+                ),
         };
+        return newState;
     }
 
     case discussTypes.RES_POST_DISCUSSION: {
-        const oldItem = state[action.item.artefact].items[action.item.id];
-        let newItems = state[action.item.artefact].items;
-        newItems[action.newItem.id] = {
-            ...action.newItem,
-            loading: false,
-        };
-        delete newItems[action.item.id];
-
-        if (oldItem.parent) {
-            let parentReplies = [];
-            for (const reply of newItems[oldItem.parent])
-                if (reply.id !== oldItem.id)
-                    parentReplies.push(reply);
-            newItems[oldItem.parent].replies = parentReplies;
-        }
-
         return {
             ...state,
-            [action.item.artefact]: {
-                items: newItems,
-            },
+            [action.item.artefact]: addToTree(
+                    removeFromTree(state[action.item.artefact], action.item.id),
+                    { ...action.newItem, loading: false }
+                ),
+
         };
     }
 
     case discussTypes.ERR_POST_DISCUSSION: {
         return {
             ...state,
-            [action.item.artefact]: {
-                items: {
-                    ...state[action.item.artefact].items,
-                    [action.item.id]: {
-                        ...state[action.item.artefact].items[action.item.id],
+            [action.item.artefact]: addToTree(
+                    state[action.item.artefact],
+                    {
+                        ...state[action.item.artefact]
+                            .items[action.item.id],
                         loading: false,
                         error: `${action.error}`,
-                    },
-                },
-            },
+                    }
+                ),
         };
     }
 
@@ -188,20 +134,20 @@ export function discuss(state = getInitDiscussState(), action) {
         const a = action.answer;
         return {
             ...state,
-            [q.artefact]: {
-                items: {
-                    ...state[q.artefact].items,
-                    [q.id]: {
-                        ...state[q.artefact].items[q.id],
-                        answer: a.id,
-                    },
-                    [a.id]: {
+            [q.artefact]: addToTree(
+                    addToTree(
+                        state[q.artefact],
+                        {
+                            ...state[q.artefact].items[q.id],
+                            answer: a.id,
+                        }
+                    ),
+                    {
                         ...state[a.artefact].items[a.id],
                         answers: q.id,
                         loading: true,
-                    },
-                },
-            },
+                    }
+                ),
         };
     }
 
@@ -210,20 +156,20 @@ export function discuss(state = getInitDiscussState(), action) {
         const a = action.answer;
         return {
             ...state,
-            [q.artefact]: {
-                items: {
-                    ...state[q.artefact].items,
-                    [q.id]: {
-                        ...state[q.artefact].items[q.id],
-                        answer: a.id,
-                    },
-                    [a.id]: {
+            [q.artefact]: addToTree(
+                    addToTree(
+                        state[q.artefact],
+                        {
+                            ...state[q.artefact].items[q.id],
+                            answer: a.id,
+                        }
+                    ),
+                    {
                         ...state[a.artefact].items[a.id],
                         answers: q.id,
                         loading: false,
-                    },
-                },
-            },
+                    }
+                ),
         };
     }
 
@@ -232,21 +178,21 @@ export function discuss(state = getInitDiscussState(), action) {
         const a = action.answer;
         return {
             ...state,
-            [q.artefact]: {
-                items: {
-                    ...state[q.artefact].items,
-                    [q.id]: {
-                        ...state[q.artefact].items[q.id],
-                        answer: null,
-                    },
-                    [a.id]: {
+            [q.artefact]: addToTree(
+                    addToTree(
+                        state[q.artefact],
+                        {
+                            ...state[q.artefact].items[q.id],
+                            answer: a.id,
+                        }
+                    ),
+                    {
                         ...state[a.artefact].items[a.id],
-                        answers: null,
-                        loading: false,
+                        answers: q.id,
+                        loading: true,
                         error: `${action.error}`,
-                    },
-                },
-            },
+                    }
+                ),
         };
     }
 
