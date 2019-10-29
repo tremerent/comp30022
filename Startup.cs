@@ -10,10 +10,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 
+using Microsoft.Extensions.Logging.AzureAppServices;
+
 using Artefactor.Data;
 using Artefactor.Models;
 using Artefactor.Services;
 using Artefactor.Services.Converters;
+using Microsoft.IdentityModel.Logging;
 
 namespace Artefactor
 {
@@ -61,7 +64,10 @@ namespace Artefactor
                 .AddJwtBearer(options =>
                 {
                     // base-address of your identityserver
-                    options.Authority = "https://localhost:5001";
+                    //options.Authority = "https://localhost:5001";
+                    //options.Authority = "https://localhost:44377";
+                    options.Authority = Configuration["IdentityServerAddress"];
+
 
                     // name of the API resource
                     options.Audience = "artefactorapi";
@@ -96,6 +102,9 @@ namespace Artefactor
             // models -> json
             services.AddTransient<IConverter<Artefact>, ArtefactConverter>();
             services.AddTransient<IConverter<ArtefactComment>, ArtefactCommentConverter>();
+
+            IdentityModelEventSource.ShowPII = true;
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
