@@ -107,6 +107,7 @@ export default class ArtefactInfo extends React.Component {
                                 setCategoryVals={this.onEdit("categoryJoin")}
                                 blurPlaceholder={"Choose your artefact's categories"}
                                 focusPlaceholder={"Type to search for a category or create your own"}
+                                menuPlacement="bottom"
                             />
                         ) : (
                             this.categoryJoinsToCategories(a.categoryJoin).map(c =>

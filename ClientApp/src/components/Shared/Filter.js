@@ -139,8 +139,8 @@ class Filter extends React.Component {
                     <div className="af-filter-row-item">
                         <div id={this.props.filterCatsTt.id}>
                             <CategorySelect
-                                blurPlaceholder={"Click to choose a category"}
-                                focusPlaceholder={"Categories"}
+                                blurPlaceholder={"Categories"}
+                                focusPlaceholder={"Type to search"}
                                 creatable={false}
                                 categoryVals={filterDetails.category}
                                 setCategoryVals={this.handleFilterChange("category")}

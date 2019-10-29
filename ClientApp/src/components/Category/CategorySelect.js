@@ -45,7 +45,12 @@ class CategorySelect extends Component {
                         onFocus={this.setFocusPlaceholder}
                         onBlur={this.setBlurPlaceholder}
 
-                        menuPlacement="top"
+                        menuPlacement={
+                            this.props.menuPlacement 
+                            ? this.props.menuPlacement
+                            :"top"
+                        }
+                        maxMenuHeight={130}
                         isMulti
                         isSearchable
                         closeMenuOnSelect={false}
