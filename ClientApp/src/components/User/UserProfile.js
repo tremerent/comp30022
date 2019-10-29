@@ -115,7 +115,10 @@ class UserScroller extends React.Component {
                 <hr/>
                 <ArtefactScroller
                     artefacts={this.props.userArtefacts}
-                    placeholder={"Oh no! This user hasn't registered any artefacts yet."}
+                    placeholder={`Oh no! ${
+                        this.props.isCurUser
+                        ? "Looks like you haven't" 
+                        : "This user hasn't"} registered any artefacts yet.`}
                 />
             </div>
             </>

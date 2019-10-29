@@ -107,7 +107,7 @@ class SignupForm extends React.Component {
     handleChange = (e) => {
         this.setState({
             [e.target.id]: e.target.value
-        });
+        }, () => this.props.updateFormVals(this.state));
     }
 
     // validation - TODO: it would really be better to be using state for this
