@@ -1,4 +1,6 @@
-﻿export default function getInitArtState() {
+﻿import { sortOptions, } from 'components/Shared/filterUtils';
+
+export default function getInitArtState() {
     const initArtState = {
         visOpts:[
             "private",
@@ -28,7 +30,12 @@
             browserArtefacts: [],
             loading: true,
             error: null,
-            filterDetails: {},
+            filterDetails: {
+                sortQuery: {
+                    ...sortOptions[1],
+                    order: "desc",
+                },
+            },
         },
     }
 

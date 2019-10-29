@@ -16,6 +16,18 @@
     flex-shrink: 1;
 }
 
+/* vertical on mobile */
+@media (max-width: 450px) {
+    .af-artcard {
+        flex-direction: column;
+    }
+
+    .af-artcard-carousel {
+        max-width: 100%;
+        flex-shrink: 1;
+    }
+}
+
 .af-artcard-body {
     padding-top: 1em;
     padding-bottom: 1em;

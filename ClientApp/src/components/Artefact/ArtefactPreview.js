@@ -57,10 +57,10 @@ export default class ArtefactPreview extends Component {
                             )}
                         </div>
                         <div className='af-artcard-stats'>
-                             <Link className="af-artcard-action badge badge-decal-text" to={`/artefact/${a.id}`}>
+                             <Link className="af-artcard-action badge info-badge badge-decal-text" to={`/artefact/${a.id}`}>
                                  {`${a.questionCount} questions`}
                              </Link>
-                             <Link className="af-artcard-action badge badge-decal-text" to={`/artefact/${a.id}`}>
+                             <Link className="af-artcard-action badge info-badge badge-decal-text" to={`/artefact/${a.id}`}>
                                  {`${a.commentCount} comments`}
                              </Link>
                         </div>
