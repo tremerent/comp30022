@@ -36,7 +36,9 @@ class DiscussionCard extends React.Component {
         const item = {
             id: `${Date.now()}`,
             artefact: this.props.item.artefact,
-            type: this.props.item.type,
+            // Questions can only be at the top level; hence anything that is
+            // a reply must be a comment.
+            type: 'comment',
             author: this.props.username,
             parent: this.props.item.id,
             body,
