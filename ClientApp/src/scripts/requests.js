@@ -27,6 +27,13 @@ async function getArtefact(artefactId) {
     return resp.data;
 }
 
+async function deleteArtefact(artefactId) {
+    const resp = await apiFetch(getToken())
+        .delete(`/artefacts/${artefactId}`);
+
+    return resp.data;
+}
+
 async function addArtefactImage(artefactId, file) {
     const data = new FormData();
     data.append("file", file);
@@ -91,7 +98,7 @@ async function patchArtefactAndCategories(updatedArt, origArt) {
     //         categoryOptsToDbModel(updatedArt.id, toRemove)
     //         .map(cjDbModel => deleteArtefactCategory(cjDbModel))
     //     );
-    // }
+    // }z
 
     // fetch artefact again now that it has category relationships
     // (this could also be stored prior to posting the artefact, and then
@@ -289,6 +296,7 @@ export async function unmarkAnswer(answer) {
 
 export {
     postArtefact,
+    deleteArtefact,
     patchArtefactAndCategories,
     postArtefactAndCategories,
     getArtefact,
@@ -296,6 +304,7 @@ export {
     getVisibilityOpts,
 
     postArtefactCategories,
+    deleteArtefactCategory,
     postCategory,
     getCategories,
 

@@ -39,15 +39,12 @@ function artMain(state = getInitArtState(), action) {
                 // TODO
                 ...state,
             };
-        case artefactTypes.ADD_MY_ARTEFACTS:
-            const updatedMyArtefacts =
-                [action.newArtefact, ...state.myArts.myArtefacts];
-
+        case artefactTypes.SET_MY_ARTEFACTS:
             return {
                 ...state,
                 myArts: {
                     ...state.myArts,
-                    myArtefacts: updatedMyArtefacts,
+                    myArtefacts: action.myArtefacts,
                 }
             };
         case artefactTypes.RES_CREATE_MY_ARTEFACTS:
@@ -118,13 +115,24 @@ function artMain(state = getInitArtState(), action) {
             return {
                 ...state,
                 userArts: {
-                    ...state.userArtefacts,
+                    ...state.userArts,
                     [action.username]: {
                         artefacts: action.userArtefacts,
                         loading: false,
                     },
                 },
             }
+        case artefactTypes.SET_USER_ARTEFACTS:
+                return {
+                    ...state,
+                    userArts: {
+                        ...state.userArts,
+                        [action.username]: {
+                            artefacts: action.userArtefacts,
+                            ...state.userArt
+                        },
+                    },
+                }
         case artefactTypes.ERR_GET_USER_ARTEFACTS:
             return {
                 ...state,

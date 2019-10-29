@@ -21,10 +21,23 @@
     margin-left: 0.1em;
 }
 
+.af-ai-row {
+    padding-top: 2em;
+    padding-bottom: 1em;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 .af-ai-vis {
-    margin-top: 2em;
-    margin-bottom: 1em;
     opacity: 0.6;
+    display: flex;
+    align-items: center;
+}
+
+.af-cancel-btn {
+    margin-right: 0.5rem;
 }
 
 .af-ai-categories {

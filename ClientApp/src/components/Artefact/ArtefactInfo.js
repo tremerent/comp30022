@@ -1,5 +1,5 @@
 import React from 'react';
-import { faEye } from '@fortawesome/free-regular-svg-icons';
+import { faEye, faEyeSlash, } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 
@@ -14,7 +14,14 @@ export default class ArtefactInfo extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = { artefact: this.props.artefact };
+        this.state = { 
+            artefact: this.props.artefact,
+            confirmingDelete: false,
+        };
+    }
+
+    delete = () => {
+        this.props.deleteArtefact(this.state.artefact);
     }
 
     update = () => {
@@ -127,16 +134,54 @@ export default class ArtefactInfo extends React.Component {
                     </EditTextArea>
                     {
                         this.props.auth.isOwner && (
-                            <div className='af-ai-vis'>
-                                <FontAwesomeIcon icon={faEye}/>{' '}
+                            <div className='af-ai-row'>
+                                <div className='af-ai-vis'>
+                                    <span>
+                                        {
+                                            (a.visibility === 'public') ? (
+                                                <FontAwesomeIcon icon={faEye}/>
+                                            ) : (a.visibility === 'private') ? (
+                                                <FontAwesomeIcon icon={faEyeSlash}/>
+                                            ) : (
+                                                '???'
+                                            )
+                                        }
+                                        {' '}
+                                        {
+                                            (a.visibility === 'public') ? (
+                                                'This artefact is visible to everyone.'
+                                            ) : (a.visibility === 'private') ? (
+                                                'This artefact is only visible to you.'
+                                            ) : (
+                                                '???'
+                                            )
+                                        }
+                                    </span>
+                                </div>
                                 {
-                                    (a.visibility === 'public') ? (
-                                        'This artefact is visible to everyone.'
-                                    ) : (a.visibility === 'private') ? (
-                                        'This artefact is only visible to you.'
-                                    ) : (
-                                        '???'
-                                    )
+                                    this.state.confirmingDelete
+                                    ?
+                                    <div>
+                                        <button 
+                                            onClick={this.toggleConfirmingDelete}
+                                            className="btn btn-outline-secondary af-cancel-btn"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button 
+                                            onClick={this.delete}
+                                            className="btn btn-outline-danger"
+                                        >
+                                            Confirm Delete
+                                        </button>
+                                    </div>
+                                    :
+                                    <button 
+                                        onClick={this.toggleConfirmingDelete}
+                                        className="btn btn-outline-danger"
+                                    >
+                                        Delete
+                                    </button>
                                 }
                             </div>
                         )
@@ -144,8 +189,15 @@ export default class ArtefactInfo extends React.Component {
                 </div>
             </div>
         );
-
     }
+
+    toggleConfirmingDelete = () => {
+        this.setState({
+            ...this.state,
+            confirmingDelete: !this.state.confirmingDelete,
+        });
+    }
+
     categoryJoinsToCategories(categoryJoins) {
         return categoryJoins.map((cj) => {
             if (cj.categoryId && cj.category) {

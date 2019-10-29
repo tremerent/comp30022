@@ -614,17 +614,6 @@ namespace Artefactor.Controllers
                 }
             }
 
-            // foreach (var patchProperty in artefact.GetType().GetProperties())
-            // {
-            //     string patchPropName = patchProperty.Name;
-            //     object patchPropValue = patchProperty.GetValue(artefact);
-
-            //     if (patchPropValue != null && IsModifiable(patchPropName))
-            //     {
-            //         SetPropertyValue(dbArt, patchPropName, patchPropValue);
-            //     }
-            // }
-
             try
             {
                 await _context.SaveChangesAsync();
@@ -667,10 +656,16 @@ namespace Artefactor.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Artefact>> DeleteArtefact(string id)
         {
+            var curUserId = _userService.GetCurUserId(HttpContext);
+
             var artefact = await _context.Artefacts.FindAsync(id);
             if (artefact == null)
             {
                 return NotFound();
+            }
+            else if (artefact.OwnerId != curUserId) 
+            {
+                return Unauthorized();
             }
 
             _context.Artefacts.Remove(artefact);
