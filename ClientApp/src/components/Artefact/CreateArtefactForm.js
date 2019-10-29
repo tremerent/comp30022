@@ -22,24 +22,22 @@ export class CreateArtefactForm extends Component {
     constructor(props) {
         super(props);
 
-        this.initialArtefactState = {
-            id: `${Date.now()}`,
-            title: "",
-            description: "",
-            categories: [],
-            visibility: null,
-        };
-
-        // this doesn't participate in
-        this.docs = { };
-
         this.state = {
-            artefact: { ...this.initialArtefactState },
+            artefact: this.newArtefact(),
             artefactWasCreated: false,
             loading: false,
             createdArtefactId: null,
         };
     }
+
+    newArtefact = () => ({
+        id: `${Date.now()}`,
+        title: "",
+        description: "",
+        categories: [],
+        visibility: null,
+        docs: [],
+    });
 
     componentDidMount() {
         this.stepper = new Stepper(document.querySelector('#create-artefact-stepper'), {
@@ -96,7 +94,7 @@ export class CreateArtefactForm extends Component {
                     <Link to={`/artefact/${this.state.createdArtefactId}`}>
                         <button className="btn btn-secondary mx-2" style={{color: "#fff !important"}}>
                             See your artefact
-                        </button> 
+                        </button>
                     </Link>
                     <button className="btn btn-primary" onClick={this.resetArtefactCreation}> Create another artefact</button>
                 </div>
@@ -212,12 +210,29 @@ export class CreateArtefactForm extends Component {
     handleArtefactDocsChange = (doc, action) => {
         switch (action) {
         case 'delete':
-            if (!this.docs[doc.id])
+            if (!this.state.artefact.docs[doc.id])
                 console.warn(`'${doc.id}' deleted but is not tracked`);
-            delete this.docs[doc.id];
+            let docs = {...this.state.artefact.docs};
+            delete docs[doc.id];
+            this.setState({
+                    ...this.state,
+                    artefact: {
+                        ...this.state.artefact,
+                        docs,
+                    }
+                });
             break;
         case 'create':
-            this.docs[doc.id] = doc;
+            this.setState({
+                    ...this.state,
+                    artefact: {
+                        ...this.state.artefact,
+                        docs: {
+                            ...this.state.artefact.docs,
+                            [doc.id]: doc,
+                        },
+                    },
+                });
             break;
         default:
             console.warn(
@@ -229,7 +244,8 @@ export class CreateArtefactForm extends Component {
     renderSecondFormPage = () => {
         return (
             <ArtefactDocs
-                artefact={this.state.artefact}
+                id={this.state.artefact.id}
+                value={Object.values(this.state.artefact.docs)}
                 onChange={this.handleArtefactDocsChange}
             />
         );
@@ -309,9 +325,11 @@ export class CreateArtefactForm extends Component {
         // FIXME is to stop that happening, since it's not great that anyone
         // with an account can insert objects with arbitrary string IDs into
         // our database.
-        let artefact = this.state.artefact;
-        artefact.id = undefined;
-        this.props.createArtefact(artefact, this.docs)
+        let artefact = {...this.state.artefact};
+        delete artefact.id;
+        const docs = artefact.docs;
+        delete artefact.docs;
+        this.props.createArtefact(artefact, docs)
             .then(() => {
 
                 // add created artefacts id so we have a link to it for the success
@@ -346,7 +364,7 @@ export class CreateArtefactForm extends Component {
             loading: false,
             artefactWasCreated: false,
             createdArtefactId: this.getCreatedArtefactId(),
-            artefact: { ...this.initialArtefactState },
+            artefact: this.newArtefact(),
         });
 
         this.props.createArtReset();

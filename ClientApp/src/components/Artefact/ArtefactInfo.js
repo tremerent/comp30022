@@ -1,6 +1,7 @@
 import React from 'react';
 import { faEye } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 
 import CategorySelect from '../Category/CategorySelect.js';
@@ -36,8 +37,14 @@ export default class ArtefactInfo extends React.Component {
 
     render() {
         const a = this.state.artefact;
+
+        // do not care any more
+        a.images = this.props.artefact.images;
+
         const id = `af-artcard-desc-${a.id}`;
-        const carouselId = `af-artdoc-carousel-${this.props.artefact.id}`;
+        const carouselId = `af-artcard-carousel-${this.props.artefact.id}`;
+        const modalId = `af-artcard-modal-${this.props.artefact.id}`;
+        const docsId = `af-artcard-docs-${this.props.artefact.id}`;
 
         // if category join in api format, need to convert, otherwise
         // it is ready for 'CategorySelect'
@@ -69,6 +76,9 @@ export default class ArtefactInfo extends React.Component {
                             &&  a.images[0].id
                         }
                     />
+                    <button className='btn edit-images' data-target={`#${modalId}`} data-toggle='modal'>
+                        <FontAwesomeIcon icon={faPen}/>
+                    </button>
                 </div>
                 <div className='af-ai-info'>
                     <EditTextArea

@@ -10,20 +10,29 @@ export default class ArtefactDocs extends React.Component {
     constructor(props) {
         super(props);
 
-        if (!props.artefact.docs)
-            props.artefact.docs = [];
-
-        this.CAROUSEL_ID = `af-artdoc-carousel-${this.props.artefact.id}`;
+        this.CAROUSEL_ID = `af-artdoc-carousel-${this.props.id}`;
         this.CAROUSEL_SELECTOR = `#${this.CAROUSEL_ID}`;
 
         this.onChange = this.props.onChange || (() => {});
 
+        this.updateDocs();
+
         this.state = {
-            image: props.artefact.docs.filter(x => x.type === 'image'),
-            file: props.artefact.docs.filter(x => x.type === 'file'),
+            activeItemId: this.docs.image.length && this.docs.image[0].id,
         };
-        this.state.activeItemId =
-            this.state.image.length && this.state.image[0].id;
+    }
+
+    items(type) {
+        if (!this.props.value)
+            return [];
+        return this.props.value.filter(item => item.type === type);
+    }
+
+    updateDocs() {
+        this.docs = {
+            image: this.items('image'),
+            file: this.items('file'),
+        };
     }
 
     currentCarouselItemId() {
@@ -36,9 +45,9 @@ export default class ArtefactDocs extends React.Component {
     }
 
     deleteItem(items, n) {
-        const item = this.state[items][n];
+        const item = this.docs[items][n];
 
-        let newItems = [ ...this.state[items] ];
+        let newItems = [ ...this.docs[items] ];
         newItems.splice(n, 1);
 
         // If item is an image currently displayed on the carousel, need to make
@@ -49,11 +58,11 @@ export default class ArtefactDocs extends React.Component {
         // be expensive -- thus we want to short-circuit wherever possible.
         if  (
                     item.type === 'image'
-                &&  this.state.image.length > 1
+                &&  this.docs.image.length > 1
                 &&  item.id === this.currentCarouselItemId()
             ) {
 
-            let direction = n === this.state[items].length - 1 ? 'prev':'next';
+            let direction = n === this.docs[items].length - 1 ? 'prev':'next';
 
             // Loads of exhausting boilerplatey stuff because bootstrap, AFAICT
             // (althought that isn't very far since there don't seem to be any
@@ -66,7 +75,7 @@ export default class ArtefactDocs extends React.Component {
                             return;
                         this.setState({
                             ...this.state,
-                            activeItemId: this.state[this.deleting.from][e.to].id,
+                            activeItemId: this.docs[this.deleting.from][e.to].id,
                             [this.deleting.from]: this.deleting.to,
                         })
                         this.onChange(
@@ -79,28 +88,26 @@ export default class ArtefactDocs extends React.Component {
             this.deleting = { item, from: items, to: newItems };
             $(this.CAROUSEL_SELECTOR).carousel(direction);
         } else {
-            this.setState({ ...this.state, [items]: newItems });
+            this.docs[items] = newItems;
             this.onChange(item, 'delete', newItems);
         }
     }
 
     addItem(item) {
-        let newItems = [ ...this.state[item.type], item ];
+        let newItems = [ ...this.docs[item.type], item ];
         this.moveCarousel = item.type === 'image';
         this.setState({
             ...this.state,
             activeItemId: item.id,
-            [item.type]: newItems,
         });
+        this.docs[item.type] = newItems;
         this.onChange(item, 'create', newItems);
     }
 
     docListItem = (item, n, alt) => {
-        // Fuck you, eslint.
-        /* eslint no-useless-computed-key: 0 */
         const linkCarousel = item.type === 'image' ? {
-                ['data-target']: this.CAROUSEL_SELECTOR,
-                ['data-slide-to']: n,
+                'data-target': this.CAROUSEL_SELECTOR,
+                'data-slide-to': n,
             } : { };
 
         const clickable = item.type === 'image' ?
@@ -125,13 +132,14 @@ export default class ArtefactDocs extends React.Component {
     }
 
     docList = (type, title) => {
+        const items = this.items(type);
         return (
             <>
-                {!!this.state[type].length &&
+                {!!items.length &&
                     <h6 className='af-artdoc-list-title'>{title}:</h6>
                 }
                 <ul className='af-artdoc-list'>
-                    {this.state[type].map(
+                    {items.map(
                         (item, n) => this.docListItem(
                             item, n, n % 2 ? '' : 'alt')
                     )}
@@ -156,9 +164,10 @@ export default class ArtefactDocs extends React.Component {
 
     componentDidUpdate() {
         if (this.moveCarousel) {
-            $(this.CAROUSEL_SELECTOR).carousel(this.state.image.length - 1);
+            $(this.CAROUSEL_SELECTOR).carousel(this.docs.image.length - 1);
             this.moveCarousel = false;
         }
+        this.updateDocs();
     }
 
     render() {
@@ -166,7 +175,7 @@ export default class ArtefactDocs extends React.Component {
             <>
                 <ImageCarousel
                     id={this.CAROUSEL_ID}
-                    items={this.state.image}
+                    items={this.items('image')}
                     getId={x => x.id}
                     activeId={this.state.activeItemId}
                     renderFrame={(image, n) => (

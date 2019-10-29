@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Carousel({ id, items, activeFrame, activeId, renderFrame = x => x, getId }) {
+export default function Carousel({ id, items, activeFrame, activeId, renderFrame = x => x, getId, ...props }) {
     // This doesn't work at the moment, so have to specify activeFrame
     // or activeId.
     if (activeId === null && activeFrame === null)
@@ -9,7 +9,7 @@ export default function Carousel({ id, items, activeFrame, activeId, renderFrame
     return (
 <div
     id={id}
-    className="carousel slide"
+    className={"carousel slide " + (props.className ? props.className : '')}
     data-ride="carousel"
     data-interval="false"
 >
