@@ -28,6 +28,7 @@ export default class ArtefactPreview extends Component {
                     id={carouselId}
                     items={a.images}
                     getId={x => x.id}
+                    className='af-artcard-carousel'
                     activeId={
                             a.images
                         &&  a.images[0]
@@ -55,22 +56,25 @@ export default class ArtefactPreview extends Component {
                                 </Link>
                             )}
                         </div>
-                        <span className="af-artcard-actions">
-                            <p className="af-artcard-action badge badge-decal-text mx-1"> 
-                                {`${a.questionCount} questions`} 
-                            </p>
-                            <p className="af-artcard-action badge badge-decal-text mx-1"> 
-                                {`${a.commentCount} comments`} 
-                            </p>
-                            <Link className="af-artcard-action" to={`/artefact/${a.id}`}>
-                                View Full Page <FontAwesomeIcon icon={faExternalLinkAlt} />
-                            </Link>
-                        </span>
+                        <div className='af-artcard-stats'>
+                            <span className="af-artcard-action badge badge-decal-text mx-1">
+                                {`${a.questionCount} questions`}
+                            </span>
+                            <span className="af-artcard-action badge badge-decal-text mx-1">
+                                {`${a.commentCount} comments`}
+                            </span>
+                        </div>
                     </div>
+                    <hr/>
                     <div className="text-muted af-artcard-desc" id={id}>
-                        <hr/>
                         <p>{a.description}</p>
                     </div>
+                    <hr/>
+                    <span className="af-artcard-actions">
+                        <Link className="af-artcard-action view-full" to={`/artefact/${a.id}`}>
+                            View Full Page ▻
+                        </Link>
+                    </span>
                 </div>
             </div>
         );
