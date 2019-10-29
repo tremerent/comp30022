@@ -27,6 +27,13 @@ async function getArtefact(artefactId) {
     return resp.data;
 }
 
+async function deleteArtefact(artefactId) {
+    const resp = await apiFetch(getToken())
+        .delete(`/artefacts/${artefactId}`);
+
+    return resp.data;
+}
+
 async function addArtefactImage(artefactId, file) {
     const data = new FormData();
     data.append("file", file);
@@ -68,30 +75,31 @@ async function patchArtefactAndCategories(updatedArt, origArt) {
 
     // patch artefact
     await patchArtefact(updatedArt);
+    console.log(origArt.categoryJoin);
+    console.log(updatedArt.categoryJoin);
 
-    // if (origArt.categoryJoin && updatedArt.categoryJoin) {
+    if (origArt.categoryJoin && updatedArt.categoryJoin) {
 
-    //     const updatedCj = updatedArt.categoryJoin;
-    //     const origCj = origArt.categoryJoin;
-
-
-    //     const toAdd = updatedCj.filter(cj => 
-    //         !origCj.find(ocj => ocj.categoryId === cj.categoryId));
-
-    //     const toRemove = origCj.filter(cj => 
-    //         !updatedCj.find(ocj => ocj.categoryId == cj.categoryId));
-
-
-
-    //     // add categories
-    //     await postArtefactCategories(categoryOptsToDbModel(updatedArt.id, toAdd));
+        const updatedCjOpts = updatedArt.categoryJoin  // [{ label, value }]
+            .map(updatedArt => ({ id: updatedArt.value, }));
         
-    //     // remove categories
-    //     await Promise.all(
-    //         categoryOptsToDbModel(updatedArt.id, toRemove)
-    //         .map(cjDbModel => deleteArtefactCategory(cjDbModel))
-    //     );
-    // }
+        const origCjs = origArt.categoryJoin;  // [{ categoryId, artefactId }]
+
+        const toAdd = updatedCjOpts.filter(cjOpt =>
+            !origCjs.find(ocj => ocj.categoryId === cjOpt.id));
+
+        const toRemove = origCjs.filter(cj =>
+            !updatedCjOpts.find(cjOpt => cjOpt.id === cj.categoryId));
+
+        // add categories
+        await postArtefactCategories(updatedArt.id, toAdd);
+
+        // remove categories
+        await Promise.all(
+            toRemove
+            .map(cjDbModel => deleteArtefactCategory(cjDbModel))
+        );
+    }
 
     // fetch artefact again now that it has category relationships
     // (this could also be stored prior to posting the artefact, and then
@@ -141,12 +149,14 @@ async function getCategories() {
     return resp.data;
 }
 
-const categoryOptsToDbModel = (artefactId, categoryOpts) => {
+// takes a list of category objects of form { ..., id }, and creates
+// 'ArtefactCategory' db models.
+const categoryIdsToDbModel = (artefactId, categoryOpts) => {
     return categoryOpts.map(cat => ({ artefactId, categoryId: cat.id }));
 }
 
 async function postArtefactCategories(artefactId, categories) {
-    const artefactCategories = categoryOptsToDbModel(artefactId, categories);
+    const artefactCategories = categoryIdsToDbModel(artefactId, categories);
 
     const resp = await apiFetch(getToken())
         .post(`/ArtefactCategories/Many`, artefactCategories);
@@ -156,7 +166,9 @@ async function postArtefactCategories(artefactId, categories) {
 
 async function deleteArtefactCategory(artCategory) {
     const resp = await apiFetch(getToken())
-        .delete(`/ArtefactCategories`, artCategory);
+        .delete(`/ArtefactCategories` +
+                `?artefactId=${artCategory.artefactId}` +
+                `&categoryId=${artCategory.categoryId}`);
 
     return resp.data;
 }
@@ -241,37 +253,11 @@ async function getComment(id) {
     return resp.data;
 }
 
-// Adds a reference to each item in a discussion tree pointing to that item's
-// parent item (or null at the top level).
-// Possibly this causes memory leaks; I don't know anything about JS garbage
-// collection.
-// -- Sam
-function addParentRefsToDiscussionTree(tree) {
-    (function recurse(parent, tree, question, answerId) {
-        for (let child of tree) {
-            let nextQuestion = null;
-            let nextAnswerId = null;
-            if (!question) {
-                if (child.type === 'question' && child.isAnswered) {
-                    nextQuestion = child;
-                    nextAnswerId = child.answerComment;
-                }
-            } else if (child.id === answerId) {
-                child.isAnswer = true;
-            }
-            child.parent = parent;
-            child.parentId = child.parent && child.parent.id;
-            recurse(child, child.replies, nextQuestion, nextAnswerId);
-        }
-    })(null, tree, null, null);
-    return tree;
-}
-
 export async function getDiscussion(artefactId) {
-    return addParentRefsToDiscussionTree((
+    return (
             await apiFetch(getToken())
                 .get(`/artefacts/comments?artefactId=${artefactId}`)
-        ).data);
+        ).data;
 }
 
 export async function postDiscussion(item) {
@@ -279,7 +265,7 @@ export async function postDiscussion(item) {
     if (item.parent) {
         args = [
             '/artefacts/comments/reply',
-            { Body: item.body, ParentCommentId: item.parent.id },
+            { Body: item.body, ParentCommentId: item.parent },
         ];
     } else if (item.type === 'question') {
         args = [
@@ -306,9 +292,16 @@ export async function markAnswer(question, answer) {
         .patch(`/artefacts/comments/mark-answer`, { QuestionId: question.id, AnswerId: answer.id });
 }
 
+export async function unmarkAnswer(answer) {
+    const resp = await apiFetch(getToken())
+        .delete(
+            `/artefacts/comments/mark-answer?questionId=${answer.answers}&answerId=${answer.id}`
+        );
+}
 
 export {
     postArtefact,
+    deleteArtefact,
     patchArtefactAndCategories,
     postArtefactAndCategories,
     getArtefact,
@@ -316,6 +309,7 @@ export {
     getVisibilityOpts,
 
     postArtefactCategories,
+    deleteArtefactCategory,
     postCategory,
     getCategories,
 

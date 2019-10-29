@@ -4,27 +4,10 @@ import {
     getArtefacts,
     getArtefact as apiGetArtefact,
     addArtefactImage,
+    deleteArtefact as deleteMyArtefactReq,
 } from '../../scripts/requests';
 import { artefactTypes, } from './types';
-import apiFetchWithAuth from '../../scripts/apiFetch';
-
-// function reqUpdateArtefact(artefact) {
-
-// }
-
-// function resUpdateArtefact(artefact) {
-
-// }
-
-// export function updateArtefact(artefact) {
-//     return function(dispatch) {
-
-//         apiFetchWithAuth()
-
-//     }
-// }
-
-
+import { bindActionCreators } from 'redux';
 
 function reqGetBrowserArtefacts(queryDetails) {
     return {
@@ -149,30 +132,38 @@ export function getArtefact(id) {
     }
 }
 
+function setUserArtefacts(user, artefacts) {
+    return {
+        type: artefactTypes.SET_USER_ARTEFACTS,
+        username: user,
+        userArtefacts: artefacts,
+    };
+}
+
 function setPublicArtefacts(publicArts) {
     return {
         type: artefactTypes.RES_GET_PUBLIC_ARTEFACTS,
         artefacts: publicArts,
-    }
+    };
 }
 
 function reqGetPublicArtefacts() {
     return {
         type: artefactTypes.REQ_GET_PUBLIC_ARTEFACTS,
-    }
+    };
 }
 
 function resGetPublicArtefacts(publicArts) {
     return {
         type: artefactTypes.RES_GET_PUBLIC_ARTEFACTS,
         artefacts: publicArts,
-    }
+    };
 }
 
 function errGetPublicArtefacts() {
     return {
         type: artefactTypes.ERR_GET_PUBLIC_ARTEFACTS,
-    }
+    };
 }
 
 export function getPublicArtefacts() {
@@ -190,10 +181,10 @@ export function getPublicArtefacts() {
     }
 }
 
-function addMyArtefact(newArtefact) {
+function addMyArtefact(newArtefact, myArtefacts) {
     return {
-        type: artefactTypes.ADD_MY_ARTEFACTS,
-        newArtefact,
+        type: artefactTypes.SET_MY_ARTEFACTS,
+        myArtefacts: [newArtefact, ...myArtefacts],
     }
 }
 
@@ -201,18 +192,19 @@ function addMyArtefact(newArtefact) {
 // 'state.art.userArts' if newArtefact is public
 export function addMyArtefactSync(newArtefact) {
     return async function (dispatch, getState) {
+        const state = getState();
 
-        dispatch(addMyArtefact(newArtefact));
+        dispatch(addMyArtefact(newArtefact, state.art.myArts.myArtefacts));
 
         if (newArtefact.vis === "public") {
 
             const { art:
                 { publicArts: { artefacts: publicArtefacts } }
-            } = getState();
+            } = state;
 
             updatePublicArts(newArtefact, publicArtefacts, dispatch);
 
-            const { art: { userArts } } = getState();
+            const { art: { userArts } } = state;
 
             // if the user doesn't already artefacts stored in 'userArts',
             // just let it be fetched from server - REQ_GET_USER_ARTEFACTS
@@ -300,8 +292,55 @@ function updateMyArtefact(updatedArtefact) {
     }
 }
 
+function setMyArtefacts(myArtefacts) {
+    return {
+        type: artefactTypes.SET_MY_ARTEFACTS,
+        myArtefacts,
+    }
+}
+
+export function deleteMyArtefactSync(artefact) {
+    return async function (dispatch, getState) {
+        console.log('hello world');
+        const deleteArtefact = (artefacts) => {
+            return artefacts.filter(art => art.id != artefact.id);
+        }
+
+        const state = getState();
+
+        try {
+            await deleteMyArtefactReq(artefact.id);
+
+            dispatch(
+                setMyArtefacts(deleteArtefact(state.art.myArts.myArtefacts))
+            );
+    
+            if (artefact.vis === "public") {
+                const { art:
+                    { publicArts: { artefacts: publicArtefacts } }
+                } = state;
+    
+                dispatch(setPublicArtefacts(deleteArtefact(publicArtefacts)));
+    
+                const { art: { userArts } } = state;
+    
+                dispatch(setUserArtefacts(
+                    artefact.owner.username, 
+                    deleteArtefact(userArts))
+                );
+            }
+        }
+        catch (e) {
+            console.error(e);
+        }
+
+        // dispatch(updateCachedArtefact(patchedArt));
+    }
+}
+
 export function updateMyArtefactSync(updatedArtefact, docs) {
     return async function (dispatch, getState) {
+        console.log(updatedArtefact);
         const patchedArt = await patchArtefactAndCategories(
             updatedArtefact, 
             getState().art.artIdCache[updatedArtefact.id]

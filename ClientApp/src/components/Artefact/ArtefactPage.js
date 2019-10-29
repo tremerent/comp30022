@@ -1,19 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { replace } from 'connected-react-router'
+
 import {
     discuss as discussActions,
     artefacts as artActions,
 } from '../../redux/actions';
 
 import Overview from '../Shared/Overview.js';
-import ArtefactPreviewNew from './ArtefactPreviewNew.js';
-
 import CentreLoading from 'components/Shared/CentreLoading';
 import ArtefactInfo from './ArtefactInfo.js';
 import '../User/UserProfile.css';
 import './ArtefactPage.css';
-
 import Discussion from '../Discussion/Discussion.js';
 
 function getArtefactIdFromRoute(route) {
@@ -31,6 +30,7 @@ class ArtefactPage extends React.Component {
         super(props);
 
         this.state = {
+            deletingArtefact: false,
         };
     }
 
@@ -40,7 +40,7 @@ class ArtefactPage extends React.Component {
     }
 
     render() {
-        if (this.props.loading)
+        if (this.props.loading || this.state.deletingArtefact)
             return <CentreLoading/>;
         return (
             <Overview>
@@ -48,6 +48,7 @@ class ArtefactPage extends React.Component {
                     artefact={this.props.artefact}
                     auth={{isOwner: this.props.isViewOfCurUser}}
                     updateArtefact={this.props.updateArtefact}
+                    deleteArtefact={this.deleteArtefact}
                 />
                 {
                     (this.props.discussion.loading) ? (
@@ -58,13 +59,26 @@ class ArtefactPage extends React.Component {
                             the server. Try reloading the page.
                         </div>
                     ) : (
-                        <Discussion items={this.props.discussion.tree} artefactId={this.props.artefactId}/>
+                        <Discussion discussion={this.props.discussion} artefactId={this.props.artefactId}/>
                     )
                 }
             </Overview>
         );
     }
 
+    deleteArtefact = () => {
+        const toDelete = { ...this.props.artefact };
+
+        this.setState({
+            ...this.state,
+            deletingArtefact: true,
+        }, () => {
+            this.props.deleteArtefact(toDelete)
+                .then(() => {
+                    this.props.replace(`/user/${toDelete.owner.username}`)
+                });
+        });
+    }
 }
 
 
@@ -84,9 +98,14 @@ function mapStateToProps(state) {
         artefact: state.art.artIdCache[artefactId],
         loading: state.art.artIdCache[artefactId] === undefined,
         discussion: {
-            tree: state.discuss[artefactId] && state.discuss[artefactId].tree,
-            loading: !state.discuss[artefactId],
-            error: state.discuss[artefactId] && state.discuss[artefactId].error,
+            items: state.discuss[artefactId]
+                        && state.discuss[artefactId].items,
+            topLevel: state.discuss[artefactId]
+                        && state.discuss[artefactId].topLevel,
+            loading: !state.discuss[artefactId]
+                        || state.discuss[artefactId].loading,
+            error: state.discuss[artefactId]
+                        && state.discuss[artefactId].error,
         },
         isViewOfCurUser,
     };
@@ -97,7 +116,9 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         getArtefact: artActions.getArtefact,
         updateArtefact: artActions.updateMyArtefactSync,
+        deleteArtefact: artActions.deleteMyArtefactSync,
         getDiscussion: discussActions.getDiscussion,
+        replace,
     }, dispatch);
 }
 

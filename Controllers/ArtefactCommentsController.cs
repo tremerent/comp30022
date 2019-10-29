@@ -16,6 +16,7 @@ namespace Artefactor.Controllers
 {
     [Route("api/artefacts/comments")]
     [ApiController]
+    [Authorize]
     public class ArtefactCommentsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -33,6 +34,7 @@ namespace Artefactor.Controllers
 
         // Return all comments of 'artefactId' as a json tree.
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetArtefactComments(
             [FromQuery] string artefactId
         )
@@ -55,41 +57,11 @@ namespace Artefactor.Controllers
                 .Include(ac => ac.Author)
                 .ToListAsync();
 
-            var rootComments = artComments
-                .Where(ac => ac.ParentCommentId == null);
-
-            foreach (var comment in rootComments)
-            {
-                AttachChildren(comment);
-            }
-
-            return new JsonResult(rootComments.Select(c => _converter.ToJson(c)));
-
-            // recursively attach children
-            void AttachChildren(ArtefactComment parent)
-            {
-                List<ArtefactComment> children;
-
-                // if 'parent' is an element of 'rootComments', no need to attach
-                // children, since they will already be attached from '.Include'
-                if (parent.ChildComments == null ||
-                    parent.ChildComments.Count() == 0)
-                {
-                    children = artComments
-                        .Where(ac => ac.ParentCommentId == parent.Id)
-                        .ToList();
-
-                    parent.ChildComments = children;
-                }
-
-                foreach (var child in parent.ChildComments)
-                {
-                    AttachChildren(child);
-                }
-            }
+            return new JsonResult(artComments.Select(c => _converter.ToJson(c)));
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetComment(string id)
         {
             var artComment = _context.ArtefactComments
@@ -117,7 +89,6 @@ namespace Artefactor.Controllers
 
         // Add a comment to an artefact.
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> AddComment(
             [FromBody] CommentPost newComment)
         {
@@ -161,7 +132,6 @@ namespace Artefactor.Controllers
 
         // Add a reply to an already existing comment.
         [HttpPost("reply")]
-        [Authorize]
         public async Task<IActionResult> ReplyToComment(
             [FromBody] CommentReplyPost reply)
         {
@@ -194,7 +164,6 @@ namespace Artefactor.Controllers
         // Add a question to an artefact.
         // To post an 'answer', POST to 'reply' (method ReplyToComment)
         [HttpPost("question")]
-        [Authorize]
         public async Task<IActionResult> AddQuestion(
             [FromBody] CommentPost newQuestion)
         {
@@ -241,7 +210,6 @@ namespace Artefactor.Controllers
         //
         // These should possibly be LINK - UNLINK, but unsupported.
         [HttpPatch("mark-answer")]
-        [Authorize]
         public async Task<IActionResult> MarkAsAnswered(
             [FromBody] MarkAnswer markAnswer)
         {
@@ -282,23 +250,23 @@ namespace Artefactor.Controllers
         }
 
         [HttpDelete("mark-answer")]
-        [Authorize]
         public async Task<IActionResult> RemoveMarkedAnswer(
-            [FromBody] MarkAnswer removeMarkAnswer)
+                [FromQuery] string questionId, [FromQuery] string answerId
+            )
         {
             var curUserId = _userService.GetCurUserId(HttpContext);
 
             var question = await _context.ArtefactQuestions
-                .SingleOrDefaultAsync(q => q.Id == removeMarkAnswer.QuestionId);
+                .SingleOrDefaultAsync(q => q.Id == questionId);
 
             if (question == null)
             {
-                return NotFound($"Question '{removeMarkAnswer.QuestionId}' does not exist");
+                return NotFound($"Question '{questionId}' does not exist");
             }
-            if (question.AnswerCommentId != removeMarkAnswer.AnswerId)
+            if (question.AnswerCommentId != answerId)
             {
-                return BadRequest($"Question '{removeMarkAnswer.QuestionId}' " +
-                        $"does not have answer '{removeMarkAnswer.AnswerId}'");
+                return BadRequest($"Question '{questionId}' " +
+                        $"does not have answer '{answerId}'");
             }
 
             question.IsAnswered = false;

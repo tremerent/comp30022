@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Artefactor.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -150,6 +150,7 @@ namespace Artefactor.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost("Logout")]
         public async Task<IActionResult> Logout(string returnUrl = null)
         {
