@@ -18,10 +18,6 @@ function renderFrame(image, n) {
 export default function ImageCarousel(props) {
     if (!props.items || !props.items.length)
         return null;
-    return (
-        <div className='af-carousel'>
-            <Carousel getId={i => i.id} renderFrame={renderFrame} {...props}/>
-        </div>
-    );
+    return <Carousel getId={i => i.id} renderFrame={renderFrame} {...props}/>;
 }
 

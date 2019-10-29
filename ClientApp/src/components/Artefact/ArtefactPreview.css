@@ -1,3 +1,4 @@
+
 .af-artcard {
     width: 100%;
     min-height: 100px;
@@ -6,32 +7,13 @@
     overflow: hidden;
     margin-top: 1.5em;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     box-shadow: 0.2em 0.2em 0.4em rgba(0, 0, 0, 0.1);
 }
 
 .af-artcard-carousel {
     max-width: 50%;
     flex-shrink: 1;
-}
-
-@media (min-width: 450px) {
-    .af-artcard {
-        width: 100%;
-        min-height: 100px;
-        border: 1px solid #f0f0f0;
-        border-radius: 0px;
-        overflow: hidden;
-        margin-top: 1.5em;
-        display: flex;
-        flex-direction: row;
-        box-shadow: 0.2em 0.2em 0.4em rgba(0, 0, 0, 0.1);
-    }
-}
-
-
-.af-artcard-carousel-fade {
-    box-shadow: 0 .55rem .85rem rgba(0, 0, 0, .85) inset;
 }
 
 .af-artcard-body {
@@ -99,13 +81,9 @@
     width: 100%;
 }
 
-.af-artcard-meta {
-    margin: 6px 6px 6px 0px;
-}
-
-.af-artcard-fullpage-link {
+.af-artcard-action {
     white-space: nowrap;
-    margin-bottom: 4px 4px 4px 0px;
+    margin-bottom: 2px;
 }
 
 .af-artcard-action.view-full {
@@ -116,6 +94,7 @@
 .af-artcard-action:hover {
     text-decoration: none;
 }
+
 
 .af-artcard-actions-divider {
     width: 1.8em;
