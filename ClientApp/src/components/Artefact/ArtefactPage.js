@@ -151,17 +151,20 @@ class ArtefactPage extends React.Component {
             <>
             {/* This cannot be inside the Overview because boostrap modals are
                broken inside positioned components. */}
-            <FloatingWindow
-                id={modalId}
-                title='Upload images and documentation.'
-                showHeader={this.state.showCreateArtHeader}
-            >
-                <EditArtefactDocs
-                    artefact={this.props.artefact}
-                    onSubmit={this.props.updateArtefact}
-                    getArtefact={this.props.getArtefact}
-                />
-            </FloatingWindow>
+            {
+                this.props.isViewOfCurUser &&
+                    <FloatingWindow
+                        id={modalId}
+                        title='Upload images and documentation.'
+                        showHeader={this.state.showCreateArtHeader}
+                    >
+                        <EditArtefactDocs
+                            artefact={this.props.artefact}
+                            onSubmit={this.props.updateArtefact}
+                            getArtefact={this.props.getArtefact}
+                        />
+                    </FloatingWindow>
+            }
             <Overview>
                 <ArtefactInfo
                     artefact={this.props.artefact}
