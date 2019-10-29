@@ -95,7 +95,7 @@ class EditArtefactDocs extends React.Component {
     submit = async () => {
         this.setState({ ...this.state, loading: true });
         for (const item of Object.values(this.state.creates)) {
-            await addArtefactImage(this.props.artefact.id, item.blob);
+            await addArtefactImage(this.props.artefact.id, item);
         }
         for (const item of Object.values(this.state.deletes)) {
             await removeArtefactImage(this.props.artefact.id, item.id);
@@ -151,17 +151,20 @@ class ArtefactPage extends React.Component {
             <>
             {/* This cannot be inside the Overview because boostrap modals are
                broken inside positioned components. */}
-            <FloatingWindow
-                id={modalId}
-                title='Upload images and documentation.'
-                showHeader={this.state.showCreateArtHeader}
-            >
-                <EditArtefactDocs
-                    artefact={this.props.artefact}
-                    onSubmit={this.props.updateArtefact}
-                    getArtefact={this.props.getArtefact}
-                />
-            </FloatingWindow>
+            {
+                this.props.isViewOfCurUser &&
+                    <FloatingWindow
+                        id={modalId}
+                        title='Upload images and documentation.'
+                        showHeader={this.state.showCreateArtHeader}
+                    >
+                        <EditArtefactDocs
+                            artefact={this.props.artefact}
+                            onSubmit={this.props.updateArtefact}
+                            getArtefact={this.props.getArtefact}
+                        />
+                    </FloatingWindow>
+            }
             <Overview>
                 <ArtefactInfo
                     artefact={this.props.artefact}

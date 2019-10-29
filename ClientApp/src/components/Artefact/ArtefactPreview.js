@@ -57,18 +57,12 @@ export default class ArtefactPreview extends Component {
                             )}
                         </div>
                         <div className='af-artcard-stats'>
-                            <Link className="af-artcard-action" to={`/artefact/${a.id}`}>
-                                    <p className="badge info-badge badge-decal-text"> 
-                                        {`${a.questionCount} questions`} 
-                                    </p>
-                            </Link>
-                            <Link className="af-artcard-action" to={`/artefact/${a.id}`}>
-
-                                <p className="badge info-badge badge-decal-text"> 
-                                    {`${a.commentCount} comments`} 
-                                </p>
-                                
-                            </Link>
+                             <Link className="af-artcard-action badge badge-decal-text" to={`/artefact/${a.id}`}>
+                                 {`${a.questionCount} questions`}
+                             </Link>
+                             <Link className="af-artcard-action badge badge-decal-text" to={`/artefact/${a.id}`}>
+                                 {`${a.commentCount} comments`}
+                             </Link>
                         </div>
                     </div>
                     <hr/>
@@ -78,7 +72,7 @@ export default class ArtefactPreview extends Component {
                     <hr/>
                     <span className="af-artcard-actions">
                         <Link className="af-artcard-action view-full" to={`/artefact/${a.id}`}>
-                            View Full Page <FontAwesomeIcon icon={faExternalLinkAlt} />
+                            View Full Page ▻
                         </Link>
                     </span>
                 </div>

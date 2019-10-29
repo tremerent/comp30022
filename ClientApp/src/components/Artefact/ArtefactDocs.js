@@ -111,11 +111,13 @@ export default class ArtefactDocs extends React.Component {
 
     addItem(item) {
         let newItems = [ ...this.docs[item.type], item ];
-        this.moveCarousel = item.type === 'image';
-        this.setState({
-            ...this.state,
-            activeItemId: item.id,
-        });
+        if (item.type === 'image') {
+            this.moveCarousel = true;
+            this.setState({
+                ...this.state,
+                activeItemId: item.id,
+            });
+        }
         this.docs[item.type] = newItems;
         this.onChange(item, 'create', newItems);
     }
@@ -165,6 +167,12 @@ export default class ArtefactDocs extends React.Component {
     }
 
     addFileHandler = event => {
+        const fileType = event.target.files[0].name.match(
+                /(\.jpg|\.jpeg|\.png|\.gif|\.svg|\.tiff)$/i
+            ) ?
+                'image'
+            :
+                'file';
         this.addItem({
                 // V. important that id is stringified.
                 // Don't ask.
@@ -173,13 +181,14 @@ export default class ArtefactDocs extends React.Component {
                 title: event.target.files[0].name,
                 url: URL.createObjectURL(event.target.files[0]),
                 blob: event.target.files[0],
-                type: 'image',
+                type: fileType,
                 isNew: true,
             });
     }
 
     componentDidUpdate() {
         if (this.moveCarousel) {
+            console.warn("moveCarousel()");
             $(this.CAROUSEL_SELECTOR).carousel(this.docs.image.length - 1);
             this.moveCarousel = false;
         }
@@ -187,6 +196,7 @@ export default class ArtefactDocs extends React.Component {
     }
 
     render() {
+        console.log(`this.items: ${JSON.stringify(this.props.value)}`);
         return (
             <>
                 <ImageCarousel

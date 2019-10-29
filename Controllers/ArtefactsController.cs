@@ -664,7 +664,7 @@ namespace Artefactor.Controllers
             {
                 return NotFound();
             }
-            else if (artefact.OwnerId != curUserId) 
+            else if (artefact.OwnerId != curUserId)
             {
                 return Unauthorized();
             }
@@ -678,6 +678,7 @@ namespace Artefactor.Controllers
         [HttpPost("image")]
         public async Task<IActionResult> AddImage(
             [FromQuery] string artefactId,
+            [FromQuery] string type,
             [FromForm] IFormFile file)
         {
             var dbArt = await _context
@@ -705,7 +706,7 @@ namespace Artefactor.Controllers
                     Title = file.FileName,
                     Url = uri.AbsoluteUri,
                     ArtefactId = artefactId,
-                    DocType = DocType.Image,
+                    DocType = type == "image" ? DocType.Image : DocType.File,
                 };
 
                 await _context.AddAsync(artDoc);
@@ -726,10 +727,10 @@ namespace Artefactor.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("image")]
         public async Task<IActionResult> RemoveImage(
             [FromQuery] string artefactId,
-            [FromQuery] string img_url)
+            [FromQuery] string imageId)
         {
             var dbArt = await _context
                 .Artefacts
@@ -747,7 +748,10 @@ namespace Artefactor.Controllers
 
             var artDoc = await _context
                 .ArtefactDocuments
-                .SingleOrDefaultAsync(doc => doc.Url == img_url);
+                .SingleOrDefaultAsync(doc => doc.Id == imageId);
+
+            if (artDoc == null)
+                return StatusCode(200, "I mean *technically* it's deleted.");
 
             try {
                 _context.Remove(artDoc);
@@ -755,9 +759,9 @@ namespace Artefactor.Controllers
 
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return StatusCode(500);
+                return StatusCode(500, e.ToString());
             }
         }
 

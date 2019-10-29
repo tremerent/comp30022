@@ -15,7 +15,7 @@ export default class ArtefactInfo extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = { 
+        this.state = {
             artefact: this.props.artefact,
             confirmingDelete: false,
         };
@@ -86,9 +86,16 @@ export default class ArtefactInfo extends React.Component {
                             &&  a.images[0].id
                         }
                     />
-                    <button className='btn edit-images' data-target={`#${modalId}`} data-toggle='modal'>
-                        <FontAwesomeIcon icon={faPen}/>
-                    </button>
+                    {
+                        this.props.auth.isOwner &&
+                            <button
+                                    className='btn edit-images'
+                                    data-target={`#${modalId}`}
+                                    data-toggle='modal'
+                            >
+                                <FontAwesomeIcon icon={faPen}/>
+                            </button>
+                    }
                 </div>
                 <div className='af-ai-info'>
                     <EditTextArea
@@ -176,13 +183,13 @@ export default class ArtefactInfo extends React.Component {
                                     this.state.confirmingDelete
                                     ?
                                     <div>
-                                        <button 
+                                        <button
                                             onClick={this.toggleConfirmingDelete}
                                             className="btn btn-outline-secondary af-cancel-btn"
                                         >
                                             Cancel
                                         </button>
-                                        <button 
+                                        <button
                                             onClick={this.delete}
                                             className="btn btn-outline-danger"
                                         >
@@ -190,7 +197,7 @@ export default class ArtefactInfo extends React.Component {
                                         </button>
                                     </div>
                                     :
-                                    <button 
+                                    <button
                                         onClick={this.toggleConfirmingDelete}
                                         className="btn btn-outline-danger"
                                     >

@@ -5,8 +5,9 @@ import './ProfilePicture.css';
 export default class ProfilePicture extends React.Component {
 
     render() {
+        const editable = this.props.editable ? ' editable' : '';
         return (
-            <div className="profile-pic">
+            <div className={"profile-pic" + editable}>
                 <img
                     src={ this.props.imageUrl ?
                           this.props.imageUrl

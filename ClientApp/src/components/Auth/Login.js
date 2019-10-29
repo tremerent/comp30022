@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import { PropTypes } from 'prop-types';
 
-
 import { auth } from '../../redux/actions';
 import { formToJson } from '../../scripts/utilityService';
 
@@ -44,16 +43,16 @@ class Login extends React.Component {
                             :
                             null
                         }
-                        <div className="form-row justify-content-start my-3">
+                        <div className="form-row justify-content-start my-3 login-buttons">
+                            <div className="col-xs-3">
+                                <button type="submit" className="btn btn-primary">Login</button>
+                            </div>
                             <div className="col-xs-3 mx-1">
                                 <Link to="/auth/signup">
                                     <button className="btn btn-outline-secondary">
                                         Signup
                                                     </button>
                                 </Link>
-                            </div>
-                            <div className="col-xs-3">
-                                <button type="submit" className="btn btn-primary">Login</button>
                             </div>
                         </div>
                     </div>
