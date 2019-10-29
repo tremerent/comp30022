@@ -1,8 +1,8 @@
-.profile-pic:hover .profile-pic-overlay {
+.profile-pic.editable:hover .profile-pic-overlay {
     opacity: 1;
 }
 
-.profile-pic:hover .profile-pic-img {
+.profile-pic.editable:hover .profile-pic-img {
     opacity: 0.3;
 }
 
