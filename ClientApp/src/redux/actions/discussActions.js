@@ -2,6 +2,7 @@ import {
     getDiscussion as apiGetDiscussion,
     postDiscussion as apiPostDiscussion,
     markAnswer as apiMarkAnswer,
+    unmarkAnswer as apiUnmarkAnswer,
 } from '../../scripts/requests.js';
 import { discussTypes } from './types.js';
 
@@ -11,10 +12,10 @@ const reqGetDiscussion = (artefactId) => ({
     artefactId,
 });
 
-const resGetDiscussion = (artefactId, tree) => ({
+const resGetDiscussion = (artefactId, items) => ({
     type: discussTypes.RES_GET_DISCUSSION,
     artefactId,
-    tree,
+    items,
 });
 
 const errGetDiscussion = (artefactId, error) => ({
@@ -33,8 +34,8 @@ export function getDiscussion(artefactId) {
         dispatch(reqGetDiscussion(artefactId));
 
         try {
-            const tree = await apiGetDiscussion(artefactId);
-            dispatch(resGetDiscussion(artefactId, tree));
+            const items = await apiGetDiscussion(artefactId);
+            dispatch(resGetDiscussion(artefactId, items));
         } catch (e) {
             dispatch(errGetDiscussion(artefactId, e));
         }
@@ -107,4 +108,36 @@ export function markAnswer(question, answer) {
         }
     };
 }
+
+const reqUnmarkAnswer = (answer) => ({
+    type: discussTypes.REQ_UNMARK_ANSWER,
+    answer,
+});
+
+const resUnmarkAnswer = (answer, response) => ({
+    type: discussTypes.RES_UNMARK_ANSWER,
+    answer,
+    response,
+});
+
+const errUnmarkAnswer = (answer, error) => ({
+    type: discussTypes.ERR_UNMARK_ANSWER,
+    answer,
+    error,
+});
+
+export function unmarkAnswer(answer) {
+    return async (dispatch, getState) => {
+        dispatch(reqUnmarkAnswer(answer));
+
+        try {
+            const response = await apiUnmarkAnswer(answer);
+            dispatch(resUnmarkAnswer(answer, response));
+            return;
+        } catch (e) {
+            dispatch(errUnmarkAnswer(answer, e));
+        }
+    };
+}
+
 

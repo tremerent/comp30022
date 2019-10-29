@@ -44,7 +44,13 @@ class DiscussSection extends React.Component {
 
 
     render() {
-        const items = this.props.items.filter(x => { console.assert(x.type); return x.type === this.props.type; });
+        const items = this.props.discussion.topLevel
+                .filter(
+                    _x => {
+                        const x = this.props.discussion.items[_x];
+                        return !x.parent && x.type === this.props.type;
+                    })
+                .map(id => this.props.discussion.items[id]);
 
         return (
             <div className='af-discuss-section'>
@@ -82,7 +88,7 @@ class DiscussSection extends React.Component {
                 {
                     items.length ? (
                         items.map(
-                                item => <DiscussionNode key={item.id} item={item} auth={this.props.auth}/>
+                                item => <DiscussionNode key={item.id} discussion={this.props.discussion} item={item} auth={this.props.auth}/>
                             )
                     ) : (
                         <span className='text-muted af-discuss-scroller-empty'>
