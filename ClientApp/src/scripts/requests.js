@@ -27,6 +27,13 @@ async function getArtefact(artefactId) {
     return resp.data;
 }
 
+async function deleteArtefact(artefactId) {
+    const resp = await apiFetch(getToken())
+        .delete(`/artefacts/${artefactId}`);
+
+    return resp.data;
+}
+
 async function addArtefactImage(artefactId, file) {
     const data = new FormData();
     data.append("file", file);
@@ -68,30 +75,31 @@ async function patchArtefactAndCategories(updatedArt, origArt) {
 
     // patch artefact
     await patchArtefact(updatedArt);
+    console.log(origArt.categoryJoin);
+    console.log(updatedArt.categoryJoin);
 
-    // if (origArt.categoryJoin && updatedArt.categoryJoin) {
+    if (origArt.categoryJoin && updatedArt.categoryJoin) {
 
-    //     const updatedCj = updatedArt.categoryJoin;
-    //     const origCj = origArt.categoryJoin;
+        const updatedCjOpts = updatedArt.categoryJoin  // [{ label, value }]
+            .map(updatedArt => ({ id: updatedArt.value, }));
+        
+        const origCjs = origArt.categoryJoin;  // [{ categoryId, artefactId }]
 
+        const toAdd = updatedCjOpts.filter(cjOpt =>
+            !origCjs.find(ocj => ocj.categoryId === cjOpt.id));
 
-    //     const toAdd = updatedCj.filter(cj =>
-    //         !origCj.find(ocj => ocj.categoryId === cj.categoryId));
+        const toRemove = origCjs.filter(cj =>
+            !updatedCjOpts.find(cjOpt => cjOpt.id === cj.categoryId));
 
-    //     const toRemove = origCj.filter(cj =>
-    //         !updatedCj.find(ocj => ocj.categoryId == cj.categoryId));
+        // add categories
+        await postArtefactCategories(updatedArt.id, toAdd);
 
-
-
-    //     // add categories
-    //     await postArtefactCategories(categoryOptsToDbModel(updatedArt.id, toAdd));
-
-    //     // remove categories
-    //     await Promise.all(
-    //         categoryOptsToDbModel(updatedArt.id, toRemove)
-    //         .map(cjDbModel => deleteArtefactCategory(cjDbModel))
-    //     );
-    // }
+        // remove categories
+        await Promise.all(
+            toRemove
+            .map(cjDbModel => deleteArtefactCategory(cjDbModel))
+        );
+    }
 
     // fetch artefact again now that it has category relationships
     // (this could also be stored prior to posting the artefact, and then
@@ -141,12 +149,14 @@ async function getCategories() {
     return resp.data;
 }
 
-const categoryOptsToDbModel = (artefactId, categoryOpts) => {
+// takes a list of category objects of form { ..., id }, and creates
+// 'ArtefactCategory' db models.
+const categoryIdsToDbModel = (artefactId, categoryOpts) => {
     return categoryOpts.map(cat => ({ artefactId, categoryId: cat.id }));
 }
 
 async function postArtefactCategories(artefactId, categories) {
-    const artefactCategories = categoryOptsToDbModel(artefactId, categories);
+    const artefactCategories = categoryIdsToDbModel(artefactId, categories);
 
     const resp = await apiFetch(getToken())
         .post(`/ArtefactCategories/Many`, artefactCategories);
@@ -156,7 +166,9 @@ async function postArtefactCategories(artefactId, categories) {
 
 async function deleteArtefactCategory(artCategory) {
     const resp = await apiFetch(getToken())
-        .delete(`/ArtefactCategories`, artCategory);
+        .delete(`/ArtefactCategories` +
+                `?artefactId=${artCategory.artefactId}` +
+                `&categoryId=${artCategory.categoryId}`);
 
     return resp.data;
 }
@@ -289,6 +301,7 @@ export async function unmarkAnswer(answer) {
 
 export {
     postArtefact,
+    deleteArtefact,
     patchArtefactAndCategories,
     postArtefactAndCategories,
     getArtefact,
@@ -296,6 +309,7 @@ export {
     getVisibilityOpts,
 
     postArtefactCategories,
+    deleteArtefactCategory,
     postCategory,
     getCategories,
 

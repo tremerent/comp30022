@@ -50,19 +50,25 @@ export default class ArtefactPreview extends Component {
                                 <Link
                                         to={`/browse?category=${c.name}`}
                                         key={c.id}
-                                        className="badge badge-decal-text mx-1"
+                                        className="badge badge-decal-text"
                                 >
                                     {c.name}
                                 </Link>
                             )}
                         </div>
                         <div className='af-artcard-stats'>
-                            <span className="af-artcard-action badge badge-decal-text mx-1">
-                                {`${a.questionCount} questions`}
-                            </span>
-                            <span className="af-artcard-action badge badge-decal-text mx-1">
-                                {`${a.commentCount} comments`}
-                            </span>
+                            <Link className="af-artcard-action" to={`/artefact/${a.id}`}>
+                                    <p className="badge info-badge badge-decal-text"> 
+                                        {`${a.questionCount} questions`} 
+                                    </p>
+                            </Link>
+                            <Link className="af-artcard-action" to={`/artefact/${a.id}`}>
+
+                                <p className="badge info-badge badge-decal-text"> 
+                                    {`${a.commentCount} comments`} 
+                                </p>
+                                
+                            </Link>
                         </div>
                     </div>
                     <hr/>
@@ -72,7 +78,7 @@ export default class ArtefactPreview extends Component {
                     <hr/>
                     <span className="af-artcard-actions">
                         <Link className="af-artcard-action view-full" to={`/artefact/${a.id}`}>
-                            View Full Page ▻
+                            View Full Page <FontAwesomeIcon icon={faExternalLinkAlt} />
                         </Link>
                     </span>
                 </div>

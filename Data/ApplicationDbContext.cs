@@ -52,21 +52,25 @@ namespace Artefactor.Data
             modelBuilder.Entity<ArtefactCategory>()
                         .HasOne(ac => ac.Category)
                         .WithMany(c => c.ArtefactJoin)
-                        .HasForeignKey(ac => ac.CategoryId);
+                        .HasForeignKey(ac => ac.CategoryId)
+                        .IsRequired();
             modelBuilder.Entity<ArtefactCategory>()
                         .HasOne(ac => ac.Artefact)
                         .WithMany(c => c.CategoryJoin)
-                        .HasForeignKey(ac => ac.ArtefactId);
+                        .HasForeignKey(ac => ac.ArtefactId)
+                        .IsRequired();
 
             // artefact - artefact documents
             modelBuilder.Entity<Artefact>()
                 .HasMany(a => a.Images)
-                .WithOne(ad => ad.Artefact);
+                .WithOne(ad => ad.Artefact)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // artefact - artefact comments
             modelBuilder.Entity<Artefact>()
                 .HasMany(a => a.Comments)
-                .WithOne(ac => ac.Artefact);
+                .WithOne(ac => ac.Artefact)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ArtefactComment>()
                 .HasDiscriminator<string>("CommentType");

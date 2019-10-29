@@ -59,7 +59,7 @@ export const catQueryTypes = [
 
 function apiFormatDate(date, defaultText) {
     if (!date) return defaultText;
-    return format(date, 'MM.DD.YYYY');
+    return format(date, 'MM.dd.yyyy');
 }
 
 // Converts a 'filterDetails' to key/value query parameters, ready for

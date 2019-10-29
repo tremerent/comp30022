@@ -1,5 +1,5 @@
 import React from 'react';
-import { faEye } from '@fortawesome/free-regular-svg-icons';
+import { faEye, faEyeSlash, } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
@@ -15,7 +15,14 @@ export default class ArtefactInfo extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = { artefact: this.props.artefact };
+        this.state = { 
+            artefact: this.props.artefact,
+            confirmingDelete: false,
+        };
+    }
+
+    delete = () => {
+        this.props.deleteArtefact(this.state.artefact);
     }
 
     update = () => {
@@ -29,7 +36,7 @@ export default class ArtefactInfo extends React.Component {
                 artefact: {
                     ...this.state.artefact,
                     [attrib]: value,
-                }
+                },
             },
             this.update
         );
@@ -49,18 +56,21 @@ export default class ArtefactInfo extends React.Component {
         // if category join in api format, need to convert, otherwise
         // it is ready for 'CategorySelect'
         let curArtCatSelectOpts = [];
+
         const cj = a.categoryJoin;
-        // just check first ele. since all will be same
-        if (cj.length &&
-            cj[0].label && cj[0].value) {
-            curArtCatSelectOpts = cj;
-        }
-        else {
-            const curArtCats = // { id, name }
-                this.categoryJoinsToCategories(cj);
-            curArtCatSelectOpts = curArtCats.map(c =>
-                ({ label: c.name, value: c.id })
-            );
+        if (cj) {
+            // just check first ele. since all will be same
+            if (cj.length &&
+                cj[0].label && cj[0].value) {
+                curArtCatSelectOpts = cj;
+            }
+            else {
+                const curArtCats = // { id, name }
+                    this.categoryJoinsToCategories(cj);
+                curArtCatSelectOpts = curArtCats.map(c =>
+                    ({ label: c.name, value: c.id })
+                );
+            }
         }
 
         return (
@@ -107,6 +117,7 @@ export default class ArtefactInfo extends React.Component {
                                 setCategoryVals={this.onEdit("categoryJoin")}
                                 blurPlaceholder={"Choose your artefact's categories"}
                                 focusPlaceholder={"Type to search for a category or create your own"}
+                                menuPlacement="bottom"
                             />
                         ) : (
                             this.categoryJoinsToCategories(a.categoryJoin).map(c =>
@@ -137,16 +148,54 @@ export default class ArtefactInfo extends React.Component {
                     </EditTextArea>
                     {
                         this.props.auth.isOwner && (
-                            <div className='af-ai-vis'>
-                                <FontAwesomeIcon icon={faEye}/>{' '}
+                            <div className='af-ai-row'>
+                                <div className='af-ai-vis'>
+                                    <span>
+                                        {
+                                            (a.visibility === 'public') ? (
+                                                <FontAwesomeIcon icon={faEye}/>
+                                            ) : (a.visibility === 'private') ? (
+                                                <FontAwesomeIcon icon={faEyeSlash}/>
+                                            ) : (
+                                                '???'
+                                            )
+                                        }
+                                        {' '}
+                                        {
+                                            (a.visibility === 'public') ? (
+                                                'This artefact is visible to everyone.'
+                                            ) : (a.visibility === 'private') ? (
+                                                'This artefact is only visible to you.'
+                                            ) : (
+                                                '???'
+                                            )
+                                        }
+                                    </span>
+                                </div>
                                 {
-                                    (a.visibility === 'public') ? (
-                                        'This artefact is visible to everyone.'
-                                    ) : (a.visibility === 'private') ? (
-                                        'This artefact is only visible to you.'
-                                    ) : (
-                                        '???'
-                                    )
+                                    this.state.confirmingDelete
+                                    ?
+                                    <div>
+                                        <button 
+                                            onClick={this.toggleConfirmingDelete}
+                                            className="btn btn-outline-secondary af-cancel-btn"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button 
+                                            onClick={this.delete}
+                                            className="btn btn-outline-danger"
+                                        >
+                                            Confirm Delete
+                                        </button>
+                                    </div>
+                                    :
+                                    <button 
+                                        onClick={this.toggleConfirmingDelete}
+                                        className="btn btn-outline-danger"
+                                    >
+                                        Delete
+                                    </button>
                                 }
                             </div>
                         )
@@ -154,8 +203,15 @@ export default class ArtefactInfo extends React.Component {
                 </div>
             </div>
         );
-
     }
+
+    toggleConfirmingDelete = () => {
+        this.setState({
+            ...this.state,
+            confirmingDelete: !this.state.confirmingDelete,
+        });
+    }
+
     categoryJoinsToCategories(categoryJoins) {
         return categoryJoins.map((cj) => {
             if (cj.categoryId && cj.category) {

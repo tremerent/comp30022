@@ -63,7 +63,6 @@ namespace Artefactor.Controllers
             public bool? newUser;
         }
 
-        [Authorize]
         [HttpPatch("{username}")]
         public async Task<IActionResult> EditProfile([FromRoute] string username, [FromBody] ProfileUpdate diff)
         {
@@ -98,8 +97,6 @@ namespace Artefactor.Controllers
             });
         }
 
-        // POST api/<controller>
-        [Authorize]
         [HttpPost("display-picture")]
         public async Task<IActionResult> SetProfileImage(IFormFile file)
         {
@@ -111,7 +108,8 @@ namespace Artefactor.Controllers
                 return Unauthorized();
             }
 
-            Uri uri = await _uploadService.UploadFileToBlobAsync(file.FileName, file);
+            Uri uri = await _uploadService.UploadFileToBlobAsync(
+                file.FileName, file, ContainerType.ProfileImage);
 
             await EditProfile(
                 curUser.UserName, 

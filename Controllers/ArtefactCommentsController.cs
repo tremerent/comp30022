@@ -16,6 +16,7 @@ namespace Artefactor.Controllers
 {
     [Route("api/artefacts/comments")]
     [ApiController]
+    [Authorize]
     public class ArtefactCommentsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -33,6 +34,7 @@ namespace Artefactor.Controllers
 
         // Return all comments of 'artefactId' as a json tree.
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetArtefactComments(
             [FromQuery] string artefactId
         )
@@ -59,6 +61,7 @@ namespace Artefactor.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetComment(string id)
         {
             var artComment = _context.ArtefactComments
@@ -86,7 +89,6 @@ namespace Artefactor.Controllers
 
         // Add a comment to an artefact.
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> AddComment(
             [FromBody] CommentPost newComment)
         {
@@ -130,7 +132,6 @@ namespace Artefactor.Controllers
 
         // Add a reply to an already existing comment.
         [HttpPost("reply")]
-        [Authorize]
         public async Task<IActionResult> ReplyToComment(
             [FromBody] CommentReplyPost reply)
         {
@@ -163,7 +164,6 @@ namespace Artefactor.Controllers
         // Add a question to an artefact.
         // To post an 'answer', POST to 'reply' (method ReplyToComment)
         [HttpPost("question")]
-        [Authorize]
         public async Task<IActionResult> AddQuestion(
             [FromBody] CommentPost newQuestion)
         {
@@ -210,7 +210,6 @@ namespace Artefactor.Controllers
         //
         // These should possibly be LINK - UNLINK, but unsupported.
         [HttpPatch("mark-answer")]
-        [Authorize]
         public async Task<IActionResult> MarkAsAnswered(
             [FromBody] MarkAnswer markAnswer)
         {
@@ -251,7 +250,6 @@ namespace Artefactor.Controllers
         }
 
         [HttpDelete("mark-answer")]
-        [Authorize]
         public async Task<IActionResult> RemoveMarkedAnswer(
                 [FromQuery] string questionId, [FromQuery] string answerId
             )

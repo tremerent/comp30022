@@ -27,6 +27,7 @@ export class CreateArtefactForm extends Component {
             artefactWasCreated: false,
             loading: false,
             createdArtefactId: null,
+            docs: {},
         };
     }
 
@@ -91,12 +92,12 @@ export class CreateArtefactForm extends Component {
                 <h4 className="alert-heading">Thanks for registering an artefact!</h4>
                 <hr/>
                 <div className="row justify-content-start">
-                    <Link to={`/artefact/${this.state.createdArtefactId}`}>
-                        <button className="btn btn-secondary mx-2" style={{color: "#fff !important"}}>
+                    <Link to={`/artefact/${this.state.createdArtefactId}`} className='create-art-succ-action'>
+                        <button className="btn btn-secondary" style={{color: "#fff !important"}}>
                             See your artefact
                         </button>
                     </Link>
-                    <button className="btn btn-primary" onClick={this.resetArtefactCreation}> Create another artefact</button>
+                    <button className="btn btn-primary create-art-succ-action" onClick={this.resetArtefactCreation}> Register another artefact</button>
                 </div>
             </div>
         );
@@ -242,11 +243,14 @@ export class CreateArtefactForm extends Component {
     }
 
     renderSecondFormPage = () => {
+        const artDocs = Object.values(this.state.docs);
+
         return (
             <ArtefactDocs
                 id={this.state.artefact.id}
                 value={Object.values(this.state.artefact.docs)}
                 onChange={this.handleArtefactDocsChange}
+                key={artDocs.length}
             />
         );
     }

@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { replace } from 'connected-react-router'
+
 import {
     discuss as discussActions,
     artefacts as artActions,
@@ -18,7 +20,6 @@ import CentreLoading from 'components/Shared/CentreLoading';
 import ArtefactInfo from './ArtefactInfo.js';
 import '../User/UserProfile.css';
 import './ArtefactPage.css';
-
 import Discussion from '../Discussion/Discussion.js';
 
 function getArtefactIdFromRoute(route) {
@@ -127,6 +128,7 @@ class ArtefactPage extends React.Component {
         super(props);
 
         this.state = {
+            deletingArtefact: false,
         };
     }
 
@@ -136,7 +138,7 @@ class ArtefactPage extends React.Component {
     }
 
     render() {
-        if (this.props.loading)
+        if (this.props.loading || this.state.deletingArtefact)
             return <CentreLoading/>;
 
         // For some reason this is momentarily true when navigating away from
@@ -165,6 +167,7 @@ class ArtefactPage extends React.Component {
                     artefact={this.props.artefact}
                     auth={{isOwner: this.props.isViewOfCurUser}}
                     updateArtefact={this.props.updateArtefact}
+                    deleteArtefact={this.deleteArtefact}
                 />
                 {
                     (this.props.discussion.loading) ? (
@@ -183,6 +186,19 @@ class ArtefactPage extends React.Component {
         );
     }
 
+    deleteArtefact = () => {
+        const toDelete = { ...this.props.artefact };
+
+        this.setState({
+            ...this.state,
+            deletingArtefact: true,
+        }, () => {
+            this.props.deleteArtefact(toDelete)
+                .then(() => {
+                    this.props.replace(`/user/${toDelete.owner.username}`)
+                });
+        });
+    }
 }
 
 
@@ -220,7 +236,9 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         getArtefact: artActions.getArtefact,
         updateArtefact: artActions.updateMyArtefactSync,
+        deleteArtefact: artActions.deleteMyArtefactSync,
         getDiscussion: discussActions.getDiscussion,
+        replace,
     }, dispatch);
 }
 

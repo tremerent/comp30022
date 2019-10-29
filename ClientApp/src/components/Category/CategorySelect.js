@@ -45,7 +45,12 @@ class CategorySelect extends Component {
                         onFocus={this.setFocusPlaceholder}
                         onBlur={this.setBlurPlaceholder}
 
-                        menuPlacement="top"
+                        menuPlacement={
+                            this.props.menuPlacement 
+                            ? this.props.menuPlacement
+                            :"top"
+                        }
+                        maxMenuHeight={130}
                         isMulti
                         isSearchable
                         closeMenuOnSelect={false}
@@ -88,6 +93,11 @@ class CategorySelect extends Component {
     }
 
     handleChange = (newValues, actionMeta) => {
+        if (!newValues) {
+            // removing all selected options gives 'newValues === null'
+            newValues = [];  
+        }
+
         if (actionMeta.action === 'create-option') {
             this.handleCreateOption(newValues);
         }

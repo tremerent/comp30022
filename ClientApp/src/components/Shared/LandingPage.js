@@ -31,60 +31,79 @@ function LandingPage(props) {
                     </h1>
                 </div>
                 <div className='lp-actions'>
-                    <div className='lp-action'>
-                        <div className='lp-action-bg'>
-                            <img
-                                src='/img/profile-placeholder.png'
-                                className='lp-action-bg-image'
-                            />
-                            <div className='lp-action-items'>
-                                <img src={SIGNUP_IMAGE} className="lp-action-image"/>
-                                <h4>
-                                    Record your artefacts.
-                                </h4>
-                                <Link
-                                        to={{
-                                            pathname: "/auth/signup",
-                                            state: {
-                                                prevPath: props.location.pathname,
-                                                action: "detectiveBrowse",
-                                            },
-                                        }}
-                                        className='lp-action-link'
-                                >
-                                    <button className='btn btn-primary lp-action-btn'>
-                                        Start a <b>collection</b>
-                                    </button>
-                                </Link>
-                            </div>
+                    <div className='lp-action-alt lp-action-bg'>
+                        <img src={SIGNUP_IMAGE} className="lp-action-image"/>
+                        <div className="af-lp-action-text-outer">
+                            <h4>
+                                Record your artefacts.
+                            </h4>
+                        </div>
+                        <div className="af-lp-action-button-div">
+                            <Link
+                                    to={{
+                                        pathname: "/auth/signup",
+                                        state: {
+                                            prevPath: props.location.pathname,
+                                            action: "detectiveBrowse",
+                                        },
+                                    }}
+                                    className='lp-action-link'
+                            >
+                                <button className='btn btn-primary af-lp-action-button'>
+                                    <span className="af-lp-action-button-text">
+                                        Start your <br/> <b>collection</b>
+                                    </span>
+                                </button>
+                            </Link>
                         </div>
                     </div>
-                    <div className='lp-action'>
-                        <div className='lp-action-bg'>
-                            <img
-                                src='/img/profile-placeholder.png'
-                                className='lp-action-bg-image'
-                            />
-                            <div className='lp-action-items'>
-                                <img src={DETECTIVE_IMAGE} className="lp-action-image"/>
-                                <h4>
-                                    Share your knowledge.
-                                </h4>
-                                <Link
-                                        to={{
-                                            pathname: "/browse",
-                                            state: {
-                                                prevPath: props.location.pathname,
-                                                action: "detectiveBrowse",
-                                            },
-                                        }}
-                                        className='lp-action-link'
-                                >
-                                    <button className='btn btn-primary lp-action-btn'>
-                                        Become an <b>artefact detective</b>
-                                    </button>
-                                </Link>
-                            </div>
+                    {/* <div className="af-action-card-new">
+                        <img src={SIGNUP_IMAGE} className="lp-action-image"/>
+
+                        <div className="af-lp-action-text-outer">
+                            <h4 className="af-lp-action-text af-lp-action-title">
+                                Archive your artefacts
+                            </h4>
+                        </div>
+                        <div className="af-lp-action-button-div">
+                            <Link
+                                to={{
+                                    pathname: "/auth/signup",
+                                    state: {
+                                        prevPath: props.location.pathname,
+                                        action: "detectiveBrowse",
+                                }}}
+                            >
+                                <button className="btn btn-primary mv-3 af-lp-action-button">
+                                    <span className="af-lp-action-button-text">
+                                        Start your <br/>Collection</span>
+                                </button>
+                            </Link>
+                        </div>
+                    </div> */}
+                    <div className='lp-action-alt lp-action-bg'>
+                        <img src={DETECTIVE_IMAGE} className="lp-action-image"/>
+                        <h4>
+                            Share your knowledge.
+                        </h4>
+
+                        <div className="af-lp-action-button-div">
+                            <Link
+                                    to={{
+                                        pathname: "/browse",
+                                        state: {
+                                            prevPath: props.location.pathname,
+                                            action: "detectiveBrowse",
+                                        },
+                                    }}
+                                    className='lp-action-link'
+                            >
+                                <button className='btn btn-primary af-lp-action-button'>
+                                <span className="af-lp-action-button-text">
+                                        Become an <br/><b>artefact detective</b>
+                                    </span>
+                                </button>
+                            </Link>
                         </div>
                     </div>
                 </div>

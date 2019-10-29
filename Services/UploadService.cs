@@ -9,30 +9,53 @@ using Microsoft.AspNetCore.Http;
 
 namespace Artefactor.Services
 {
+    public enum ContainerType 
+    {
+        ArtefactDocument,
+        ProfileImage,
+    }
+
     public class UploadService
     {
         private string _accessKey = "";
-        private string _defaultContainerName = "";
+        private string _profileImageContainerName = "";
+        private string _artefactDocumentContainerName = "";
 
         public UploadService(IConfiguration configuration)
         {
             this._accessKey = configuration["BlobStorage:AccessKey"];
-            this._defaultContainerName =
+            this._profileImageContainerName =
                 configuration["BlobStorage:ProfileImagesContainer"];
+            this._artefactDocumentContainerName =
+                configuration["BlobStorage:ArtefactDocumentsContainer"];
         }
 
         // Returns Uri of uploaded param. 'file'. If successful, Uri will be
         //  'GenerateFileName(fileName)'. Otherwise, returns null.
         public async Task<Uri> UploadFileToBlobAsync(
             string fileName, 
-            IFormFile file)  
+            IFormFile file,
+            ContainerType toContainer)  
         {  
             // byte[] fileData, string fileMimeType
             try  
             {  
                 // TODO: use artefact container
-                var blobContainer = GetBlobContainer(this._accessKey, 
-                                            this._defaultContainerName);
+                string container;
+                if (toContainer == ContainerType.ArtefactDocument)
+                {
+                    container = this._artefactDocumentContainerName;
+                }
+                else if (toContainer == ContainerType.ArtefactDocument)
+                {
+                    container = this._profileImageContainerName;
+                }
+                else 
+                {
+                    container = this._artefactDocumentContainerName;
+                }
+
+                var blobContainer = GetBlobContainer(this._accessKey, container);
 
                 var uniqueFileName = this.GenerateFileName(fileName);
 
@@ -71,7 +94,7 @@ namespace Artefactor.Services
             string BlobName = Path.GetFileName(uriObj.LocalPath);
 
             CloudBlobContainer cloudBlobContainer =
-                GetBlobContainer(_accessKey, _defaultContainerName);
+                GetBlobContainer(_accessKey, _artefactDocumentContainerName);
 
             string pathPrefix = DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd") + "/";
             CloudBlobDirectory blobDirectory = cloudBlobContainer.GetDirectoryReference(pathPrefix);
