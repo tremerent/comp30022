@@ -130,12 +130,12 @@ function errGetArtefact(id, error) {
     };
 }
 
-export function getArtefact(id) {
+export function getArtefact(id, bypassCache = false) {
     return async function (dispatch, getState) {
         dispatch(reqGetArtefact(id));
         const artIdCache = getState().art.artIdCache;
 
-        if (artIdCache[id] !== undefined) {
+        if (!bypassCache && artIdCache[id] !== undefined) {
             dispatch(resGetArtefact(artIdCache[id]));
             return;
         }
@@ -233,7 +233,7 @@ function updatePublicArts(newArtefact, publicArtefacts, dispatch) {
 }
 
 function updateUserArts(newArtefact, userArtefacts, dispatch) {
-    const newUserArts = 
+    const newUserArts =
         updateOrPush(newArtefact, userArtefacts);
 
     dispatch(resUserArtefacts(
@@ -242,7 +242,7 @@ function updateUserArts(newArtefact, userArtefacts, dispatch) {
 }
 
 export function updateOrPush(art, artList) {
-    const artIndex = 
+    const artIndex =
         artList.findIndex((a) => a.id == art.id);
 
     if (artIndex === -1) {
@@ -303,7 +303,7 @@ function updateMyArtefact(updatedArtefact) {
 export function updateMyArtefactSync(updatedArtefact, docs) {
     return async function (dispatch, getState) {
         const patchedArt = await patchArtefactAndCategories(
-            updatedArtefact, 
+            updatedArtefact,
             getState().art.artIdCache[updatedArtefact.id]
         );
 

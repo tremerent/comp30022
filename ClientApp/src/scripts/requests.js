@@ -37,9 +37,9 @@ async function addArtefactImage(artefactId, file) {
     return resp.data;
 }
 
-async function removeArtefactImage(artefactId, imgUrl) {
+async function removeArtefactImage(artefactId, imageId) {
     const resp = await apiFetch(getToken())
-        .delete(`/artefacts/image?img_url=${imgUrl}&artefactid=${artefactId}`)
+        .delete(`/artefacts/image?imageId=${imageId}&artefactid=${artefactId}`)
 
     return resp.data;
 }

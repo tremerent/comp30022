@@ -1,6 +1,26 @@
 
 .af-ai-carousel {
     margin-top: 1.4rem;
+    position: relative;
+}
+
+.edit-images {
+    background-color: #ccc6;
+    border-radius: 0;
+    margin: -1px 0.1rem;
+    font-size: .8rem;
+    border-radius: 50%;
+    height: 2.3rem;
+    width: 2.3rem;
+    padding: 0 0;
+    position: absolute;
+    top: 0.8em;
+    right: 0.8em;
+    z-index: 10;
+}
+
+.edit-images:hover {
+    background-color: #ccca;
 }
 
 .af-ai-info {
@@ -38,6 +58,5 @@
 
 .af-ai-desc {
     margin-top: 1em;
-
 }
 

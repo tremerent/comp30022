@@ -730,11 +730,11 @@ namespace Artefactor.Controllers
             }
         }
 
-        [HttpDelete("{artefactId}/image")]
+        [HttpDelete("image")]
         [Authorize]
         public async Task<IActionResult> RemoveImage(
             [FromQuery] string artefactId,
-            [FromQuery] string img_url)
+            [FromQuery] string imageId)
         {
             var dbArt = await _context
                 .Artefacts
@@ -754,7 +754,7 @@ namespace Artefactor.Controllers
                 _context.Remove(
                     await _context
                         .ArtefactDocuments
-                        .SingleOrDefaultAsync(doc => doc.Url == img_url)
+                        .SingleOrDefaultAsync(doc => doc.Id == imageId)
                 );
 
                 return NoContent();
