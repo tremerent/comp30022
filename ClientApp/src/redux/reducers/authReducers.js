@@ -21,6 +21,13 @@ function auth(state = initAuthState(), action) {
                 expiry: action.authDetails.expiry,
                 isLoggedIn: true,
             };
+        case authTypes.ERR_LOGIN:
+            return {
+                ...state,
+                loading: false,
+                isLoggedIn: false,
+                loginError: action.errorCode
+            };
         case authTypes.REQ_REGISTER:
             return {
                 ...state,

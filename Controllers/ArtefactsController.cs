@@ -23,6 +23,7 @@ namespace Artefactor.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ArtefactsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -46,6 +47,7 @@ namespace Artefactor.Controllers
 
         // GET: api/Artefacts/VisibilityOpts
         [HttpGet("VisibilityOpts")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<string>>> VisibilityOpts()
         {
             // get value of 'EnumMemberAttribute' from each value of enum 'Visibility' -
@@ -65,6 +67,7 @@ namespace Artefactor.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]  // authorised manually
         public async Task<ActionResult> GetArtefacts(
             [FromQuery] string id,
 
@@ -526,7 +529,6 @@ namespace Artefactor.Controllers
         }
 
         // POST: api/Artefacts
-        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Artefact>> PostArtefact(Artefact artefact)
         {
@@ -581,7 +583,6 @@ namespace Artefactor.Controllers
 
         // PATCH: api/Artefacts/as23-123
         [HttpPatch("{id}")]
-        [Authorize]
         public async Task<IActionResult> EditArtefact(string id, EditArtefactReq artefact)
         {
             if (id != artefact.Id)
@@ -613,17 +614,6 @@ namespace Artefactor.Controllers
                     SetPropertyValue(dbArt, patchPropName, patchPropValue);
                 }
             }
-
-            // foreach (var patchProperty in artefact.GetType().GetProperties())
-            // {
-            //     string patchPropName = patchProperty.Name;
-            //     object patchPropValue = patchProperty.GetValue(artefact);
-
-            //     if (patchPropValue != null && IsModifiable(patchPropName))
-            //     {
-            //         SetPropertyValue(dbArt, patchPropName, patchPropValue);
-            //     }
-            // }
 
             try
             {
@@ -667,10 +657,16 @@ namespace Artefactor.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Artefact>> DeleteArtefact(string id)
         {
+            var curUserId = _userService.GetCurUserId(HttpContext);
+
             var artefact = await _context.Artefacts.FindAsync(id);
             if (artefact == null)
             {
                 return NotFound();
+            }
+            else if (artefact.OwnerId != curUserId) 
+            {
+                return Unauthorized();
             }
 
             _context.Artefacts.Remove(artefact);
@@ -680,7 +676,6 @@ namespace Artefactor.Controllers
         }
 
         [HttpPost("image")]
-        [Authorize]
         public async Task<IActionResult> AddImage(
             [FromQuery] string artefactId,
             [FromForm] IFormFile file)
@@ -702,7 +697,8 @@ namespace Artefactor.Controllers
             try
             {
                 Uri uri =
-                    await _uploadService.UploadFileToBlobAsync(file.FileName, file);
+                    await _uploadService.UploadFileToBlobAsync(
+                        file.FileName, file, ContainerType.ArtefactDocument);
 
                 var artDoc = new ArtefactDocument
                 {
@@ -730,11 +726,10 @@ namespace Artefactor.Controllers
             }
         }
 
-        [HttpDelete("image")]
-        [Authorize]
+        [HttpDelete]
         public async Task<IActionResult> RemoveImage(
             [FromQuery] string artefactId,
-            [FromQuery] string imageId)
+            [FromQuery] string img_url)
         {
             var dbArt = await _context
                 .Artefacts
@@ -750,12 +745,13 @@ namespace Artefactor.Controllers
                 return Unauthorized();
             }
 
+            var artDoc = await _context
+                .ArtefactDocuments
+                .SingleOrDefaultAsync(doc => doc.Url == img_url);
+
             try {
-                _context.Remove(
-                    await _context
-                        .ArtefactDocuments
-                        .SingleOrDefaultAsync(doc => doc.Id == imageId)
-                );
+                _context.Remove(artDoc);
+                await _context.SaveChangesAsync();
 
                 return NoContent();
             }

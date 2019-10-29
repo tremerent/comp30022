@@ -1,4 +1,6 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronRight, faChevronLeft, } from '@fortawesome/free-solid-svg-icons';
 
 export default function Carousel({ id, items, activeFrame, activeId, renderFrame = x => x, getId, ...props }) {
     // This doesn't work at the moment, so have to specify activeFrame
@@ -52,11 +54,13 @@ export default function Carousel({ id, items, activeFrame, activeId, renderFrame
         </div>
     {items && items.length > 1 && <>
         <a className="carousel-control-prev" href={`#${id}`} role="button" data-slide="prev">
-            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+            {/* <span className="carousel-control-prev-icon" aria-hidden="true"></span> */}
+            <FontAwesomeIcon icon={faChevronLeft} />
             <span className="sr-only">Previous</span>
         </a>
         <a className="carousel-control-next" href={`#${id}`} role="button" data-slide="next">
-            <span className="carousel-control-next-icon" aria-hidden="true"></span>
+            {/* <span className="carousel-control-next-icon" aria-hidden="true"></span> */}
+            <FontAwesomeIcon icon={faChevronRight} />
             <span className="sr-only">Next</span>
         </a>
     </>}

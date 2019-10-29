@@ -1,4 +1,10 @@
-﻿.af-auth-outer {
+﻿.auth-error-text {
+    color: red;
+    margin-bottom: 0.95em;
+    word-wrap: break-word;
+}
+
+.af-auth-outer {
     height: 100%;
 }
 

@@ -5,6 +5,7 @@ import ImageCarousel from '../Shared/ImageCarousel.js';
 
 import './ArtefactDocs.css';
 
+// expects 'props.docs'. Pass '[]' if none.
 export default class ArtefactDocs extends React.Component {
 
     constructor(props) {
@@ -33,6 +34,21 @@ export default class ArtefactDocs extends React.Component {
             image: this.items('image'),
             file: this.items('file'),
         };
+    }
+
+    docPropsToState(docProps) {
+        return {
+            image: docProps.filter(x => x.type === 'image'),
+            file: docProps.filter(x => x.type === 'file'),
+        };
+    }
+
+    componentDidUpdate(prevProps) {
+        console.log('did update');
+        console.log(this.props.docs);
+        if (this.props.docs.length != prevProps.docs.length) {
+            this.setState(this.docPropsToState(this.props.docs));
+        }
     }
 
     currentCarouselItemId() {

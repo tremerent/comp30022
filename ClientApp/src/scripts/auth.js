@@ -16,30 +16,31 @@ function getAuthDetails() {
 }
 
 // loginDetails: { username, password }
+//
+// Throws non-2xx server response.
 async function setUser(loginDetails) {
+    let tokenResp
     try {
-        const tokenResp = await postTokenReq(loginDetails);
-
-        const exp = getTokenPayload(tokenResp.access_token).exp;
-
-        const authDetails = {
-            token: tokenResp.access_token,
-            // js expects ms since epoch, but jwt is seconds
-            expiry: new Date(parseInt(exp) * 1000),  
-            user: {
-                username: loginDetails.username,
-            },
-        };
-
-        localStorage.setItem("userAuth", JSON.stringify(authDetails));
-
-        return authDetails;
+        tokenResp = await postTokenReq(loginDetails);
     }
     catch (e) {
-        console.error(e);
+        console.log("threw");
     }
 
-    return false;
+    const exp = getTokenPayload(tokenResp.access_token).exp;
+
+    const authDetails = {
+        token: tokenResp.access_token,
+        // js expects ms since epoch, but jwt is seconds
+        expiry: new Date(parseInt(exp) * 1000),  
+        user: {
+            username: loginDetails.username,
+        },
+    };
+
+    localStorage.setItem("userAuth", JSON.stringify(authDetails));
+
+    return authDetails;
 }
 
 function getTokenPayload(token) {
