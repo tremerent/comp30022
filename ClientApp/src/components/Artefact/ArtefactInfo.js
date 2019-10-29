@@ -35,7 +35,7 @@ export default class ArtefactInfo extends React.Component {
                 artefact: {
                     ...this.state.artefact,
                     [attrib]: value,
-                }
+                },
             },
             this.update
         );
@@ -49,18 +49,21 @@ export default class ArtefactInfo extends React.Component {
         // if category join in api format, need to convert, otherwise
         // it is ready for 'CategorySelect'
         let curArtCatSelectOpts = [];
+
         const cj = a.categoryJoin;
-        // just check first ele. since all will be same
-        if (cj.length &&
-            cj[0].label && cj[0].value) {
-            curArtCatSelectOpts = cj;
-        }
-        else {
-            const curArtCats = // { id, name }
-                this.categoryJoinsToCategories(cj);
-            curArtCatSelectOpts = curArtCats.map(c =>
-                ({ label: c.name, value: c.id })
-            );
+        if (cj) {
+            // just check first ele. since all will be same
+            if (cj.length &&
+                cj[0].label && cj[0].value) {
+                curArtCatSelectOpts = cj;
+            }
+            else {
+                const curArtCats = // { id, name }
+                    this.categoryJoinsToCategories(cj);
+                curArtCatSelectOpts = curArtCats.map(c =>
+                    ({ label: c.name, value: c.id })
+                );
+            }
         }
 
         return (

@@ -340,6 +340,7 @@ export function deleteMyArtefactSync(artefact) {
 
 export function updateMyArtefactSync(updatedArtefact, docs) {
     return async function (dispatch, getState) {
+        console.log(updatedArtefact);
         const patchedArt = await patchArtefactAndCategories(
             updatedArtefact, 
             getState().art.artIdCache[updatedArtefact.id]

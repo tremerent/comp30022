@@ -88,6 +88,11 @@ class CategorySelect extends Component {
     }
 
     handleChange = (newValues, actionMeta) => {
+        if (!newValues) {
+            // removing all selected options gives 'newValues === null'
+            newValues = [];  
+        }
+
         if (actionMeta.action === 'create-option') {
             this.handleCreateOption(newValues);
         }

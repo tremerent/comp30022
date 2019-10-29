@@ -23,6 +23,7 @@ namespace Artefactor.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ArtefactsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -46,6 +47,7 @@ namespace Artefactor.Controllers
 
         // GET: api/Artefacts/VisibilityOpts
         [HttpGet("VisibilityOpts")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<string>>> VisibilityOpts()
         {
             // get value of 'EnumMemberAttribute' from each value of enum 'Visibility' -
@@ -65,6 +67,7 @@ namespace Artefactor.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]  // authorised manually
         public async Task<ActionResult> GetArtefacts(
             [FromQuery] string id,
 
@@ -526,7 +529,6 @@ namespace Artefactor.Controllers
         }
 
         // POST: api/Artefacts
-        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Artefact>> PostArtefact(Artefact artefact)
         {
@@ -581,7 +583,6 @@ namespace Artefactor.Controllers
 
         // PATCH: api/Artefacts/as23-123
         [HttpPatch("{id}")]
-        [Authorize]
         public async Task<IActionResult> EditArtefact(string id, EditArtefactReq artefact)
         {
             if (id != artefact.Id)
@@ -675,7 +676,6 @@ namespace Artefactor.Controllers
         }
 
         [HttpPost("image")]
-        [Authorize]
         public async Task<IActionResult> AddImage(
             [FromQuery] string artefactId,
             [FromForm] IFormFile file)
@@ -697,7 +697,8 @@ namespace Artefactor.Controllers
             try
             {
                 Uri uri =
-                    await _uploadService.UploadFileToBlobAsync(file.FileName, file);
+                    await _uploadService.UploadFileToBlobAsync(
+                        file.FileName, file, ContainerType.ArtefactDocument);
 
                 var artDoc = new ArtefactDocument
                 {
@@ -726,9 +727,8 @@ namespace Artefactor.Controllers
         }
 
         [HttpDelete("{artefactId}/image")]
-        [Authorize]
         public async Task<IActionResult> RemoveImage(
-            [FromQuery] string artefactId,
+            [FromRoute] string artefactId,
             [FromQuery] string img_url)
         {
             var dbArt = await _context
@@ -745,12 +745,13 @@ namespace Artefactor.Controllers
                 return Unauthorized();
             }
 
+            var artDoc = await _context
+                .ArtefactDocuments
+                .FirstOrDefaultAsync(doc => String.Equals(doc.Url, img_url));
+
             try {
-                _context.Remove(
-                    await _context
-                        .ArtefactDocuments
-                        .SingleOrDefaultAsync(doc => doc.Url == img_url)
-                );
+                _context.Remove(artDoc);
+                await _context.SaveChangesAsync();
 
                 return NoContent();
             }
