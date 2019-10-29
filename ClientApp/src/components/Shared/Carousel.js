@@ -9,7 +9,7 @@ export default function Carousel({ id, items, activeFrame, activeId, renderFrame
     return (
 <div
     id={id}
-    className={"carousel slide " + props.className ? props.className : ''}
+    className={"carousel slide " + (props.className ? props.className : '')}
     data-ride="carousel"
     data-interval="false"
 >
