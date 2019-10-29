@@ -57,3 +57,9 @@
 .af-auth-brand {
     height: 2.5rem;
 }
+
+.login-buttons {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
