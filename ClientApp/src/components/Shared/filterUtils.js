@@ -52,10 +52,10 @@ export const catQueryTypes = [
 
 /**
  * 'getFilteredArtefacts' expects an object with key-values that can be converted
- * directly to a query string (denoted 'queryDetails'). The following functions 
- * convert between a 'queryDetails' object and a 'Filter.state.filterDetails' 
+ * directly to a query string (denoted 'queryDetails'). The following functions
+ * convert between a 'queryDetails' object and a 'Filter.state.filterDetails'
  * object.
- */ 
+ */
 
 function apiFormatDate(date, defaultText) {
     if (!date) return defaultText;
@@ -67,8 +67,8 @@ function apiFormatDate(date, defaultText) {
 export function getQueryDetails(filterDetails) {
     const newFilterQueryParams = {};
     // nullify 'filterDetails' params. we don't want in q string
-    const removedFilterQueryParams = {};  
-    
+    const removedFilterQueryParams = {};
+
     // search query - can't search for an empty string
     if (filterDetails.searchQuery && filterDetails.searchQuery.text != "") {
 
@@ -79,16 +79,16 @@ export function getQueryDetails(filterDetails) {
             if (filterDetails.searchQuery.type.name == "both") {
                 newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:title`);
                 newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:description`);
-            } 
+            }
             else if (filterDetails.searchQuery.type.name == "title") {
                 newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:title`);
             }
             else if (filterDetails.searchQuery.type.name == "description") {
-                newFilterQueryParams.q.push(`${filterDetails.ssearchQuery.text}:description`);
+                newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:description`);
             }
         }
         else {
-            // default to just title 
+            // default to just title
             newFilterQueryParams.q.push(`${filterDetails.searchQuery.text}:title`);
         }
     }
@@ -103,7 +103,7 @@ export function getQueryDetails(filterDetails) {
 
     // sort query
     if (filterDetails.sortQuery != null) {
-        newFilterQueryParams.sort = 
+        newFilterQueryParams.sort =
             `${filterDetails.sortQuery.name}:${filterDetails.sortQuery.order}`;
 
         removedFilterQueryParams.sortQuery = null;
@@ -120,7 +120,7 @@ export function getQueryDetails(filterDetails) {
     }
     if (filterDetails.category && filterDetails.category.length > 0) {
         // query string expects only name of category
-        newFilterQueryParams.category = 
+        newFilterQueryParams.category =
             filterDetails.category
                          .map(catOption => catOption.label);
     }
@@ -134,7 +134,7 @@ export function getQueryDetails(filterDetails) {
     return queryDetails;
 }
 
-// inverse of 'getQueryDetails' - that is, it maps a 'queryDetails' object 
+// inverse of 'getQueryDetails' - that is, it maps a 'queryDetails' object
 // (formatted for 'submitFilter') to a format for 'this.state.filterDetails'.
 export function getFilterDetails(queryDetails) {
     const filterDetails = {};
@@ -143,7 +143,7 @@ export function getFilterDetails(queryDetails) {
     const cat = queryDetails.category;
 
     if (queryDetails.category != null) {
-    
+
         let categories;
         if (!Array.isArray(cat)) {
             categories = [queryDetails.category];
