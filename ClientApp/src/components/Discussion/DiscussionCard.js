@@ -53,6 +53,12 @@ class DiscussionCard extends React.Component {
         this.props.markAnswer(this.props.question, this.props.item);
     }
 
+    unmarkAnswer = e => {
+        e.preventDefault();
+
+        this.props.unmarkAnswer(this.props.item);
+    }
+
     render() {
         const item = this.props.item;
 
@@ -167,6 +173,7 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         postItem: discuss.postDiscussion,
         markAnswer: discuss.markAnswer,
+        unmarkAnswer: discuss.unmarkAnswer,
     }, dispatch);
 }
 

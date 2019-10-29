@@ -2,6 +2,7 @@ import {
     getDiscussion as apiGetDiscussion,
     postDiscussion as apiPostDiscussion,
     markAnswer as apiMarkAnswer,
+    unmarkAnswer as apiUnmarkAnswer,
 } from '../../scripts/requests.js';
 import { discussTypes } from './types.js';
 
@@ -107,4 +108,36 @@ export function markAnswer(question, answer) {
         }
     };
 }
+
+const reqUnmarkAnswer = (answer) => ({
+    type: discussTypes.REQ_UNMARK_ANSWER,
+    answer,
+});
+
+const resUnmarkAnswer = (answer, response) => ({
+    type: discussTypes.RES_UNMARK_ANSWER,
+    answer,
+    response,
+});
+
+const errUnmarkAnswer = (answer, error) => ({
+    type: discussTypes.ERR_UNMARK_ANSWER,
+    answer,
+    error,
+});
+
+export function unmarkAnswer(answer) {
+    return async (dispatch, getState) => {
+        dispatch(reqUnmarkAnswer(answer));
+
+        try {
+            const response = await apiUnmarkAnswer(answer);
+            dispatch(resUnmarkAnswer(answer, response));
+            return;
+        } catch (e) {
+            dispatch(errUnmarkAnswer(answer, e));
+        }
+    };
+}
+
 

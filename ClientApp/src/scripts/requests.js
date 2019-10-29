@@ -280,6 +280,12 @@ export async function markAnswer(question, answer) {
         .patch(`/artefacts/comments/mark-answer`, { QuestionId: question.id, AnswerId: answer.id });
 }
 
+export async function unmarkAnswer(answer) {
+    const resp = await apiFetch(getToken())
+        .delete(
+            `/artefacts/comments/mark-answer?questionId=${answer.answers}&answerId=${answer.id}`
+        );
+}
 
 export {
     postArtefact,

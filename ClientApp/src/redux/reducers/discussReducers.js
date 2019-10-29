@@ -183,13 +183,81 @@ export function discuss(state = getInitDiscussState(), action) {
                         state[q.artefact],
                         {
                             ...state[q.artefact].items[q.id],
+                            answer: null,
+                        }
+                    ),
+                    {
+                        ...state[a.artefact].items[a.id],
+                        answers: null,
+                        loading: false,
+                        error: `${action.error}`,
+                    }
+                ),
+        };
+    }
+
+    case discussTypes.REQ_UNMARK_ANSWER: {
+        const a = action.answer;
+        return {
+            ...state,
+            [a.artefact]: addToTree(
+                    addToTree(
+                        state[a.artefact],
+                        {
+                            ...state[a.artefact].items[a.answers],
+                            /* Hack to stop additional "mark answer" buttons
+                               from reappearing too soon. */
                             answer: a.id,
                         }
                     ),
                     {
                         ...state[a.artefact].items[a.id],
-                        answers: q.id,
+                        answers: null,
                         loading: true,
+                    }
+                ),
+        };
+    }
+
+    case discussTypes.RES_UNMARK_ANSWER: {
+        const q = action.question;
+        const a = action.answer;
+        return {
+            ...state,
+            [a.artefact]: addToTree(
+                    addToTree(
+                        state[a.artefact],
+                        {
+                            ...state[a.artefact].items[a.answers],
+                            answer: null,
+                        }
+                    ),
+                    {
+                        ...state[a.artefact].items[a.id],
+                        answers: null,
+                        loading: false,
+                    }
+                ),
+        };
+    }
+
+    case discussTypes.ERR_UNMARK_ANSWER: {
+        const q = action.question;
+        const a = action.answer;
+        return {
+            ...state,
+            [a.artefact]: addToTree(
+                    addToTree(
+                        state[a.artefact],
+                        {
+                            ...state[a.artefact].items[a.answers],
+                            answer: a.id,
+                        }
+                    ),
+                    {
+                        ...state[a.artefact].items[a.id],
+                        answers: a.answers,
+                        loading: false,
                         error: `${action.error}`,
                     }
                 ),

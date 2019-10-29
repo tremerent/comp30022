@@ -253,21 +253,22 @@ namespace Artefactor.Controllers
         [HttpDelete("mark-answer")]
         [Authorize]
         public async Task<IActionResult> RemoveMarkedAnswer(
-            [FromBody] MarkAnswer removeMarkAnswer)
+                [FromQuery] string questionId, [FromQuery] string answerId
+            )
         {
             var curUserId = _userService.GetCurUserId(HttpContext);
 
             var question = await _context.ArtefactQuestions
-                .SingleOrDefaultAsync(q => q.Id == removeMarkAnswer.QuestionId);
+                .SingleOrDefaultAsync(q => q.Id == questionId);
 
             if (question == null)
             {
-                return NotFound($"Question '{removeMarkAnswer.QuestionId}' does not exist");
+                return NotFound($"Question '{questionId}' does not exist");
             }
-            if (question.AnswerCommentId != removeMarkAnswer.AnswerId)
+            if (question.AnswerCommentId != answerId)
             {
-                return BadRequest($"Question '{removeMarkAnswer.QuestionId}' " +
-                        $"does not have answer '{removeMarkAnswer.AnswerId}'");
+                return BadRequest($"Question '{questionId}' " +
+                        $"does not have answer '{answerId}'");
             }
 
             question.IsAnswered = false;
