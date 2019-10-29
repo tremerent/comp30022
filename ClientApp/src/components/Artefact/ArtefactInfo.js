@@ -37,6 +37,10 @@ export default class ArtefactInfo extends React.Component {
 
     render() {
         const a = this.state.artefact;
+
+        // do not care any more
+        a.images = this.props.artefact.images;
+
         const id = `af-artcard-desc-${a.id}`;
         const carouselId = `af-artcard-carousel-${this.props.artefact.id}`;
         const modalId = `af-artcard-modal-${this.props.artefact.id}`;

@@ -94,14 +94,12 @@ class EditArtefactDocs extends React.Component {
     submit = async () => {
         this.setState({ ...this.state, loading: true });
         for (const item of Object.values(this.state.creates)) {
-            console.log(`creating image ${item.id}`);
             await addArtefactImage(this.props.artefact.id, item.blob);
         }
         for (const item of Object.values(this.state.deletes)) {
-            console.log(`deleting image ${item.id}`);
             await removeArtefactImage(this.props.artefact.id, item.id);
         }
-        getArtefact(this.props.artefact.id, 'bypassCache');
+        await this.props.getArtefact(this.props.artefact.id, 'bypassCache');
         this.setState({ ...this.state, loading: false });
     }
 
@@ -159,6 +157,7 @@ class ArtefactPage extends React.Component {
                 <EditArtefactDocs
                     artefact={this.props.artefact}
                     onSubmit={this.props.updateArtefact}
+                    getArtefact={this.props.getArtefact}
                 />
             </FloatingWindow>
             <Overview>
