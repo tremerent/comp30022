@@ -3,7 +3,7 @@ import { NavItem } from 'reactstrap';
 import { connect, } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { auth } from '../../redux/actions';
+import { auth, } from '../../redux/actions';
 import StyledNavLink from './StyledNavLink';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faSignOutAlt, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
@@ -80,6 +80,7 @@ class UserNavMenu extends React.Component {
                         </>
                     }
                     curPath={this.props.curPath}
+                    onClick={() => { this.props.signUpRedir(this.props.curPath)}}
                     className="af-inactive-nav-link af-nav-link-inherit"
                 />
             </>
@@ -107,7 +108,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         logout: redirTo => {
             dispatch(auth.logout(redirTo));
-        }
+        },
+        signUpRedir: redirTo => dispatch(auth.setRedir(redirTo)),
     };
 };
 

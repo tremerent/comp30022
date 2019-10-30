@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import $ from 'jquery';
 
 import Stepper from 'bs-stepper';
 import 'bs-stepper/dist/css/bs-stepper.min.css';
@@ -86,6 +87,13 @@ export class CreateArtefactForm extends Component {
         );
     }
 
+    closeModal = () => {
+        const mod = $('.modal');
+        if (mod && mod.length) {
+            mod.modal('toggle');
+        }
+    }
+
     renderArtefactCreated = () => {
         return (
             <div className="alert alert-success create-art-succ" role="alert">
@@ -93,7 +101,7 @@ export class CreateArtefactForm extends Component {
                 <hr/>
                 <div className="row justify-content-start">
                     <Link to={`/artefact/${this.state.createdArtefactId}`} className='create-art-succ-action'>
-                        <button className="btn btn-secondary" style={{color: "#fff !important"}}>
+                        <button className="btn btn-secondary" onClick={this.closeModal} style={{color: "#fff !important"}}>
                             See your artefact
                         </button>
                     </Link>

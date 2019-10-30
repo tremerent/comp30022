@@ -43,12 +43,12 @@ const mapStateToProps = (state) => {
         queryString: state.router.location.search,
         userLoggedIn: state.auth.isLoggedIn,
 
-        firstTimeUser: 
-            state.auth.isLoggedIn 
-            ? (state.users.users[state.auth.user.username]
-                ? state.users.users[state.auth.user.username].newUser
-                : false)  // if user not fetched, assume user is not new
-            : !jsCookie.get('browserTuteComplete')
+        firstTimeUser: !jsCookie.get('browserTuteComplete'),
+            // state.auth.isLoggedIn 
+            // ? (state.users.users[state.auth.user.username]
+            //     ? state.users.users[state.auth.user.username].newUser
+            //     : false)  // if user not fetched, assume user is not new
+            // : 
     }
 }
 

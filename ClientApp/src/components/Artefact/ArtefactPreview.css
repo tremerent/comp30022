@@ -35,6 +35,7 @@
     padding-right: 1em;
     min-width: 60%;
     flex-shrink: 0.5;
+    max-width: 100%;
 }
 
 .af-artcard-body hr {

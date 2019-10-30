@@ -52,11 +52,10 @@ class Signup extends React.Component {
     signup = async (signupData) => {
 
         await this.props.register(signupData);
-        console.log('isLoggedIn');
-        console.log(this.props.isLoggedIn);
 
 
         if (this.props.isLoggedIn) {
+            console.log(this.props.redir);
             const nextDir = this.props.redir ?
                     this.props.redir
                 :
