@@ -2,6 +2,12 @@
     margin-bottom: 3% !important;
 }
 
+@media (max-width: 600px) {
+    .af-tooltip {
+        display: none;
+    }
+}
+
 .af-filtered-browser {
     flex-grow: 1;
     display: flex;
