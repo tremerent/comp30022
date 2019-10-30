@@ -31,6 +31,7 @@
     transition: .5s ease;
     backface-visibility: hidden;
     border-radius: 60%;
+    image-orientation: from-image;
 }
 
 .profile-pic-button  {
