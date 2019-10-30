@@ -42,7 +42,7 @@ class Filter extends React.Component {
             since: null,
             until: null,
             sortQuery: {
-                ...sortOptions[0],
+                ...sortOptions[1],
                 order: "desc",
             },
             catQueryType: catQueryTypes[1],
@@ -405,7 +405,8 @@ class Filter extends React.Component {
             filterDetails: this.initStateFilterDetails,
         }, () => {
             this.props.onFilterChange(this.state.filterDetails);
-            this.handleSubmit();
+            
+            this.props.submitFilter(this.state.filterDetails);
         });
     }
 

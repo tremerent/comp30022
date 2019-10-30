@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 
+import { formattedArtDate, } from 'scripts/utilityService';
 import CategorySelect from '../Category/CategorySelect.js';
 import ImageCarousel from  '../Shared/ImageCarousel.js';
 import EditTextArea from '../Shared/EditTextArea.js';
@@ -73,6 +74,8 @@ export default class ArtefactInfo extends React.Component {
             }
         }
 
+
+
         return (
             <div className='af-ai'>
                 <div className='af-ai-carousel'>
@@ -114,6 +117,10 @@ export default class ArtefactInfo extends React.Component {
                     >
                         {a.owner && a.owner.username ? a.owner.username : ''}
                     </Link>
+                    <span>{" ∙ "}</span>
+                    <span className='af-artefact-ts-text'>
+                        {formattedArtDate(new Date(a.createdAt))}
+                    </span>
 
                     <div className="af-ai-categories">
                     {

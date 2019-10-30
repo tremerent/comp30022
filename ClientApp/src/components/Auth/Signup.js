@@ -16,7 +16,6 @@ class Signup extends React.Component {
     constructor(props) {
         super(props);
 
-        // horrible hackyness
         this.state = {
             username: "",
             password: "",
@@ -39,24 +38,33 @@ class Signup extends React.Component {
                         password: this.state.password,
                         confirmpassword: this.state.confirmpassword,
                     },
+                    updateFormVals: this.updateFormVals,
                 }}
                 loading={this.props.loading}
             />
         );
     }
 
+    updateFormVals = (formVals) => {
+        this.setState(formVals);
+    }
+
     signup = async (signupData) => {
 
         await this.props.register(signupData);
+        console.log('isLoggedIn');
+        console.log(this.props.isLoggedIn);
 
-        if (this.props.error) {
-        }
-        else {
+
+        if (this.props.isLoggedIn) {
             const nextDir = this.props.redir ?
                     this.props.redir
                 :
                     `/user/${this.props.username}`;
             this.props.push(nextDir);
+        }
+        else if (this.props.error) {
+            
         }
 
         // horrible hackyness so SignupForm doesn't have username etc. equal to ""
@@ -76,6 +84,7 @@ const mapStateToProps = state => ({
     loading: state.auth.loading,
     username: state.auth.user.username,
     redir: state.auth.redir,
+    isLoggedIn: state.auth.isLoggedIn,
     error: state.auth.error,
 });
 

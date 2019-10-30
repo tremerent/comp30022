@@ -17,6 +17,11 @@ a {
     height: 100vh;
 }
 
+.af-artefact-ts-text {
+    font-size: 0.9em;
+    font-weight: 250;
+}
+
 code {
   color: #E01A76;
 }

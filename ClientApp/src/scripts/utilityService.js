@@ -1,4 +1,5 @@
-﻿
+﻿import { format, } from 'date-fns';
+
 function formToJson(formEle) {
     const formData = new FormData(formEle);
 
@@ -36,6 +37,10 @@ async function statefulAwaitGetter(stateProperty, awaitGetter) {
     }
 
     return this.state[stateProperty];
+}
+
+export function formattedArtDate(date) {
+    return format(date, 'h:mma, d/M/yy');
 }
 
 export {
