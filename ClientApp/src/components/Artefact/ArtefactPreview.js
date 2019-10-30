@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { Link, } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExternalLinkAlt, } from '@fortawesome/free-solid-svg-icons';
 
+import { formattedArtDate, } from 'scripts/utilityService';
 import ImageCarousel from  '../Shared/ImageCarousel.js';
 
 import './ArtefactPreview.css';
@@ -39,11 +38,18 @@ export default class ArtefactPreview extends Component {
                     <div className="af-artcard-header">
                         <div className='af-artcard-title-owner'>
                             <h5 className="af-artcard-title">{a.title}</h5>
-                            {/*<p className="text-muted af-artcard-text">{a.description}</p>*/}
-                            {/*<span className="af-artcard-separator"/>*/}
-                            <Link className='af-artcard-owner'
+                            
+                            <Link
                                 to={a.owner && a.owner.username ? `/user/${a.owner.username}` : ``}
-                            > {a.owner && a.owner.username ? a.owner.username : ''} </Link>
+                            > 
+                            <span className='af-artcard-owner'>
+                                {a.owner && a.owner.username ? a.owner.username : ''} 
+                                </span>
+                            </Link>
+                            <span>{" ∙ "}</span>
+                            <span className='af-artefact-ts-text'>
+                                {formattedArtDate(new Date(this.props.artefact.createdAt))}
+                            </span>
                         </div>
                         <div className="af-artcard-categories">
                             {this.categoryJoinsToCategories(a.categoryJoin).map(c =>
