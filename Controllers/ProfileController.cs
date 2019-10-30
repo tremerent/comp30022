@@ -39,6 +39,12 @@ namespace Artefactor.Controllers
         {
             var user = _context.Users.SingleOrDefault(u => u.UserName == username);
 
+            var answerCount = _context
+                .ArtefactQuestions
+                .Where(q => q.IsAnswered 
+                       && q.AnswerComment.Author.UserName == username)
+                .Count();
+
             if (user != null)
             {
                 return new JsonResult(new
@@ -48,6 +54,7 @@ namespace Artefactor.Controllers
                     bio = user.Bio,
                     imageUrl = user.ImageUrl,
                     newUser = user.NewUser,
+                    answerCount,
                 });
             }
             else

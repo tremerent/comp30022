@@ -37,6 +37,11 @@ class UserInfo extends React.Component {
                             ? this.props.numArtefactsReg
                             : 0) + ' Artefacts'}
                     </span>
+                    <span className="badge badge-decal-text mx-1 af-profile-art-badge">
+                        {(this.props.user.answerCount
+                            ? this.props.user.answerCount
+                            : 0) + ' Answers'}
+                    </span>
                 </div>
                 <hr/>
                 <EditTextArea
